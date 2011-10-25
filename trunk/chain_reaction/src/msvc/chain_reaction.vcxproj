@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2A7EBDE7-8886-4992-AFDD-0709CF2FA61C}</ProjectGuid>
+    <RootNamespace>chain_reaction</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>../../../output/$(SolutionName)/bin/$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>../../../output/$(SolutionName)/obj/$(Configuration)/</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>ChainReaction</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>../../../output/$(SolutionName)/bin/$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>../../../output/$(SolutionName)/obj/$(Configuration)/</IntDir>
+    <TargetName>ChainReaction</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\SDK\CEGUISDK\cegui\include;..\..\..\SDK\OgreSDK\include\OGRE;..\..\..\SDK\OgreSDK\include\OIS;..\..\..\SDK\OgreSDK\boost_1_47;..\..\..\SDK\JSONSpiritSDK\include;..\..\..\SDK\OgreBulletSDK\Dynamics\include;..\..\..\SDK\OgreBulletSDK\Collisions\include;..\..\..\SDK\BulletSDK\include\bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\SDK\CEGUISDK\lib;..\..\..\SDK\OgreSDK\lib\debug;..\..\..\SDK\OgreSDK\boost_1_47\lib;..\..\..\SDK\JSONSpiritSDK\lib\Debug;..\..\..\SDK\OgreBulletSDK\lib\Debug;..\..\..\SDK\BulletSDK\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;json_spirit.lib;BulletCollision.lib;BulletDynamics.lib;ConvexDecomposition.lib;GIMPACTUtils.lib;LinearMath.lib;OgreBulletCollisions_d.lib;OgreBulletDynamics_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\..\SDK\CEGUISDK\cegui\include;..\..\..\SDK\OgreSDK\include\OGRE;..\..\..\SDK\OgreSDK\include\OIS;..\..\..\SDK\OgreSDK\boost_1_47;..\..\..\SDK\JSONSpiritSDK\include;..\..\..\SDK\OgreBulletSDK\Dynamics\include;..\..\..\SDK\OgreBulletSDK\Collisions\include;..\..\..\SDK\BulletSDK\include\bullet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>OgreMain.lib;OIS.lib;OgreTerrain.lib;CEGUIBase.lib;CEGUIOgreRenderer.lib;json_spirit.lib;BulletCollision.lib;BulletDynamics.lib;ConvexDecomposition.lib;GIMPACTUtils.lib;LinearMath.lib;OgreBulletCollisions.lib;OgreBulletDynamics.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\SDK\CEGUISDK\lib;..\..\..\SDK\OgreSDK\lib\Release;..\..\..\SDK\OgreSDK\boost_1_47\lib;..\..\..\SDK\JSONSpiritSDK\lib\Release;..\..\..\SDK\OgreBulletSDK\lib\Release;..\..\..\SDK\BulletSDK\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\base_math\base_vector .cpp" />
+    <ClCompile Include="..\main\main.cpp" />
+    <ClCompile Include="..\manger_source\object_manger.cpp" />
+    <ClCompile Include="..\ogre_source\base_application.cpp" />
+    <ClCompile Include="..\ogre_source\ogre_application.cpp" />
+    <ClCompile Include="..\ogre_source\ogre_object.cpp" />
+    <ClCompile Include="..\ogre_source\ogre_physic_application.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\base_math\base_define.h" />
+    <ClInclude Include="..\base_math\base_vector.h" />
+    <ClInclude Include="..\manger_source\object_manger.h" />
+    <ClInclude Include="..\ogre_source\base_application.h" />
+    <ClInclude Include="..\ogre_source\ogre_application.h" />
+    <ClInclude Include="..\ogre_source\ogre_object.h" />
+    <ClInclude Include="..\ogre_source\ogre_physic_application.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
