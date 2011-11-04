@@ -59,6 +59,12 @@ public:
 //#########################################
 //##########  VehiclesAttrib   ############
 //#########################################
+
+static float	gMaxEngineForce = 3000.f;
+
+static float	gSteeringIncrement = 0.04f;
+static float	gSteeringClamp = 0.8f;
+
 class VehiclesAttrib : public BaseAttrib
 {
 	enum MESH_ID
@@ -85,6 +91,17 @@ protected:
 	Ogre::SceneNode *mpPhsicyNode;
 	//OgreBulletDynamics::RigidBody *mBody;
  //	OgreBulletCollisions::CollisionShape *mShape;
+
+	int mWheelsEngine[4];
+    int mWheelsEngineCount;
+    int mWheelsSteerable[4];
+    int mWheelsSteerableCount;
+
+public:
+    bool mSteeringLeft;
+    bool mSteeringRight;
+	float mSteering;
+	float mEngineForce;
 
 public:
 	VehiclesAttrib(void);

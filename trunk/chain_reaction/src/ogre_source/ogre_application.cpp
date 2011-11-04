@@ -158,7 +158,7 @@ void OgreApplication::initCamera(void)
     if (mRoot->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
     {
         mCamera->setFarClipDistance(0);   // enable infinite far clip distance if we can
-		mCamera->setPosition(Ogre::Vector3(0, 350, 80));
+		mCamera->setPosition(Ogre::Vector3(0, 270, 80));
 		mCamera->lookAt(Ogre::Vector3(0, 180, 0));
     }
 }

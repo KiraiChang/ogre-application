@@ -12,6 +12,11 @@
 //#######  OgrePhysicApplaction   #########
 //#########################################
 
+namespace CL
+{
+	class VehiclesAttrib;
+}
+
 class OgrePhysicApplication : public OgreApplication
 {
 private:
@@ -25,6 +30,7 @@ private:
 	float *mpTerrainHeightDataConvert;
 	btRigidBody *mpBody;
 	btHeightfieldTerrainShape* mpHeightShape;
+	CL::VehiclesAttrib *pVehiclesAttrib;
 
 public:
 	OgrePhysicApplication();
@@ -43,14 +49,24 @@ public:
 	virtual void createBody(const std::string &modelName);
 	virtual void createVehicles(const std::string &vehicleName, const std::string &wheelsName);
 
+	
+
 	// Ogre::FrameListener
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+
 	virtual bool frameStarted(const Ogre::FrameEvent& evt);
+	bool onVehiclesframeStarted(const Ogre::FrameEvent& evt);
+
 	virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
     // OIS::KeyListener
     virtual bool keyPressed( const OIS::KeyEvent &arg );
+	bool onVehiclesKeyPressed( const OIS::KeyEvent &arg );
+
     virtual bool keyReleased( const OIS::KeyEvent &arg );
+	bool onVehiclesKeyReleased( const OIS::KeyEvent &arg );
+
+
     // OIS::MouseListener
     virtual bool mouseMoved( const OIS::MouseEvent &arg );
     virtual bool mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
