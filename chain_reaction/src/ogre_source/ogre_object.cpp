@@ -142,11 +142,6 @@ namespace CL
 //##########  VehiclesAttrib   ############
 //#########################################
 
-	static float	gMaxEngineForce = 3000.f;
-
-	static float	gSteeringIncrement = 0.04f;
-	static float	gSteeringClamp = 0.8f;
-
 	static float	gWheelRadius = 0.5f;
 	static float	gWheelWidth = 0.4f;
 
@@ -175,6 +170,24 @@ namespace CL
 				mpMeshEntity[i] = NULL;
 				mpMeshNodes[i] = NULL;
 			}
+
+			for (int i = 0; i < 4; i++)
+			{
+				mWheelsEngine[i] = 0;
+				mWheelsSteerable[i] = 0;
+			}
+			mWheelsEngineCount = 2;
+			mWheelsEngine[0] = 0;
+			mWheelsEngine[1] = 1;
+			mWheelsEngine[2] = 2;
+			mWheelsEngine[3] = 3;
+
+			mWheelsSteerableCount = 2;
+			mWheelsSteerable[0] = 0;
+			mWheelsSteerable[1] = 1;
+
+			mEngineForce = 0;
+			mSteering = 0;
 	}
 	VehiclesAttrib::~VehiclesAttrib(void)
 	{
@@ -405,7 +418,18 @@ namespace CL
 
 	void VehiclesAttrib::update()
 	{
+		for (int i = mWheelsEngine[0]; i < mWheelsEngineCount; i++)
+		{
+			mpVehicle->applyEngineForce (mEngineForce, mWheelsEngine[i]);
+		}
 
+		for (int i = mWheelsSteerable[0]; i < mWheelsSteerableCount; i++)
+		{
+			if (i < 2)
+				mpVehicle->setSteeringValue (mSteering, mWheelsSteerable[i]);
+			else
+				mpVehicle->setSteeringValue (-mSteering, mWheelsSteerable[i]);
+		}
 	}
 
 

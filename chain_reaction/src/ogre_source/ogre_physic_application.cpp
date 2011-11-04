@@ -10,7 +10,8 @@ OgrePhysicApplication::OgrePhysicApplication():OgreApplication(),
 	mDebugDrawer(NULL), 
 	mpTerrainHeightDataConvert(NULL),
 	mpBody(NULL),
-	mpHeightShape(NULL)
+	mpHeightShape(NULL),
+	pVehiclesAttrib(NULL)
 {
 }
 
@@ -69,6 +70,7 @@ void OgrePhysicApplication::release(void)
 		mpHeightShape = NULL;
 	}
 	CL::ObjectManger::fnRelease();
+	pVehiclesAttrib = NULL;
 }
 
 
@@ -78,6 +80,8 @@ void OgrePhysicApplication::createScene(void)
 	OgreApplication::createScene();
 
 	createPhysic();
+
+	createVehicles("chassis.mesh", "wheel.mesh");
 }
 
 void OgrePhysicApplication::createUI(void)
@@ -236,9 +240,9 @@ void OgrePhysicApplication::createVehicles(const std::string &vehicleName, const
 	Ogre::Vector3 pos = (mCamera->getDerivedPosition() + mCamera->getDerivedDirection().normalisedCopy() * 10);
 	base.setPos((float *)&pos);
 
-	CL::VehiclesAttrib *attrib = (CL::VehiclesAttrib *)base.getAttrib();
-	attrib->create(mSceneMgr, vehicleName, wheelsName);
-	attrib->createPhysic(mWorld);
+	pVehiclesAttrib = (CL::VehiclesAttrib *)base.getAttrib();
+	pVehiclesAttrib->create(mSceneMgr, vehicleName, wheelsName);
+	pVehiclesAttrib->createPhysic(mWorld);
 }
 
 // Ogre::FrameListener
@@ -250,8 +254,31 @@ bool OgrePhysicApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 bool OgrePhysicApplication::frameStarted(const Ogre::FrameEvent& evt)
 {
 	bool bRet = OgreApplication::frameStarted(evt);
+	onVehiclesframeStarted(evt);
 	mWorld->stepSimulation(evt.timeSinceLastFrame);	// update Bullet Physics animation
 	return bRet;
+}
+
+bool OgrePhysicApplication::onVehiclesframeStarted(const Ogre::FrameEvent& evt)
+{
+	if(pVehiclesAttrib != NULL)
+	{
+		if (pVehiclesAttrib->mSteeringLeft)
+		{
+			pVehiclesAttrib->mSteering += CL::gSteeringIncrement;
+			if (pVehiclesAttrib->mSteering > CL::gSteeringClamp)
+				pVehiclesAttrib->mSteering = CL::gSteeringClamp;
+		}
+		else if (pVehiclesAttrib->mSteeringRight)
+		{
+			pVehiclesAttrib->mSteering -= CL::gSteeringIncrement;
+			if (pVehiclesAttrib->mSteering < -CL::gSteeringClamp)
+				pVehiclesAttrib->mSteering = -CL::gSteeringClamp;
+		}
+		pVehiclesAttrib->update();
+		return true;
+	}
+	return false;
 }
 
 bool OgrePhysicApplication::frameEnded(const Ogre::FrameEvent& evt)
@@ -265,13 +292,68 @@ bool OgrePhysicApplication::frameEnded(const Ogre::FrameEvent& evt)
 bool OgrePhysicApplication::keyPressed( const OIS::KeyEvent &arg )
 {
 	OgreApplication::keyPressed(arg);
+	onVehiclesKeyPressed( arg );
 	return true;
+}
+
+bool OgrePhysicApplication::onVehiclesKeyPressed( const OIS::KeyEvent &arg )
+{
+	if(pVehiclesAttrib != NULL)
+	{
+		switch(arg.key)
+		{
+		case OIS::KC_J: 
+			pVehiclesAttrib->mSteeringLeft = true;
+			break;
+		case OIS::KC_L: 
+			pVehiclesAttrib->mSteeringRight = true;
+			break;
+		case OIS::KC_K: 
+			pVehiclesAttrib->mEngineForce = -CL::gMaxEngineForce;
+			break;
+		case OIS::KC_I: 
+			pVehiclesAttrib->mEngineForce = CL::gMaxEngineForce;
+			break;
+		default:
+			break;
+		}
+		return true;
+	}
+	return false;
 }
 
 bool OgrePhysicApplication::keyReleased( const OIS::KeyEvent &arg )
 {
 	OgreApplication::keyReleased(arg);
+	onVehiclesKeyReleased(arg);
 	return true;
+}
+
+bool OgrePhysicApplication::onVehiclesKeyReleased( const OIS::KeyEvent &arg )
+{
+	if(pVehiclesAttrib != NULL)
+	{
+		switch(arg.key)
+		{
+
+		case OIS::KC_J: 
+			pVehiclesAttrib->mSteeringLeft = false;
+			break;
+		case OIS::KC_L: 
+			pVehiclesAttrib->mSteeringRight = false;
+			break;
+		case OIS::KC_K: 
+			pVehiclesAttrib->mEngineForce = 0;
+			break;
+		case OIS::KC_I: 
+			pVehiclesAttrib->mEngineForce = 0;
+			break;
+		default:
+			break;
+		}
+		return true;
+	}
+	return false;
 }
 
 // OIS::MouseListener
@@ -292,7 +374,7 @@ bool OgrePhysicApplication::mousePressed( const OIS::MouseEvent &arg, OIS::Mouse
 	case OIS::MB_Left:
 		//createBody();
 		//createBody("knot.mesh");
-		createVehicles("chassis.mesh", "wheel.mesh");
+		
 		mMousePress = MOUSE_PRESS_LEFT;
 		break;
 	default:
