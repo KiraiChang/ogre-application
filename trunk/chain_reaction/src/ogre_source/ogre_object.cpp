@@ -163,7 +163,9 @@ namespace CL
 		mpCarChassis(NULL),
 		mpTuning(NULL),
 		mpVehicleRayCaster(NULL),
-		mpVehicle(NULL)
+		mpVehicle(NULL),
+		mSteeringLeft(FALSE),
+		mSteeringRight(FALSE)
 	{
 			for(int i = 0; i < MESH_COUNT; i++)
 			{
