@@ -20,6 +20,7 @@ namespace CL
 class OgrePhysicApplication : public OgreApplication
 {
 private:
+	Ogre::Timer timer;
 	//Physic
  	OgreBulletDynamics::DynamicsWorld *mWorld;	// OgreBullet World
  	OgreBulletCollisions::DebugDrawer *mDebugDrawer;

@@ -13,6 +13,7 @@ OgrePhysicApplication::OgrePhysicApplication():OgreApplication(),
 	mpHeightShape(NULL),
 	pVehiclesAttrib(NULL)
 {
+	timer.reset();
 }
 
 OgrePhysicApplication::~OgrePhysicApplication()
@@ -263,20 +264,24 @@ bool OgrePhysicApplication::onVehiclesframeStarted(const Ogre::FrameEvent& evt)
 {
 	if(pVehiclesAttrib != NULL)
 	{
-		if (pVehiclesAttrib->mSteeringLeft)
+		if(timer.getMicroseconds() >= 5000)
 		{
-			pVehiclesAttrib->mSteering += CL::gSteeringIncrement;
-			if (pVehiclesAttrib->mSteering > CL::gSteeringClamp)
-				pVehiclesAttrib->mSteering = CL::gSteeringClamp;
+			if (pVehiclesAttrib->mSteeringLeft)
+			{
+				pVehiclesAttrib->mSteering += CL::gSteeringIncrement;
+				if (pVehiclesAttrib->mSteering > CL::gSteeringClamp)
+					pVehiclesAttrib->mSteering = CL::gSteeringClamp;
+			}
+			else if (pVehiclesAttrib->mSteeringRight)
+			{
+				pVehiclesAttrib->mSteering -= CL::gSteeringIncrement;
+				if (pVehiclesAttrib->mSteering < -CL::gSteeringClamp)
+					pVehiclesAttrib->mSteering = -CL::gSteeringClamp;
+			}
+			pVehiclesAttrib->update();
+			timer.reset();
+			return true;
 		}
-		else if (pVehiclesAttrib->mSteeringRight)
-		{
-			pVehiclesAttrib->mSteering -= CL::gSteeringIncrement;
-			if (pVehiclesAttrib->mSteering < -CL::gSteeringClamp)
-				pVehiclesAttrib->mSteering = -CL::gSteeringClamp;
-		}
-		pVehiclesAttrib->update();
-		return true;
 	}
 	return false;
 }

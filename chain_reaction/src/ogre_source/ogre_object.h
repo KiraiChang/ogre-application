@@ -60,9 +60,9 @@ public:
 //##########  VehiclesAttrib   ############
 //#########################################
 
-static float	gMaxEngineForce = 3000.f;
+static float	gMaxEngineForce = 1000.f;
 
-static float	gSteeringIncrement = 0.04f;
+static float	gSteeringIncrement = 0.004f;
 static float	gSteeringClamp = 0.8f;
 
 class VehiclesAttrib : public BaseAttrib
