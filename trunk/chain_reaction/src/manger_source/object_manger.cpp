@@ -30,6 +30,11 @@ namespace CL
 		return ATTRIB_TYPE_BASE;
 	}
 
+	BaseObject *BaseAttrib::getObj()const
+	{
+		return mpObj;
+	}
+
 //#########################################
 //############  BaseObject   ##############
 //#########################################
