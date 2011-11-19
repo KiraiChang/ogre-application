@@ -77,6 +77,7 @@ protected:
     virtual void windowClosed(Ogre::RenderWindow* rw);
 
     Ogre::Root *mRoot;
+	Ogre::SceneNode *mCameraNode;
     Ogre::Camera* mCamera;
     Ogre::SceneManager* mSceneMgr;
     Ogre::RenderWindow* mWindow;

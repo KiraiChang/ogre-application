@@ -61,6 +61,7 @@ public:
 //#########################################
 
 static float	gMaxEngineForce = 1000.f;
+static float	gIncrementEngineForce = 1000.f;
 
 static float	gSteeringIncrement = 0.004f;
 static float	gSteeringClamp = 0.8f;

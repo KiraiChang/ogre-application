@@ -432,6 +432,8 @@ namespace CL
 			else
 				mpVehicle->setSteeringValue (-mSteering, mWheelsSteerable[i]);
 		}
+		
+		mpObj->setPos((float *)&mpCarChassis->getRootNode()->getPosition());
 	}
 
 

@@ -19,8 +19,16 @@ namespace CL
 
 class OgrePhysicApplication : public OgreApplication
 {
+public:
+	enum VIEW_TYPE
+	{
+		VIEW_PERSPACTIVE,
+		VIEW_CAR,
+	};
+
 private:
-	Ogre::Timer timer;
+	VIEW_TYPE mView;
+	Ogre::Timer mTimer;
 	//Physic
  	OgreBulletDynamics::DynamicsWorld *mWorld;	// OgreBullet World
  	OgreBulletCollisions::DebugDrawer *mDebugDrawer;
@@ -57,6 +65,7 @@ public:
 
 	virtual bool frameStarted(const Ogre::FrameEvent& evt);
 	bool onVehiclesframeStarted(const Ogre::FrameEvent& evt);
+	void onViewCar();
 
 	virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
@@ -75,6 +84,12 @@ public:
 
 	//callback event
 	bool onQuit(const CEGUI::EventArgs &e);
+	bool onViewCar(const CEGUI::EventArgs &e);
+	bool onViewWorld(const CEGUI::EventArgs &e);
+	bool onChangeForceSliderValue(const CEGUI::EventArgs &e);
+	bool onChangeTurnSliderValue(const CEGUI::EventArgs &e);
+	bool onChangeForceEditValue(const CEGUI::EventArgs &e);
+	bool onChangeTurnEditValue(const CEGUI::EventArgs &e);
 };
 
 //#########################################

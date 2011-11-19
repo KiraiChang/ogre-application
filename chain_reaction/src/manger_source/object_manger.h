@@ -25,6 +25,7 @@ public:
 	virtual void init(BaseObject *obj);
 	virtual void release(void);
 	virtual AttribType getType()const;
+	BaseObject *getObj()const;
 };
 //#########################################
 //############  BaseObject   ##############

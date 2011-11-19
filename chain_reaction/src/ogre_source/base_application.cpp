@@ -78,10 +78,13 @@ void BaseApplication::createCamera(void)
     // Create the camera
     mCamera = mSceneMgr->createCamera("PlayerCam");
 
+	mCameraNode = mSceneMgr->createSceneNode("CameraNode");
+	mCameraNode->attachObject((Ogre::MovableObject *)mCamera);
     // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0,270,0));
+    //mCamera->setPosition(Ogre::Vector3(0,270,0));
+	mCameraNode->setPosition(0, 0, 0);
     // Look back along -Z
-    mCamera->lookAt(Ogre::Vector3(0,180,0));
+    mCamera->lookAt(Ogre::Vector3(0,0,0));
     //mCamera->setNearClipDistance(5);
 
     mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
