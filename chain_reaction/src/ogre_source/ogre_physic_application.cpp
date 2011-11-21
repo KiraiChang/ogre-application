@@ -4,6 +4,11 @@
 //#########################################
 //#######  OgrePhysicApplication   ########
 //#########################################
+float g_restitution = 0.6f;
+float g_friction = 0.6f;
+float g_mass = 1.0f;
+const float MAX_MASS = 1.0f;
+std::string g_meshName = "cube.mesh";
 
 OgrePhysicApplication::OgrePhysicApplication():OgreApplication(), 
 	mView(VIEW_PERSPACTIVE),
@@ -137,6 +142,30 @@ void OgrePhysicApplication::createUI(void)
 
 	edit->subscribeEvent(CEGUI::Editbox::EventTextChanged,
     CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeTurnEditValue, this));
+
+	slider = (CEGUI::Slider *)root->getChild("MainWindow/MassSlider");
+	slider->subscribeEvent(CEGUI::Slider::EventValueChanged,
+    CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeMassSliderValue, this));
+	slider->setCurrentValue(g_mass);
+	slider->setMaxValue(MAX_MASS);
+
+	edit = (CEGUI::Editbox *)root->getChild("MainWindow/MassEdit");
+
+	sprintf(text, "%.2f", g_mass);
+	edit->setText(CEGUI::String (text));
+
+	edit->subscribeEvent(CEGUI::Editbox::EventTextChanged,
+    CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeMassEditValue, this));
+
+	CEGUI::Listbox *pList = (CEGUI::Listbox *)root->getChild("MainWindow/MeshList");
+	CEGUI::ListboxItem *pItem = new CEGUI::ListboxTextItem("cube.mesh");
+	pList->addItem(pItem);
+	pList->setItemSelectState(pItem, true);
+	pItem = new CEGUI::ListboxTextItem("knot.mesh");
+	pList->addItem(pItem);
+
+	pList->subscribeEvent(CEGUI::Listbox::EventMouseClick,
+    CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeMeshListSelect, this));
 }
 
 void OgrePhysicApplication::createPhysic(void)
@@ -260,7 +289,8 @@ void OgrePhysicApplication::createBody(void)
 	mBodies.push_back(pDefaultBody);				
 }
 
-void OgrePhysicApplication::createBody(const std::string &modelName)
+void OgrePhysicApplication::createBody(const std::string &modelName, 
+	const float &restitution, const float &friction, const float &mass)
 {
 	CL::BaseObject &base = CL::ObjectManger::fnAdd(new CL::OgrePhysicAttrib());
 
@@ -269,7 +299,7 @@ void OgrePhysicApplication::createBody(const std::string &modelName)
 	base.setScale((float *)&Ogre::Vector3(0.05f, 0.05f, 0.05f));
 	CL::OgrePhysicAttrib *attrib = (CL::OgrePhysicAttrib *)base.getAttrib();
 	attrib->create(mSceneMgr, modelName);
-	attrib->createPhysic(mWorld);
+	attrib->createPhysic(mWorld, restitution, friction, mass);
 	attrib->getBody()->setLinearVelocity(mCamera->getDerivedDirection().normalisedCopy() * 7.0f );
 }
 
@@ -423,14 +453,20 @@ bool OgrePhysicApplication::mousePressed( const OIS::MouseEvent &arg, OIS::Mouse
 		mMousePress = MOUSE_PRESS_RIGHT;
 		break;
 	case OIS::MB_Left:
-		//createBody();
-		createBody("knot.mesh");
-		
-		mMousePress = MOUSE_PRESS_LEFT;
+		{
+			//createBody();
+			createBody(g_meshName, 
+				g_restitution, 
+				g_friction,
+				g_mass);
+
+			mMousePress = MOUSE_PRESS_LEFT;
+		}
 		break;
 	default:
 		break;
 	}
+
 	return true;
 }
 
@@ -500,6 +536,20 @@ bool OgrePhysicApplication::onChangeTurnSliderValue(const CEGUI::EventArgs &e)
 	return true;
 }
 
+bool OgrePhysicApplication::onChangeMassSliderValue(const CEGUI::EventArgs &e)
+{
+	CEGUI::Window *root = mpSheet->getChild("MainWindow");
+	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/MassSlider");
+	g_mass = slider->getCurrentValue();
+
+	CEGUI::Editbox *edit = (CEGUI::Editbox *)root->getChild("MainWindow/MassEdit");
+	char text[48];
+	sprintf(text, "%.2f", g_mass);
+	edit->setText(CEGUI::String (text));
+	return true;
+
+}
+
 bool OgrePhysicApplication::onChangeForceEditValue(const CEGUI::EventArgs &e)
 {
 	CEGUI::Window *root = mpSheet->getChild("MainWindow");
@@ -531,6 +581,32 @@ bool OgrePhysicApplication::onChangeTurnEditValue(const CEGUI::EventArgs &e)
 	}
 	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/TurnSlider");
 	slider->setCurrentValue(CL::gSteeringIncrement);
+	return true;
+}
+
+bool OgrePhysicApplication::onChangeMassEditValue(const CEGUI::EventArgs &e)
+{
+	CEGUI::Window *root = mpSheet->getChild("MainWindow");
+	CEGUI::Editbox *edit = (CEGUI::Editbox *)root->getChild("MainWindow/MassEdit");
+	g_mass = atof(edit->getText().c_str());
+	if(g_mass > MAX_MASS)
+	{
+		g_mass = MAX_MASS;
+		char text[48];
+		sprintf(text, "%.4f", g_mass);
+		edit->setText(CEGUI::String (text));
+	}
+	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/MassSlider");
+	slider->setCurrentValue(g_mass);
+	return true;
+}
+
+bool OgrePhysicApplication::onChangeMeshListSelect(const CEGUI::EventArgs &e)
+{
+	CEGUI::Window *root = mpSheet->getChild("MainWindow");
+	CEGUI::Listbox *pList = (CEGUI::Listbox *)root->getChild("MainWindow/MeshList");
+	g_meshName = pList->getFirstSelectedItem()->getText().c_str();
+	pList->getFirstSelectedItem()->setSelected(true);
 	return true;
 }
 

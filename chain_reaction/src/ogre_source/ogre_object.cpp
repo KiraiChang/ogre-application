@@ -98,7 +98,8 @@ namespace CL
 		mpNode->setUserAny(Ogre::Any(static_cast<BaseObject*>(mpObj)));
 	}
 
-	void OgrePhysicAttrib::createPhysic(OgreBulletDynamics::DynamicsWorld *mWorld)
+	void OgrePhysicAttrib::createPhysic(OgreBulletDynamics::DynamicsWorld *mWorld, 
+		const float &restitution, const float &friction, const float &mass)
 	{
 		Ogre::Vector3 size = Ogre::Vector3::ZERO;	// size of the box
 		// we need the bounding box of the box to be able to set the size of the Bullet-box
@@ -116,9 +117,9 @@ namespace CL
 		mBody->setShape(	
 			mpNode,
 			mShape,
-			0.6f,			// dynamic body restitution
-			0.6f,			// dynamic body friction
-			1.0f, 			// dynamic bodymass
+			restitution,			// dynamic body restitution 0.6
+			friction,			// dynamic body friction 0.6
+			mass, 			// dynamic body mass 1.0
 			Ogre::Vector3((float *)&mpObj->getPos()),		// starting position of the box
 			Ogre::Quaternion(0,0,0,1));// orientation of the box
 	}

@@ -51,7 +51,8 @@ public:
 
 	//Mesh update and create
 	virtual void create(Ogre::SceneManager *pSceneMgr, const std::string &modelName);
-	virtual void createPhysic(OgreBulletDynamics::DynamicsWorld *mWorld);
+	virtual void createPhysic(OgreBulletDynamics::DynamicsWorld *mWorld,
+		const float &restitution, const float &friction, const float &mass);
 	virtual void update();
 
 	OgreBulletDynamics::RigidBody *getBody()const;
