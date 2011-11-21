@@ -380,8 +380,7 @@ bool OgreApplication::mouseMoved( const OIS::MouseEvent &arg )
 
 bool OgreApplication::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
-	CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
-	return true;
+	return CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
 }
 
 bool OgreApplication::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )

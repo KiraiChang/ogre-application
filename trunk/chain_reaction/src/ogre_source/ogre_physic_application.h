@@ -55,7 +55,8 @@ public:
 
 	//operator fun
 	virtual void createBody(void);
-	virtual void createBody(const std::string &modelName);
+	virtual void createBody(const std::string &modelName, 
+		const float &restitution, const float &friction, const float &mass);
 	virtual void createVehicles(const std::string &vehicleName, const std::string &wheelsName);
 
 	
@@ -88,8 +89,11 @@ public:
 	bool onViewWorld(const CEGUI::EventArgs &e);
 	bool onChangeForceSliderValue(const CEGUI::EventArgs &e);
 	bool onChangeTurnSliderValue(const CEGUI::EventArgs &e);
+	bool onChangeMassSliderValue(const CEGUI::EventArgs &e);
 	bool onChangeForceEditValue(const CEGUI::EventArgs &e);
 	bool onChangeTurnEditValue(const CEGUI::EventArgs &e);
+	bool onChangeMassEditValue(const CEGUI::EventArgs &e);
+	bool onChangeMeshListSelect(const CEGUI::EventArgs &e);
 };
 
 //#########################################
