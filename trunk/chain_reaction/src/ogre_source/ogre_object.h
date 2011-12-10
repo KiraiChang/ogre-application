@@ -2,6 +2,7 @@
 #define _OGRE_OBJECT_H_
 
 #include "../manger_source/object_manger.h"
+#include <BulletSoftBody/btSoftBody.h>
 
 namespace Ogre
 {
@@ -61,11 +62,13 @@ public:
 //##########  VehiclesAttrib   ############
 //#########################################
 
-static float	gMaxEngineForce = 1000.f;
-static float	gIncrementEngineForce = 1000.f;
+static const float		gMaxEngineForce = 1500.0f;
+static float			gIncrementEngineForce = 1000.0f;
+static const float		gMinEngineForce = 1000.0f;
 
-static float	gSteeringIncrement = 0.004f;
-static float	gSteeringClamp = 0.8f;
+//static const float		gMinSteeringClamp = 0.004f;
+static const float		gSteeringIncrement = 0.004f;
+static const float		gSteeringClamp = 0.8f;
 
 class VehiclesAttrib : public BaseAttrib
 {
@@ -118,6 +121,35 @@ public:
 
 	//OgreBulletDynamics::RigidBody *getBody()const;
 };
+
+//#########################################
+//##########  SoftBodyAttrib   ############
+//#########################################
+
+class SoftBodyAttrib : public BaseAttrib
+{
+protected:
+	//mesh
+	Ogre::SceneManager *mpSceneMgr;
+	Ogre::SceneNode *mpMeshNodes;
+	Ogre::Entity *mpMeshEntity;
+
+	//phsicy
+	btSoftBody *mpSoftBody;
+public:
+	SoftBodyAttrib(void);
+	~SoftBodyAttrib(void);
+	virtual void release(void);
+	virtual AttribType getType()const;
+
+	//Mesh update and create
+	virtual void create(Ogre::SceneManager *pSceneMgr, const std::string &vehiclesName, const std::string &wheelName);
+	virtual void createPhysic(OgreBulletDynamics::DynamicsWorld *mWorld);
+	virtual void update();
+};
+
+
+
 //#########################################
 //###############  END   ##################
 //#########################################

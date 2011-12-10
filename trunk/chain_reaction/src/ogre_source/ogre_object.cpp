@@ -444,6 +444,44 @@ namespace CL
 	//	assert(mBody);
 	//	return mBody;
 	//}
+//#########################################
+//##########  SoftBodyAttrib   ############
+//#########################################
+
+
+	SoftBodyAttrib::SoftBodyAttrib(void)
+	{
+	}
+
+	SoftBodyAttrib::~SoftBodyAttrib(void)
+	{
+	}
+
+	void SoftBodyAttrib::release(void)
+	{
+	}
+
+	AttribType SoftBodyAttrib::getType()const
+	{
+		return ATTRIB_TYPE_SOFTBODY;
+	}
+
+
+	//Mesh update and create
+	void SoftBodyAttrib::create(Ogre::SceneManager *pSceneMgr, const std::string &vehiclesName, const std::string &wheelName)
+	{
+	}
+
+	void SoftBodyAttrib::createPhysic(OgreBulletDynamics::DynamicsWorld *mWorld)
+	{
+		/*mpSoftBody = new btSoftBody();*/
+	}
+
+	void SoftBodyAttrib::update()
+	{
+	}
+
+
 
 //#########################################
 //###############  END   ##################

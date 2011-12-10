@@ -175,10 +175,18 @@ void OgreApplication::initCEGUI(void)
     CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
     CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
 
+	//CEGUI::DefaultResourceProvider* rp = static_cast<CEGUI::DefaultResourceProvider*>(CEGUI::System::getSingleton().getResourceProvider());
+	//rp->setResourceGroupDirectory("imagesets", "./mygame/datafiles/gui/imagesets/");
+
     CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
 	CEGUI::SchemeManager::getSingleton().create("WindowsLook.scheme");
 	CEGUI::SchemeManager::getSingleton().create("VanillaSkin.scheme");
 	CEGUI::SchemeManager::getSingleton().create("OgreTray.scheme");
+
+	//CEGUI::ImagesetManager::getSingleton().create("TaharezLook.imageset");
+	//CEGUI::ImagesetManager::getSingleton().create("WindowsLook.imageset");
+	//CEGUI::ImagesetManager::getSingleton().create("Vanilla.imageset");
+	//CEGUI::ImagesetManager::getSingleton().create("OgreTray.imageset", "Imagesets");
  
     CEGUI::System::getSingleton().setDefaultMouseCursor("TaharezLook", "MouseArrow");
 

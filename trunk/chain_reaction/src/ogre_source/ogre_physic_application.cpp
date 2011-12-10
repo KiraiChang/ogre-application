@@ -97,6 +97,8 @@ void OgrePhysicApplication::createUI(void)
 	char text[48];
 	CEGUI::WindowManager &windowMgr = CEGUI::WindowManager::getSingleton();
 
+	 //const CEGUI::Image* selImg = &CEGUI::ImagesetManager::getSingleton().create("OgreTray.imageset", "Imagesets").getImage("ListboxItem");
+
 	mpSheet = windowMgr.loadWindowLayout("ChainReaction.layout");
  
     CEGUI::System::getSingleton().setGUISheet(mpSheet);
@@ -104,22 +106,32 @@ void OgrePhysicApplication::createUI(void)
 	CEGUI::Window *root = mpSheet->getChild("MainWindow");
 
 	CEGUI::PushButton *pButton = (CEGUI::PushButton *)root->getChild("MainWindow/QuitButton");
-	pButton->subscribeEvent(CEGUI::PushButton::EventClicked,
+	pButton->subscribeEvent(CEGUI::PushButton::EventMouseButtonDown,
     CEGUI::Event::Subscriber(&OgrePhysicApplication::onQuit, this));
 
 	pButton = (CEGUI::PushButton *)root->getChild("MainWindow/WorldButton");
-	pButton->subscribeEvent(CEGUI::PushButton::EventClicked,
+	pButton->subscribeEvent(CEGUI::PushButton::EventMouseButtonDown,
     CEGUI::Event::Subscriber(&OgrePhysicApplication::onViewWorld, this));
 
 	pButton = (CEGUI::PushButton *)root->getChild("MainWindow/CarButton");
-	pButton->subscribeEvent(CEGUI::PushButton::EventClicked,
+	pButton->subscribeEvent(CEGUI::PushButton::EventMouseButtonDown,
     CEGUI::Event::Subscriber(&OgrePhysicApplication::onViewCar, this));
 
+	
+
 	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/ForceSlider");
+
 	slider->subscribeEvent(CEGUI::Slider::EventValueChanged,
     CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeForceSliderValue, this));
 	slider->setCurrentValue(CL::gIncrementEngineForce);
 	slider->setMaxValue(CL::gMaxEngineForce);
+
+	
+	slider->subscribeEvent(CEGUI::PushButton::EventMouseEnters,
+		CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseEnterUIEvent, this));
+
+	slider->subscribeEvent(CEGUI::PushButton::EventMouseLeaves,
+		CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseLeaveUIEvent, this));
 
 	CEGUI::Editbox *edit = (CEGUI::Editbox *)root->getChild("MainWindow/ForceEdit");
 
@@ -129,25 +141,47 @@ void OgrePhysicApplication::createUI(void)
 	edit->subscribeEvent(CEGUI::Editbox::EventTextChanged,
     CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeForceEditValue, this));
 
-	slider = (CEGUI::Slider *)root->getChild("MainWindow/TurnSlider");
-	slider->subscribeEvent(CEGUI::Slider::EventValueChanged,
-    CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeTurnSliderValue, this));
-	slider->setCurrentValue(CL::gSteeringIncrement);
-	slider->setMaxValue(CL::gSteeringClamp);
+	edit->subscribeEvent(CEGUI::PushButton::EventMouseEnters,
+		CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseEnterUIEvent, this));
+	edit->subscribeEvent(CEGUI::PushButton::EventMouseLeaves,
+		CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseLeaveUIEvent, this));
 
-	edit = (CEGUI::Editbox *)root->getChild("MainWindow/TurnEdit");
+	//slider = (CEGUI::Slider *)root->getChild("MainWindow/TurnSlider");
 
-	sprintf(text, "%.2f", CL::gSteeringIncrement);
-	edit->setText(CEGUI::String (text));
+	//slider->subscribeEvent(CEGUI::Slider::EventValueChanged,
+ //   CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeTurnSliderValue, this));
+	//slider->setCurrentValue(CL::gSteeringIncrement);
+	//slider->setMaxValue(CL::gSteeringClamp);
 
-	edit->subscribeEvent(CEGUI::Editbox::EventTextChanged,
-    CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeTurnEditValue, this));
+	//slider->subscribeEvent(CEGUI::PushButton::EventMouseEnters,
+	//	CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseEnterUIEvent, this));
+	//slider->subscribeEvent(CEGUI::PushButton::EventMouseLeaves,
+	//	CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseLeaveUIEvent, this));
+
+	//edit = (CEGUI::Editbox *)root->getChild("MainWindow/TurnEdit");
+
+	//sprintf(text, "%.2f", CL::gSteeringIncrement);
+	//edit->setText(CEGUI::String (text));
+
+	//edit->subscribeEvent(CEGUI::Editbox::EventTextChanged,
+ //   CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeTurnEditValue, this));
+
+	//edit->subscribeEvent(CEGUI::PushButton::EventMouseEnters,
+	//	CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseEnterUIEvent, this));
+	//edit->subscribeEvent(CEGUI::PushButton::EventMouseLeaves,
+	//	CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseLeaveUIEvent, this));
 
 	slider = (CEGUI::Slider *)root->getChild("MainWindow/MassSlider");
+
 	slider->subscribeEvent(CEGUI::Slider::EventValueChanged,
     CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeMassSliderValue, this));
 	slider->setCurrentValue(g_mass);
 	slider->setMaxValue(MAX_MASS);
+
+	slider->subscribeEvent(CEGUI::PushButton::EventMouseEnters,
+		CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseEnterUIEvent, this));
+	slider->subscribeEvent(CEGUI::PushButton::EventMouseLeaves,
+		CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseLeaveUIEvent, this));
 
 	edit = (CEGUI::Editbox *)root->getChild("MainWindow/MassEdit");
 
@@ -157,14 +191,27 @@ void OgrePhysicApplication::createUI(void)
 	edit->subscribeEvent(CEGUI::Editbox::EventTextChanged,
     CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeMassEditValue, this));
 
+	edit->subscribeEvent(CEGUI::PushButton::EventMouseEnters,
+		CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseEnterUIEvent, this));
+	edit->subscribeEvent(CEGUI::PushButton::EventMouseLeaves,
+		CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseLeaveUIEvent, this));
+
 	CEGUI::Listbox *pList = (CEGUI::Listbox *)root->getChild("MainWindow/MeshList");
+
+	pList->subscribeEvent(CEGUI::PushButton::EventMouseEnters,
+		CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseEnterUIEvent, this));
+	pList->subscribeEvent(CEGUI::PushButton::EventMouseLeaves,
+		CEGUI::Event::Subscriber(&OgrePhysicApplication::onMouseLeaveUIEvent, this));
+
 	CEGUI::ListboxItem *pItem = new CEGUI::ListboxTextItem("cube.mesh");
+	pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
 	pList->addItem(pItem);
 	pList->setItemSelectState(pItem, true);
 	pItem = new CEGUI::ListboxTextItem("knot.mesh");
+	pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
 	pList->addItem(pItem);
 
-	pList->subscribeEvent(CEGUI::Listbox::EventMouseClick,
+	pList->subscribeEvent(CEGUI::Listbox::EventMouseButtonDown,
     CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeMeshListSelect, this));
 }
 
@@ -327,6 +374,7 @@ bool OgrePhysicApplication::frameStarted(const Ogre::FrameEvent& evt)
 	if(mView == VIEW_CAR)
 		onViewCar();
 	mWorld->stepSimulation(evt.timeSinceLastFrame);	// update Bullet Physics animation
+	
 	return bRet;
 }
 
@@ -372,8 +420,8 @@ bool OgrePhysicApplication::frameEnded(const Ogre::FrameEvent& evt)
 // OIS::KeyListener
 bool OgrePhysicApplication::keyPressed( const OIS::KeyEvent &arg )
 {
-	OgreApplication::keyPressed(arg);
 	onVehiclesKeyPressed( arg );
+	OgreApplication::keyPressed(arg);
 	return true;
 }
 
@@ -405,8 +453,8 @@ bool OgrePhysicApplication::onVehiclesKeyPressed( const OIS::KeyEvent &arg )
 
 bool OgrePhysicApplication::keyReleased( const OIS::KeyEvent &arg )
 {
-	OgreApplication::keyReleased(arg);
 	onVehiclesKeyReleased(arg);
+	OgreApplication::keyReleased(arg);
 	return true;
 }
 
@@ -447,6 +495,14 @@ bool OgrePhysicApplication::mouseMoved( const OIS::MouseEvent &arg )
 bool OgrePhysicApplication::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
 	OgreApplication::mousePressed(arg, id);
+	if(mMousePress == MOUSE_INSIDE_UI)
+		return true;
+	if(mMousePress != MOUSE_PRESS_NONE)
+	{
+		mMousePress = MOUSE_PRESS_NONE;
+		return true;
+	}
+
 	switch(id)
 	{
 	case OIS::MB_Right:
@@ -455,11 +511,17 @@ bool OgrePhysicApplication::mousePressed( const OIS::MouseEvent &arg, OIS::Mouse
 	case OIS::MB_Left:
 		{
 			//createBody();
-			createBody(g_meshName, 
-				g_restitution, 
-				g_friction,
-				g_mass);
-
+			CEGUI::Window *root = mpSheet->getChild("MainWindow");
+			CEGUI::Listbox *pList = (CEGUI::Listbox *)root->getChild("MainWindow/MeshList");
+			g_meshName = pList->getFirstSelectedItem()->getText().c_str();
+			//pList->getFirstSelectedItem()->setSelected(true);
+			if(g_meshName != "")
+			{
+				createBody(g_meshName, 
+					g_restitution, 
+					g_friction,
+					g_mass);
+			}
 			mMousePress = MOUSE_PRESS_LEFT;
 		}
 		break;
@@ -481,12 +543,14 @@ bool OgrePhysicApplication::mouseReleased( const OIS::MouseEvent &arg, OIS::Mous
 bool OgrePhysicApplication::onQuit(const CEGUI::EventArgs &e)
 {
 	mShutDown = true;
+	mMousePress = MOUSE_PRESS_LEFT;
     return true;
 }
 
 bool OgrePhysicApplication::onViewCar(const CEGUI::EventArgs &e)
 {
 	mView = VIEW_CAR;
+	mMousePress = MOUSE_PRESS_LEFT;
 	return true;
 }
 
@@ -507,6 +571,19 @@ bool OgrePhysicApplication::onViewWorld(const CEGUI::EventArgs &e)
     {
         mCamera->setFarClipDistance(0);   // enable infinite far clip distance if we can
     }
+	mMousePress = MOUSE_PRESS_LEFT;
+	return true;
+}
+
+bool OgrePhysicApplication::onMouseEnterUIEvent(const CEGUI::EventArgs &e)
+{
+	mMousePress = MOUSE_INSIDE_UI;
+	return true;
+}
+
+bool OgrePhysicApplication::onMouseLeaveUIEvent(const CEGUI::EventArgs &e)
+{
+	mMousePress = MOUSE_PRESS_NONE;
 	return true;
 }
 
@@ -515,26 +592,37 @@ bool OgrePhysicApplication::onChangeForceSliderValue(const CEGUI::EventArgs &e)
 	CEGUI::Window *root = mpSheet->getChild("MainWindow");
 	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/ForceSlider");
 	CL::gIncrementEngineForce = slider->getCurrentValue();
+	if(CL::gIncrementEngineForce < CL::gMinEngineForce)
+	{
+		CL::gIncrementEngineForce = CL::gMinEngineForce;
+		slider->setCurrentValue(CL::gIncrementEngineForce);
+	}
 
 	CEGUI::Editbox *edit = (CEGUI::Editbox *)root->getChild("MainWindow/ForceEdit");
 	char text[48];
-	sprintf(text, "%.2f", CL::gIncrementEngineForce);
+	sprintf(text, "%.0f", CL::gIncrementEngineForce);
 	edit->setText(CEGUI::String (text));
+
 	return true;
 }
 
-bool OgrePhysicApplication::onChangeTurnSliderValue(const CEGUI::EventArgs &e)
-{
-	CEGUI::Window *root = mpSheet->getChild("MainWindow");
-	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/TurnSlider");
-	CL::gSteeringIncrement = slider->getCurrentValue();
-
-	CEGUI::Editbox *edit = (CEGUI::Editbox *)root->getChild("MainWindow/TurnEdit");
-	char text[48];
-	sprintf(text, "%.2f", CL::gSteeringIncrement);
-	edit->setText(CEGUI::String (text));
-	return true;
-}
+//bool OgrePhysicApplication::onChangeTurnSliderValue(const CEGUI::EventArgs &e)
+//{
+//	CEGUI::Window *root = mpSheet->getChild("MainWindow");
+//	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/TurnSlider");
+//	CL::gSteeringIncrement = slider->getCurrentValue();
+//	if(CL::gSteeringIncrement < CL::gMinSteeringClamp)
+//	{
+//		CL::gSteeringIncrement = CL::gMinSteeringClamp;
+//		slider->setCurrentValue(CL::gSteeringIncrement);
+//	}
+//
+//	CEGUI::Editbox *edit = (CEGUI::Editbox *)root->getChild("MainWindow/TurnEdit");
+//	char text[48];
+//	sprintf(text, "%.5f", CL::gSteeringIncrement);
+//	edit->setText(CEGUI::String (text));
+//	return true;
+//}
 
 bool OgrePhysicApplication::onChangeMassSliderValue(const CEGUI::EventArgs &e)
 {
@@ -559,7 +647,14 @@ bool OgrePhysicApplication::onChangeForceEditValue(const CEGUI::EventArgs &e)
 	{
 		CL::gIncrementEngineForce = CL::gMaxEngineForce;
 		char text[48];
-		sprintf(text, "%.4f", CL::gIncrementEngineForce);
+		sprintf(text, "%.0f", CL::gIncrementEngineForce);
+		edit->setText(CEGUI::String (text));
+	}
+	else if(CL::gIncrementEngineForce < CL::gMinEngineForce)
+	{
+		CL::gIncrementEngineForce = CL::gMinEngineForce;
+		char text[48];
+		sprintf(text, "%.0f", CL::gIncrementEngineForce);
 		edit->setText(CEGUI::String (text));
 	}
 	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/ForceSlider");
@@ -567,22 +662,29 @@ bool OgrePhysicApplication::onChangeForceEditValue(const CEGUI::EventArgs &e)
 	return true;
 }
 
-bool OgrePhysicApplication::onChangeTurnEditValue(const CEGUI::EventArgs &e)
-{
-	CEGUI::Window *root = mpSheet->getChild("MainWindow");
-	CEGUI::Editbox *edit = (CEGUI::Editbox *)root->getChild("MainWindow/TurnEdit");
-	CL::gSteeringIncrement = atof(edit->getText().c_str());
-	if(CL::gSteeringIncrement > CL::gSteeringClamp)
-	{
-		CL::gSteeringIncrement = CL::gSteeringClamp;
-		char text[48];
-		sprintf(text, "%.4f", CL::gSteeringIncrement);
-		edit->setText(CEGUI::String (text));
-	}
-	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/TurnSlider");
-	slider->setCurrentValue(CL::gSteeringIncrement);
-	return true;
-}
+//bool OgrePhysicApplication::onChangeTurnEditValue(const CEGUI::EventArgs &e)
+//{
+//	CEGUI::Window *root = mpSheet->getChild("MainWindow");
+//	CEGUI::Editbox *edit = (CEGUI::Editbox *)root->getChild("MainWindow/TurnEdit");
+//	CL::gSteeringIncrement = atof(edit->getText().c_str());
+//	if(CL::gSteeringIncrement > CL::gSteeringClamp)
+//	{
+//		CL::gSteeringIncrement = CL::gSteeringClamp;
+//		char text[48];
+//		sprintf(text, "%.5f", CL::gSteeringIncrement);
+//		edit->setText(CEGUI::String (text));
+//	}
+//	else if(CL::gSteeringIncrement < CL::gMinSteeringClamp)
+//	{
+//		CL::gSteeringIncrement = CL::gMinSteeringClamp;
+//		char text[48];
+//		sprintf(text, "%.5f", CL::gIncrementEngineForce);
+//		edit->setText(CEGUI::String (text));
+//	}
+//	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/TurnSlider");
+//	slider->setCurrentValue(CL::gSteeringIncrement);
+//	return true;
+//}
 
 bool OgrePhysicApplication::onChangeMassEditValue(const CEGUI::EventArgs &e)
 {
@@ -603,10 +705,7 @@ bool OgrePhysicApplication::onChangeMassEditValue(const CEGUI::EventArgs &e)
 
 bool OgrePhysicApplication::onChangeMeshListSelect(const CEGUI::EventArgs &e)
 {
-	CEGUI::Window *root = mpSheet->getChild("MainWindow");
-	CEGUI::Listbox *pList = (CEGUI::Listbox *)root->getChild("MainWindow/MeshList");
-	g_meshName = pList->getFirstSelectedItem()->getText().c_str();
-	pList->getFirstSelectedItem()->setSelected(true);
+	mMousePress = MOUSE_PRESS_LEFT;
 	return true;
 }
 

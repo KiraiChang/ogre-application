@@ -7,6 +7,7 @@
 #include "Shapes/OgreBulletCollisionsStaticPlaneShape.h" // for static planes
 #include "Shapes/OgreBulletCollisionsBoxShape.h"		 // for Boxes
 #include "Shapes/OgreBulletCollisionsTerrainShape.h"
+#include <BulletSoftBody/btSoftRigidDynamicsWorld.h>
 
 //#########################################
 //#######  OgrePhysicApplaction   #########
@@ -40,6 +41,7 @@ private:
 	btRigidBody *mpBody;
 	btHeightfieldTerrainShape* mpHeightShape;
 	CL::VehiclesAttrib *pVehiclesAttrib;
+	btSoftRigidDynamicsWorld *mpSoftWorld;
 
 public:
 	OgrePhysicApplication();
@@ -87,11 +89,13 @@ public:
 	bool onQuit(const CEGUI::EventArgs &e);
 	bool onViewCar(const CEGUI::EventArgs &e);
 	bool onViewWorld(const CEGUI::EventArgs &e);
+	bool onMouseEnterUIEvent(const CEGUI::EventArgs &e);
+	bool onMouseLeaveUIEvent(const CEGUI::EventArgs &e);
 	bool onChangeForceSliderValue(const CEGUI::EventArgs &e);
-	bool onChangeTurnSliderValue(const CEGUI::EventArgs &e);
+	//bool onChangeTurnSliderValue(const CEGUI::EventArgs &e);
 	bool onChangeMassSliderValue(const CEGUI::EventArgs &e);
 	bool onChangeForceEditValue(const CEGUI::EventArgs &e);
-	bool onChangeTurnEditValue(const CEGUI::EventArgs &e);
+	//bool onChangeTurnEditValue(const CEGUI::EventArgs &e);
 	bool onChangeMassEditValue(const CEGUI::EventArgs &e);
 	bool onChangeMeshListSelect(const CEGUI::EventArgs &e);
 };
