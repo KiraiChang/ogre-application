@@ -1,4 +1,8 @@
 #include "ogre_physic_application.h"
+
+#include <BulletSoftBody/btSoftRigidDynamicsWorld.h>
+#include "btBulletDynamicsCommon.h"
+
 #include "ogre_object.h"
 
 //#########################################
@@ -17,7 +21,13 @@ OgrePhysicApplication::OgrePhysicApplication():OgreApplication(),
 	mpTerrainHeightDataConvert(NULL),
 	mpBody(NULL),
 	mpHeightShape(NULL),
-	pVehiclesAttrib(NULL)
+	pVehiclesAttrib(NULL),
+	mpSoftWorld(NULL),
+	mpDynamicsWorld(NULL),
+	mpCollisionConfiguration(NULL),
+	mpDispatcher(NULL),
+	mpBroadphase(NULL),
+	mpSolver(NULL)
 {
 	mTimer.reset();
 }
@@ -78,6 +88,42 @@ void OgrePhysicApplication::release(void)
 	}
 	CL::ObjectManger::fnRelease();
 	pVehiclesAttrib = NULL;
+
+	if( mpSoftWorld != NULL)
+	{
+		delete mpSoftWorld;
+		mpSoftWorld = NULL;
+	}
+
+	if( mpDynamicsWorld != NULL)
+	{
+		delete mpDynamicsWorld;
+		mpDynamicsWorld = NULL;
+	}
+		
+	if( mpSolver != NULL)
+	{
+		delete mpSolver;
+		mpSolver = NULL;
+	}
+
+	if( mpBroadphase != NULL)
+	{
+		delete mpBroadphase;
+		mpBroadphase = NULL;
+	}
+
+	if( mpDispatcher != NULL)
+	{
+		delete mpDispatcher;
+		mpDispatcher = NULL;
+	}
+
+	if( mpCollisionConfiguration != NULL)
+	{
+		delete mpCollisionConfiguration;
+		mpCollisionConfiguration = NULL;
+	}
 }
 
 
@@ -210,13 +256,43 @@ void OgrePhysicApplication::createUI(void)
 	pItem = new CEGUI::ListboxTextItem("knot.mesh");
 	pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
 	pList->addItem(pItem);
-
+	pItem = new CEGUI::ListboxTextItem(	"Crate.mesh");
+	pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
+	pList->addItem(pItem);
+	pItem = new CEGUI::ListboxTextItem("ball.mesh");
+	pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
+	pList->addItem(pItem);
+	pItem = new CEGUI::ListboxTextItem("cylinder.mesh");
+	pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
+	pList->addItem(pItem);
+	//pItem = new CEGUI::ListboxTextItem("Cone.mesh");
+	//pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
+	//pList->addItem(pItem);
+	pItem = new CEGUI::ListboxTextItem("Cone1.mesh");
+	pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
+	pList->addItem(pItem);
+	pItem = new CEGUI::ListboxTextItem("Cone2.mesh");
+	pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
+	pList->addItem(pItem);
+	
 	pList->subscribeEvent(CEGUI::Listbox::EventMouseButtonDown,
     CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeMeshListSelect, this));
 }
 
 void OgrePhysicApplication::createPhysic(void)
 {
+	//mpCollisionConfiguration = new btDefaultCollisionConfiguration();
+
+	//mpDispatcher = new btCollisionDispatcher(mpCollisionConfiguration);
+
+	//btVector3 worldAabbMin(-10000,-10000,-10000);
+	//btVector3 worldAabbMax(10000,10000,10000);
+	//mpBroadphase = new btAxisSweep3 (worldAabbMin, worldAabbMax);
+
+	//mpSolver = new btSequentialImpulseConstraintSolver;
+
+	//mpDynamicsWorld = new btDiscreteDynamicsWorld(mpDispatcher,mpBroadphase,mpSolver,mpCollisionConfiguration);
+
  		mMoveSpeed = 50;	// defined in ExampleFrameListener
  		mNumEntitiesInstanced = 0; // how many shapes are created
 
@@ -343,11 +419,72 @@ void OgrePhysicApplication::createBody(const std::string &modelName,
 
 	Ogre::Vector3 pos = (mCamera->getDerivedPosition() + mCamera->getDerivedDirection().normalisedCopy() * 10);
 	base.setPos((float *)&pos);
-	base.setScale((float *)&Ogre::Vector3(0.05f, 0.05f, 0.05f));
 	CL::OgrePhysicAttrib *attrib = (CL::OgrePhysicAttrib *)base.getAttrib();
-	attrib->create(mSceneMgr, modelName);
-	attrib->createPhysic(mWorld, restitution, friction, mass);
+	if(modelName == "cube.mesh")
+	{
+		base.setScale((float *)&Ogre::Vector3(0.05f, 0.05f, 0.05f));
+		attrib->create(mSceneMgr, modelName);
+		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CUBE);
+	}
+	else if(modelName == "Crate.mesh")
+	{
+		base.setScale((float *)&Ogre::Vector3(1.5f, 1.5f, 1.5f));
+		attrib->create(mSceneMgr, modelName);
+		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CUBE);
+	}
+	else if(modelName == "knot.mesh")
+	{
+		base.setScale((float *)&Ogre::Vector3(0.05f, 0.05f, 0.05f));
+		attrib->create(mSceneMgr, modelName);
+		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_SPHERE);
+	}
+	else if(modelName == "ball.mesh")
+	{
+		base.setScale((float *)&Ogre::Vector3(0.5f, 0.5f, 0.5f));
+		attrib->create(mSceneMgr, modelName);
+		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_SPHERE);
+	}
+	else if(modelName == "cylinder.mesh")
+	{
+		base.setScale((float *)&Ogre::Vector3(1.0f, 1.0f, 1.05f));
+		attrib->create(mSceneMgr, modelName);
+		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CYLINDER);
+	}
+	else if(modelName == "Crate.mesh")
+	{
+		base.setScale((float *)&Ogre::Vector3(1.0f, 1.0f, 1.0f));
+		attrib->create(mSceneMgr, modelName);
+		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CUBE);
+	}
+	//else if(modelName == "Cone.mesh")
+	//{
+	//	base.setScale((float *)&Ogre::Vector3(10.0f, 10.0f, 10.0f));
+	//	attrib->create(mSceneMgr, modelName);
+	//	attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CONE);
+	//}
+	else if(modelName == "Cone1.mesh" || modelName == "Cone2.mesh")
+	{
+		base.setScale((float *)&Ogre::Vector3(3.0f, 3.0f, 3.0f));
+		attrib->create(mSceneMgr, modelName);
+		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CONE);
+	}
+	else
+	{
+		base.setScale((float *)&Ogre::Vector3(0.05f, 0.05f, 0.05f));
+		attrib->create(mSceneMgr, modelName);
+		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CUBE);
+	}
 	attrib->getBody()->setLinearVelocity(mCamera->getDerivedDirection().normalisedCopy() * 7.0f );
+
+	//CL::BaseObject &base2 = CL::ObjectManger::fnAdd(new CL::RagDoll());
+
+	////Ogre::Vector3 pos = (mCamera->getDerivedPosition() + mCamera->getDerivedDirection().normalisedCopy() * 10);
+	//base2.setPos((float *)&pos);
+	//base2.setScale((float *)&Ogre::Vector3(0.05f, 0.05f, 0.05f));
+	//CL::RagDoll *attribRag = (CL::RagDoll *)base2.getAttrib();
+	//attribRag->create(mSceneMgr);
+	//attribRag->createPhysic(mWorld->getBulletDynamicsWorld());
+	////attribRag->getBody()->setLinearVelocity(mCamera->getDerivedDirection().normalisedCopy() * 7.0f );
 }
 
 void OgrePhysicApplication::createVehicles(const std::string &vehicleName, const std::string &wheelsName)
@@ -373,6 +510,14 @@ bool OgrePhysicApplication::frameStarted(const Ogre::FrameEvent& evt)
 	onVehiclesframeStarted(evt);
 	if(mView == VIEW_CAR)
 		onViewCar();
+
+	if (mpDynamicsWorld)
+	{
+		mpDynamicsWorld->stepSimulation(evt.timeSinceLastFrame);
+		//optional but useful: debug drawing
+		mpDynamicsWorld->debugDrawWorld();
+	}
+
 	mWorld->stepSimulation(evt.timeSinceLastFrame);	// update Bullet Physics animation
 	
 	return bRet;

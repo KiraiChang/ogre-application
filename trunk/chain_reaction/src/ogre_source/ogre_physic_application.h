@@ -7,7 +7,7 @@
 #include "Shapes/OgreBulletCollisionsStaticPlaneShape.h" // for static planes
 #include "Shapes/OgreBulletCollisionsBoxShape.h"		 // for Boxes
 #include "Shapes/OgreBulletCollisionsTerrainShape.h"
-#include <BulletSoftBody/btSoftRigidDynamicsWorld.h>
+
 
 //#########################################
 //#######  OgrePhysicApplaction   #########
@@ -17,6 +17,9 @@ namespace CL
 {
 	class VehiclesAttrib;
 }
+
+class btSoftRigidDynamicsWorld;
+class btDynamicsWorld;
 
 class OgrePhysicApplication : public OgreApplication
 {
@@ -41,7 +44,15 @@ private:
 	btRigidBody *mpBody;
 	btHeightfieldTerrainShape* mpHeightShape;
 	CL::VehiclesAttrib *pVehiclesAttrib;
-	btSoftRigidDynamicsWorld *mpSoftWorld;
+
+	//this is the most important class
+	btSoftRigidDynamicsWorld			*mpSoftWorld;
+	btDynamicsWorld						*mpDynamicsWorld;
+	btDefaultCollisionConfiguration		*mpCollisionConfiguration;
+	btCollisionDispatcher				*mpDispatcher;
+	btAxisSweep3						*mpBroadphase;
+	btSequentialImpulseConstraintSolver *mpSolver;
+
 
 public:
 	OgrePhysicApplication();
