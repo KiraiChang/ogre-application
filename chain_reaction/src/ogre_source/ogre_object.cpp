@@ -9,6 +9,14 @@
 #include "OgreBulletDynamicsRigidBody.h"				 // for OgreBullet
 #include "Shapes/OgreBulletCollisionsStaticPlaneShape.h" // for static planes
 #include "Shapes/OgreBulletCollisionsBoxShape.h"		 // for Boxes
+#include "Shapes/OgreBulletCollisionsSphereShape.h"		 // for Sphere
+#include "Shapes/OgreBulletCollisionsCylinderShape.h"    // for Cylinder
+#include "Shapes/OgreBulletCollisionsConeShape.h"        // for Cone
+#include "Shapes/OgreBulletCollisionsTrimeshShape.h"     // for None above
+#include "Utils/OgreBulletCollisionsMeshToShapeConverter.h"
+
+
+#include "btBulletDynamicsCommon.h"
 
 namespace CL
 {
@@ -34,8 +42,8 @@ namespace CL
 	{
 		if(mBody)
 		{
-			if(mpBodyNode)
-				mpBodyNode->detachObject(mBody);
+			//if(mpBodyNode)
+			//	mpBodyNode->detachObject(mBody);
 			delete mBody;
 			mBody = NULL;
 		}
@@ -63,17 +71,17 @@ namespace CL
 				mpNode = NULL;
 			}
 
-			if(mpBodyNode)
-			{
-				mpSceneMgr->destroySceneNode(mpBodyNode);
-				mpBodyNode = NULL;
-			}
+			//if(mpBodyNode)
+			//{
+			//	mpSceneMgr->destroySceneNode(mpBodyNode);
+			//	mpBodyNode = NULL;
+			//}
 		}
 		else
 		{
 			assert(mpEntity);
 			assert(mpNode);
-			assert(mpBodyNode);
+			//assert(mpBodyNode);
 		}
 	}
 
@@ -99,7 +107,8 @@ namespace CL
 	}
 
 	void OgrePhysicAttrib::createPhysic(OgreBulletDynamics::DynamicsWorld *mWorld, 
-		const float &restitution, const float &friction, const float &mass)
+		const float &restitution, const float &friction, const float &mass,
+		const ShapeType &type)
 	{
 		Ogre::Vector3 size = Ogre::Vector3::ZERO;	// size of the box
 		// we need the bounding box of the box to be able to set the size of the Bullet-box
@@ -110,7 +119,26 @@ namespace CL
 		size *=  mpObj->getScale().y;// don't forget to scale down the Bullet-box too
 
 		// after that create the Bullet shape with the calculated size
-		mShape = new OgreBulletCollisions::BoxCollisionShape(size);
+		switch(type)
+		{
+		case SHAPE_TYPE_CUBE:
+			mShape = new OgreBulletCollisions::BoxCollisionShape(size);
+			break;
+		case SHAPE_TYPE_SPHERE:
+			mShape = new OgreBulletCollisions::SphereCollisionShape(size.x);
+			break;
+		case SHAPE_TYPE_CYLINDER:
+			mShape = new OgreBulletCollisions::CylinderCollisionShape(size, Ogre::Vector3::UNIT_X);
+			break;
+		case SHAPE_TYPE_CONE:
+			mShape = new OgreBulletCollisions::ConeCollisionShape(size.x * 1.5, size.y * 1.5, Ogre::Vector3::UNIT_Y);
+			break;
+		default:
+			OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = new OgreBulletCollisions::StaticMeshToShapeConverter(mpEntity);
+			mShape = trimeshConverter->createTrimesh();
+			delete trimeshConverter;
+			break;
+		}
 		// and the Bullet rigid body
 		mBody = new OgreBulletDynamics::RigidBody(
 			mpObj->mName, mWorld);
@@ -482,6 +510,422 @@ namespace CL
 	}
 
 
+//#########################################
+//###########  RagDollAttrib   ############
+//#########################################
+
+#ifndef M_PI
+#define M_PI       3.14159265358979323846
+#endif
+
+#ifndef M_PI_2
+#define M_PI_2     1.57079632679489661923
+#endif
+
+#ifndef M_PI_4
+#define M_PI_4     0.785398163397448309616
+#endif
+
+#define CONSTRAINT_DEBUG_SIZE 0.2f
+
+	btRigidBody* RagDoll::localCreateRigidBody (btScalar mass, 
+		const btTransform& startTransform, 
+		btCollisionShape* shape,
+		const int &part)
+	{
+		bool isDynamic = (mass != 0.f);
+
+		btVector3 localInertia(0,0,0);
+		if (isDynamic)
+			shape->calculateLocalInertia(mass,localInertia);
+
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+
+		char name[64];
+#ifdef _WIN32
+		sprintf_s(name, "%s_RagDoll_%d",mpObj->mName.c_str(), part);
+#else
+		sprintf(name, "%s_RagDoll_%d",mpObj->mName.c_str(), part);
+#endif
+		mpBodyEntity[part] = mpSceneMgr->createEntity(name, "cube.mesh");
+		mpBodyEntity[part]->setCastShadows(true);
+		vec3 vec;
+		mpBodyNodes[part] = mpSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3((float *)&startTransform));
+		mpBodyNodes[part]->attachObject((Ogre::MovableObject *)mpBodyEntity[part]);
+		vec = mpObj->getScale();
+		mpBodyNodes[part]->setScale(Ogre::Vector3((float *)&vec));
+		vec = mpObj->getDir();
+		mpBodyNodes[part]->setDirection(Ogre::Vector3((float *)&vec));
+		//put self to 
+		mpBodyNodes[part]->setUserAny(Ogre::Any(static_cast<BaseObject*>(mpObj)));
+
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,shape,localInertia);
+		btRigidBody* body = new btRigidBody(rbInfo);
+
+		mWorld->addRigidBody(body);
+
+		return body;
+	}
+
+	RagDoll::RagDoll()
+	{
+		m_bodies.resize(BODYPART_COUNT);
+		m_shapes.resize(BODYPART_COUNT);
+		m_joints.resize(JOINT_COUNT);
+	}
+
+	RagDoll::~RagDoll()
+	{
+		release();
+	}
+
+	void RagDoll::release(void)
+	{
+		// Remove all constraints
+		for(std::vector<btTypedConstraint* >::iterator i=m_joints.begin();
+			i!=m_joints.end();
+			++i) 
+		{
+			mWorld->removeConstraint(*i);
+			delete *i;
+		}
+
+		// Remove all bodies and shapes
+		for(std::vector<btRigidBody* >::iterator i=m_bodies.begin();
+			i!=m_bodies.end();
+			++i) 
+		{
+			mWorld->removeRigidBody(*i);
+
+			delete (*i)->getMotionState();
+			delete *i;
+		}
+		for(std::vector<btCollisionShape* >::iterator i=m_shapes.begin();
+			i!=m_shapes.end();
+			++i) 
+		{
+			delete *i;
+		}
+
+				if(mpSceneMgr)
+		{
+			for(int i = 0; i < BODYPART_COUNT; i++)
+			{
+				if(mpBodyEntity[i])
+				{
+					if(mpBodyNodes[i])
+						mpBodyNodes[i]->detachObject(mpBodyEntity[i]);
+
+					mpSceneMgr->destroyEntity(mpBodyEntity[i]);
+					mpBodyEntity[i] = NULL;
+				}
+
+				if(mpBodyNodes[i])
+				{
+					mpSceneMgr->destroySceneNode(mpBodyNodes[i]);
+					mpBodyNodes[i] = NULL;
+				}
+			}
+		}
+	}
+
+	AttribType RagDoll::getType()const
+	{
+		return ATTRIB_TYPE_RAGDOLL;
+	}
+
+	//Mesh update and create
+	void RagDoll::create(Ogre::SceneManager *pSceneMgr)
+	{
+		mpSceneMgr = pSceneMgr;
+	}
+
+	void RagDoll::createPhysic(btDynamicsWorld *pWorld)
+	{
+		mWorld = pWorld;
+		// Setup all the rigid bodies
+		//btTransform offset; offset.setIdentity();
+		//offset.setOrigin(*(btVector3 *)&pos);
+
+
+		//btTransform transform;
+
+		//for(int i = 0; i < 2; i++)
+		//{
+		//	transform.setIdentity();
+		//	transform.setOrigin(btVector3(btScalar(0.), btScalar(1.), btScalar(0.)));
+		//	m_bodies.push_back(
+		//		localCreateRigidBody(btScalar(1.), 
+		//								offset*transform, 
+		//								new btCapsuleShape(btScalar(0.15), btScalar(0.20))
+		//								)
+		//							);
+		//}
+
+		//// Setup some damping on the m_bodies
+		//for(std::vector<btRigidBody* >::iterator i=m_bodies.begin();
+		//	i!=m_bodies.end();
+		//	++i) 
+		//{
+		//	(*i)->setDamping(0.05, 0.85);
+		//	(*i)->setDeactivationTime(0.8);
+		//	(*i)->setSleepingThresholds(1.6, 2.5);
+		//}
+
+		//// Now setup the constraints
+		//btHingeConstraint* hingeC;
+		////btConeTwistConstraint* coneC;
+		//btTransform localA, localB;
+
+		//// for
+		//{
+		//	localA.setIdentity(); localB.setIdentity();
+		//	localA.getBasis().setEulerZYX(0, Ogre::Math::TWO_PI,0); 
+		//	localA.setOrigin(btVector3(btScalar(0.), btScalar(0.15), btScalar(0.)));
+		//	localB.getBasis().setEulerZYX(0,Ogre::Math::TWO_PI,0); 
+		//	localB.setOrigin(btVector3(btScalar(0.), btScalar(-0.15), btScalar(0.)));
+		//	hingeC =  new btHingeConstraint(*m_bodies[0], *m_bodies[1], 
+		//		localA, localB);
+		//	hingeC->setLimit(btScalar(-Ogre::Math::TWO_PI*2), btScalar(Ogre::Math::TWO_PI));
+		//	m_joints.push_back(hingeC);
+		//	mWorld->addConstraint(hingeC, true);
+		//}
+		// Setup the geometry
+		m_shapes[BODYPART_PELVIS] = new btCapsuleShape(btScalar(0.15), btScalar(0.20));
+		m_shapes[BODYPART_SPINE] = new btCapsuleShape(btScalar(0.15), btScalar(0.28));
+		m_shapes[BODYPART_HEAD] = new btCapsuleShape(btScalar(0.10), btScalar(0.05));
+		m_shapes[BODYPART_LEFT_UPPER_LEG] = new btCapsuleShape(btScalar(0.07), btScalar(0.45));
+		m_shapes[BODYPART_LEFT_LOWER_LEG] = new btCapsuleShape(btScalar(0.05), btScalar(0.37));
+		m_shapes[BODYPART_RIGHT_UPPER_LEG] = new btCapsuleShape(btScalar(0.07), btScalar(0.45));
+		m_shapes[BODYPART_RIGHT_LOWER_LEG] = new btCapsuleShape(btScalar(0.05), btScalar(0.37));
+		m_shapes[BODYPART_LEFT_UPPER_ARM] = new btCapsuleShape(btScalar(0.05), btScalar(0.33));
+		m_shapes[BODYPART_LEFT_LOWER_ARM] = new btCapsuleShape(btScalar(0.04), btScalar(0.25));
+		m_shapes[BODYPART_RIGHT_UPPER_ARM] = new btCapsuleShape(btScalar(0.05), btScalar(0.33));
+		m_shapes[BODYPART_RIGHT_LOWER_ARM] = new btCapsuleShape(btScalar(0.04), btScalar(0.25));
+
+		// Setup all the rigid bodies
+		btTransform offset; offset.setIdentity();
+		vec3 pos = mpObj->getPos();
+		offset.setOrigin(*(btVector3 *)&pos);
+
+		btTransform transform;
+		transform.setIdentity();
+		transform.setOrigin(btVector3(btScalar(0.), btScalar(1.), btScalar(0.)));
+		m_bodies[BODYPART_PELVIS] = localCreateRigidBody(btScalar(1.), offset*transform, m_shapes[BODYPART_PELVIS], BODYPART_PELVIS);
+
+		transform.setIdentity();
+		transform.setOrigin(btVector3(btScalar(0.), btScalar(1.2), btScalar(0.)));
+		m_bodies[BODYPART_SPINE] = localCreateRigidBody(btScalar(1.), offset*transform, m_shapes[BODYPART_SPINE], BODYPART_SPINE);
+
+		transform.setIdentity();
+		transform.setOrigin(btVector3(btScalar(0.), btScalar(1.6), btScalar(0.)));
+		m_bodies[BODYPART_HEAD] = localCreateRigidBody(btScalar(1.), offset*transform, m_shapes[BODYPART_HEAD], BODYPART_HEAD);
+
+		transform.setIdentity();
+		transform.setOrigin(btVector3(btScalar(-0.18), btScalar(0.65), btScalar(0.)));
+		m_bodies[BODYPART_LEFT_UPPER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_shapes[BODYPART_LEFT_UPPER_LEG], BODYPART_LEFT_UPPER_LEG);
+
+		transform.setIdentity();
+		transform.setOrigin(btVector3(btScalar(-0.18), btScalar(0.2), btScalar(0.)));
+		m_bodies[BODYPART_LEFT_LOWER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_shapes[BODYPART_LEFT_LOWER_LEG], BODYPART_LEFT_LOWER_LEG);
+
+		transform.setIdentity();
+		transform.setOrigin(btVector3(btScalar(0.18), btScalar(0.65), btScalar(0.)));
+		m_bodies[BODYPART_RIGHT_UPPER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_shapes[BODYPART_RIGHT_UPPER_LEG], BODYPART_RIGHT_UPPER_LEG);
+
+		transform.setIdentity();
+		transform.setOrigin(btVector3(btScalar(0.18), btScalar(0.2), btScalar(0.)));
+		m_bodies[BODYPART_RIGHT_LOWER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_shapes[BODYPART_RIGHT_LOWER_LEG], BODYPART_RIGHT_LOWER_LEG);
+
+		transform.setIdentity();
+		transform.setOrigin(btVector3(btScalar(-0.35), btScalar(1.45), btScalar(0.)));
+		transform.getBasis().setEulerZYX(0,0,M_PI_2);
+		m_bodies[BODYPART_LEFT_UPPER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_shapes[BODYPART_LEFT_UPPER_ARM], BODYPART_LEFT_UPPER_ARM);
+
+		transform.setIdentity();
+		transform.setOrigin(btVector3(btScalar(-0.7), btScalar(1.45), btScalar(0.)));
+		transform.getBasis().setEulerZYX(0,0,M_PI_2);
+		m_bodies[BODYPART_LEFT_LOWER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_shapes[BODYPART_LEFT_LOWER_ARM], BODYPART_LEFT_LOWER_ARM);
+
+		transform.setIdentity();
+		transform.setOrigin(btVector3(btScalar(0.35), btScalar(1.45), btScalar(0.)));
+		transform.getBasis().setEulerZYX(0,0,-M_PI_2);
+		m_bodies[BODYPART_RIGHT_UPPER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_shapes[BODYPART_RIGHT_UPPER_ARM], BODYPART_RIGHT_UPPER_ARM);
+
+		transform.setIdentity();
+		transform.setOrigin(btVector3(btScalar(0.7), btScalar(1.45), btScalar(0.)));
+		transform.getBasis().setEulerZYX(0,0,-M_PI_2);
+		m_bodies[BODYPART_RIGHT_LOWER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_shapes[BODYPART_RIGHT_LOWER_ARM], BODYPART_RIGHT_LOWER_ARM);
+
+		// Setup some damping on the m_bodies
+		for (int i = 0; i < BODYPART_COUNT; ++i)
+		{
+			m_bodies[i]->setDamping(0.05, 0.85);
+			m_bodies[i]->setDeactivationTime(0.8);
+			m_bodies[i]->setSleepingThresholds(1.6, 2.5);
+		}
+
+		// Now setup the constraints
+		btHingeConstraint* hingeC;
+		btConeTwistConstraint* coneC;
+
+		btTransform localA, localB;
+
+		localA.setIdentity(); localB.setIdentity();
+		localA.getBasis().setEulerZYX(0,M_PI_2,0); localA.setOrigin(btVector3(btScalar(0.), btScalar(0.15), btScalar(0.)));
+		localB.getBasis().setEulerZYX(0,M_PI_2,0); localB.setOrigin(btVector3(btScalar(0.), btScalar(-0.15), btScalar(0.)));
+		hingeC =  new btHingeConstraint(*m_bodies[BODYPART_PELVIS], *m_bodies[BODYPART_SPINE], localA, localB);
+		hingeC->setLimit(btScalar(-M_PI_4), btScalar(M_PI_2));
+		m_joints[JOINT_PELVIS_SPINE] = hingeC;
+		hingeC->setDbgDrawSize(CONSTRAINT_DEBUG_SIZE);
+
+		mWorld->addConstraint(m_joints[JOINT_PELVIS_SPINE], true);
+
+
+		localA.setIdentity(); localB.setIdentity();
+		localA.getBasis().setEulerZYX(0,0,M_PI_2); localA.setOrigin(btVector3(btScalar(0.), btScalar(0.30), btScalar(0.)));
+		localB.getBasis().setEulerZYX(0,0,M_PI_2); localB.setOrigin(btVector3(btScalar(0.), btScalar(-0.14), btScalar(0.)));
+		coneC = new btConeTwistConstraint(*m_bodies[BODYPART_SPINE], *m_bodies[BODYPART_HEAD], localA, localB);
+		coneC->setLimit(M_PI_4, M_PI_4, M_PI_2);
+		m_joints[JOINT_SPINE_HEAD] = coneC;
+		coneC->setDbgDrawSize(CONSTRAINT_DEBUG_SIZE);
+
+		mWorld->addConstraint(m_joints[JOINT_SPINE_HEAD], true);
+
+
+		localA.setIdentity(); localB.setIdentity();
+		localA.getBasis().setEulerZYX(0,0,-M_PI_4*5); localA.setOrigin(btVector3(btScalar(-0.18), btScalar(-0.10), btScalar(0.)));
+		localB.getBasis().setEulerZYX(0,0,-M_PI_4*5); localB.setOrigin(btVector3(btScalar(0.), btScalar(0.225), btScalar(0.)));
+		coneC = new btConeTwistConstraint(*m_bodies[BODYPART_PELVIS], *m_bodies[BODYPART_LEFT_UPPER_LEG], localA, localB);
+		coneC->setLimit(M_PI_4, M_PI_4, 0);
+		m_joints[JOINT_LEFT_HIP] = coneC;
+		coneC->setDbgDrawSize(CONSTRAINT_DEBUG_SIZE);
+
+		mWorld->addConstraint(m_joints[JOINT_LEFT_HIP], true);
+
+		localA.setIdentity(); localB.setIdentity();
+		localA.getBasis().setEulerZYX(0,M_PI_2,0); localA.setOrigin(btVector3(btScalar(0.), btScalar(-0.225), btScalar(0.)));
+		localB.getBasis().setEulerZYX(0,M_PI_2,0); localB.setOrigin(btVector3(btScalar(0.), btScalar(0.185), btScalar(0.)));
+		hingeC =  new btHingeConstraint(*m_bodies[BODYPART_LEFT_UPPER_LEG], *m_bodies[BODYPART_LEFT_LOWER_LEG], localA, localB);
+		hingeC->setLimit(btScalar(0), btScalar(M_PI_2));
+		m_joints[JOINT_LEFT_KNEE] = hingeC;
+		hingeC->setDbgDrawSize(CONSTRAINT_DEBUG_SIZE);
+
+		mWorld->addConstraint(m_joints[JOINT_LEFT_KNEE], true);
+
+
+		localA.setIdentity(); localB.setIdentity();
+		localA.getBasis().setEulerZYX(0,0,M_PI_4); localA.setOrigin(btVector3(btScalar(0.18), btScalar(-0.10), btScalar(0.)));
+		localB.getBasis().setEulerZYX(0,0,M_PI_4); localB.setOrigin(btVector3(btScalar(0.), btScalar(0.225), btScalar(0.)));
+		coneC = new btConeTwistConstraint(*m_bodies[BODYPART_PELVIS], *m_bodies[BODYPART_RIGHT_UPPER_LEG], localA, localB);
+		coneC->setLimit(M_PI_4, M_PI_4, 0);
+		m_joints[JOINT_RIGHT_HIP] = coneC;
+		coneC->setDbgDrawSize(CONSTRAINT_DEBUG_SIZE);
+
+		mWorld->addConstraint(m_joints[JOINT_RIGHT_HIP], true);
+
+		localA.setIdentity(); localB.setIdentity();
+		localA.getBasis().setEulerZYX(0,M_PI_2,0); localA.setOrigin(btVector3(btScalar(0.), btScalar(-0.225), btScalar(0.)));
+		localB.getBasis().setEulerZYX(0,M_PI_2,0); localB.setOrigin(btVector3(btScalar(0.), btScalar(0.185), btScalar(0.)));
+		hingeC =  new btHingeConstraint(*m_bodies[BODYPART_RIGHT_UPPER_LEG], *m_bodies[BODYPART_RIGHT_LOWER_LEG], localA, localB);
+		hingeC->setLimit(btScalar(0), btScalar(M_PI_2));
+		m_joints[JOINT_RIGHT_KNEE] = hingeC;
+		hingeC->setDbgDrawSize(CONSTRAINT_DEBUG_SIZE);
+
+		mWorld->addConstraint(m_joints[JOINT_RIGHT_KNEE], true);
+
+
+		localA.setIdentity(); localB.setIdentity();
+		localA.getBasis().setEulerZYX(0,0,M_PI); localA.setOrigin(btVector3(btScalar(-0.2), btScalar(0.15), btScalar(0.)));
+		localB.getBasis().setEulerZYX(0,0,M_PI_2); localB.setOrigin(btVector3(btScalar(0.), btScalar(-0.18), btScalar(0.)));
+		coneC = new btConeTwistConstraint(*m_bodies[BODYPART_SPINE], *m_bodies[BODYPART_LEFT_UPPER_ARM], localA, localB);
+		coneC->setLimit(M_PI_2, M_PI_2, 0);
+		coneC->setDbgDrawSize(CONSTRAINT_DEBUG_SIZE);
+
+		m_joints[JOINT_LEFT_SHOULDER] = coneC;
+		mWorld->addConstraint(m_joints[JOINT_LEFT_SHOULDER], true);
+
+		localA.setIdentity(); localB.setIdentity();
+		localA.getBasis().setEulerZYX(0,M_PI_2,0); localA.setOrigin(btVector3(btScalar(0.), btScalar(0.18), btScalar(0.)));
+		localB.getBasis().setEulerZYX(0,M_PI_2,0); localB.setOrigin(btVector3(btScalar(0.), btScalar(-0.14), btScalar(0.)));
+		hingeC =  new btHingeConstraint(*m_bodies[BODYPART_LEFT_UPPER_ARM], *m_bodies[BODYPART_LEFT_LOWER_ARM], localA, localB);
+//		hingeC->setLimit(btScalar(-M_PI_2), btScalar(0));
+		hingeC->setLimit(btScalar(0), btScalar(M_PI_2));
+		m_joints[JOINT_LEFT_ELBOW] = hingeC;
+		hingeC->setDbgDrawSize(CONSTRAINT_DEBUG_SIZE);
+
+		mWorld->addConstraint(m_joints[JOINT_LEFT_ELBOW], true);
+
+
+
+		localA.setIdentity(); localB.setIdentity();
+		localA.getBasis().setEulerZYX(0,0,0); localA.setOrigin(btVector3(btScalar(0.2), btScalar(0.15), btScalar(0.)));
+		localB.getBasis().setEulerZYX(0,0,M_PI_2); localB.setOrigin(btVector3(btScalar(0.), btScalar(-0.18), btScalar(0.)));
+		coneC = new btConeTwistConstraint(*m_bodies[BODYPART_SPINE], *m_bodies[BODYPART_RIGHT_UPPER_ARM], localA, localB);
+		coneC->setLimit(M_PI_2, M_PI_2, 0);
+		m_joints[JOINT_RIGHT_SHOULDER] = coneC;
+		coneC->setDbgDrawSize(CONSTRAINT_DEBUG_SIZE);
+
+		mWorld->addConstraint(m_joints[JOINT_RIGHT_SHOULDER], true);
+
+		localA.setIdentity(); localB.setIdentity();
+		localA.getBasis().setEulerZYX(0,M_PI_2,0); localA.setOrigin(btVector3(btScalar(0.), btScalar(0.18), btScalar(0.)));
+		localB.getBasis().setEulerZYX(0,M_PI_2,0); localB.setOrigin(btVector3(btScalar(0.), btScalar(-0.14), btScalar(0.)));
+		hingeC =  new btHingeConstraint(*m_bodies[BODYPART_RIGHT_UPPER_ARM], *m_bodies[BODYPART_RIGHT_LOWER_ARM], localA, localB);
+//		hingeC->setLimit(btScalar(-M_PI_2), btScalar(0));
+		hingeC->setLimit(btScalar(0), btScalar(M_PI_2));
+		m_joints[JOINT_RIGHT_ELBOW] = hingeC;
+		hingeC->setDbgDrawSize(CONSTRAINT_DEBUG_SIZE);
+
+		mWorld->addConstraint(m_joints[JOINT_RIGHT_ELBOW], true);
+	}
+
+	void RagDoll::update()
+	{
+	}
+
+	//// Make ragdoll  active.
+	//void RagDoll::ragdollEnable(bool doEnable)
+	//{
+	//}
+
+	//// is ragdoll active.
+	//bool RagDoll::isRagdollEnabled()
+	//{
+	//}
+
+
+	//// Make constraint between body part active.
+	//void RagDoll::constraintEnable(bool value)
+	//{
+	//}
+
+	//// are constraint between body part active ?
+	//bool RagDoll::isConstraintEnabled()
+	//{
+	//}
+
+
+	//// Make it collidable or not.
+	//void RagDoll::collisionEnable(bool value)
+	//{
+	//}
+
+	//// if shapes can collide
+	//bool RagDoll::isCollisionEnabled()
+	//{
+	//}
+
+
+	//// Make it fixed in a pose or not.
+	//void RagDoll::rigidityEnable(bool value)
+	//{
+	//}
+
+	//// is it fixed on a pose?
+	//bool RagDoll::isRigidityEnable()
+	//{
+	//}
 
 //#########################################
 //###############  END   ##################
