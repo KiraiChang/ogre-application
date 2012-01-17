@@ -29,6 +29,12 @@ public:
 	virtual void release(void);
 	virtual AttribType getType()const;
 	BaseObject *getObj()const;
+
+	//change 3d object attrib
+	virtual void setPos();
+	virtual void setScale();
+	virtual void setDir();
+	virtual void update();
 };
 //#########################################
 //############  BaseObject   ##############
@@ -59,6 +65,7 @@ public:
 	vec3 getScale()const;
 	vec3 getDir()const;
 	BaseAttrib *getAttrib(void)const;
+	void update();
 };
 typedef std::map< unsigned int, BaseObject> V_OBJECT;
 //#########################################
@@ -80,6 +87,7 @@ public:
 	static V_OBJECT::iterator fnBegin();
 	static V_OBJECT::iterator fnEnd();
 	static BaseObject &fnGetObj(const unsigned int &id);
+	static void fnUpdate();
 };
 //#########################################
 //###############  END   ##################

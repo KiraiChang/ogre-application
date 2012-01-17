@@ -27,7 +27,8 @@ OgrePhysicApplication::OgrePhysicApplication():OgreApplication(),
 	mpCollisionConfiguration(NULL),
 	mpDispatcher(NULL),
 	mpBroadphase(NULL),
-	mpSolver(NULL)
+	mpSolver(NULL),
+	mpCurNode(NULL)
 {
 	mTimer.reset();
 }
@@ -519,6 +520,7 @@ bool OgrePhysicApplication::frameStarted(const Ogre::FrameEvent& evt)
 	}
 
 	mWorld->stepSimulation(evt.timeSinceLastFrame);	// update Bullet Physics animation
+	CL::ObjectManger::fnUpdate();
 	
 	return bRet;
 }
@@ -541,7 +543,7 @@ bool OgrePhysicApplication::onVehiclesframeStarted(const Ogre::FrameEvent& evt)
 				if (pVehiclesAttrib->mSteering < -CL::gSteeringClamp)
 					pVehiclesAttrib->mSteering = -CL::gSteeringClamp;
 			}
-			pVehiclesAttrib->update();
+			//pVehiclesAttrib->update();
 			mTimer.reset();
 			return true;
 		}
@@ -634,6 +636,43 @@ bool OgrePhysicApplication::onVehiclesKeyReleased( const OIS::KeyEvent &arg )
 bool OgrePhysicApplication::mouseMoved( const OIS::MouseEvent &arg )
 {
 	OgreApplication::mouseMoved(arg);
+	switch(mMousePress)
+	{
+	case MOUSE_TYPE_NODE:
+		{
+			if(mpCurNode == NULL)
+				return true;
+
+			if(!mpCurNode->getUserAny().isEmpty())
+			{
+				const Ogre::Any any=mpCurNode->getUserAny();
+				CL::BaseObject *pObj=(any.operator()<CL::BaseObject *>());
+				OIS::MouseState state = mMouse->getMouseState();
+
+				CEGUI::Point mousePos = CEGUI::MouseCursor::getSingleton().getPosition();
+
+				Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(mousePos.d_x/float(state.width),mousePos.d_y/float(state.height));
+
+				std::pair<bool, Ogre::Vector3> result = mTerrainInfo->rayIntersects(mouseRay);
+				if (result.first)
+				{
+					// update pointer's position
+					CL::vec3 pos = pObj->getPos();
+					CL::vec3 target;
+					//update x and z follow origin y;
+					target.x = result.second.x;
+					target.y = pos.y;
+					target.z = result.second.z;
+					if(result.second.y > pos.y)
+						target.y = result.second.y;
+					pObj->setPos((float *)&result.second);
+				}
+			}
+			break;
+		}
+	default:
+		break;
+	}
 	return true;
 }
 
@@ -649,7 +688,36 @@ bool OgrePhysicApplication::mousePressed( const OIS::MouseEvent &arg, OIS::Mouse
 		mMousePress = MOUSE_PRESS_RIGHT;
 		break;
 	case OIS::MB_Left:
-		mMousePress = MOUSE_PRESS_LEFT;
+		{
+			OIS::MouseState state = mMouse->getMouseState();
+			CEGUI::Point mousePos = CEGUI::MouseCursor::getSingleton().getPosition();
+			Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(mousePos.d_x/float(state.width),mousePos.d_y/float(state.height));
+			Ogre::RaySceneQuery *pQuery = mSceneMgr->createRayQuery(Ogre::Ray());
+			pQuery->setRay(mouseRay);
+			Ogre::RaySceneQueryResult &result = pQuery->execute();
+
+			Ogre::RaySceneQueryResult::iterator itr;
+			for (itr = result.begin(); itr != result.end(); itr++)
+			{
+				if (itr->movable)
+				{
+					Ogre::SceneNode *pNode = itr->movable->getParentSceneNode();
+					if(pNode!=NULL)
+					{
+						if(!pNode->getUserAny().isEmpty())
+						{
+							//const Ogre::Any any=node->getUserAny();
+							//TP::Object3D *pObj=(any.operator()<TP::Object3D*>());
+							mpCurNode = pNode;
+							mMousePress = MOUSE_TYPE_NODE;
+						}
+					}
+				}
+			}
+			mSceneMgr->destroyQuery(pQuery);
+			if(mMousePress != MOUSE_TYPE_NODE)
+				mMousePress = MOUSE_PRESS_LEFT;
+		}
 		break;
 	default:
 		break;

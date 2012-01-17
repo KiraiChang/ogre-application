@@ -35,6 +35,22 @@ namespace CL
 		return mpObj;
 	}
 
+	void BaseAttrib::setPos()
+	{
+	}
+
+	void BaseAttrib::setScale()
+	{
+	}
+
+	void BaseAttrib::setDir()
+	{
+	}
+
+	void BaseAttrib::update()
+	{
+	}
+
 //#########################################
 //############  BaseObject   ##############
 //#########################################
@@ -81,6 +97,11 @@ namespace CL
 		mPos.x = pos[0];
 		mPos.y = pos[1];
 		mPos.z = pos[2];
+
+		if(mpAttrib)
+		{
+			mpAttrib->setPos();
+		}
 	}
 
 	void BaseObject::setScale(float *scale)
@@ -88,6 +109,10 @@ namespace CL
 		mScale.x = scale[0];
 		mScale.y = scale[1];
 		mScale.z = scale[2];
+		if(mpAttrib)
+		{
+			mpAttrib->setScale();
+		}
 	}
 
 	void BaseObject::setDir(float *dir)
@@ -95,6 +120,10 @@ namespace CL
 		mDir.x = dir[0];
 		mDir.y = dir[1];
 		mDir.z = dir[2];
+		if(mpAttrib)
+		{
+			mpAttrib->setDir();
+		}
 	}
 
 	vec3 BaseObject::getPos()const
@@ -116,6 +145,14 @@ namespace CL
 	{
 		assert(mpAttrib!=NULL);
 		return mpAttrib;
+	}
+
+	void BaseObject::update()
+	{
+		if(mpAttrib)
+		{
+			mpAttrib->update();
+		}
 	}
 //#########################################
 //############  BaseObject   ##############
@@ -179,6 +216,18 @@ namespace CL
 	{
 		assert(fnGet().mvObject.count(id) != 0);
 		return fnGet().mvObject[id];
+	}
+
+	void ObjectManger::fnUpdate()
+	{
+		if(mpData)
+		{
+			V_OBJECT::iterator ite;
+			for(ite =  mpData->mvObject.begin(); ite != mpData->mvObject.end();++ite)
+			{
+				ite->second.update();
+			}
+		}
 	}
 
 //#########################################

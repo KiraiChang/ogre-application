@@ -154,12 +154,51 @@ namespace CL
 
 	void OgrePhysicAttrib::update()
 	{
-		vec3 vec = mpObj->getPos();
-		mpNode->setPosition(Ogre::Vector3((float *)&vec));
-		vec = mpObj->getScale();
-		mpNode->setScale(Ogre::Vector3((float *)&vec));
-		vec = mpObj->getDir();
-		mpNode->setDirection(Ogre::Vector3((float *)&vec));
+		//vec3 vec = mpObj->getPos();
+		//mpNode->setPosition(Ogre::Vector3((float *)&vec));
+		//vec = mpObj->getScale();
+		//mpNode->setScale(Ogre::Vector3((float *)&vec));
+		//vec = mpObj->getDir();
+		//mpNode->setDirection(Ogre::Vector3((float *)&vec));
+		Ogre::Vector3 vec = mpNode->getPosition();
+		mpObj->setPos((float *)&vec);
+
+		vec = mpNode->getScale();
+		mpObj->setScale((float *)&vec);
+
+		Ogre::Quaternion q = mpNode->getOrientation();
+		vec.x = q.x;
+		vec.y = q.y;
+		vec.z = q.z;
+		mpObj->setDir((float *)&vec);
+	}
+
+	void OgrePhysicAttrib::setPos()
+	{
+		if(mBody)
+		{
+			vec3 vec = mpObj->getPos();
+			mpNode->setPosition(Ogre::Vector3((float *)&vec));
+			mBody->getBulletRigidBody()->getWorldTransform().setOrigin(btVector3(vec.x, vec.y, vec.z));
+		}
+	}
+
+	void OgrePhysicAttrib::setScale()
+	{
+		if(mBody)
+		{
+			vec3 vec = mpObj->getScale();
+			mpNode->setScale(Ogre::Vector3((float *)&vec));
+		}
+	}
+
+	void OgrePhysicAttrib::setDir()
+	{
+		//if(mBody)
+		//{
+		//	vec3 vec = mpObj->getDir();
+		//	mpNode->setDirection(Ogre::Vector3((float *)&vec));
+		//}
 	}
 
 	OgreBulletDynamics::RigidBody *OgrePhysicAttrib::getBody()const

@@ -10,7 +10,7 @@
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory="../../../../output/chain_reaction/bin/Debug/V2008"
+				WorkingDirectory="../../../../../output/chain_reaction/bin/Debug/V2008"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
@@ -38,7 +38,7 @@
 			>
 			<DebugSettings
 				Command="$(TargetPath)"
-				WorkingDirectory="../../../../output/chain_reaction/bin/Release/V2008"
+				WorkingDirectory="../../../../../output/chain_reaction/bin/Release/V2008"
 				CommandArguments=""
 				Attach="false"
 				DebuggerType="3"
