@@ -12,6 +12,7 @@ float g_restitution = 0.6f;
 float g_friction = 0.6f;
 float g_mass = 1.0f;
 const float MAX_MASS = 1.0f;
+const float OgrePhysicApplication::DEF_HIGH_LAND = 180;
 std::string g_meshName = "cube.mesh";
 
 OgrePhysicApplication::OgrePhysicApplication():OgreApplication(), 
@@ -28,7 +29,8 @@ OgrePhysicApplication::OgrePhysicApplication():OgreApplication(),
 	mpDispatcher(NULL),
 	mpBroadphase(NULL),
 	mpSolver(NULL),
-	mpCurNode(NULL)
+	mpCurNode(NULL),
+	mOriginHighLand(0)
 {
 	mTimer.reset();
 }
@@ -648,24 +650,25 @@ bool OgrePhysicApplication::mouseMoved( const OIS::MouseEvent &arg )
 				const Ogre::Any any=mpCurNode->getUserAny();
 				CL::BaseObject *pObj=(any.operator()<CL::BaseObject *>());
 				OIS::MouseState state = mMouse->getMouseState();
-
 				CEGUI::Point mousePos = CEGUI::MouseCursor::getSingleton().getPosition();
-
 				Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(mousePos.d_x/float(state.width),mousePos.d_y/float(state.height));
 
 				std::pair<bool, Ogre::Vector3> result = mTerrainInfo->rayIntersects(mouseRay);
 				if (result.first)
 				{
+					if(mOriginHighLand == 0)
+						mOriginHighLand = result.second.y;
 					// update pointer's position
-					CL::vec3 pos = pObj->getPos();
 					CL::vec3 target;
 					//update x and z follow origin y;
 					target.x = result.second.x;
-					target.y = pos.y;
+					target.y = mOriginHighLand + (((state.height / 2) - mousePos.d_y) / state.height * DEF_HIGH_LAND );
 					target.z = result.second.z;
-					if(result.second.y > pos.y)
+					if(target.y < result.second.y)
+					{
 						target.y = result.second.y;
-					pObj->setPos((float *)&result.second);
+					}
+					pObj->setPos((float *)&target);
 				}
 			}
 			break;
@@ -750,6 +753,7 @@ bool OgrePhysicApplication::mouseReleased( const OIS::MouseEvent &arg, OIS::Mous
 	default:
 		break;
 	}
+	mOriginHighLand = 0.0;
 	mMousePress = MOUSE_PRESS_NONE;
 	return true;
 }
