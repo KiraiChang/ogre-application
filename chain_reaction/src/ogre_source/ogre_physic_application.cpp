@@ -642,11 +642,6 @@ bool OgrePhysicApplication::mousePressed( const OIS::MouseEvent &arg, OIS::Mouse
 	OgreApplication::mousePressed(arg, id);
 	if(mMousePress == MOUSE_INSIDE_UI)
 		return true;
-	if(mMousePress != MOUSE_PRESS_NONE)
-	{
-		mMousePress = MOUSE_PRESS_NONE;
-		return true;
-	}
 
 	switch(id)
 	{
@@ -654,6 +649,21 @@ bool OgrePhysicApplication::mousePressed( const OIS::MouseEvent &arg, OIS::Mouse
 		mMousePress = MOUSE_PRESS_RIGHT;
 		break;
 	case OIS::MB_Left:
+		mMousePress = MOUSE_PRESS_LEFT;
+		break;
+	default:
+		break;
+	}
+
+	return true;
+}
+
+bool OgrePhysicApplication::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
+{
+	OgreApplication::mouseReleased(arg, id);
+	switch(mMousePress)
+	{
+	case MOUSE_PRESS_LEFT:
 		{
 			//createBody();
 			CEGUI::Window *root = mpSheet->getChild("MainWindow");
@@ -667,19 +677,11 @@ bool OgrePhysicApplication::mousePressed( const OIS::MouseEvent &arg, OIS::Mouse
 					g_friction,
 					g_mass);
 			}
-			mMousePress = MOUSE_PRESS_LEFT;
 		}
 		break;
 	default:
 		break;
 	}
-
-	return true;
-}
-
-bool OgrePhysicApplication::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
-{
-	OgreApplication::mouseReleased(arg, id);
 	mMousePress = MOUSE_PRESS_NONE;
 	return true;
 }

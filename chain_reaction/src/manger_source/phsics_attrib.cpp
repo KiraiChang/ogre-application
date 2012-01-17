@@ -51,10 +51,18 @@ AttribType PhsicsAttrib::getType()const
 }
 
 //phsics
-void PhsicsAttrib::init(btDynamicsWorld *world, float mass, const btTransform& startTransform, btCollisionShape* shape)
+void PhsicsAttrib::init(btDynamicsWorld *world, float mass, const btTransform& startTransform, SHAPE_TYPE type)
 {
+	switch(type)
+	{
+	case SHAPE_TYPE_BOX:
+		mpShape = new btBoxShape(btVector3(50,3,50));
+		break;
+	default:
+		return;
+	}
 	mpOwnerWorld = world;
-	localCreateRigidBody(mass, startTransform, shape);
+	localCreateRigidBody(mass, startTransform, mpShape);
 }
 
 btRigidBody* PhsicsAttrib::localCreateRigidBody (float mass, const btTransform& startTransform, btCollisionShape* shape)
