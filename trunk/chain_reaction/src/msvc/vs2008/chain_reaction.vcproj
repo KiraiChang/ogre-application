@@ -116,9 +116,14 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\..\..\..\SDK\VS2008\CEGUISDKV075\cegui\include;..\..\..\..\SDK\VS2008\OgreSDKV173\include\OGRE;..\..\..\..\SDK\VS2008\OgreSDKV173\include\OIS;..\..\..\..\SDK\VS2008\BoostSDKV148\include;..\..\..\..\SDK\VS2008\JSONSpiritSDKV405\include;..\..\..\..\SDK\VS2008\OgreBulletSDK\Dynamics\include;..\..\..\..\SDK\VS2008\OgreBulletSDK\Collisions\include;..\..\..\..\SDK\VS2008\BULLET_PHYSICSV279\include\bullet"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
+				BufferSecurityCheck="false"
+				EnableFunctionLevelLinking="false"
+				EnableEnhancedInstructionSet="2"
+				FloatingPointModel="2"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -214,14 +219,6 @@
 			</File>
 			<File
 				RelativePath="..\..\manger_source\object_manger.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\manger_source\phsics_attrib.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\manger_source\phsics_attrib.h"
 				>
 			</File>
 		</Filter>

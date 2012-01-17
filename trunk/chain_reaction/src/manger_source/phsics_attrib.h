@@ -14,6 +14,12 @@ namespace CL
 
 class PhsicsAttrib : public BaseAttrib
 {
+public:
+	enum SHAPE_TYPE
+	{
+		SHAPE_TYPE_BOX,
+
+	};
 protected:
 	btRigidBody *mpBody;
 	btDynamicsWorld *mpOwnerWorld;
@@ -28,7 +34,7 @@ public:
 	virtual AttribType getType()const;
 
 	//phsics
-	virtual void init(btDynamicsWorld *world, float mass, const btTransform& startTransform, btCollisionShape* shape);
+	virtual void init(btDynamicsWorld *world, float mass, const btTransform& startTransform, SHAPE_TYPE type);
 	btRigidBody* localCreateRigidBody (float mass, const btTransform& startTransform, btCollisionShape* shape);
 };
 
