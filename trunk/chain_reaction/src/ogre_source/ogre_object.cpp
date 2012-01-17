@@ -179,6 +179,7 @@ namespace CL
 		{
 			vec3 vec = mpObj->getPos();
 			mpNode->setPosition(Ogre::Vector3((float *)&vec));
+			Ogre::Quaternion q = mpNode->getOrientation();
 			mBody->getBulletRigidBody()->getWorldTransform().setOrigin(btVector3(vec.x, vec.y, vec.z));
 		}
 	}

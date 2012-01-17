@@ -31,6 +31,7 @@ public:
 	};
 
 private:
+	static const float DEF_HIGH_LAND;
 	VIEW_TYPE mView;
 	Ogre::Timer mTimer;
 	//Physic
@@ -55,6 +56,7 @@ private:
 
 	//pick 3d mesh
 	Ogre::SceneNode *mpCurNode;
+	float mOriginHighLand;
 
 
 public:
