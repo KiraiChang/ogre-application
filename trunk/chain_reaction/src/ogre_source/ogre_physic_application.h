@@ -53,6 +53,9 @@ private:
 	btAxisSweep3						*mpBroadphase;
 	btSequentialImpulseConstraintSolver *mpSolver;
 
+	//pick 3d mesh
+	Ogre::SceneNode *mpCurNode;
+
 
 public:
 	OgrePhysicApplication();

@@ -69,6 +69,9 @@ public:
 		const float &restitution, const float &friction, const float &mass, 
 		const ShapeType &type);
 	virtual void update();
+	virtual void setPos();
+	virtual void setScale();
+	virtual void setDir();
 
 	OgreBulletDynamics::RigidBody *getBody()const;
 };
