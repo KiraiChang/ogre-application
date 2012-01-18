@@ -196,11 +196,13 @@ namespace CL
 
 	void OgrePhysicAttrib::setDir()
 	{
-		//if(mBody)
-		//{
-		//	vec3 vec = mpObj->getDir();
-		//	mpNode->setDirection(Ogre::Vector3((float *)&vec));
-		//}
+		if(mBody)
+		{
+			//vec3 vec = mpObj->getDir();
+			//mpNode->setDirection(Ogre::Vector3((float *)&vec));
+			Ogre::Quaternion q = mpNode->getOrientation();
+			mBody->getBulletRigidBody()->getWorldTransform().setRotation(btQuaternion(q.x, q.y, q.z, q.w));
+		}
 	}
 
 	OgreBulletDynamics::RigidBody *OgrePhysicAttrib::getBody()const

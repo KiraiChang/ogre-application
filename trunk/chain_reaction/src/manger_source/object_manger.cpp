@@ -130,6 +130,48 @@ namespace CL
 		}
 	}
 
+	void BaseObject::pitch(const float &degree)
+	{
+		float diff = degree - ((int)degree % 360);
+		mDir.y += diff;
+		if(mDir.y > 360.0)
+			mDir.y -= 360.0;
+		else if(mDir.y < 0.0)
+			mDir.y += 360.0;
+		if(mpAttrib)
+		{
+			mpAttrib->setDir();
+		}
+	}
+
+	void BaseObject::yaw(const float &degree)
+	{
+		float diff = degree - ((int)degree % 360);
+		mDir.z += diff;
+		if(mDir.z > 360.0)
+			mDir.z -= 360.0;
+		else if(mDir.z < 0.0)
+			mDir.z += 360.0;
+		if(mpAttrib)
+		{
+			mpAttrib->setDir();
+		}
+	}
+
+	void BaseObject::roll(const float &degree)
+	{
+		float diff = degree - ((int)degree % 360);
+		mDir.x += diff;
+		if(mDir.x > 360.0)
+			mDir.x -= 360.0;
+		else if(mDir.x < 0.0)
+			mDir.x += 360.0;
+		if(mpAttrib)
+		{
+			mpAttrib->setDir();
+		}
+	}
+
 	void BaseObject::setSize(const float &x, const float &y, const float &z)
 	{
 		mSize.x = x;
