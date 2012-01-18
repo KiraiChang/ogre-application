@@ -55,8 +55,18 @@ private:
 	btSequentialImpulseConstraintSolver *mpSolver;
 
 	//pick 3d mesh
+	enum
+	{
+		AXIS_TYPE_X,
+		AXIS_TYPE_Y,
+		AXIS_TYPE_Z,
+		AXIS_TYPE_COUNT,
+	};
 	Ogre::SceneNode *mpCurNode;
 	float mOriginHighLand;
+	Ogre::SceneNode *mpAxisNode;
+	Ogre::SceneNode *mpAxisPartNode[AXIS_TYPE_COUNT];
+	Ogre::Entity *mpAxisEntity[AXIS_TYPE_COUNT];
 
 
 
@@ -71,12 +81,14 @@ public:
 	virtual void createScene(void);
 	virtual void createUI(void);
 	virtual void createPhysic(void);
+	void createAxis();
 
 	//operator fun
 	virtual void createBody(void);
 	virtual void createBody(const std::string &modelName, 
 		const float &restitution, const float &friction, const float &mass);
 	virtual void createVehicles(const std::string &vehicleName, const std::string &wheelsName);
+	
 
 	
 
@@ -86,6 +98,9 @@ public:
 	virtual bool frameStarted(const Ogre::FrameEvent& evt);
 	bool onVehiclesframeStarted(const Ogre::FrameEvent& evt);
 	void onViewCar();
+	void processPitch();
+	void processYaw();
+	void processRoll();
 
 	virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
@@ -115,6 +130,10 @@ public:
 	//bool onChangeTurnEditValue(const CEGUI::EventArgs &e);
 	bool onChangeMassEditValue(const CEGUI::EventArgs &e);
 	bool onChangeMeshListSelect(const CEGUI::EventArgs &e);
+
+	bool onPitch(const CEGUI::EventArgs &e);
+	bool onYaw(const CEGUI::EventArgs &e);
+	bool onRoll(const CEGUI::EventArgs &e);
 };
 
 //#########################################

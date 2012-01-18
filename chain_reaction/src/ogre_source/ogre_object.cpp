@@ -122,6 +122,7 @@ namespace CL
 		switch(type)
 		{
 		case SHAPE_TYPE_CUBE:
+			size = Ogre::Vector3((Ogre::Real *)&(mpObj->getSize()));
 			mShape = new OgreBulletCollisions::BoxCollisionShape(size);
 			break;
 		case SHAPE_TYPE_SPHERE:

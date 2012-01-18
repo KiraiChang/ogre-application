@@ -148,13 +148,14 @@ void OgreApplication::createScene(void)
 	//createSkyDome();
 	createTerrain();
 	createCaelum();
+	//mSceneMgr->setFog(Ogre::FOG_LINEAR);
 }
 
 void OgreApplication::initCamera(void)
 {
 	//init Camera
 	mCamera->setNearClipDistance(0.1);
-	mCamera->setFarClipDistance(500); 
+	mCamera->setFarClipDistance(5000); 
  
   //  if (mRoot->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
   //  {
@@ -210,12 +211,12 @@ void OgreApplication::createLight(void)
     Ogre::Light* pLight = mSceneMgr->createLight("MainLight");
     pLight->setType(Ogre::Light::LT_DIRECTIONAL);
     pLight->setDirection(lightdir);
-    pLight->setDiffuseColour(Ogre::ColourValue::White);
-    pLight->setSpecularColour(Ogre::ColourValue(0.01, 0.01, 0.01));
+    //pLight->setDiffuseColour(Ogre::ColourValue::Black);
+    //pLight->setSpecularColour(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode *pLightNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	pLightNode ->createChildSceneNode(Ogre::Vector3(750,1000,750))->attachObject(pLight);
 
-    //mSceneMgr->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
+    //mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 }
 
 void OgreApplication::createShadow(void)
@@ -356,10 +357,10 @@ void OgreApplication::createCaelum(void)
     }
 
     // Set time acceleration.
-    //mCaelumSystem->getUniversalClock ()->setTimeScale (0);
+    mCaelumSystem->getUniversalClock ()->setTimeScale (100);
 
     // Sunrise with visible moon.
-    mCaelumSystem->getUniversalClock ()->setGregorianDateTime (2007, 4, 9, 19, 33, 0);
+    mCaelumSystem->getUniversalClock ()->setGregorianDateTime (2007, 4, 9, 9, 33, 0);
 
 	mRoot->addFrameListener (mCaelumSystem);
 

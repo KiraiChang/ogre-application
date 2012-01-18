@@ -30,9 +30,14 @@ OgrePhysicApplication::OgrePhysicApplication():OgreApplication(),
 	mpBroadphase(NULL),
 	mpSolver(NULL),
 	mpCurNode(NULL),
-	mOriginHighLand(0)
+	mOriginHighLand(0),
+	mpAxisNode(NULL)
 {
 	mTimer.reset();
+	for(int i = 0 ;i < AXIS_TYPE_COUNT; i++)
+	{
+		mpAxisPartNode[i] = NULL;
+	}
 }
 
 OgrePhysicApplication::~OgrePhysicApplication()
@@ -127,6 +132,22 @@ void OgrePhysicApplication::release(void)
 		delete mpCollisionConfiguration;
 		mpCollisionConfiguration = NULL;
 	}
+
+	if(mpAxisNode != NULL)
+	{
+		for(int i = 0 ;i < AXIS_TYPE_COUNT; i++)
+		{
+			if(mpAxisPartNode[i] != NULL)
+			{
+				mpAxisPartNode[i]->detachObject(mpAxisEntity[i]);
+				mSceneMgr->destroyEntity(mpAxisEntity[i]);
+				mSceneMgr->destroySceneNode(mpAxisPartNode[i]);
+				mpAxisPartNode[i] = NULL;
+			}
+		}
+		mSceneMgr->destroySceneNode(mpAxisNode);
+		mpAxisNode = NULL;
+	}
 }
 
 
@@ -138,6 +159,8 @@ void OgrePhysicApplication::createScene(void)
 	createPhysic();
 
 	createVehicles("chassis.mesh", "wheel.mesh");
+
+	createAxis();
 }
 
 void OgrePhysicApplication::createUI(void)
@@ -256,6 +279,9 @@ void OgrePhysicApplication::createUI(void)
 	pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
 	pList->addItem(pItem);
 	pList->setItemSelectState(pItem, true);
+	pItem = new CEGUI::ListboxTextItem("cube_rectangle.mesh");
+	pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
+	pList->addItem(pItem);
 	pItem = new CEGUI::ListboxTextItem("knot.mesh");
 	pItem->setSelectionBrushImage("TaharezLook", "ListboxSelectionBrush");
 	pList->addItem(pItem);
@@ -280,6 +306,18 @@ void OgrePhysicApplication::createUI(void)
 	
 	pList->subscribeEvent(CEGUI::Listbox::EventMouseButtonDown,
     CEGUI::Event::Subscriber(&OgrePhysicApplication::onChangeMeshListSelect, this));
+
+	pButton = (CEGUI::PushButton *)root->getChild("MainWindow/Node")->getChild("MainWindow/Node/Pitch");
+	pButton->subscribeEvent(CEGUI::PushButton::EventMouseButtonDown,
+    CEGUI::Event::Subscriber(&OgrePhysicApplication::onPitch, this));
+
+	pButton = (CEGUI::PushButton *)root->getChild("MainWindow/Node")->getChild("MainWindow/Node/Yaw");
+	pButton->subscribeEvent(CEGUI::PushButton::EventMouseButtonDown,
+    CEGUI::Event::Subscriber(&OgrePhysicApplication::onYaw, this));
+
+	pButton = (CEGUI::PushButton *)root->getChild("MainWindow/Node")->getChild("MainWindow/Node/Roll");
+	pButton->subscribeEvent(CEGUI::PushButton::EventMouseButtonDown,
+    CEGUI::Event::Subscriber(&OgrePhysicApplication::onRoll, this));
 }
 
 void OgrePhysicApplication::createPhysic(void)
@@ -370,6 +408,39 @@ void OgrePhysicApplication::createPhysic(void)
 		}
 }
 
+void OgrePhysicApplication::createAxis()
+{
+	if(mpAxisNode == NULL)
+	{
+		mpAxisEntity[AXIS_TYPE_X] = mSceneMgr->createEntity("AxisTypeXCylinder", "cylinder.mesh");
+		mpAxisEntity[AXIS_TYPE_X]->setCastShadows(false);
+		mpAxisEntity[AXIS_TYPE_X]->setMaterialName("BASE_RED");
+		mpAxisNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(Ogre::Vector3(0, 270, 80));
+		mpAxisPartNode[AXIS_TYPE_X] = mpAxisNode->createChildSceneNode();
+		mpAxisPartNode[AXIS_TYPE_X]->attachObject((Ogre::MovableObject *)mpAxisEntity[AXIS_TYPE_X]);
+		mpAxisPartNode[AXIS_TYPE_X]->scale(Ogre::Vector3(5, 0.1, 0.1));
+		mpAxisPartNode[AXIS_TYPE_X]->translate(Ogre::Vector3(2.5, 0, 0));
+
+		mpAxisEntity[AXIS_TYPE_Y] = mSceneMgr->createEntity("AxisTypeYCylinder", "cylinder.mesh");
+		mpAxisEntity[AXIS_TYPE_Y]->setCastShadows(false);
+		mpAxisEntity[AXIS_TYPE_Y]->setMaterialName("BASE_GREEN");
+		mpAxisPartNode[AXIS_TYPE_Y] = mpAxisNode->createChildSceneNode();
+		mpAxisPartNode[AXIS_TYPE_Y]->attachObject((Ogre::MovableObject *)mpAxisEntity[AXIS_TYPE_Y]);
+		mpAxisPartNode[AXIS_TYPE_Y]->scale(Ogre::Vector3(5, 0.1, 0.1));
+		mpAxisPartNode[AXIS_TYPE_Y]->roll(Ogre::Radian(Ogre::Degree(90)));
+		mpAxisPartNode[AXIS_TYPE_Y]->translate(Ogre::Vector3(0, 2.5, 0));
+
+		mpAxisEntity[AXIS_TYPE_Z] = mSceneMgr->createEntity("AxisTypeZCylinder", "cylinder.mesh");
+		mpAxisEntity[AXIS_TYPE_Z]->setCastShadows(false);
+		mpAxisEntity[AXIS_TYPE_Z]->setMaterialName("BASE_BLUE");
+		mpAxisPartNode[AXIS_TYPE_Z] = mpAxisNode->createChildSceneNode();
+		mpAxisPartNode[AXIS_TYPE_Z]->attachObject((Ogre::MovableObject *)mpAxisEntity[AXIS_TYPE_Z]);
+		mpAxisPartNode[AXIS_TYPE_Z]->scale(Ogre::Vector3(5, 0.1, 0.1));
+		mpAxisPartNode[AXIS_TYPE_Z]->yaw(Ogre::Radian(Ogre::Degree(90)));
+		mpAxisPartNode[AXIS_TYPE_Z]->translate(Ogre::Vector3(0, 0, 2.5));
+	}
+}
+
 //operator fun
 void OgrePhysicApplication::createBody(void)
 {
@@ -425,13 +496,22 @@ void OgrePhysicApplication::createBody(const std::string &modelName,
 	CL::OgrePhysicAttrib *attrib = (CL::OgrePhysicAttrib *)base.getAttrib();
 	if(modelName == "cube.mesh")
 	{
-		base.setScale((float *)&Ogre::Vector3(0.05f, 0.05f, 0.05f));
+		base.setScale((float *)&Ogre::Vector3(0.05f, 0.05f, 0.05f));//scale:size 1:50;
+		base.setSize(2.5, 2.5, 2.5);
 		attrib->create(mSceneMgr, modelName);
+		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CUBE);
+	}
+	else if(modelName == "cube_rectangle.mesh")
+	{
+		base.setScale((float *)&Ogre::Vector3(0.05f, 0.05f, 0.01f));//scale:size 1:50;
+		base.setSize(2.5, 2.5, 0.5);
+		attrib->create(mSceneMgr, "cube.mesh");
 		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CUBE);
 	}
 	else if(modelName == "Crate.mesh")
 	{
-		base.setScale((float *)&Ogre::Vector3(1.5f, 1.5f, 1.5f));
+		base.setScale((float *)&Ogre::Vector3(1.5f, 1.5f, 1.5f));//scale:size 1:1;
+		base.setSize(1.5, 1.5, 1.5);
 		attrib->create(mSceneMgr, modelName);
 		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CUBE);
 	}
@@ -452,12 +532,6 @@ void OgrePhysicApplication::createBody(const std::string &modelName,
 		base.setScale((float *)&Ogre::Vector3(1.0f, 1.0f, 1.05f));
 		attrib->create(mSceneMgr, modelName);
 		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CYLINDER);
-	}
-	else if(modelName == "Crate.mesh")
-	{
-		base.setScale((float *)&Ogre::Vector3(1.0f, 1.0f, 1.0f));
-		attrib->create(mSceneMgr, modelName);
-		attrib->createPhysic(mWorld, restitution, friction, mass, CL::OgrePhysicAttrib::SHAPE_TYPE_CUBE);
 	}
 	//else if(modelName == "Cone.mesh")
 	//{
@@ -513,6 +587,20 @@ bool OgrePhysicApplication::frameStarted(const Ogre::FrameEvent& evt)
 	onVehiclesframeStarted(evt);
 	if(mView == VIEW_CAR)
 		onViewCar();
+	switch(mMousePress)
+	{
+	case MOUSE_CLICK_PITCH:
+		processPitch();
+		break;
+	case MOUSE_CLICK_YAW:
+		processYaw();
+		break;
+	case MOUSE_CLICK_ROLL:
+		processRoll();
+		break;
+	default:
+		break;
+	}
 
 	if (mpDynamicsWorld)
 	{
@@ -523,6 +611,17 @@ bool OgrePhysicApplication::frameStarted(const Ogre::FrameEvent& evt)
 
 	mWorld->stepSimulation(evt.timeSinceLastFrame);	// update Bullet Physics animation
 	CL::ObjectManger::fnUpdate();
+
+	if(mpCurNode != NULL)
+	{
+
+		mpAxisNode->setPosition(mpCurNode->getPosition());
+		mpAxisNode->setVisible(true);
+	}
+	else
+	{
+		mpAxisNode->setVisible(false);
+	}
 	
 	return bRet;
 }
@@ -557,6 +656,30 @@ void OgrePhysicApplication::onViewCar()
 {
 	Ogre::Vector3 pos((float *)&pVehiclesAttrib->getObj()->getPos());
 	mCameraNode->setPosition(pos.x, pos.y, pos.z);
+}
+
+void OgrePhysicApplication::processPitch()
+{
+	if(mpCurNode != NULL)
+	{
+		mpCurNode->pitch(Ogre::Radian(0.01));
+	}
+}
+
+void OgrePhysicApplication::processYaw()
+{
+	if(mpCurNode != NULL)
+	{
+		mpCurNode->yaw(Ogre::Radian(0.01));
+	}
+}
+
+void OgrePhysicApplication::processRoll()
+{
+	if(mpCurNode != NULL)
+	{
+		mpCurNode->roll(Ogre::Radian(0.01));
+	}
 }
 
 bool OgrePhysicApplication::frameEnded(const Ogre::FrameEvent& evt)
@@ -718,7 +841,11 @@ bool OgrePhysicApplication::mousePressed( const OIS::MouseEvent &arg, OIS::Mouse
 				}
 			}
 			mSceneMgr->destroyQuery(pQuery);
-			if(mMousePress != MOUSE_TYPE_NODE)
+			if(mMousePress == MOUSE_PRESS_NONE/* && 
+				mMousePress != MOUSE_INSIDE_UI && 
+				mMousePress != MOUSE_CLICK_PITCH &&
+				mMousePress != MOUSE_CLICK_YAW &&
+				mMousePress != MOUSE_CLICK_ROLL*/)
 				mMousePress = MOUSE_PRESS_LEFT;
 		}
 		break;
@@ -748,6 +875,7 @@ bool OgrePhysicApplication::mouseReleased( const OIS::MouseEvent &arg, OIS::Mous
 					g_friction,
 					g_mass);
 			}
+			mpCurNode = NULL;
 		}
 		break;
 	default:
@@ -762,14 +890,14 @@ bool OgrePhysicApplication::mouseReleased( const OIS::MouseEvent &arg, OIS::Mous
 bool OgrePhysicApplication::onQuit(const CEGUI::EventArgs &e)
 {
 	mShutDown = true;
-	mMousePress = MOUSE_PRESS_LEFT;
+	mMousePress = MOUSE_INSIDE_UI;
     return true;
 }
 
 bool OgrePhysicApplication::onViewCar(const CEGUI::EventArgs &e)
 {
 	mView = VIEW_CAR;
-	mMousePress = MOUSE_PRESS_LEFT;
+	mMousePress = MOUSE_INSIDE_UI;
 	return true;
 }
 
@@ -790,7 +918,7 @@ bool OgrePhysicApplication::onViewWorld(const CEGUI::EventArgs &e)
     {
         mCamera->setFarClipDistance(0);   // enable infinite far clip distance if we can
     }
-	mMousePress = MOUSE_PRESS_LEFT;
+	mMousePress = MOUSE_INSIDE_UI;
 	return true;
 }
 
@@ -802,12 +930,13 @@ bool OgrePhysicApplication::onMouseEnterUIEvent(const CEGUI::EventArgs &e)
 
 bool OgrePhysicApplication::onMouseLeaveUIEvent(const CEGUI::EventArgs &e)
 {
-	mMousePress = MOUSE_PRESS_NONE;
+	mMousePress = MOUSE_INSIDE_UI;
 	return true;
 }
 
 bool OgrePhysicApplication::onChangeForceSliderValue(const CEGUI::EventArgs &e)
 {
+	mMousePress = MOUSE_INSIDE_UI;
 	CEGUI::Window *root = mpSheet->getChild("MainWindow");
 	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/ForceSlider");
 	CL::gIncrementEngineForce = slider->getCurrentValue();
@@ -845,6 +974,7 @@ bool OgrePhysicApplication::onChangeForceSliderValue(const CEGUI::EventArgs &e)
 
 bool OgrePhysicApplication::onChangeMassSliderValue(const CEGUI::EventArgs &e)
 {
+	mMousePress = MOUSE_INSIDE_UI;
 	CEGUI::Window *root = mpSheet->getChild("MainWindow");
 	CEGUI::Slider *slider = (CEGUI::Slider *)root->getChild("MainWindow/MassSlider");
 	g_mass = slider->getCurrentValue();
@@ -859,6 +989,7 @@ bool OgrePhysicApplication::onChangeMassSliderValue(const CEGUI::EventArgs &e)
 
 bool OgrePhysicApplication::onChangeForceEditValue(const CEGUI::EventArgs &e)
 {
+	mMousePress = MOUSE_INSIDE_UI;
 	CEGUI::Window *root = mpSheet->getChild("MainWindow");
 	CEGUI::Editbox *edit = (CEGUI::Editbox *)root->getChild("MainWindow/ForceEdit");
 	CL::gIncrementEngineForce = atof(edit->getText().c_str());
@@ -907,6 +1038,7 @@ bool OgrePhysicApplication::onChangeForceEditValue(const CEGUI::EventArgs &e)
 
 bool OgrePhysicApplication::onChangeMassEditValue(const CEGUI::EventArgs &e)
 {
+	mMousePress = MOUSE_INSIDE_UI;
 	CEGUI::Window *root = mpSheet->getChild("MainWindow");
 	CEGUI::Editbox *edit = (CEGUI::Editbox *)root->getChild("MainWindow/MassEdit");
 	g_mass = atof(edit->getText().c_str());
@@ -924,7 +1056,25 @@ bool OgrePhysicApplication::onChangeMassEditValue(const CEGUI::EventArgs &e)
 
 bool OgrePhysicApplication::onChangeMeshListSelect(const CEGUI::EventArgs &e)
 {
-	mMousePress = MOUSE_PRESS_LEFT;
+	mMousePress = MOUSE_INSIDE_UI;
+	return true;
+}
+
+bool OgrePhysicApplication::onPitch(const CEGUI::EventArgs &e)
+{
+	mMousePress = MOUSE_CLICK_PITCH;
+	return true;
+}
+
+bool OgrePhysicApplication::onYaw(const CEGUI::EventArgs &e)
+{
+	mMousePress = MOUSE_CLICK_YAW;
+	return true;
+}
+
+bool OgrePhysicApplication::onRoll(const CEGUI::EventArgs &e)
+{
+	mMousePress = MOUSE_CLICK_ROLL;
 	return true;
 }
 

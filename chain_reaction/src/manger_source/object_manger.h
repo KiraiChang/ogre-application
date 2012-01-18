@@ -34,6 +34,7 @@ public:
 	virtual void setPos();
 	virtual void setScale();
 	virtual void setDir();
+	virtual void setSize();
 	virtual void update();
 };
 //#########################################
@@ -48,6 +49,7 @@ private:
 	vec3 mPos;
 	vec3 mScale;
 	vec3 mDir;
+	vec3 mSize;
 	unsigned int mID;
 public:
 	//register Ogre
@@ -61,9 +63,11 @@ public:
 	void setPos(float *pos);
 	void setScale(float *scale);
 	void setDir(float *scale);
+	void setSize(const float &x, const float &y = 0.0f, const float &z = 0.0f);
 	vec3 getPos()const;
 	vec3 getScale()const;
 	vec3 getDir()const;
+	vec3 getSize()const;
 	BaseAttrib *getAttrib(void)const;
 	void update();
 };
