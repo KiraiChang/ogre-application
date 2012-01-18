@@ -62,7 +62,10 @@ public:
 	void release(void);
 	void setPos(float *pos);
 	void setScale(float *scale);
-	void setDir(float *scale);
+	void setDir(float *dir);
+	void pitch(const float &degree);
+	void yaw(const float &degree);
+	void roll(const float &degree);
 	void setSize(const float &x, const float &y = 0.0f, const float &z = 0.0f);
 	vec3 getPos()const;
 	vec3 getScale()const;

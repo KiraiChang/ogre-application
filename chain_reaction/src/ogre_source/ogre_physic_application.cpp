@@ -662,6 +662,12 @@ void OgrePhysicApplication::processPitch()
 {
 	if(mpCurNode != NULL)
 	{
+		//if(!mpCurNode->getUserAny().isEmpty())
+		//{
+		//	const Ogre::Any any=mpCurNode->getUserAny();
+		//	CL::BaseObject *pObj=(any.operator()<CL::BaseObject *>());
+		//	pObj->pitch(0.01);
+		//}
 		mpCurNode->pitch(Ogre::Radian(0.01));
 	}
 }
@@ -670,6 +676,12 @@ void OgrePhysicApplication::processYaw()
 {
 	if(mpCurNode != NULL)
 	{
+		//if(!mpCurNode->getUserAny().isEmpty())
+		//{
+		//	const Ogre::Any any=mpCurNode->getUserAny();
+		//	CL::BaseObject *pObj=(any.operator()<CL::BaseObject *>());
+		//	pObj->yaw(0.01);
+		//}
 		mpCurNode->yaw(Ogre::Radian(0.01));
 	}
 }
@@ -678,6 +690,12 @@ void OgrePhysicApplication::processRoll()
 {
 	if(mpCurNode != NULL)
 	{
+		//if(!mpCurNode->getUserAny().isEmpty())
+		//{
+		//	const Ogre::Any any=mpCurNode->getUserAny();
+		//	CL::BaseObject *pObj=(any.operator()<CL::BaseObject *>());
+		//	pObj->roll(0.01);
+		//}
 		mpCurNode->roll(Ogre::Radian(0.01));
 	}
 }
