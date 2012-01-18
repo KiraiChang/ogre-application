@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\..\SDK\VS2008\CEGUISDKV075\cegui\include;..\..\..\..\..\SDK\VS2008\OgreSDKV173\include\OGRE;..\..\..\..\..\SDK\VS2008\OgreSDKV173\include\OIS;..\..\..\..\..\SDK\VS2008\BoostSDKV148\include;..\..\..\..\..\SDK\VS2008\JSONSpiritSDKV405\include;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\Dynamics\include;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\Collisions\include;..\..\..\..\..\SDK\VS2008\BULLET_PHYSICSV279\include\bullet"
+				AdditionalIncludeDirectories="..\..\..\..\..\SDK\VS2008\CEGUISDKV075\cegui\include;..\..\..\..\..\SDK\VS2008\OgreSDKV173\include\OGRE;..\..\..\..\..\SDK\VS2008\OgreSDKV173\include\OIS;..\..\..\..\..\SDK\VS2008\BoostSDKV148\include;..\..\..\..\..\SDK\VS2008\JSONSpiritSDKV405\include;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\Dynamics\include;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\Collisions\include;..\..\..\..\..\SDK\VS2008\BULLET_PHYSICSV279\include\bullet;..\..\..\..\..\SDK\VS2008\CaelumSDKV061\include\Caelum"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -59,9 +59,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="true"
-				AdditionalDependencies="OgreMain_d.lib OIS_d.lib OgreTerrain_d.lib CEGUIBase_d.lib CEGUIOgreRenderer_d.lib json_spirit.lib BulletCollision.lib BulletDynamics.lib ConvexDecomposition.lib GIMPACTUtils.lib LinearMath.lib OgreBulletCollisions_d.lib OgreBulletDynamics_d.lib"
+				AdditionalDependencies="OgreMain_d.lib OIS_d.lib OgreTerrain_d.lib CEGUIBase_d.lib CEGUIOgreRenderer_d.lib json_spirit.lib BulletCollision.lib BulletDynamics.lib ConvexDecomposition.lib GIMPACTUtils.lib LinearMath.lib OgreBulletCollisions_d.lib OgreBulletDynamics_d.lib Caelum.lib"
 				OutputFile="$(OutDir)\chain_reaction.exe"
-				AdditionalLibraryDirectories="..\..\..\..\..\SDK\VS2008\CEGUISDKV075\lib;..\..\..\..\..\SDK\VS2008\OgreSDKV173\lib;..\..\..\..\..\SDK\VS2008\BoostSDKV148\lib;..\..\..\..\..\SDK\VS2008\JSONSpiritSDKV405\lib\Debug;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\lib\Debug;..\..\..\..\..\SDK\VS2008\BULLET_PHYSICSV279\lib\Debug"
+				AdditionalLibraryDirectories="..\..\..\..\..\SDK\VS2008\CEGUISDKV075\lib;..\..\..\..\..\SDK\VS2008\OgreSDKV173\lib;..\..\..\..\..\SDK\VS2008\BoostSDKV148\lib;..\..\..\..\..\SDK\VS2008\JSONSpiritSDKV405\lib\Debug;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\lib\Debug;..\..\..\..\..\SDK\VS2008\BULLET_PHYSICSV279\lib\Debug;..\..\..\..\..\SDK\VS2008\CaelumSDKV061\lib\Debug"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
@@ -117,7 +117,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\..\..\..\SDK\VS2008\CEGUISDKV075\cegui\include;..\..\..\..\..\SDK\VS2008\OgreSDKV173\include\OGRE;..\..\..\..\..\SDK\VS2008\OgreSDKV173\include\OIS;..\..\..\..\..\SDK\VS2008\BoostSDKV148\include;..\..\..\..\..\SDK\VS2008\JSONSpiritSDKV405\include;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\Dynamics\include;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\Collisions\include;..\..\..\..\..\SDK\VS2008\BULLET_PHYSICSV279\include\bullet"
+				AdditionalIncludeDirectories="..\..\..\..\..\SDK\VS2008\CEGUISDKV075\cegui\include;..\..\..\..\..\SDK\VS2008\OgreSDKV173\include\OGRE;..\..\..\..\..\SDK\VS2008\OgreSDKV173\include\OIS;..\..\..\..\..\SDK\VS2008\BoostSDKV148\include;..\..\..\..\..\SDK\VS2008\JSONSpiritSDKV405\include;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\Dynamics\include;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\Collisions\include;..\..\..\..\..\SDK\VS2008\BULLET_PHYSICSV279\include\bullet;..\..\..\..\..\SDK\VS2008\CaelumSDKV061\include\Caelum"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="false"
@@ -138,9 +138,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib OIS.lib OgreTerrain.lib CEGUIBase.lib CEGUIOgreRenderer.lib json_spirit.lib BulletCollision.lib BulletDynamics.lib ConvexDecomposition.lib GIMPACTUtils.lib LinearMath.lib OgreBulletCollisions.lib OgreBulletDynamics.lib"
+				AdditionalDependencies="OgreMain.lib OIS.lib OgreTerrain.lib CEGUIBase.lib CEGUIOgreRenderer.lib json_spirit.lib BulletCollision.lib BulletDynamics.lib ConvexDecomposition.lib GIMPACTUtils.lib LinearMath.lib OgreBulletCollisions.lib OgreBulletDynamics.lib Caelum.lib"
 				OutputFile="$(OutDir)\chain_reaction.exe"
-				AdditionalLibraryDirectories="..\..\..\..\..\SDK\VS2008\CEGUISDKV075\lib;..\..\..\..\..\SDK\VS2008\OgreSDKV173\lib;..\..\..\..\..\SDK\VS2008\BoostSDKV148\lib;..\..\..\..\..\SDK\VS2008\JSONSpiritSDKV405\lib\Release;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\lib\Release;..\..\..\..\..\SDK\VS2008\BULLET_PHYSICSV279\lib\Release"
+				AdditionalLibraryDirectories="..\..\..\..\..\SDK\VS2008\CEGUISDKV075\lib;..\..\..\..\..\SDK\VS2008\OgreSDKV173\lib;..\..\..\..\..\SDK\VS2008\BoostSDKV148\lib;..\..\..\..\..\SDK\VS2008\JSONSpiritSDKV405\lib\Release;..\..\..\..\..\SDK\VS2008\OgreBulletSDK\lib\Release;..\..\..\..\..\SDK\VS2008\BULLET_PHYSICSV279\lib\Release;..\..\..\..\..\SDK\VS2008\CaelumSDKV061\lib\Release"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

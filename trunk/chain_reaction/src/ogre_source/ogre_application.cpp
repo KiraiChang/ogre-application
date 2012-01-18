@@ -142,26 +142,28 @@ void OgreApplication::createScene(void)
 {
 	initCamera();
 	initCEGUI();
-	createCompositor();
+	//createCompositor();
 	createLight();
 	createShadow();
-	createSkyDome();
+	//createSkyDome();
 	createTerrain();
+	createCaelum();
 }
 
 void OgreApplication::initCamera(void)
 {
 	//init Camera
 	mCamera->setNearClipDistance(0.1);
-    mCamera->setFarClipDistance(50000);
+	mCamera->setFarClipDistance(500); 
  
-    if (mRoot->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
-    {
-        mCamera->setFarClipDistance(0);   // enable infinite far clip distance if we can
-		//mCamera->setPosition(Ogre::Vector3(0, 270, 80));
-		mCameraNode->setPosition(0, 270, 80);
-		//mCamera->lookAt(Ogre::Vector3(0, 180, 0));
-    }
+  //  if (mRoot->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
+  //  {
+  //      mCamera->setFarClipDistance(0);   // enable infinite far clip distance if we can
+		////mCamera->setPosition(Ogre::Vector3(0, 270, 80));
+		//
+		////mCamera->lookAt(Ogre::Vector3(0, 180, 0));
+  //  }
+	mCameraNode->setPosition(0, 270, 80);
 }
 
 void OgreApplication::initCEGUI(void)
@@ -209,11 +211,11 @@ void OgreApplication::createLight(void)
     pLight->setType(Ogre::Light::LT_DIRECTIONAL);
     pLight->setDirection(lightdir);
     pLight->setDiffuseColour(Ogre::ColourValue::White);
-    pLight->setSpecularColour(Ogre::ColourValue(0.5, 0.5, 0.5));
+    pLight->setSpecularColour(Ogre::ColourValue(0.01, 0.01, 0.01));
 	Ogre::SceneNode *pLightNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	pLightNode ->createChildSceneNode(Ogre::Vector3(750,1000,750))->attachObject(pLight);
 
-    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.2));
+    //mSceneMgr->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
 }
 
 void OgreApplication::createShadow(void)
@@ -263,6 +265,114 @@ void OgreApplication::createTerrain(void)
     }
  
     mTerrainGroup->freeTemporaryResources();
+}
+
+void OgreApplication::createCaelum(void)
+{
+    // Initialise Caelum
+	mCaelumSystem = new Caelum::CaelumSystem (mRoot, mSceneMgr, Caelum::CaelumSystem::CAELUM_COMPONENTS_DEFAULT);
+
+    // Create subcomponents (and allow individual subcomponents to fail).
+    try {
+		mCaelumSystem->setSkyDome (new Caelum::SkyDome (mSceneMgr, mCaelumSystem->getCaelumCameraNode ()));
+    } catch (Caelum::UnsupportedException& ex) {
+        //logUnsupportedException (ex);
+    }
+    try {
+        mCaelumSystem->setSun (new Caelum::SphereSun(mSceneMgr, mCaelumSystem->getCaelumCameraNode ()));
+    } catch (Caelum::UnsupportedException& ex) {
+        //logUnsupportedException (ex);
+    }
+    try {
+        mCaelumSystem->setMoon (new Caelum::Moon(mSceneMgr, mCaelumSystem->getCaelumCameraNode ()));
+    } catch (Caelum::UnsupportedException& ex) {
+        //logUnsupportedException (ex);
+    }
+    try {
+        mCaelumSystem->setCloudSystem (new Caelum::CloudSystem (mSceneMgr, mCaelumSystem->getCaelumGroundNode ()));
+    } catch (Caelum::UnsupportedException& ex) {
+        //logUnsupportedException (ex);
+    }
+    try {
+		mCaelumSystem->setPointStarfield (new Caelum::PointStarfield (mSceneMgr, mCaelumSystem->getCaelumCameraNode ()));
+    } catch (Caelum::UnsupportedException& ex) {
+        //logUnsupportedException (ex);
+    }
+
+    // Register caelum.
+    // Don't make it a frame listener; update it by hand.
+    //Root::getSingletonPtr ()->addFrameListener (mCaelumSystem.get ());
+    mCaelumSystem->attachViewport (mCamera->getViewport ());
+
+    try {
+		mCaelumSystem->setPrecipitationController (new Caelum::PrecipitationController (mSceneMgr));
+    } catch (Caelum::UnsupportedException& ex) {
+        //logUnsupportedException (ex);
+    }
+
+    mCaelumSystem->setSceneFogDensityMultiplier (0.0015);
+    mCaelumSystem->setManageAmbientLight (true);
+    mCaelumSystem->setMinimumAmbientLight (Ogre::ColourValue (0.1, 0.1, 0.1));
+
+    // Test spinning the caelum root node. Looks wrong in the demo;
+    // but at least the sky components are aligned with each other.
+    if (false) {
+        mCaelumSystem->getCaelumCameraNode ()->setOrientation(
+                Ogre::Quaternion (Ogre::Radian (Ogre::Math::PI), Ogre::Vector3::UNIT_Z) *
+                Ogre::Quaternion (Ogre::Radian (Ogre::Math::PI / 2), Ogre::Vector3::UNIT_X));
+        mCaelumSystem->getCaelumCameraNode ()->_update (true, true);
+    }
+
+    // Setup sun options
+    if (mCaelumSystem->getSun ()) {
+        // Make the sun very obvious:
+        //mCaelumSystem->getSun ()->setDiffuseMultiplier (Ogre::ColourValue (1, 10, 1));
+
+        mCaelumSystem->getSun ()->setAutoDisableThreshold (0.05);
+        mCaelumSystem->getSun ()->setAutoDisable (false);
+    }
+
+    if (mCaelumSystem->getMoon ()) {
+        // Make the moon very obvious:
+        //mCaelumSystem->getMoon ()->setDiffuseMultiplier (Ogre::ColourValue (1, 1, 10));
+
+        mCaelumSystem->getMoon ()->setAutoDisableThreshold (0.05);
+        mCaelumSystem->getMoon ()->setAutoDisable (false);
+    }
+
+    if (mCaelumSystem->getCloudSystem ()) {
+        try {
+            mCaelumSystem->getCloudSystem ()->createLayerAtHeight(2000);
+            mCaelumSystem->getCloudSystem ()->createLayerAtHeight(5000);
+            mCaelumSystem->getCloudSystem ()->getLayer(0)->setCloudSpeed(Ogre::Vector2(0.000005, -0.000009));
+            mCaelumSystem->getCloudSystem ()->getLayer(1)->setCloudSpeed(Ogre::Vector2(0.0000045, -0.0000085));
+        } catch (Caelum::UnsupportedException& ex) {
+            //logUnsupportedException (ex);
+        }
+    }
+
+    if (mCaelumSystem->getPrecipitationController ()) {
+        mCaelumSystem->getPrecipitationController ()->setIntensity (0);
+    }
+
+    // Set time acceleration.
+    //mCaelumSystem->getUniversalClock ()->setTimeScale (0);
+
+    // Sunrise with visible moon.
+    mCaelumSystem->getUniversalClock ()->setGregorianDateTime (2007, 4, 9, 19, 33, 0);
+
+	mRoot->addFrameListener (mCaelumSystem);
+
+	mCaelumSystem->setDepthComposer (new Caelum::DepthComposer (mSceneMgr));
+
+    Caelum::DepthComposerInstance* inst = mCaelumSystem->getDepthComposer ()->getViewportInstance (mCamera->getViewport ());
+    //inst->getDepthRenderer()->setRenderGroupRangeFilter (20, 80);
+    inst->getDepthRenderer()->setViewportVisibilityMask (~0x00001000);
+    mCaelumSystem->forceSubcomponentVisibilityFlags (0x00001000);
+
+    mCaelumSystem->setGroundFogDensityMultiplier (0.03);
+    mCaelumSystem->getDepthComposer ()->setGroundFogVerticalDecay (0.06);
+    mCaelumSystem->getDepthComposer ()->setGroundFogBaseLevel (0);
 }
 
 void OgreApplication::createFrameListener(void)
@@ -321,6 +431,8 @@ bool OgreApplication::frameRenderingQueued(const Ogre::FrameEvent& evt)
 bool OgreApplication::frameStarted(const Ogre::FrameEvent& evt)
 {
 	bool bRet = BaseApplication::frameStarted(evt);
+	mCaelumSystem->notifyCameraChanged (mCamera);
+    mCaelumSystem->updateSubcomponents (evt.timeSinceLastFrame);
 	return bRet;
 }
 

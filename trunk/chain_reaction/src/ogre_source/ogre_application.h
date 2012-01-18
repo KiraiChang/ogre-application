@@ -8,6 +8,7 @@
 #include "base_application.h"
 #include <Terrain/OgreTerrain.h>
 #include <Terrain/OgreTerrainGroup.h>
+#include <Caelum.h>
 
 
 
@@ -34,6 +35,7 @@ enum MOUSE_PRESS_TYPE
 	Ogre::Terrain *mTerrainInfo;
     bool mTerrainsImported;
 	OgreBites::Label* mInfoLabel;
+	Caelum::CaelumSystem *mCaelumSystem;//Date and Night
  
 	//CEGUI
 	CEGUI::OgreRenderer* mRenderer;
@@ -60,6 +62,7 @@ public:
 	void createShadow(void);
 	void createSkyDome(void);
 	void createTerrain(void);
+	void createCaelum(void);
 	void createFrameListener(void);
 	virtual void createUI(void) = 0;
 
