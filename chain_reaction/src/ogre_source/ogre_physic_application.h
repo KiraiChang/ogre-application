@@ -59,6 +59,7 @@ private:
 	float mOriginHighLand;
 
 
+
 public:
 	OgrePhysicApplication();
 	virtual ~OgrePhysicApplication();

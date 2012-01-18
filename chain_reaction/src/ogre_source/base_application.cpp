@@ -144,6 +144,7 @@ void BaseApplication::createFrameListener(void)
 //-------------------------------------------------------------------------------------
 void BaseApplication::destroyScene(void)
 {
+
 }
 //-------------------------------------------------------------------------------------
 void BaseApplication::createViewports(void)
