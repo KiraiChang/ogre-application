@@ -47,6 +47,10 @@ namespace CL
 	{
 	}
 
+	void BaseAttrib::setSize()
+	{
+	}
+
 	void BaseAttrib::update()
 	{
 	}
@@ -126,6 +130,17 @@ namespace CL
 		}
 	}
 
+	void BaseObject::setSize(const float &x, const float &y, const float &z)
+	{
+		mSize.x = x;
+		mSize.y = y;
+		mSize.z = z;
+		if(mpAttrib)
+		{
+			mpAttrib->setSize();
+		}
+	}
+
 	vec3 BaseObject::getPos()const
 	{
 		return mPos;
@@ -139,6 +154,11 @@ namespace CL
 	vec3 BaseObject::getDir()const
 	{
 		return mDir;
+	}
+
+	vec3 BaseObject::getSize()const
+	{
+		return mSize;
 	}
 
 	BaseAttrib *BaseObject::getAttrib(void)const
