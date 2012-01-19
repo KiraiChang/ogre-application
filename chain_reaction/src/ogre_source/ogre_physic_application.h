@@ -82,6 +82,7 @@ public:
 	virtual void createUI(void);
 	virtual void createPhysic(void);
 	void createAxis();
+	void createDomino();
 
 	//operator fun
 	virtual void createBody(void);
