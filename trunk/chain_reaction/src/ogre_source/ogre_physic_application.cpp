@@ -161,6 +161,8 @@ void OgrePhysicApplication::createScene(void)
 	createVehicles("chassis.mesh", "wheel.mesh");
 
 	createAxis();
+
+	createDomino();
 }
 
 void OgrePhysicApplication::createUI(void)
@@ -441,6 +443,24 @@ void OgrePhysicApplication::createAxis()
 	}
 }
 
+void OgrePhysicApplication::createDomino()
+{
+	for(int i = 0 ; i < 10; i ++)
+	{
+		CL::BaseObject &base = CL::ObjectManger::fnAdd(new CL::OgrePhysicAttrib());
+		Ogre::Vector3 pos;
+		pos.z = 5 * i;
+		pos.x = 0;
+		pos.y = mTerrainInfo->getHeightAtWorldPosition(pos.x, 0, pos.z) + 2.5;
+		base.setPos((float *)&pos);
+		CL::OgrePhysicAttrib *attrib = (CL::OgrePhysicAttrib *)base.getAttrib();
+		base.setScale((float *)&Ogre::Vector3(0.05f, 0.05f, 0.01f));//scale:size 1:50;
+		base.setSize(2.5, 2.5, 0.5);
+		attrib->create(mSceneMgr, "cube.mesh");
+		attrib->createPhysic(mWorld, 0.1, 10, 1, CL::OgrePhysicAttrib::SHAPE_TYPE_CUBE);
+	}
+}
+
 //operator fun
 void OgrePhysicApplication::createBody(void)
 {
@@ -656,6 +676,7 @@ void OgrePhysicApplication::onViewCar()
 {
 	Ogre::Vector3 pos((float *)&pVehiclesAttrib->getObj()->getPos());
 	mCameraNode->setPosition(pos.x, pos.y, pos.z);
+	//mCamera->setPosition(pos.x, pos.y, pos.z);
 }
 
 void OgrePhysicApplication::processPitch()
@@ -932,10 +953,10 @@ bool OgrePhysicApplication::onViewWorld(const CEGUI::EventArgs &e)
 	mCamera->setNearClipDistance(0.1);
     mCamera->setFarClipDistance(500);
  
-    if (mRoot->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
-    {
-        mCamera->setFarClipDistance(0);   // enable infinite far clip distance if we can
-    }
+    //if (mRoot->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
+    //{
+    //    mCamera->setFarClipDistance(0);   // enable infinite far clip distance if we can
+    //}
 	mMousePress = MOUSE_INSIDE_UI;
 	return true;
 }

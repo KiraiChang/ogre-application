@@ -67,17 +67,17 @@ void OgreApplication::configureTerrainDefaults(Ogre::Light* light)
 	// Configure global
     mTerrainGlobals->setMaxPixelError(8);
     // testing composite map
-    mTerrainGlobals->setCompositeMapDistance(3000);
+    mTerrainGlobals->setCompositeMapDistance(30000);
  
     // Important to set these so that the terrain knows what to use for derived (non-realtime) data
-    mTerrainGlobals->setLightMapDirection(light->getDerivedDirection());
-    mTerrainGlobals->setCompositeMapAmbient(mSceneMgr->getAmbientLight());
-    mTerrainGlobals->setCompositeMapDiffuse(light->getDiffuseColour());
+    //mTerrainGlobals->setLightMapDirection(light->getDerivedDirection());
+    //mTerrainGlobals->setCompositeMapAmbient(mSceneMgr->getAmbientLight());
+    //mTerrainGlobals->setCompositeMapDiffuse(light->getDiffuseColour());
  
     // Configure default import settings for if we use imported image
     Ogre::Terrain::ImportData& defaultimp = mTerrainGroup->getDefaultImportSettings();
     defaultimp.terrainSize = 513;
-    defaultimp.worldSize = 12000.0f;
+    defaultimp.worldSize = 1200.0f;
     defaultimp.inputScale = 600;
     defaultimp.minBatchSize = 33;
     defaultimp.maxBatchSize = 65;
@@ -143,7 +143,7 @@ void OgreApplication::createScene(void)
 	initCamera();
 	initCEGUI();
 	//createCompositor();
-	createLight();
+	//createLight();
 	createShadow();
 	//createSkyDome();
 	createTerrain();
@@ -154,8 +154,6 @@ void OgreApplication::createScene(void)
 void OgreApplication::initCamera(void)
 {
 	//init Camera
-	mCamera->setNearClipDistance(0.1);
-	mCamera->setFarClipDistance(5000); 
  
   //  if (mRoot->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
   //  {
@@ -164,6 +162,7 @@ void OgreApplication::initCamera(void)
 		//
 		////mCamera->lookAt(Ogre::Vector3(0, 180, 0));
   //  }
+	//mCamera->setPosition(Ogre::Vector3(0, 270, 80));
 	mCameraNode->setPosition(0, 270, 80);
 }
 
@@ -211,8 +210,8 @@ void OgreApplication::createLight(void)
     Ogre::Light* pLight = mSceneMgr->createLight("MainLight");
     pLight->setType(Ogre::Light::LT_DIRECTIONAL);
     pLight->setDirection(lightdir);
-    //pLight->setDiffuseColour(Ogre::ColourValue::Black);
-    //pLight->setSpecularColour(Ogre::ColourValue(0.1, 0.1, 0.1));
+    pLight->setDiffuseColour(Ogre::ColourValue::White);
+    pLight->setSpecularColour(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode *pLightNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	pLightNode ->createChildSceneNode(Ogre::Vector3(750,1000,750))->attachObject(pLight);
 
@@ -240,11 +239,11 @@ void OgreApplication::createTerrain(void)
     mTerrainGroup->setFilenameConvention(Ogre::String("BasicTutorial3Terrain"), Ogre::String("dat"));
     mTerrainGroup->setOrigin(Ogre::Vector3::ZERO);
  
-	Ogre::Light* pLight = mSceneMgr->getLight("MainLight");
-	if(pLight == NULL)
-	{
-		pLight = mSceneMgr->createLight("MainLight");
-	}
+	Ogre::Light* pLight;// = mSceneMgr->getLight("MainLight");
+	//if(pLight == NULL)
+	//{
+	//	pLight = mSceneMgr->createLight("MainLight");
+	//}
 
     configureTerrainDefaults(pLight);
  
@@ -405,7 +404,7 @@ void OgreApplication::processTerrain(void)
         mInfoLabel->hide();
         if (mTerrainsImported)
         {
-            mTerrainGroup->saveAllTerrains(true);
+            //mTerrainGroup->saveAllTerrains(true);
             mTerrainsImported = false;
         }
     }
