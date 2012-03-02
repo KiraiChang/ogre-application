@@ -39,6 +39,9 @@
     <ClCompile Include="..\..\ogre_source\ogre_application.cpp">
       <Filter>ogre_source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ogre_source\kinect_application.cpp">
+      <Filter>ogre_source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\base_math\base_define.h">
@@ -54,6 +57,9 @@
       <Filter>ogre_source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ogre_source\ogre_application.h">
+      <Filter>ogre_source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ogre_source\kinect_application.h">
       <Filter>ogre_source</Filter>
     </ClInclude>
   </ItemGroup>

@@ -51,6 +51,7 @@ enum MOUSE_PRESS_TYPE
 public:
 	OgreApplication(void);
 	virtual ~OgreApplication(void);
+	virtual const std::string getApplicationName(void)const;
 
 	//release resource
 	virtual void release(void);

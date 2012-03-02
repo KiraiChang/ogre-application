@@ -33,7 +33,6 @@ BaseApplication::BaseApplication(void)
     mMouse(0),
     mKeyboard(0)
 {
-	mAppName = "BaseOgreApp";
 }
 
 //-------------------------------------------------------------------------------------
@@ -58,7 +57,7 @@ bool BaseApplication::configure(void)
     {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise(true, mAppName);
+        mWindow = mRoot->initialise(true, getApplicationName());
 
         return true;
     }
@@ -196,6 +195,11 @@ void BaseApplication::loadResources(void)
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 //-------------------------------------------------------------------------------------
+const std::string BaseApplication::getApplicationName(void)const
+{
+	return "BaseOgreApp";
+}
+
 void BaseApplication::go(void)
 {
 #ifdef _DEBUG
