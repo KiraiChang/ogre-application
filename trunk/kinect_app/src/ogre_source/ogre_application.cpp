@@ -103,12 +103,16 @@ OgreApplication::OgreApplication():
 	mpSheet(NULL),
 	mMousePress(MOUSE_PRESS_NONE)
 {
-	mAppName = "DefaultOgreApp";
 }
 
 OgreApplication::~OgreApplication()
 {
 	release();
+}
+
+const std::string OgreApplication::getApplicationName(void)const
+{
+	return "DefaultOgreApp";
 }
 
 void OgreApplication::release(void)

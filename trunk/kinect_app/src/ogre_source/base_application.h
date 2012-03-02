@@ -45,6 +45,7 @@ public:
     virtual ~BaseApplication(void);
 
     virtual void go(void);
+	virtual const std::string getApplicationName(void)const;
 
 protected:
     virtual bool setup();
@@ -95,9 +96,6 @@ protected:
     OIS::InputManager* mInputManager;
     OIS::Mouse*    mMouse;
     OIS::Keyboard* mKeyboard;
-
-	//application name, dislpay on windows title
-	std::string mAppName;
 };
 
 #endif // #ifndef __BaseApplication_h_
