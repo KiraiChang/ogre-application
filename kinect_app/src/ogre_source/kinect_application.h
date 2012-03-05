@@ -1,40 +1,32 @@
 #ifndef _KINECT_APPLICATION_H_
 #define _KINECT_APPLICATION_H_
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-//#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-#include <NuiApi.h>
-#endif
-
+#include "../kinect/kinect_device.h"
 #include "ogre_application.h"
 
 class KinectApplication : public OgreApplication
 {
 private:
-	// Current kinect
-    INuiSensor *            m_pNuiSensor;
-    BSTR                    m_instanceId;
-public:
-	HINSTANCE               m_hInstance;
-	TCHAR                   m_szAppTitle[256];    // Application title
+	KinectDevice *		m_pKinectDevice;
+
+	Ogre::SceneNode *	m_pCharNode[NUI_SKELETON_POSITION_COUNT];
+	Ogre::Entity *		m_pCharEnt[NUI_SKELETON_POSITION_COUNT];
 
 public:
 	KinectApplication(void);
 	virtual ~KinectApplication(void);
 	virtual const std::string getApplicationName(void)const;
 
-	//about kinect operator function
-	HRESULT                 Nui_Init( );
-    HRESULT                 Nui_Init( OLECHAR * instanceName );
-    void                    Nui_UnInit( );
-    void                    Nui_GotDepthAlert( );
-    void                    Nui_GotColorAlert( );
-    void                    Nui_GotSkeletonAlert( );
+	virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
-    void                    Nui_Zero();
+	//show Skeleton Part Position
+	void initSkeletonMesh(void);
+	void releaseSkeletonMesh(void);
 
-	int MessageBoxResource(UINT nID, UINT nType);
+	//kinect operator
+	KinectDevice *getKinectDevice(void);
+	void releaseKinect(void);
+	void drawSkeleton(NUI_SKELETON_FRAME *frame);
 };
 
 #endif _KINECT_APPLICATION_H_

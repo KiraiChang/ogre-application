@@ -22,6 +22,9 @@
     <Filter Include="base_math">
       <UniqueIdentifier>{e331b712-e74e-4fc3-8d71-ed3640257bfc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kinect">
+      <UniqueIdentifier>{cee6fb4f-9c22-4b2c-9e91-84fa38c60373}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\main\main.cpp">
@@ -42,6 +45,9 @@
     <ClCompile Include="..\..\ogre_source\kinect_application.cpp">
       <Filter>ogre_source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\kinect\kinect_device.cpp">
+      <Filter>kinect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\base_math\base_define.h">
@@ -61,6 +67,12 @@
     </ClInclude>
     <ClInclude Include="..\..\ogre_source\kinect_application.h">
       <Filter>ogre_source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kinect\kinect_device.h">
+      <Filter>kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kinect\resource.h">
+      <Filter>kinect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

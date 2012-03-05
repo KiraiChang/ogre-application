@@ -88,6 +88,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\base_math\base_vector .cpp" />
+    <ClCompile Include="..\..\kinect\kinect_device.cpp" />
     <ClCompile Include="..\..\main\main.cpp" />
     <ClCompile Include="..\..\manger_source\object_manger.cpp" />
     <ClCompile Include="..\..\ogre_source\base_application.cpp" />
@@ -97,6 +98,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\base_math\base_define.h" />
     <ClInclude Include="..\..\base_math\base_vector.h" />
+    <ClInclude Include="..\..\kinect\kinect_device.h" />
+    <ClInclude Include="..\..\kinect\resource.h" />
     <ClInclude Include="..\..\manger_source\object_manger.h" />
     <ClInclude Include="..\..\ogre_source\base_application.h" />
     <ClInclude Include="..\..\ogre_source\kinect_application.h" />

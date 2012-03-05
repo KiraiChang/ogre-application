@@ -1,14 +1,13 @@
 #include "kinect_application.h"
-#include "../kinect/resource.h"
 
-KinectApplication::KinectApplication(void):m_pNuiSensor(NULL)
+KinectApplication::KinectApplication(void):m_pKinectDevice(NULL)
 {
-	ZeroMemory(m_szAppTitle, sizeof(m_szAppTitle));
-    LoadString(m_hInstance, IDS_APPTITLE, m_szAppTitle, _countof(m_szAppTitle));
 }
 
 KinectApplication::~KinectApplication(void)
 {
+	releaseKinect();
+	releaseSkeletonMesh();
 }
 
 const std::string KinectApplication::getApplicationName(void)const
@@ -16,127 +15,94 @@ const std::string KinectApplication::getApplicationName(void)const
 	return "KinectOgreApplication";
 }
 
-//about kinect operator function
-HRESULT KinectApplication::Nui_Init( )
+bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
-	HRESULT  hr;
-    RECT     rc;
-    bool     result;
-
-    if ( !m_pNuiSensor )
-    {
-        HRESULT hr = NuiCreateSensorByIndex(0, &m_pNuiSensor);
-
-        if ( FAILED(hr) )
-        {
-            return hr;
-        }
-
-        SysFreeString(m_instanceId);
-
-        m_instanceId = m_pNuiSensor->NuiDeviceConnectionId();
-    }
-
-	DWORD nuiFlags = NUI_INITIALIZE_FLAG_USES_DEPTH_AND_PLAYER_INDEX | NUI_INITIALIZE_FLAG_USES_SKELETON |  NUI_INITIALIZE_FLAG_USES_COLOR;
-    hr = m_pNuiSensor->NuiInitialize( nuiFlags );
-    if ( E_NUI_SKELETAL_ENGINE_BUSY == hr )
-    {
-        nuiFlags = NUI_INITIALIZE_FLAG_USES_DEPTH |  NUI_INITIALIZE_FLAG_USES_COLOR;
-        hr = m_pNuiSensor->NuiInitialize( nuiFlags) ;
-    }
-  
-    //if ( FAILED( hr ) )
-    //{
-    //    if ( E_NUI_DEVICE_IN_USE == hr )
-    //    {
-    //        MessageBoxResource( IDS_ERROR_IN_USE, MB_OK | MB_ICONHAND );
-    //    }
-    //    else
-    //    {
-    //        MessageBoxResource( IDS_ERROR_NUIINIT, MB_OK | MB_ICONHAND );
-    //    }
-    //    return hr;
-    //}
-
-    //if ( HasSkeletalEngine( m_pNuiSensor ) )
-    //{
-    //    hr = m_pNuiSensor->NuiSkeletonTrackingEnable( m_hNextSkeletonEvent, 0 );
-    //    if( FAILED( hr ) )
-    //    {
-    //        MessageBoxResource( IDS_ERROR_SKELETONTRACKING, MB_OK | MB_ICONHAND );
-    //        return hr;
-    //    }
-    //}
-
-    //hr = m_pNuiSensor->NuiImageStreamOpen(
-    //    NUI_IMAGE_TYPE_COLOR,
-    //    NUI_IMAGE_RESOLUTION_640x480,
-    //    0,
-    //    2,
-    //    m_hNextColorFrameEvent,
-    //    &m_pVideoStreamHandle );
-
-    //if ( FAILED( hr ) )
-    //{
-    //    MessageBoxResource( IDS_ERROR_VIDEOSTREAM, MB_OK | MB_ICONHAND );
-    //    return hr;
-    //}
-
-    //hr = m_pNuiSensor->NuiImageStreamOpen(
-    //    HasSkeletalEngine(m_pNuiSensor) ? NUI_IMAGE_TYPE_DEPTH_AND_PLAYER_INDEX : NUI_IMAGE_TYPE_DEPTH,
-    //    NUI_IMAGE_RESOLUTION_320x240,
-    //    0,
-    //    2,
-    //    m_hNextDepthFrameEvent,
-    //    &m_pDepthStreamHandle );
-
-    //if ( FAILED( hr ) )
-    //{
-    //    MessageBoxResource(IDS_ERROR_DEPTHSTREAM, MB_OK | MB_ICONHAND);
-    //    return hr;
-    //}
-
-    //// Start the Nui processing thread
-    //m_hEvNuiProcessStop = CreateEvent( NULL, FALSE, FALSE, NULL );
-    //m_hThNuiProcess = CreateThread( NULL, 0, Nui_ProcessThread, this, 0, NULL );
-
-    return hr;
+	bool bRet = OgreApplication::frameEnded(evt);
+	NUI_SKELETON_FRAME *frame = m_pKinectDevice->getSkeletonFrame();
+	drawSkeleton(frame);
+	return bRet;
 }
 
-HRESULT KinectApplication::Nui_Init( OLECHAR * instanceName )
+void KinectApplication::initSkeletonMesh(void)
 {
-
+	char entName[64];
+	char nodeName[64];
+	for(int i = 0 ; i < NUI_SKELETON_POSITION_COUNT; i++)
+	{
+		sprintf(entName, "CharEnt%d", i);
+		m_pCharEnt[i] = mSceneMgr->createEntity(entName, "sphere.mesh");
+ 
+        // Create the scene node
+		sprintf(nodeName, "CharNode%d", i);
+        m_pCharNode[i] = mSceneMgr->getRootSceneNode()->
+            createChildSceneNode(nodeName, Ogre::Vector3(0.0f, 0.0f, 25.0f));
+	}
 }
 
-void KinectApplication::Nui_UnInit( )
+void KinectApplication::releaseSkeletonMesh(void)
 {
+	if(mSceneMgr)
+	{
+		for(int i = 0; i < NUI_SKELETON_POSITION_COUNT; i++)
+		{
+			if(m_pCharEnt[i])
+			{
+				if(m_pCharNode[i])
+					m_pCharNode[i]->detachObject(m_pCharEnt[i]);
 
+				mSceneMgr->destroyEntity(m_pCharEnt[i]);
+				m_pCharEnt[i] = NULL;
+			}
+
+			if(m_pCharNode[i])
+			{
+				mSceneMgr->destroySceneNode(m_pCharNode[i]);
+				m_pCharNode[i] = NULL;
+			}
+		}
+	}
 }
 
-void KinectApplication::Nui_GotDepthAlert( )
+KinectDevice *KinectApplication::getKinectDevice()
 {
+	if(NULL == m_pKinectDevice)
+	{
+		m_pKinectDevice = new KinectDevice();
+		m_pKinectDevice->Nui_Init();
+	}
 
+	return m_pKinectDevice;
 }
 
-void KinectApplication::Nui_GotColorAlert( )
+void KinectApplication::releaseKinect()
 {
-
+	if( NULL != m_pKinectDevice)
+	{
+		m_pKinectDevice->Nui_UnInit();
+		m_pKinectDevice->Nui_Zero();
+		delete m_pKinectDevice;
+		m_pKinectDevice = NULL;
+	}
 }
 
-void KinectApplication::Nui_GotSkeletonAlert( )
+void KinectApplication::drawSkeleton(NUI_SKELETON_FRAME *frame)
 {
-
-}
-
-void KinectApplication::Nui_Zero()
-{
-
-}
-
-int KinectApplication::MessageBoxResource( UINT nID, UINT nType )
-{
-    static TCHAR szRes[512];
-
-    LoadString( m_hInstance, nID, szRes, _countof(szRes) );
-    return MessageBox( NULL, szRes, m_szAppTitle, nType );
+	if(frame != NULL)
+	{
+		//for(int i = 0; i < NUI_SKELETON_COUNT; i++)
+		//{
+			if(frame->SkeletonData[0].eTrackingState == NUI_SKELETON_TRACKED)
+			{
+				for(int j = 0; j < NUI_SKELETON_POSITION_COUNT; j++)
+				{
+					//frame->SkeletonData[0].SkeletonPositions[j].x;
+					//frame->SkeletonData[0].SkeletonPositions[j].y;
+					//frame->SkeletonData[0].SkeletonPositions[j].z;
+					m_pCharNode[j]->translate(frame->SkeletonData[0].SkeletonPositions[j].x,
+												frame->SkeletonData[0].SkeletonPositions[j].y,
+												frame->SkeletonData[0].SkeletonPositions[j].z);
+				}
+			}
+		//}
+	}
 }
