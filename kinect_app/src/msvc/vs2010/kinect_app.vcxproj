@@ -65,7 +65,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\..\..\..\SDK\VS2010\CEGUI_SDK_076\lib;..\..\..\..\..\SDK\VS2010\ogre_src_v1-7-4\lib\debug;..\..\..\..\..\SDK\VS2010\boost_1_48_0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Kinect10.lib;OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
