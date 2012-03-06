@@ -18,7 +18,8 @@ const std::string KinectApplication::getApplicationName(void)const
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
 	bool bRet = OgreApplication::frameEnded(evt);
-	NUI_SKELETON_FRAME *frame = m_pKinectDevice->getSkeletonFrame();
+	NUI_SKELETON_FRAME frame = {0};
+	m_pKinectDevice->getSkeletonFrame(frame);
 	drawSkeleton(frame);
 	return bRet;
 }
@@ -85,24 +86,21 @@ void KinectApplication::releaseKinect()
 	}
 }
 
-void KinectApplication::drawSkeleton(NUI_SKELETON_FRAME *frame)
+void KinectApplication::drawSkeleton(NUI_SKELETON_FRAME &frame)
 {
-	if(frame != NULL)
+	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	{
-		//for(int i = 0; i < NUI_SKELETON_COUNT; i++)
-		//{
-			if(frame->SkeletonData[0].eTrackingState == NUI_SKELETON_TRACKED)
+		if(frame.SkeletonData[i].eTrackingState == NUI_SKELETON_TRACKED)
+		{
+			for(int j = 0; j < NUI_SKELETON_POSITION_COUNT; j++)
 			{
-				for(int j = 0; j < NUI_SKELETON_POSITION_COUNT; j++)
-				{
-					//frame->SkeletonData[0].SkeletonPositions[j].x;
-					//frame->SkeletonData[0].SkeletonPositions[j].y;
-					//frame->SkeletonData[0].SkeletonPositions[j].z;
-					m_pCharNode[j]->translate(frame->SkeletonData[0].SkeletonPositions[j].x,
-												frame->SkeletonData[0].SkeletonPositions[j].y,
-												frame->SkeletonData[0].SkeletonPositions[j].z);
-				}
+				//frame->SkeletonData[i].SkeletonPositions[j].x;
+				//frame->SkeletonData[i].SkeletonPositions[j].y;
+				//frame->SkeletonData[i].SkeletonPositions[j].z;
+				m_pCharNode[j]->translate(frame.SkeletonData[i].SkeletonPositions[j].x,
+					frame.SkeletonData[i].SkeletonPositions[j].y,
+					frame.SkeletonData[i].SkeletonPositions[j].z);
 			}
-		//}
+		}
 	}
 }

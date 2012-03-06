@@ -26,7 +26,7 @@ public:
 	//kinect operator
 	KinectDevice *getKinectDevice(void);
 	void releaseKinect(void);
-	void drawSkeleton(NUI_SKELETON_FRAME *frame);
+	void drawSkeleton(NUI_SKELETON_FRAME &frame);
 };
 
 #endif _KINECT_APPLICATION_H_

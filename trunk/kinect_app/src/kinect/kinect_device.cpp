@@ -224,17 +224,17 @@ int KinectDevice::MessageBoxResource( UINT nID, UINT nType )
 }
 
 //return true have get the skeletonFrame
-NUI_SKELETON_FRAME *KinectDevice::getSkeletonFrame(void)
+void KinectDevice::getSkeletonFrame(NUI_SKELETON_FRAME &frame)
 {
-	NUI_SKELETON_FRAME *frame = NULL;
+	//NUI_SKELETON_FRAME *frame = NULL;
     bool bFoundSkeleton = false;
 
-    if ( SUCCEEDED(m_pNuiSensor->NuiSkeletonGetNextFrame( 0, frame )) )
+    if ( SUCCEEDED(m_pNuiSensor->NuiSkeletonGetNextFrame( 0, &frame )) )
     {
         for ( int i = 0 ; i < NUI_SKELETON_COUNT ; i++ )
         {
-            if( frame->SkeletonData[i].eTrackingState == NUI_SKELETON_TRACKED/* ||
-                (frame->SkeletonData[i].eTrackingState == NUI_SKELETON_POSITION_ONLY && m_bAppTracking)*/)
+            if( frame.SkeletonData[i].eTrackingState == NUI_SKELETON_TRACKED ||
+                (frame.SkeletonData[i].eTrackingState == NUI_SKELETON_POSITION_ONLY))
             {
                 bFoundSkeleton = true;
             }
@@ -244,15 +244,13 @@ NUI_SKELETON_FRAME *KinectDevice::getSkeletonFrame(void)
 	    // no skeletons!
     if( !bFoundSkeleton )
     {
-        return NULL;
+        return ;
     }
 
     // smooth out the skeleton data
-    HRESULT hr = m_pNuiSensor->NuiTransformSmooth(frame, NULL);
+    HRESULT hr = m_pNuiSensor->NuiTransformSmooth(&frame, NULL);
     if ( FAILED(hr) )
     {
-        return NULL;
+        return ;
     }
-
-	return frame;
 }
