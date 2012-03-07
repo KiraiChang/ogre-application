@@ -16,6 +16,7 @@ public:
 	KinectApplication(void);
 	virtual ~KinectApplication(void);
 	virtual const std::string getApplicationName(void)const;
+	virtual void createScene(void);
 
 	virtual bool frameEnded(const Ogre::FrameEvent& evt);
 

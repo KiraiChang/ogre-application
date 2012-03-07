@@ -15,6 +15,12 @@ const std::string KinectApplication::getApplicationName(void)const
 	return "KinectOgreApplication";
 }
 
+void KinectApplication::createScene(void)
+{
+	OgreApplication::createScene();
+	initSkeletonMesh();
+}
+
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
 	bool bRet = OgreApplication::frameEnded(evt);
@@ -37,6 +43,8 @@ void KinectApplication::initSkeletonMesh(void)
 		sprintf(nodeName, "CharNode%d", i);
         m_pCharNode[i] = mSceneMgr->getRootSceneNode()->
             createChildSceneNode(nodeName, Ogre::Vector3(0.0f, 0.0f, 25.0f));
+		m_pCharNode[i]->attachObject(m_pCharEnt[i]);
+		m_pCharNode[i]->setScale(0.01, 0.01, 0.01);
 	}
 }
 
@@ -97,9 +105,9 @@ void KinectApplication::drawSkeleton(NUI_SKELETON_FRAME &frame)
 				//frame->SkeletonData[i].SkeletonPositions[j].x;
 				//frame->SkeletonData[i].SkeletonPositions[j].y;
 				//frame->SkeletonData[i].SkeletonPositions[j].z;
-				m_pCharNode[j]->translate(frame.SkeletonData[i].SkeletonPositions[j].x,
-					frame.SkeletonData[i].SkeletonPositions[j].y,
-					frame.SkeletonData[i].SkeletonPositions[j].z);
+				m_pCharNode[j]->setPosition(frame.SkeletonData[i].SkeletonPositions[j].x*10 + 100,
+					frame.SkeletonData[i].SkeletonPositions[j].y*10 + 270,
+					frame.SkeletonData[i].SkeletonPositions[j].z*10 + 100);
 			}
 		}
 	}
