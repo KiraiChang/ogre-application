@@ -48,6 +48,9 @@
     <ClCompile Include="..\..\kinect\kinect_device.cpp">
       <Filter>kinect</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\kinect\character_controller.cpp">
+      <Filter>kinect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\base_math\base_define.h">
@@ -72,6 +75,9 @@
       <Filter>kinect</Filter>
     </ClInclude>
     <ClInclude Include="..\..\kinect\resource.h">
+      <Filter>kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kinect\character_controller.h">
       <Filter>kinect</Filter>
     </ClInclude>
   </ItemGroup>
