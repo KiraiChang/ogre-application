@@ -1,16 +1,14 @@
 #ifndef _KINECT_APPLICATION_H_
 #define _KINECT_APPLICATION_H_
 
-#include "../kinect/kinect_device.h"
+#include "../kinect/character_controller.h"
 #include "ogre_application.h"
 
 class KinectApplication : public OgreApplication
 {
 private:
-	KinectDevice *		m_pKinectDevice;
-
-	Ogre::SceneNode *	m_pCharNode[NUI_SKELETON_POSITION_COUNT];
-	Ogre::Entity *		m_pCharEnt[NUI_SKELETON_POSITION_COUNT];
+	KinectDevice *			m_pKinectDevice;
+	CharacterController *	m_pChar;
 
 public:
 	KinectApplication(void);
@@ -20,14 +18,12 @@ public:
 
 	virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
-	//show Skeleton Part Position
-	void initSkeletonMesh(void);
-	void releaseSkeletonMesh(void);
+	void initCharacter();
+	void releaseCharacter();
 
 	//kinect operator
 	KinectDevice *getKinectDevice(void);
 	void releaseKinect(void);
-	void drawSkeleton(NUI_SKELETON_FRAME &frame);
 };
 
 #endif _KINECT_APPLICATION_H_
