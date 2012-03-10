@@ -37,7 +37,8 @@ private:
 		ANIM_NONE,
 		NUM_ANIMS = ANIM_NONE
 	};
-	Ogre::SceneManager*			mSceneMgr;
+	DWORD						m_iKinectID;
+	Ogre::SceneManager*			m_pSceneMgr;
 	Ogre::SceneNode *			m_pCharNode[NUI_SKELETON_POSITION_COUNT];
 	Ogre::Entity *				m_pCharEnt[NUI_SKELETON_POSITION_COUNT];
 	Ogre::SceneNode *			m_pBodyNode;
@@ -50,11 +51,11 @@ private:
 	bool						m_bFadingOut[NUM_ANIMS];           // which animations are fading out
 	
 public:
-	CharacterController(Ogre::SceneManager* mgr);
+	CharacterController(Ogre::SceneManager* mgr, const DWORD &kinectID);
 	~CharacterController();
-
+	DWORD getID()const;
 	void init(void);
-	void update(NUI_SKELETON_FRAME &frame);
+	void update(const NUI_SKELETON_DATA &data);
 	void release(void);
 	Ogre::Quaternion calcQuaternion(const Ogre::Vector3 &child, const Ogre::Vector3 &parent);
 

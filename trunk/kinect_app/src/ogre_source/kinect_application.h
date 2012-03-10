@@ -3,12 +3,15 @@
 
 #include "../kinect/character_controller.h"
 #include "ogre_application.h"
+//#include <vector>
+//
+//typedef std::vector<> PLAYER_SET;
 
 class KinectApplication : public OgreApplication
 {
 private:
 	KinectDevice *			m_pKinectDevice;
-	CharacterController *	m_pChar;
+	CharacterController *	m_vpPlayer[NUI_SKELETON_COUNT];
 
 public:
 	KinectApplication(void);
@@ -18,12 +21,12 @@ public:
 
 	virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
-	void initCharacter();
 	void releaseCharacter();
 
 	//kinect operator
 	KinectDevice *getKinectDevice(void);
 	void releaseKinect(void);
+	void updatePlayer(const NUI_SKELETON_FRAME &frame);
 };
 
 #endif _KINECT_APPLICATION_H_

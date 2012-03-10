@@ -1,7 +1,11 @@
 #include "kinect_application.h"
 
-KinectApplication::KinectApplication(void):m_pKinectDevice(NULL), m_pChar(NULL)
+KinectApplication::KinectApplication(void):m_pKinectDevice(NULL)
 {
+	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
+	{
+		m_vpPlayer[i] = NULL;
+	}
 }
 
 KinectApplication::~KinectApplication(void)
@@ -18,7 +22,6 @@ const std::string KinectApplication::getApplicationName(void)const
 void KinectApplication::createScene(void)
 {
 	OgreApplication::createScene();
-	initCharacter();
 }
 
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
@@ -26,26 +29,20 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 	bool bRet = OgreApplication::frameEnded(evt);
 	NUI_SKELETON_FRAME frame = {0};
 	m_pKinectDevice->getSkeletonFrame(frame);
-	if(m_pChar != NULL)
-		m_pChar->update(frame);
+	updatePlayer(frame);
 
 	return bRet;
 }
 
-void KinectApplication::initCharacter()
-{
-	if(m_pChar == NULL)
-	{
-		m_pChar = new CharacterController(mSceneMgr);
-	}
-}
-
 void KinectApplication::releaseCharacter()
 {
-	if(m_pChar != NULL)
+	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	{
-		delete m_pChar;
-		m_pChar = NULL;
+		if(m_vpPlayer[i] != NULL)
+		{
+			delete m_vpPlayer[i];
+			m_vpPlayer[i] = NULL;
+		}
 	}
 }
 
@@ -68,5 +65,38 @@ void KinectApplication::releaseKinect()
 		m_pKinectDevice->Nui_Zero();
 		delete m_pKinectDevice;
 		m_pKinectDevice = NULL;
+	}
+}
+
+void KinectApplication::updatePlayer(const NUI_SKELETON_FRAME &frame)
+{
+	for(int i = 0; i < NUI_SKELETON_COUNT; i++ )
+	{
+		if(frame.SkeletonData[i].eTrackingState != NUI_SKELETON_NOT_TRACKED)
+		{
+			if(m_vpPlayer[i] != NULL)
+			{
+				if(m_vpPlayer[i]->getID() != frame.SkeletonData[i].dwTrackingID)
+				{
+					delete m_vpPlayer[i];
+					m_vpPlayer[i] = new CharacterController(mSceneMgr, frame.SkeletonData[i].dwTrackingID);
+				}
+			}
+			else
+				m_vpPlayer[i] = new CharacterController(mSceneMgr, frame.SkeletonData[i].dwTrackingID);
+
+			m_vpPlayer[i]->update(frame.SkeletonData[i]);
+		}
+		else
+		{
+			if(frame.SkeletonData[i].dwTrackingID == 0)
+			{
+				if(m_vpPlayer[i] != NULL)
+				{
+					delete m_vpPlayer[i];
+					m_vpPlayer[i] = NULL;
+				}
+			}
+		}
 	}
 }
