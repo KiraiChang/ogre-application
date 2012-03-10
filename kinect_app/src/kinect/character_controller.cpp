@@ -5,7 +5,7 @@
 #include <OgreAnimation.h>
 
 
-CharacterController::CharacterController(Ogre::SceneManager* mgr):mSceneMgr(mgr), m_pBodyNode(NULL), m_pBodyEnt(NULL)
+CharacterController::CharacterController(Ogre::SceneManager* mgr, const DWORD &kinectID):m_pSceneMgr(mgr), m_pBodyNode(NULL), m_pBodyEnt(NULL), m_iKinectID(kinectID)
 {
 	init();
 }
@@ -15,104 +15,110 @@ CharacterController::~CharacterController()
 	release();
 }
 
+DWORD CharacterController::getID()const
+{
+	return m_iKinectID;
+}
+
 void CharacterController::init(void)
 {
+	char name[64];
 	if(m_pBodyNode == NULL)
 	{
-		m_pBodyEnt = mSceneMgr->createEntity("m_pBodyEnt", "sinbad.mesh");
+		sprintf(name, "m_pBodyEnt_%d", m_iKinectID);
+		m_pBodyEnt = m_pSceneMgr->createEntity(name, "sinbad.mesh");
 
-		m_pBodyNode = mSceneMgr->getRootSceneNode()->
-			createChildSceneNode("m_pBodyNode", Ogre::Vector3(0.0f, 0.0f, 25.0f));
+		sprintf(name, "m_pBodyNode%d", m_iKinectID);
+		m_pBodyNode = m_pSceneMgr->getRootSceneNode()->
+			createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 25.0f));
 		m_pBodyNode->attachObject(m_pBodyEnt);
-		//m_pBodyNode->setScale(0.01, 0.01, 0.01);
+		m_pBodyNode->setScale(5, 5, 5);
 		setupAnimations();
 	}
-	char entName[64];
-	char nodeName[64];
+
 	for(int i = 0 ; i < NUI_SKELETON_POSITION_COUNT; i++)
 	{
-		sprintf(entName, "CharEnt%d", i);
-		m_pCharEnt[i] = mSceneMgr->createEntity(entName, "sphere.mesh");
+		sprintf(name, "m_pCharEnt%d_%d", i, m_iKinectID);
+		m_pCharEnt[i] = m_pSceneMgr->createEntity(name, "sphere.mesh");
 
 		// Create the scene node
-		sprintf(nodeName, "CharNode%d", i);
-		m_pCharNode[i] = mSceneMgr->getRootSceneNode()->
-			createChildSceneNode(nodeName, Ogre::Vector3(0.0f, 0.0f, 25.0f));
+		sprintf(name, "CharNode%d_%d", i, m_iKinectID);
+		m_pCharNode[i] = m_pSceneMgr->getRootSceneNode()->
+			createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 25.0f));
 		m_pCharNode[i]->attachObject(m_pCharEnt[i]);
 		m_pCharNode[i]->setScale(0.01, 0.01, 0.01);
 	}
 }
 
 
-void CharacterController::update(NUI_SKELETON_FRAME &frame)
+void CharacterController::update(const NUI_SKELETON_DATA &data)
 {
-	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
+	if(data.eTrackingState == NUI_SKELETON_TRACKED)
 	{
-		if(frame.SkeletonData[i].eTrackingState == NUI_SKELETON_TRACKED)
+		for(int j = 0; j < NUI_SKELETON_POSITION_COUNT; j++)
 		{
-			for(int j = 0; j < NUI_SKELETON_POSITION_COUNT; j++)
-			{
-				m_pCharNode[j]->setPosition(frame.SkeletonData[i].SkeletonPositions[j].x*10 + 100,
-					frame.SkeletonData[i].SkeletonPositions[j].y*10 + 270,
-					frame.SkeletonData[i].SkeletonPositions[j].z*10 + 100);
-			}
-
-			//NUI_SKELETON_POSITION_HIP_CENTER;
-			//NUI_SKELETON_POSITION_SPINE;
-			//NUI_SKELETON_POSITION_SHOULDER_CENTER;
-			//NUI_SKELETON_POSITION_HEAD;
-			//NUI_SKELETON_POSITION_SHOULDER_LEFT;
-			//NUI_SKELETON_POSITION_ELBOW_LEFT;
-			//NUI_SKELETON_POSITION_WRIST_LEFT;
-			//NUI_SKELETON_POSITION_HAND_LEFT;
-			//NUI_SKELETON_POSITION_SHOULDER_RIGHT;
-			//NUI_SKELETON_POSITION_ELBOW_RIGHT;
-			//NUI_SKELETON_POSITION_WRIST_RIGHT;
-			//NUI_SKELETON_POSITION_HAND_RIGHT;
-			//NUI_SKELETON_POSITION_HIP_LEFT;
-			//NUI_SKELETON_POSITION_KNEE_LEFT;
-			//NUI_SKELETON_POSITION_ANKLE_LEFT;
-			//NUI_SKELETON_POSITION_FOOT_LEFT;
-			//NUI_SKELETON_POSITION_HIP_RIGHT;
-			//NUI_SKELETON_POSITION_KNEE_RIGHT;
-			//NUI_SKELETON_POSITION_ANKLE_RIGHT;
-			//NUI_SKELETON_POSITION_FOOT_RIGHT;
+			m_pCharNode[j]->setPosition(data.SkeletonPositions[j].x*10 + 100,
+				data.SkeletonPositions[j].y*10 + 270,
+				data.SkeletonPositions[j].z*10 + 100);
 		}
+		if(m_pBodyNode != NULL)
+			m_pBodyNode->setPosition(150, 270, 150);
+
+		//NUI_SKELETON_POSITION_HIP_CENTER;
+		//NUI_SKELETON_POSITION_SPINE;
+		//NUI_SKELETON_POSITION_SHOULDER_CENTER;
+		//NUI_SKELETON_POSITION_HEAD;
+		//NUI_SKELETON_POSITION_SHOULDER_LEFT;
+		//NUI_SKELETON_POSITION_ELBOW_LEFT;
+		//NUI_SKELETON_POSITION_WRIST_LEFT;
+		//NUI_SKELETON_POSITION_HAND_LEFT;
+		//NUI_SKELETON_POSITION_SHOULDER_RIGHT;
+		//NUI_SKELETON_POSITION_ELBOW_RIGHT;
+		//NUI_SKELETON_POSITION_WRIST_RIGHT;
+		//NUI_SKELETON_POSITION_HAND_RIGHT;
+		//NUI_SKELETON_POSITION_HIP_LEFT;
+		//NUI_SKELETON_POSITION_KNEE_LEFT;
+		//NUI_SKELETON_POSITION_ANKLE_LEFT;
+		//NUI_SKELETON_POSITION_FOOT_LEFT;
+		//NUI_SKELETON_POSITION_HIP_RIGHT;
+		//NUI_SKELETON_POSITION_KNEE_RIGHT;
+		//NUI_SKELETON_POSITION_ANKLE_RIGHT;
+		//NUI_SKELETON_POSITION_FOOT_RIGHT;
 	}
 }
 
 void CharacterController::release(void)
 {
-	if(mSceneMgr)
+	if(m_pSceneMgr)
 	{
-		if(m_pBodyEnt)
+		if(m_pBodyEnt != NULL)
 		{
 			if(m_pBodyNode)
 				m_pBodyNode->detachObject(m_pBodyEnt);
 
-			mSceneMgr->destroyEntity(m_pBodyEnt);
+			m_pSceneMgr->destroyEntity(m_pBodyEnt);
 			m_pBodyEnt = NULL;
 		}
 
-		if(m_pBodyNode)
+		if(m_pBodyNode!= NULL)
 		{
-			mSceneMgr->destroySceneNode(m_pBodyNode);
+			m_pSceneMgr->destroySceneNode(m_pBodyNode);
 			m_pBodyNode = NULL;
 		}
 		for(int i = 0; i < NUI_SKELETON_POSITION_COUNT; i++)
 		{
-			if(m_pCharEnt[i])
+			if(m_pCharEnt[i]!= NULL)
 			{
 				if(m_pCharNode[i])
 					m_pCharNode[i]->detachObject(m_pCharEnt[i]);
 
-				mSceneMgr->destroyEntity(m_pCharEnt[i]);
+				m_pSceneMgr->destroyEntity(m_pCharEnt[i]);
 				m_pCharEnt[i] = NULL;
 			}
 
-			if(m_pCharNode[i])
+			if(m_pCharNode[i]!= NULL)
 			{
-				mSceneMgr->destroySceneNode(m_pCharNode[i]);
+				m_pSceneMgr->destroySceneNode(m_pCharNode[i]);
 				m_pCharNode[i] = NULL;
 			}
 		}
