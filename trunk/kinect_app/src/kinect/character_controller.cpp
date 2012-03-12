@@ -62,28 +62,21 @@ void CharacterController::update(const NUI_SKELETON_DATA &data)
 				data.SkeletonPositions[j].z*10 + 100);
 		}
 		if(m_pBodyNode != NULL)
+		{
+			transformBone("Stomach",NUI_SKELETON_POSITION_SPINE, data);
+			transformBone("Waist", NUI_SKELETON_POSITION_HIP_CENTER, data);
+			transformBone("Root", NUI_SKELETON_POSITION_HIP_CENTER, data);
+			transformBone("Chest",NUI_SKELETON_POSITION_SPINE, data);
+			transformBone("Humerus.L",NUI_SKELETON_POSITION_SHOULDER_LEFT, data);
+			transformBone("Humerus.R",NUI_SKELETON_POSITION_SHOULDER_RIGHT, data);
+			transformBone("Ulna.L",NUI_SKELETON_POSITION_ELBOW_LEFT, data);
+			transformBone("Ulna.R",NUI_SKELETON_POSITION_ELBOW_RIGHT, data);
+			transformBone("Thigh.L",NUI_SKELETON_POSITION_HIP_LEFT, data);
+			transformBone("Thigh.R",NUI_SKELETON_POSITION_HIP_RIGHT, data);
+			transformBone("Calf.L",NUI_SKELETON_POSITION_KNEE_LEFT, data);
+			transformBone("Calf.R",NUI_SKELETON_POSITION_KNEE_RIGHT, data);
 			m_pBodyNode->setPosition(150, 270, 150);
-
-		//NUI_SKELETON_POSITION_HIP_CENTER;
-		//NUI_SKELETON_POSITION_SPINE;
-		//NUI_SKELETON_POSITION_SHOULDER_CENTER;
-		//NUI_SKELETON_POSITION_HEAD;
-		//NUI_SKELETON_POSITION_SHOULDER_LEFT;
-		//NUI_SKELETON_POSITION_ELBOW_LEFT;
-		//NUI_SKELETON_POSITION_WRIST_LEFT;
-		//NUI_SKELETON_POSITION_HAND_LEFT;
-		//NUI_SKELETON_POSITION_SHOULDER_RIGHT;
-		//NUI_SKELETON_POSITION_ELBOW_RIGHT;
-		//NUI_SKELETON_POSITION_WRIST_RIGHT;
-		//NUI_SKELETON_POSITION_HAND_RIGHT;
-		//NUI_SKELETON_POSITION_HIP_LEFT;
-		//NUI_SKELETON_POSITION_KNEE_LEFT;
-		//NUI_SKELETON_POSITION_ANKLE_LEFT;
-		//NUI_SKELETON_POSITION_FOOT_LEFT;
-		//NUI_SKELETON_POSITION_HIP_RIGHT;
-		//NUI_SKELETON_POSITION_KNEE_RIGHT;
-		//NUI_SKELETON_POSITION_ANKLE_RIGHT;
-		//NUI_SKELETON_POSITION_FOOT_RIGHT;
+		}
 	}
 }
 
@@ -287,4 +280,90 @@ void CharacterController::setTopAnimation(AnimID id, bool reset)
 		m_bFadingIn[id] = true;
 		if (reset) m_pAnims[id]->setTimePosition(0);
 	}
+}
+
+void CharacterController::transformBone(const std::string& modelBoneName, const NUI_SKELETON_POSITION_INDEX &posIndex, const NUI_SKELETON_DATA &data)
+{
+	// Get the model skeleton bone info
+	Ogre::Skeleton* skel = m_pBodyEnt->getSkeleton();
+	Ogre::Bone* bone = skel->getBone(modelBoneName);
+	Ogre::Quaternion qI = bone->getInitialOrientation();
+	Ogre::Quaternion newQ = Ogre::Quaternion::IDENTITY;
+	NUI_SKELETON_POSITION_INDEX parentIndex = NUI_SKELETON_POSITION_HIP_CENTER;
+	Ogre::Vector3 child = Ogre::Vector3::ZERO;
+	Ogre::Vector3 parent = Ogre::Vector3::ZERO;
+
+	if(data.eSkeletonPositionTrackingState[posIndex] != NUI_SKELETON_NOT_TRACKED )
+	{
+		child.x = data.SkeletonPositions[posIndex].x;
+		child.y = data.SkeletonPositions[posIndex].y;
+		child.z = data.SkeletonPositions[posIndex].z;
+		switch(posIndex)
+		{
+		case NUI_SKELETON_POSITION_HIP_CENTER:
+			break;
+		case NUI_SKELETON_POSITION_SPINE:
+		case NUI_SKELETON_POSITION_HIP_LEFT:
+		case NUI_SKELETON_POSITION_HIP_RIGHT:
+				parentIndex = NUI_SKELETON_POSITION_HIP_CENTER;
+			break;
+		case NUI_SKELETON_POSITION_SHOULDER_CENTER:
+				parentIndex = NUI_SKELETON_POSITION_SPINE;
+			break;
+		case NUI_SKELETON_POSITION_HEAD:
+		case NUI_SKELETON_POSITION_SHOULDER_RIGHT:
+		case NUI_SKELETON_POSITION_SHOULDER_LEFT:
+				parentIndex = NUI_SKELETON_POSITION_SHOULDER_CENTER;
+			break;
+		case NUI_SKELETON_POSITION_ELBOW_LEFT:
+			parentIndex = NUI_SKELETON_POSITION_SHOULDER_LEFT;
+			break;
+		case NUI_SKELETON_POSITION_WRIST_LEFT:
+			parentIndex = NUI_SKELETON_POSITION_ELBOW_LEFT;
+			break;
+		case NUI_SKELETON_POSITION_HAND_LEFT:
+			parentIndex = NUI_SKELETON_POSITION_WRIST_LEFT;
+			break;
+		case NUI_SKELETON_POSITION_ELBOW_RIGHT:
+			parentIndex = NUI_SKELETON_POSITION_SHOULDER_RIGHT;
+			break;
+		case NUI_SKELETON_POSITION_WRIST_RIGHT:
+			parentIndex = NUI_SKELETON_POSITION_ELBOW_RIGHT;
+			break;
+		case NUI_SKELETON_POSITION_HAND_RIGHT:
+			parentIndex = NUI_SKELETON_POSITION_WRIST_RIGHT;
+			break;
+		case NUI_SKELETON_POSITION_KNEE_LEFT:
+			parentIndex = NUI_SKELETON_POSITION_HIP_LEFT;
+			break;
+		case NUI_SKELETON_POSITION_ANKLE_LEFT:
+			parentIndex = NUI_SKELETON_POSITION_KNEE_LEFT;
+			break;
+		case NUI_SKELETON_POSITION_FOOT_LEFT:
+			parentIndex = NUI_SKELETON_POSITION_ANKLE_LEFT;
+			break;
+		case NUI_SKELETON_POSITION_KNEE_RIGHT:
+			parentIndex = NUI_SKELETON_POSITION_HIP_RIGHT;
+			break;
+		case NUI_SKELETON_POSITION_ANKLE_RIGHT:
+			parentIndex = NUI_SKELETON_POSITION_ANKLE_RIGHT;
+			break;
+		case NUI_SKELETON_POSITION_FOOT_RIGHT:
+			parentIndex = NUI_SKELETON_POSITION_ANKLE_RIGHT;
+			break;
+		default:
+			break;
+		}
+
+		parent.x = data.SkeletonPositions[parentIndex].x;
+		parent.y = data.SkeletonPositions[parentIndex].y;
+		parent.z = data.SkeletonPositions[parentIndex].z;
+
+		newQ = calcQuaternion(child, parent);
+
+		bone->resetOrientation(); //in order for the conversion from world to local to work.
+		newQ = bone->convertWorldToLocalOrientation(newQ);
+
+		bone->setOrientation(newQ*qI);			
+	} 
 }

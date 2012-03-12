@@ -65,6 +65,7 @@ public:
 	virtual void setupAnimations();
 	virtual void setBaseAnimation(AnimID id, bool reset = false);
 	virtual void setTopAnimation(AnimID id, bool reset = false);
+	void transformBone(const std::string& modelBoneName, const NUI_SKELETON_POSITION_INDEX &posIndex, const NUI_SKELETON_DATA &data);
 };
 
 #endif // _CHARACTER_CONTROLLER_H_
