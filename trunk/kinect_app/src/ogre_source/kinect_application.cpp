@@ -89,14 +89,32 @@ void KinectApplication::updatePlayer(const NUI_SKELETON_FRAME &frame)
 		}
 		else
 		{
-			if(frame.SkeletonData[i].dwTrackingID == 0)
-			{
-				if(m_vpPlayer[i] != NULL)
-				{
-					delete m_vpPlayer[i];
-					m_vpPlayer[i] = NULL;
-				}
-			}
+			//if(frame.SkeletonData[i].dwTrackingID == 0)
+			//{
+			//	if(m_vpPlayer[i] != NULL)
+			//	{
+			//		delete m_vpPlayer[i];
+			//		m_vpPlayer[i] = NULL;
+			//	}
+			//}
 		}
 	}
+
+
+		//int i = 1;
+		//if(frame.SkeletonData[i].eTrackingState != NUI_SKELETON_NOT_TRACKED)
+		//{
+		//	if(m_vpPlayer[i] != NULL)
+		//	{
+		//		if(m_vpPlayer[i]->getID() != frame.SkeletonData[i].dwTrackingID)
+		//		{
+		//			delete m_vpPlayer[i];
+		//			m_vpPlayer[i] = new CharacterController(mSceneMgr, frame.SkeletonData[i].dwTrackingID);
+		//		}
+		//	}
+		//	else
+		//		m_vpPlayer[i] = new CharacterController(mSceneMgr, frame.SkeletonData[i].dwTrackingID);
+
+		//	m_vpPlayer[i]->update(frame.SkeletonData[i]);
+		//}
 }
