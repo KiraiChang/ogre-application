@@ -22,6 +22,9 @@ public:
     void                    Nui_UnInit(void);
     void                    Nui_Zero(void);
 
+	//Controller Camera Angle;
+	void					setCameraElevationAngle(const long &lAngleDegrees);
+
 	int						MessageBoxResource(UINT nID, UINT nType);
 
 	bool					getSkeletonFrame(NUI_SKELETON_FRAME &frame);

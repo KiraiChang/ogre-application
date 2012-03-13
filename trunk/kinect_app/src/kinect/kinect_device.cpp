@@ -215,6 +215,11 @@ void KinectDevice::Nui_Zero()
 	//ZeroMemory(m_TrackedSkeletonIds,sizeof(m_SkeletonIds));
 }
 
+void KinectDevice::setCameraElevationAngle(const long &lAngleDegrees)
+{
+	m_pNuiSensor->NuiCameraElevationSetAngle(lAngleDegrees);
+}
+
 int KinectDevice::MessageBoxResource( UINT nID, UINT nType )
 {
     static TCHAR szRes[512];
