@@ -24,7 +24,7 @@ public:
 
 	int						MessageBoxResource(UINT nID, UINT nType);
 
-	void					getSkeletonFrame(NUI_SKELETON_FRAME &frame);
+	bool					getSkeletonFrame(NUI_SKELETON_FRAME &frame);
 };
 
 #endif //_KINECT_DEVICE_H_
