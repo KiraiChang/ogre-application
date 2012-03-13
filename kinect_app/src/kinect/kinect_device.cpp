@@ -224,9 +224,8 @@ int KinectDevice::MessageBoxResource( UINT nID, UINT nType )
 }
 
 //return true have get the skeletonFrame
-void KinectDevice::getSkeletonFrame(NUI_SKELETON_FRAME &frame)
+bool KinectDevice::getSkeletonFrame(NUI_SKELETON_FRAME &frame)
 {
-	//NUI_SKELETON_FRAME *frame = NULL;
     bool bFoundSkeleton = false;
 
     if ( SUCCEEDED(m_pNuiSensor->NuiSkeletonGetNextFrame( 0, &frame )) )
@@ -244,13 +243,15 @@ void KinectDevice::getSkeletonFrame(NUI_SKELETON_FRAME &frame)
 	    // no skeletons!
     if( !bFoundSkeleton )
     {
-        return ;
+        return false;
     }
 
     // smooth out the skeleton data
     HRESULT hr = m_pNuiSensor->NuiTransformSmooth(&frame, NULL);
     if ( FAILED(hr) )
     {
-        return ;
+        return false;
     }
+
+	return bFoundSkeleton;
 }
