@@ -14,8 +14,8 @@ KinectDevice::~KinectDevice(void)
 HRESULT KinectDevice::Nui_Init( )
 {
 	HRESULT  hr;
-    RECT     rc;
-    bool     result;
+    //RECT     rc;
+    //bool     result;
 
     if ( !m_pNuiSensor )
     {
