@@ -63,10 +63,10 @@ void CharacterController::update(const NUI_SKELETON_DATA &data)
 		}
 		if(m_pBodyNode != NULL)
 		{
-			transformBone("Stomach",NUI_SKELETON_POSITION_SPINE, data);
-			transformBone("Waist", NUI_SKELETON_POSITION_HIP_CENTER, data);
-			transformBone("Root", NUI_SKELETON_POSITION_HIP_CENTER, data);
-			transformBone("Chest",NUI_SKELETON_POSITION_SPINE, data);
+			//transformBone("Stomach",NUI_SKELETON_POSITION_SPINE, data);
+			//transformBone("Waist", NUI_SKELETON_POSITION_HIP_CENTER, data);
+			//transformBone("Root", NUI_SKELETON_POSITION_HIP_CENTER, data);
+			//transformBone("Chest",NUI_SKELETON_POSITION_SPINE, data);
 			//transformBone("Humerus.L",NUI_SKELETON_POSITION_SHOULDER_LEFT, data);
 			//transformBone("Humerus.R",NUI_SKELETON_POSITION_SHOULDER_RIGHT, data);
 			//transformBone("Ulna.L",NUI_SKELETON_POSITION_ELBOW_LEFT, data);
@@ -317,9 +317,9 @@ void CharacterController::transformBone(const std::string& modelBoneName, const 
 				Ogre::Vector3::NEGATIVE_UNIT_Z).normalisedCopy());
 			break;
 		case NUI_SKELETON_POSITION_SPINE:
-			newQ = (Ogre::Vector3::NEGATIVE_UNIT_Z).getRotationTo((Ogre::Vector3(data.SkeletonPositions[NUI_SKELETON_POSITION_HIP_CENTER].x,
-				data.SkeletonPositions[NUI_SKELETON_POSITION_HIP_CENTER].y,
-				data.SkeletonPositions[NUI_SKELETON_POSITION_HIP_CENTER].z) - 
+			newQ = (Ogre::Vector3::NEGATIVE_UNIT_Z).getRotationTo((Ogre::Vector3(data.SkeletonPositions[NUI_SKELETON_POSITION_SPINE].x,
+				data.SkeletonPositions[NUI_SKELETON_POSITION_SPINE].y,
+				data.SkeletonPositions[NUI_SKELETON_POSITION_SPINE].z) - 
 				Ogre::Vector3::NEGATIVE_UNIT_Z
 				).normalisedCopy());
 			break;
