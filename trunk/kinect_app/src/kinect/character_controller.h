@@ -57,8 +57,9 @@ public:
 	void init(void);
 	void update(const NUI_SKELETON_DATA &data);
 	void release(void);
-	Ogre::Quaternion calcQuaternion(const Ogre::Vector3 &child, const Ogre::Vector3 &parent);
-	Ogre::Quaternion calcQuaternion( const NUI_SKELETON_POSITION_INDEX &childIndex, const NUI_SKELETON_POSITION_INDEX &parentIndex, const NUI_SKELETON_DATA &data);
+	//Ogre::Quaternion calcQuaternion(const Ogre::Vector3 &child, const Ogre::Vector3 &parent);
+	Ogre::Quaternion calcQuaternion(const Ogre::Vector3 &upper, const Ogre::Vector3 &center, const Ogre::Vector3 &downer);
+	//Ogre::Quaternion calcQuaternion( const NUI_SKELETON_POSITION_INDEX &childIndex, const NUI_SKELETON_POSITION_INDEX &parentIndex, const NUI_SKELETON_DATA &data);
 
 	void setupBone(const std::string& name, const Ogre::Quaternion& q);
 	void setupBone(const std::string& name,const Ogre::Degree& yaw,const Ogre::Degree& pitch,const Ogre::Degree& roll);
