@@ -89,13 +89,10 @@ void KinectApplication::updatePlayer(const NUI_SKELETON_FRAME &frame)
 		}
 		else
 		{
-			if(frame.SkeletonData[i].dwTrackingID == 0)
+			if(m_vpPlayer[i] != NULL)
 			{
-				if(m_vpPlayer[i] != NULL)
-				{
-					delete m_vpPlayer[i];
-					m_vpPlayer[i] = NULL;
-				}
+				delete m_vpPlayer[i];
+				m_vpPlayer[i] = NULL;
 			}
 		}
 	}
