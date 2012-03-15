@@ -63,18 +63,18 @@ void CharacterController::update(const NUI_SKELETON_DATA &data)
 		}
 		if(m_pBodyNode != NULL)
 		{
-			//transformBone("Stomach",NUI_SKELETON_POSITION_SPINE, data);
-			//transformBone("Waist", NUI_SKELETON_POSITION_HIP_CENTER, data);
-			//transformBone("Root", NUI_SKELETON_POSITION_HIP_CENTER, data);
-			//transformBone("Chest",NUI_SKELETON_POSITION_SPINE, data);
-			//transformBone("Humerus.L",NUI_SKELETON_POSITION_SHOULDER_LEFT, data);
-			//transformBone("Humerus.R",NUI_SKELETON_POSITION_SHOULDER_RIGHT, data);
-			//transformBone("Ulna.L",NUI_SKELETON_POSITION_ELBOW_LEFT, data);
-			//transformBone("Ulna.R",NUI_SKELETON_POSITION_ELBOW_RIGHT, data);
-			//transformBone("Thigh.L",NUI_SKELETON_POSITION_HIP_LEFT, data);
-			//transformBone("Thigh.R",NUI_SKELETON_POSITION_HIP_RIGHT, data);
-			//transformBone("Calf.L",NUI_SKELETON_POSITION_KNEE_LEFT, data);
-			//transformBone("Calf.R",NUI_SKELETON_POSITION_KNEE_RIGHT, data);
+			transformBone("Stomach",NUI_SKELETON_POSITION_SPINE, data);
+			transformBone("Waist", NUI_SKELETON_POSITION_HIP_CENTER, data);
+			transformBone("Root", NUI_SKELETON_POSITION_HIP_CENTER, data);
+			transformBone("Chest",NUI_SKELETON_POSITION_SPINE, data);
+			transformBone("Humerus.L",NUI_SKELETON_POSITION_SHOULDER_LEFT, data);
+			transformBone("Humerus.R",NUI_SKELETON_POSITION_SHOULDER_RIGHT, data);
+			transformBone("Ulna.L",NUI_SKELETON_POSITION_ELBOW_LEFT, data);
+			transformBone("Ulna.R",NUI_SKELETON_POSITION_ELBOW_RIGHT, data);
+			transformBone("Thigh.L",NUI_SKELETON_POSITION_HIP_LEFT, data);
+			transformBone("Thigh.R",NUI_SKELETON_POSITION_HIP_RIGHT, data);
+			transformBone("Calf.L",NUI_SKELETON_POSITION_KNEE_LEFT, data);
+			transformBone("Calf.R",NUI_SKELETON_POSITION_KNEE_RIGHT, data);
 			m_pBodyNode->setPosition(150, 270, 150);
 		}
 	}
@@ -118,25 +118,34 @@ void CharacterController::release(void)
 	}
 }
 
-Ogre::Quaternion CharacterController::calcQuaternion(const Ogre::Vector3 &child, const Ogre::Vector3 &parent)
+//Ogre::Quaternion CharacterController::calcQuaternion(const Ogre::Vector3 &child, const Ogre::Vector3 &parent)
+//{
+//	return (Ogre::Vector3::NEGATIVE_UNIT_Z).getRotationTo((parent - child).normalisedCopy());
+//}
+//
+
+//(B-A) and (C-B)
+Ogre::Quaternion CharacterController::calcQuaternion(const Ogre::Vector3 &upper, const Ogre::Vector3 &center, const Ogre::Vector3 &downer)
 {
-	return (Ogre::Vector3::NEGATIVE_UNIT_Z).getRotationTo((parent - child).normalisedCopy());
+	Ogre::Vector3 upperCenterDir = center - upper;
+	Ogre::Vector3 centerDownerDir = downer - center;
+	return upperCenterDir.getRotationTo(centerDownerDir);
 }
 
-Ogre::Quaternion CharacterController::calcQuaternion(const NUI_SKELETON_POSITION_INDEX &childIndex, 
-														const NUI_SKELETON_POSITION_INDEX &parentIndex, 
-														const NUI_SKELETON_DATA &data)
-{
-	Ogre::Vector3 child = Ogre::Vector3::ZERO;
-	Ogre::Vector3 parent = Ogre::Vector3::ZERO;
-	child.x = data.SkeletonPositions[childIndex].x;
-	child.y = data.SkeletonPositions[childIndex].y;
-	child.z = data.SkeletonPositions[childIndex].z;
-	parent.x = data.SkeletonPositions[parentIndex].x;
-	parent.y = data.SkeletonPositions[parentIndex].y;
-	parent.z = data.SkeletonPositions[parentIndex].z;
-	return calcQuaternion(child, parent);
-}
+//Ogre::Quaternion CharacterController::calcQuaternion(const NUI_SKELETON_POSITION_INDEX &childIndex, 
+//														const NUI_SKELETON_POSITION_INDEX &parentIndex, 
+//														const NUI_SKELETON_DATA &data)
+//{
+//	Ogre::Vector3 child = Ogre::Vector3::ZERO;
+//	Ogre::Vector3 parent = Ogre::Vector3::ZERO;
+//	child.x = data.SkeletonPositions[childIndex].x;
+//	child.y = data.SkeletonPositions[childIndex].y;
+//	child.z = data.SkeletonPositions[childIndex].z;
+//	parent.x = data.SkeletonPositions[parentIndex].x;
+//	parent.y = data.SkeletonPositions[parentIndex].y;
+//	parent.z = data.SkeletonPositions[parentIndex].z;
+//	return calcQuaternion(child, parent);
+//}
 
 void CharacterController::setupBone(const std::string& boneName,const Ogre::Quaternion& q)
 {
@@ -297,89 +306,358 @@ void CharacterController::setTopAnimation(AnimID id, bool reset)
 	}
 }
 
+//There are 20 joints provided, and they can be organized into a transformation hierarchy as follows:
+//
+//Skeleton origin: JointID.HipCenter
+//Left leg hierarchy: JointID.HipCenter, JointID.HipLeft, JointID.KneeLeft, JointID.AnkleLeft, JointID.FootLeft
+//Right leg hierarchy: JointID.HipCenter, JointID.HipRight, JointID.KneeRight, JointID.AnkleRight, JointID.FootRight
+//Spine-to-neck hierarchy: JointID.HipCenter, JointID.Spine, JointID.ShoulderCenter
+//Head hierarchy: JointID.ShoulderCenter, JointID.Head
+//Left arm hierarchy: JointID.ShoulderCenter, JointID.ShoulderLeft, JointID.ElbowLeft, JointID.WristLeft, JointID.HandLeft
+//Right arm hierarchy: JointID.ShoulderCenter, JointID.ShoulderRight, JointID.ElbowRight, JointID.WristRight, JointID.HandRight
+//
+//From each pair of adjacent joints A and B in hierarchy you can define a vector (B-A) between the two joints, and from each 3-tuple of adjacent joints A, B, C, you can define a 3D rotation from the 2 vectors (B-A) and (C-B).
+
+
+Ogre::Vector3 GetPositionBetweenIndices(const NUI_SKELETON_DATA &data, NUI_SKELETON_POSITION_INDEX p1, NUI_SKELETON_POSITION_INDEX p2) 
+{
+	Ogre::Vector3 pVec1 = Ogre::Vector3(data.SkeletonPositions[p1].x,
+										data.SkeletonPositions[p1].y,
+										data.SkeletonPositions[p1].z);
+
+	Ogre::Vector3 pVec2 = Ogre::Vector3(data.SkeletonPositions[p2].x,
+										data.SkeletonPositions[p2].y,
+										data.SkeletonPositions[p2].z);
+
+	return pVec2 - pVec1;
+}
+
+//populate matrix using the columns
+void PopulateMatrix(Ogre::Matrix3 &jointOrientation, const Ogre::Vector3& xCol,const Ogre::Vector3& yCol, const Ogre::Vector3& zCol) 
+{
+	jointOrientation.SetColumn(0, xCol);
+	jointOrientation.SetColumn(1, yCol);
+	jointOrientation.SetColumn(2, zCol);
+}
+
+//constructs an orientation from a vector that specifies the x axis
+void MakeMatrixFromX(const Ogre::Vector3& v1, Ogre::Matrix3 &jointOrientation) {
+
+	//matrix columns
+	Ogre::Vector3 xCol;
+	Ogre::Vector3 yCol;
+	Ogre::Vector3 zCol;
+
+	//get normalized version of vector between joints
+	Ogre::Vector3 v1normalized = v1.normalisedCopy();
+
+	//set first column to the vector between the previous joint and the current one, this sets the two degrees of freedom
+	xCol = v1normalized;
+
+	//set second column to an arbitrary vector perpendicular to the first column
+	//the angle can be arbitrary since it corresponds to the rotation about relative position vector, which doesn't matter
+	yCol.x = 0.0f;
+	yCol.y = xCol.z;
+	yCol.z = -xCol.y;
+
+	yCol.normalise();
+
+	//third column is fully determined by the first two, and it must be their cross product
+	zCol = xCol.crossProduct(yCol);
+
+	//copy values into matrix
+	PopulateMatrix(jointOrientation, xCol, yCol, zCol);
+}
+
+//constructs an orientation from a vector that specifies the y axis
+void MakeMatrixFromY(const Ogre::Vector3& v1, Ogre::Matrix3 &jointOrientation) 
+{
+
+	//matrix columns
+	Ogre::Vector3 xCol;
+	Ogre::Vector3 yCol;
+	Ogre::Vector3 zCol;
+
+	//get normalized version of vector between joints
+	Ogre::Vector3 v1normalized = v1.normalisedCopy();
+
+	//set first column to the vector between the previous joint and the current one, this sets the two degrees of freedom
+	yCol = v1normalized;
+
+	//set second column to an arbitrary vector perpendicular to the first column
+	//the angle can be arbitrary since it corresponds to the rotation about relative position vector, which doesn't matter
+	xCol.x = yCol.y;
+	xCol.y = -yCol.x;
+	xCol.z = 0.0f;
+
+	xCol.normalise();
+
+	//third column is fully determined by the first two, and it must be their cross product
+	zCol = xCol.crossProduct(yCol);
+
+	//copy values into matrix
+	PopulateMatrix(jointOrientation, xCol, yCol, zCol);
+}
+
+//constructs an orientation from a vector that specifies the x axis
+void MakeMatrixFromZ(const Ogre::Vector3& v1, Ogre::Matrix3 &jointOrientation) 
+{
+
+	//matrix columns
+	Ogre::Vector3 xCol;
+	Ogre::Vector3 yCol;
+	Ogre::Vector3 zCol;
+
+	//get normalized version of vector between joints
+	Ogre::Vector3 v1normalized = v1.normalisedCopy();
+
+	//set first column to the vector between the previous joint and the current one, this sets the two degrees of freedom
+	zCol = v1normalized;
+
+	//set second column to an arbitrary vector perpendicular to the first column
+	//the angle can be arbitrary since it corresponds to the rotation about relative position vector, which doesn't matter
+	xCol.x = zCol.y;
+	xCol.y = -zCol.x;
+	xCol.z = 0.0f;
+
+	xCol.normalise();
+
+	//third column is fully determined by the first two, and it must be their cross product
+	yCol = zCol.crossProduct(xCol);
+
+	//copy values into matrix
+	PopulateMatrix(jointOrientation, xCol, yCol, zCol);
+}
+
+//constructs an orientation from 2 vectors: the first specifies the x axis, and the next specifies the y axis
+//uses the first vector as x axis, then constructs the other axes using cross products
+void MakeMatrixFromXY(const Ogre::Vector3& xUnnormalized, const Ogre::Vector3& yUnnormalized, Ogre::Matrix3 &jointOrientation) 
+{
+
+	//matrix columns
+	Ogre::Vector3 xCol;
+	Ogre::Vector3 yCol;
+	Ogre::Vector3 zCol;
+
+	Ogre::Vector3 xn = xUnnormalized.normalisedCopy();
+	Ogre::Vector3 yn = yUnnormalized.normalisedCopy();
+
+	//set up the three different columns to be rearranged and flipped
+	xCol = xn;
+	zCol = xCol.crossProduct(yn).normalise();
+	yCol = zCol.crossProduct(xCol); //shouldn't need normalization
+
+	//copy values into matrix
+	PopulateMatrix(jointOrientation, xCol, yCol, zCol);
+}
+
+//constructs an orientation from 2 vectors: the first specifies the x axis, and the next specifies the y axis
+//uses the second vector as y axis, then constructs the other axes using cross products
+void MakeMatrixFromYX(const Ogre::Vector3& xUnnormalized, const Ogre::Vector3& yUnnormalized, Ogre::Matrix3 &jointOrientation) 
+{
+
+	//matrix columns
+	Ogre::Vector3 xCol;
+	Ogre::Vector3 yCol;
+	Ogre::Vector3 zCol;
+
+	Ogre::Vector3 xn = xUnnormalized.normalisedCopy();
+	Ogre::Vector3 yn = yUnnormalized.normalisedCopy();
+
+	//set up the three different columns to be rearranged and flipped
+	yCol = yn;
+	zCol = xn.crossProduct(yCol).normalisedCopy();
+	xCol = yCol.crossProduct(zCol);
+
+	//copy values into matrix
+	PopulateMatrix(jointOrientation, xCol, yCol, zCol);
+}
+
+//constructs an orientation from 2 vectors: the first specifies the x axis, and the next specifies the y axis
+//uses the second vector as y axis, then constructs the other axes using cross products
+void MakeMatrixFromYZ(const Ogre::Vector3& yUnnormalized, const Ogre::Vector3& zUnnormalized, Ogre::Matrix3 &jointOrientation) 
+{
+
+	//matrix columns
+	Ogre::Vector3 xCol;
+	Ogre::Vector3 yCol;
+	Ogre::Vector3 zCol;
+
+	Ogre::Vector3 yn = yUnnormalized.normalisedCopy();
+	Ogre::Vector3 zn = zUnnormalized.normalisedCopy();
+
+	//set up the three different columns to be rearranged and flipped
+	yCol = yn;
+	xCol = yCol.crossProduct(zn).normalisedCopy();
+	zCol = xCol.crossProduct(yCol);
+
+	//copy values into matrix
+	PopulateMatrix(jointOrientation, xCol, yCol, zCol);
+}
+
+bool GetSkeletonJointOrientation(const NUI_SKELETON_DATA &user, NUI_SKELETON_POSITION_INDEX index, Ogre::Matrix3& jointOrientation)
+{
+	Ogre::Vector3 vx;
+	Ogre::Vector3 vy;
+	Ogre::Vector3 vz;
+
+	switch (index) {
+
+	case NUI_SKELETON_POSITION_HIP_CENTER://use hipcenter-spine for y, hipleft-hipright for x
+		vy = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_HIP_CENTER,NUI_SKELETON_POSITION_SPINE);
+		vx = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_HIP_LEFT,NUI_SKELETON_POSITION_HIP_RIGHT);
+		MakeMatrixFromYX(vx,vy,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_SPINE://use shoulderleft-shoulderright for x
+		vy = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_SPINE,NUI_SKELETON_POSITION_SHOULDER_CENTER);
+		vx = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_SHOULDER_LEFT,NUI_SKELETON_POSITION_SHOULDER_RIGHT);
+		MakeMatrixFromYX(vx,vy,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_SHOULDER_CENTER://use shoulderleft-shoulder-right for x
+		vy = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_SHOULDER_CENTER,NUI_SKELETON_POSITION_HEAD);
+		vx = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_SHOULDER_LEFT,NUI_SKELETON_POSITION_SHOULDER_RIGHT);
+		MakeMatrixFromYX(vx,vy,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_HEAD:
+		vy = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_SHOULDER_CENTER,NUI_SKELETON_POSITION_HEAD);
+		MakeMatrixFromY(vy,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_SHOULDER_LEFT:
+		vy = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_ELBOW_LEFT,NUI_SKELETON_POSITION_WRIST_LEFT);
+		vx = -GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_SHOULDER_LEFT,NUI_SKELETON_POSITION_ELBOW_LEFT);
+		MakeMatrixFromXY(vx,vy,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_ELBOW_LEFT:
+		vx = -GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_ELBOW_LEFT,NUI_SKELETON_POSITION_WRIST_LEFT);
+		vy = -GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_SHOULDER_LEFT,NUI_SKELETON_POSITION_ELBOW_LEFT);
+		MakeMatrixFromXY(vx,vy,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_WRIST_LEFT:
+		vx = -GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_WRIST_LEFT,NUI_SKELETON_POSITION_HAND_LEFT);
+		MakeMatrixFromX(vx,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_HAND_LEFT:
+		vx = -GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_WRIST_LEFT,NUI_SKELETON_POSITION_HAND_LEFT);
+		MakeMatrixFromX(vx,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_HIP_LEFT:
+		vy = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_KNEE_LEFT,NUI_SKELETON_POSITION_HIP_LEFT);
+		//vz = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_KNEE_LEFT,NUI_SKELETON_POSITION_ANKLE_LEFT);//this one could be off
+		//if(areNearCollinear(vy,vz)) {
+		vx = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_HIP_LEFT,NUI_SKELETON_POSITION_HIP_RIGHT);
+		MakeMatrixFromYX(vx,vy,jointOrientation);
+		//}else{
+		//      MakeMatrixFromYZ(vy,vz,jointOrientation);
+		//}
+		break;
+
+	case NUI_SKELETON_POSITION_KNEE_LEFT:
+		{
+			vy = -GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_KNEE_LEFT,NUI_SKELETON_POSITION_ANKLE_LEFT);
+			vz = -GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_ANKLE_LEFT,NUI_SKELETON_POSITION_FOOT_LEFT);//this one could be off
+			//XnSkeletonJointPosition footPos;
+			//XnSkeletonJoint footJoint;
+			//footJoint = MSRKinectJointMap::GetXnJointByNuiIndex(NUI_SKELETON_POSITION_FOOT_LEFT);
+			//m_pSkeleton->GetSkeletonJointPosition(user,footJoint,footPos);
+			//XnFloat minConfidence = 0.9f;
+			//if (footPos.fConfidence < minConfidence) {
+			//	printf("Knee position confidence was: %f\r\n",footPos.fConfidence);
+			//	MakeMatrixFromY(vy,jointOrientation);
+			//}else {
+				MakeMatrixFromYZ(vy,vz,jointOrientation);
+			//}
+		}
+		break;
+
+	case NUI_SKELETON_POSITION_ANKLE_LEFT:
+		vz = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_FOOT_LEFT,NUI_SKELETON_POSITION_ANKLE_LEFT);
+		MakeMatrixFromZ(vz,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_FOOT_LEFT:
+		vz = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_FOOT_LEFT,NUI_SKELETON_POSITION_ANKLE_LEFT);
+		MakeMatrixFromZ(vz,jointOrientation);
+		break;
+
+
+	case NUI_SKELETON_POSITION_SHOULDER_RIGHT:
+		vy = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_ELBOW_RIGHT,NUI_SKELETON_POSITION_WRIST_RIGHT);
+		vx = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_SHOULDER_RIGHT,NUI_SKELETON_POSITION_ELBOW_RIGHT);
+		MakeMatrixFromXY(vx,vy,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_ELBOW_RIGHT:
+		vx = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_ELBOW_RIGHT,NUI_SKELETON_POSITION_WRIST_RIGHT);
+		vy = -GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_SHOULDER_RIGHT,NUI_SKELETON_POSITION_ELBOW_RIGHT);
+		MakeMatrixFromXY(vx,vy,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_WRIST_RIGHT:
+		vx = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_WRIST_RIGHT,NUI_SKELETON_POSITION_HAND_RIGHT);
+		MakeMatrixFromX(vx,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_HAND_RIGHT:
+		vx = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_WRIST_RIGHT,NUI_SKELETON_POSITION_HAND_RIGHT);
+		MakeMatrixFromX(vx,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_HIP_RIGHT:
+		vy = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_KNEE_RIGHT,NUI_SKELETON_POSITION_HIP_RIGHT);
+		//vz = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_KNEE_RIGHT,NUI_SKELETON_POSITION_ANKLE_RIGHT);//this one could be off
+		//if(areNearCollinear(vy,vz)) {
+		vx = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_HIP_LEFT,NUI_SKELETON_POSITION_HIP_RIGHT);
+		MakeMatrixFromYX(vx,vy,jointOrientation);
+		//}else{
+		//      MakeMatrixFromYZ(vy,vz,jointOrientation);
+		//}
+		break;
+
+	case NUI_SKELETON_POSITION_KNEE_RIGHT:
+		vy = -GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_KNEE_RIGHT,NUI_SKELETON_POSITION_ANKLE_RIGHT);
+		vz = -GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_ANKLE_RIGHT,NUI_SKELETON_POSITION_FOOT_RIGHT);//this one could be off
+		MakeMatrixFromYZ(vy,vz,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_ANKLE_RIGHT:
+		vz = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_FOOT_RIGHT,NUI_SKELETON_POSITION_ANKLE_RIGHT);
+		MakeMatrixFromZ(vz,jointOrientation);
+		break;
+
+	case NUI_SKELETON_POSITION_FOOT_RIGHT:
+		vz = GetPositionBetweenIndices(user,NUI_SKELETON_POSITION_FOOT_RIGHT,NUI_SKELETON_POSITION_ANKLE_RIGHT);
+		MakeMatrixFromZ(vz,jointOrientation);
+		break;
+
+	}
+	return true;
+}
+
 void CharacterController::transformBone(const std::string& modelBoneName, const NUI_SKELETON_POSITION_INDEX &posIndex, const NUI_SKELETON_DATA &data)
 {
 	// Get the model skeleton bone info
-	Ogre::Skeleton* skel = m_pBodyEnt->getSkeleton();
-	Ogre::Bone* bone = skel->getBone(modelBoneName);
-	//Ogre::Quaternion qI = bone->getInitialOrientation();
+	Ogre::Bone* bone = m_pBodyEnt->getSkeleton()->getBone(modelBoneName);
+	Ogre::Quaternion qI = bone->getInitialOrientation();
 	Ogre::Quaternion newQ = Ogre::Quaternion::IDENTITY;
 
 
 	if(data.eSkeletonPositionTrackingState[posIndex] != NUI_SKELETON_NOT_TRACKED )
 	{
-		switch(posIndex)
-		{
-		case NUI_SKELETON_POSITION_HIP_CENTER:
-			newQ = (Ogre::Vector3::NEGATIVE_UNIT_Z).getRotationTo((Ogre::Vector3(data.SkeletonPositions[NUI_SKELETON_POSITION_HIP_CENTER].x,
-				data.SkeletonPositions[NUI_SKELETON_POSITION_HIP_CENTER].y,
-				data.SkeletonPositions[NUI_SKELETON_POSITION_HIP_CENTER].z) - 
-				Ogre::Vector3::NEGATIVE_UNIT_Z).normalisedCopy());
-			break;
-		case NUI_SKELETON_POSITION_SPINE:
-			newQ = (Ogre::Vector3::NEGATIVE_UNIT_Z).getRotationTo((Ogre::Vector3(data.SkeletonPositions[NUI_SKELETON_POSITION_SPINE].x,
-				data.SkeletonPositions[NUI_SKELETON_POSITION_SPINE].y,
-				data.SkeletonPositions[NUI_SKELETON_POSITION_SPINE].z) - 
-				Ogre::Vector3::NEGATIVE_UNIT_Z
-				).normalisedCopy());
-			break;
-		case NUI_SKELETON_POSITION_HIP_LEFT:
-		case NUI_SKELETON_POSITION_HIP_RIGHT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_HIP_CENTER, data);
-			break;
-		case NUI_SKELETON_POSITION_SHOULDER_CENTER:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_SPINE, data);
-			break;
-		case NUI_SKELETON_POSITION_HEAD:
-		case NUI_SKELETON_POSITION_SHOULDER_RIGHT:
-		case NUI_SKELETON_POSITION_SHOULDER_LEFT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_SHOULDER_CENTER, data);
-			break;
-		case NUI_SKELETON_POSITION_ELBOW_LEFT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_SHOULDER_LEFT, data);
-			break;
-		case NUI_SKELETON_POSITION_WRIST_LEFT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_ELBOW_LEFT, data);
-			break;
-		case NUI_SKELETON_POSITION_HAND_LEFT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_WRIST_LEFT, data);
-			break;
-		case NUI_SKELETON_POSITION_ELBOW_RIGHT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_SHOULDER_RIGHT, data);
-			break;
-		case NUI_SKELETON_POSITION_WRIST_RIGHT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_ELBOW_RIGHT, data);
-			break;
-		case NUI_SKELETON_POSITION_HAND_RIGHT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_WRIST_RIGHT, data);
-			break;
-		case NUI_SKELETON_POSITION_KNEE_LEFT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_HIP_LEFT, data);
-			break;
-		case NUI_SKELETON_POSITION_ANKLE_LEFT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_KNEE_LEFT, data);
-			break;
-		case NUI_SKELETON_POSITION_FOOT_LEFT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_ANKLE_LEFT, data);
-			break;
-		case NUI_SKELETON_POSITION_KNEE_RIGHT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_HIP_RIGHT, data);
-			break;
-		case NUI_SKELETON_POSITION_ANKLE_RIGHT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_KNEE_RIGHT, data);
-			break;
-		case NUI_SKELETON_POSITION_FOOT_RIGHT:
-			newQ = calcQuaternion(posIndex, NUI_SKELETON_POSITION_ANKLE_RIGHT, data);
-			break;
-		default:
-			break;
-		}
+		Ogre::Matrix3 matOri;
+		GetSkeletonJointOrientation(data, posIndex, matOri);
 
-		//bone->resetOrientation(); //in order for the conversion from world to local to work.
-		//newQ = bone->convertWorldToLocalOrientation(newQ);
+		newQ.FromRotationMatrix(matOri);
+		bone->resetOrientation(); //in order for the conversion from world to local to work.
+		newQ = bone->convertWorldToLocalOrientation(newQ);
 
-		//bone->setOrientation(newQ*qI);			
-
-		bone->rotate( bone->convertWorldToLocalOrientation(newQ));
+		bone->setOrientation(newQ*qI);			
 	} 
 }
