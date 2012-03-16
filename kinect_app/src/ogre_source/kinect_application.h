@@ -21,7 +21,6 @@ private:
 
 	//Ogre
 	CharacterController *					m_vpPlayer[NUI_SKELETON_COUNT];
-	Ogre::Timer*							m_pTimer;
 
 public:
 	KinectApplication(void);
