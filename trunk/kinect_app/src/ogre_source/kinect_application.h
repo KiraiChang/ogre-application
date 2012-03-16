@@ -3,15 +3,25 @@
 
 #include "../kinect/character_controller.h"
 #include "ogre_application.h"
-//#include <vector>
-//
-//typedef std::vector<> PLAYER_SET;
+
+class PhysicSimulation;
+namespace Ogre
+{
+	class Timer;
+}
 
 class KinectApplication : public OgreApplication
 {
 private:
-	KinectDevice *			m_pKinectDevice;
-	CharacterController *	m_vpPlayer[NUI_SKELETON_COUNT];
+	//Physic
+	PhysicSimulation*						m_pPhysicSimulation;
+
+	//Kinect
+	KinectDevice *							m_pKinectDevice;
+
+	//Ogre
+	CharacterController *					m_vpPlayer[NUI_SKELETON_COUNT];
+	Ogre::Timer*							m_pTimer;
 
 public:
 	KinectApplication(void);
