@@ -1,10 +1,26 @@
 #include "kinect_application.h"
+#include "../physic/physic.h"
+#include <Ogre.h>
 
-KinectApplication::KinectApplication(void):m_pKinectDevice(NULL)
+
+KinectApplication::KinectApplication(void):
+		m_pKinectDevice(NULL), 
+		m_pPhysicSimulation(NULL),
+		m_pTimer(NULL)
 {
 	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	{
 		m_vpPlayer[i] = NULL;
+	}
+	if(NULL == m_pPhysicSimulation)
+	{
+		m_pPhysicSimulation = new PhysicSimulation();
+		m_pPhysicSimulation->init();
+	}
+	if(NULL == m_pTimer)
+	{
+		m_pTimer= new Ogre::Timer();
+		m_pTimer->reset();
 	}
 }
 
@@ -12,6 +28,17 @@ KinectApplication::~KinectApplication(void)
 {
 	releaseKinect();
 	releaseCharacter();
+	if(NULL != m_pPhysicSimulation)
+	{
+		delete m_pPhysicSimulation;
+		m_pPhysicSimulation = NULL;
+	}
+
+	if(NULL != m_pTimer)
+	{
+		delete m_pTimer;
+		m_pTimer = NULL;
+	}
 }
 
 const std::string KinectApplication::getApplicationName(void)const
@@ -30,6 +57,17 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 	NUI_SKELETON_FRAME frame = {0};
 	if(m_pKinectDevice->getSkeletonFrame(frame))
 		updatePlayer(frame);
+
+	if(NULL != m_pPhysicSimulation)
+	{
+		float ms =  m_pTimer->getMicroseconds();
+
+		float minFPS = 1000000.f/60.f;
+		if (ms > minFPS)
+			ms = minFPS;
+		m_pPhysicSimulation->update(ms / 1000000.f);
+		m_pTimer->reset();
+	}
 
 	return bRet;
 }

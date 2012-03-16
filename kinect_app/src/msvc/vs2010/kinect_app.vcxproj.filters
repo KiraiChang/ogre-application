@@ -25,6 +25,9 @@
     <Filter Include="kinect">
       <UniqueIdentifier>{cee6fb4f-9c22-4b2c-9e91-84fa38c60373}</UniqueIdentifier>
     </Filter>
+    <Filter Include="physic">
+      <UniqueIdentifier>{b2184770-a393-4873-b191-19d50957290a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\main\main.cpp">
@@ -50,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="..\..\kinect\character_controller.cpp">
       <Filter>kinect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\physic\physic.cpp">
+      <Filter>physic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="..\..\kinect\character_controller.h">
       <Filter>kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\physic\physic.h">
+      <Filter>physic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
