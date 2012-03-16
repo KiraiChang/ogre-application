@@ -649,10 +649,14 @@ void CharacterController::transformBone(const std::string& modelBoneName, const 
 	Ogre::Quaternion newQ = Ogre::Quaternion::IDENTITY;
 
 
-	if(data.eSkeletonPositionTrackingState[posIndex] != NUI_SKELETON_NOT_TRACKED )
+	if(data.eSkeletonPositionTrackingState[posIndex] != NUI_SKELETON_NOT_TRACKED  && data.SkeletonPositions[posIndex].w > 0)
 	{
-		Ogre::Matrix3 matOri;
-		GetSkeletonJointOrientation(data, posIndex, matOri);
+		Ogre::Matrix3 jointOri;
+		GetSkeletonJointOrientation(data, posIndex, jointOri);
+
+		Ogre::Matrix3 matOri(jointOri.GetColumn(0).x,-jointOri.GetColumn(1).x,jointOri.GetColumn(2).x,
+							-jointOri.GetColumn(0).y,jointOri.GetColumn(1).y,-jointOri.GetColumn(2).y,
+							jointOri.GetColumn(0).z,-jointOri.GetColumn(1).z,jointOri.GetColumn(2).z);
 
 		newQ.FromRotationMatrix(matOri);
 		bone->resetOrientation(); //in order for the conversion from world to local to work.
