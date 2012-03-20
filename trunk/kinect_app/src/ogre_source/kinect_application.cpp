@@ -6,6 +6,7 @@
 KinectApplication::KinectApplication(void):
 		m_pKinectDevice(NULL), 
 		m_pPhysicSimulation(NULL),
+		m_bHasDevice(TRUE)
 {
 	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	{
@@ -42,9 +43,13 @@ void KinectApplication::createScene(void)
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
 	bool bRet = OgreApplication::frameEnded(evt);
-	NUI_SKELETON_FRAME frame = {0};
-	if(m_pKinectDevice->getSkeletonFrame(frame))
-		updatePlayer(frame);
+	
+	if(NULL != m_pKinectDevice)
+	{
+		NUI_SKELETON_FRAME frame = {0};
+		if(m_pKinectDevice->getSkeletonFrame(frame))
+			updatePlayer(frame);
+	}
 
 	if(NULL != m_pPhysicSimulation)
 	{
@@ -68,10 +73,14 @@ void KinectApplication::releaseCharacter()
 
 KinectDevice *KinectApplication::getKinectDevice()
 {
-	if(NULL == m_pKinectDevice)
+	if(NULL == m_pKinectDevice && m_bHasDevice)
 	{
 		m_pKinectDevice = new KinectDevice();
-		m_pKinectDevice->Nui_Init();
+		if(FAILED(m_pKinectDevice->Nui_Init()))
+		{
+			m_bHasDevice = FALSE;
+			releaseKinect();
+		}
 	}
 
 	return m_pKinectDevice;

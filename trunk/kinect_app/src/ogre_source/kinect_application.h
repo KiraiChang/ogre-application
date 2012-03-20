@@ -18,6 +18,7 @@ private:
 
 	//Kinect
 	KinectDevice *							m_pKinectDevice;
+	bool									m_bHasDevice;
 
 	//Ogre
 	CharacterController *					m_vpPlayer[NUI_SKELETON_COUNT];
