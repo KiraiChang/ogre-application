@@ -24,7 +24,7 @@ public:
 	PhysicSimulation(void);
 	virtual ~PhysicSimulation(void);
 
-	virtual void init(void);
+	virtual void init(const int &x = 10000, const int &y = 10000, const int &z = 10000);
 	virtual void release(void);
 	virtual void update(const float &timePass = 0);
 

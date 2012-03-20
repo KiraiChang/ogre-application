@@ -17,14 +17,14 @@ PhysicSimulation::~PhysicSimulation(void)
 	release();
 }
 
-void PhysicSimulation::init(void)
+void PhysicSimulation::init(const int &x, const int &y, const int &z)
 {
 	m_pCollisionConfiguration = new btDefaultCollisionConfiguration();
 
 	m_pDispatcher = new btCollisionDispatcher(m_pCollisionConfiguration);
 
-	btVector3 worldAabbMin(-10000,-10000,-10000);
-	btVector3 worldAabbMax(10000,10000,10000);
+	btVector3 worldAabbMin(-x,-y,-z);
+	btVector3 worldAabbMax(x, y, z);
 	m_pBroadphase = new btAxisSweep3 (worldAabbMin, worldAabbMax);
 
 	m_pSolver = new btSequentialImpulseConstraintSolver;

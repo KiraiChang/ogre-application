@@ -10,7 +10,8 @@ extern "C" {
         // Create application object
         KinectApplication app;
 
-		app.getKinectDevice()->m_hInstance = hInst;
+		if(NULL != app.getKinectDevice())
+			app.getKinectDevice()->m_hInstance = hInst;
 
         try {
             app.go();

@@ -57,6 +57,9 @@
     <ClCompile Include="..\..\physic\physic.cpp">
       <Filter>physic</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\physic\rag_doll.cpp">
+      <Filter>physic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\base_math\base_define.h">
@@ -87,6 +90,9 @@
       <Filter>kinect</Filter>
     </ClInclude>
     <ClInclude Include="..\..\physic\physic.h">
+      <Filter>physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\physic\rag_doll.h">
       <Filter>physic</Filter>
     </ClInclude>
   </ItemGroup>
