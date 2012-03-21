@@ -1,12 +1,16 @@
 #include "kinect_application.h"
 #include "../physic/physic.h"
+#include "../physic/rag_doll.h"
+#include "../ogre_physic/ogre_physic_debug.h"
+
 #include <Ogre.h>
 
 
 KinectApplication::KinectApplication(void):
 		m_pKinectDevice(NULL), 
 		m_pPhysicSimulation(NULL),
-		m_bHasDevice(TRUE)
+		m_bHasDevice(TRUE),
+		m_pRagDoll(NULL)
 {
 	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	{
@@ -25,6 +29,9 @@ KinectApplication::~KinectApplication(void)
 	releaseCharacter();
 	if(NULL != m_pPhysicSimulation)
 	{
+		delete m_pRagDoll;
+		m_pRagDoll = NULL;
+
 		delete m_pPhysicSimulation;
 		m_pPhysicSimulation = NULL;
 	}
@@ -38,6 +45,13 @@ const std::string KinectApplication::getApplicationName(void)const
 void KinectApplication::createScene(void)
 {
 	OgreApplication::createScene();
+
+	m_pRagDoll = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
+	m_pRagDoll->init(0, 270, 0);
+	OgrePhysicDebug *debug = new OgrePhysicDebug();
+	debug->init(mSceneMgr);
+	m_pRagDoll->setDebug(debug);
+
 }
 
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
@@ -53,7 +67,8 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 
 	if(NULL != m_pPhysicSimulation)
 	{
-		m_pPhysicSimulation->update();
+		//m_pPhysicSimulation->update();
+		m_pRagDoll->update();
 	}
 
 	return bRet;

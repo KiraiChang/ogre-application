@@ -6,6 +6,7 @@ class btCollisionShape;
 class btRigidBody;
 class btTypedConstraint;
 class btTransform;
+class PhysicDebug;
 
 class RagDoll
 {
@@ -55,12 +56,19 @@ private:
 	btCollisionShape*							m_pShapes[BODYPART_COUNT];
 	btRigidBody*								m_pBodies[BODYPART_COUNT];
 	btTypedConstraint*							m_pJoints[JOINT_COUNT];
+
+	PhysicDebug*								m_pDebug;
+
+private:
 	btRigidBody* localCreateRigidBody (float mass, const btTransform& startTransform, btCollisionShape* shape);
 public:
 	RagDoll(btDynamicsWorld* pWorld);
 	virtual ~RagDoll();
-	virtual void init(const int &x = 0, const int &y, const int &z);
+	virtual void update();
+	virtual void init(const int &x = 0, const int &y = 0, const int &z = 0);
 	virtual void release();
+
+	void setDebug(PhysicDebug *debug);
 };
 
 #endif _RAG_DOLL_H_
