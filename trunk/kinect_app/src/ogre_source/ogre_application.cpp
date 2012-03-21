@@ -151,7 +151,7 @@ void OgreApplication::createScene(void)
 	//createLight();
 	createShadow();
 	//createSkyDome();
-	createTerrain();
+	//createTerrain();
 	createCaelum();
 	//mSceneMgr->setFog(Ogre::FOG_LINEAR);
 }
