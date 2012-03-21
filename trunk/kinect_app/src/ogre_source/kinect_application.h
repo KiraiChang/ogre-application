@@ -5,16 +5,14 @@
 #include "ogre_application.h"
 
 class PhysicSimulation;
-namespace Ogre
-{
-	class Timer;
-}
+class RagDoll;
 
 class KinectApplication : public OgreApplication
 {
 private:
 	//Physic
 	PhysicSimulation*						m_pPhysicSimulation;
+	RagDoll*								m_pRagDoll;
 
 	//Kinect
 	KinectDevice *							m_pKinectDevice;

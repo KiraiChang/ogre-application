@@ -28,6 +28,8 @@ public:
 	virtual void release(void);
 	virtual void update(const float &timePass = 0);
 
+	btDynamicsWorld* getDynamicsWorld(void);
+
 };
 
 #endif //_PHYSIC_H_

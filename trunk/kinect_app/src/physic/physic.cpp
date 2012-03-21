@@ -107,3 +107,8 @@ void PhysicSimulation::update(const float &timePass)
 		m_pDynamicsWorld->debugDrawWorld();
 	}
 }
+
+btDynamicsWorld* PhysicSimulation::getDynamicsWorld(void)
+{
+	return m_pDynamicsWorld; 
+}

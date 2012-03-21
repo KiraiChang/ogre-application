@@ -390,29 +390,42 @@ void OgreApplication::createFrameListener(void)
 
 void OgreApplication::processTerrain(void)
 {
-	if (mTerrainGroup->isDerivedDataUpdateInProgress())
-    {
-        mTrayMgr->moveWidgetToTray(mInfoLabel, OgreBites::TL_TOP, 0);
-        mInfoLabel->show();
-        if (mTerrainsImported)
-        {
-            mInfoLabel->setCaption("Building terrain, please wait...");
-        }
-        else
-        {
-            mInfoLabel->setCaption("Updating textures, patience...");
-        }
-    }
-    else
-    {
-        mTrayMgr->removeWidgetFromTray(mInfoLabel);
-        mInfoLabel->hide();
-        if (mTerrainsImported)
-        {
-            //mTerrainGroup->saveAllTerrains(true);
-            mTerrainsImported = false;
-        }
-    }
+	if(NULL != mTerrainGroup)
+	{
+		if (mTerrainGroup->isDerivedDataUpdateInProgress())
+		{
+			mTrayMgr->moveWidgetToTray(mInfoLabel, OgreBites::TL_TOP, 0);
+			mInfoLabel->show();
+			if (mTerrainsImported)
+			{
+				mInfoLabel->setCaption("Building terrain, please wait...");
+			}
+			else
+			{
+				mInfoLabel->setCaption("Updating textures, patience...");
+			}
+		}
+		else
+		{
+			mTrayMgr->removeWidgetFromTray(mInfoLabel);
+			mInfoLabel->hide();
+			if (mTerrainsImported)
+			{
+				//mTerrainGroup->saveAllTerrains(true);
+				mTerrainsImported = false;
+			}
+		}
+	}
+	else
+	{
+		mTrayMgr->removeWidgetFromTray(mInfoLabel);
+		mInfoLabel->hide();
+		if (mTerrainsImported)
+		{
+			//mTerrainGroup->saveAllTerrains(true);
+			mTerrainsImported = false;
+		}
+	}
 }
 
 // Ogre::FrameListener

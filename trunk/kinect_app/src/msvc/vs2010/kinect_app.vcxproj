@@ -64,7 +64,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\..\..\..\SDK\VS2010\CEGUI_SDK_076\lib;..\..\..\..\..\SDK\VS2010\ogre_src_v1-7-4\lib\debug;..\..\..\..\..\SDK\VS2010\boost_1_48_0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\SDK\VS2010\CEGUI_SDK_076\lib;..\..\..\..\..\SDK\VS2010\ogre_src_v1-7-4\lib\debug;..\..\..\..\..\SDK\VS2010\boost_1_48_0\lib;..\..\..\..\..\SDK\VS2010\bullet-2.79\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Kinect10.lib;OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;BulletDynamics_d.lib;BulletCollision_d.lib;LinearMath_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -92,10 +92,12 @@
     <ClCompile Include="..\..\kinect\kinect_device.cpp" />
     <ClCompile Include="..\..\main\main.cpp" />
     <ClCompile Include="..\..\manger_source\object_manger.cpp" />
+    <ClCompile Include="..\..\ogre_physic\ogre_physic_debug.cpp" />
     <ClCompile Include="..\..\ogre_source\base_application.cpp" />
     <ClCompile Include="..\..\ogre_source\kinect_application.cpp" />
     <ClCompile Include="..\..\ogre_source\ogre_application.cpp" />
     <ClCompile Include="..\..\physic\physic.cpp" />
+    <ClCompile Include="..\..\physic\physic_debug.cpp" />
     <ClCompile Include="..\..\physic\rag_doll.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -105,10 +107,12 @@
     <ClInclude Include="..\..\kinect\kinect_device.h" />
     <ClInclude Include="..\..\kinect\resource.h" />
     <ClInclude Include="..\..\manger_source\object_manger.h" />
+    <ClInclude Include="..\..\ogre_physic\ogre_physic_debug.h" />
     <ClInclude Include="..\..\ogre_source\base_application.h" />
     <ClInclude Include="..\..\ogre_source\kinect_application.h" />
     <ClInclude Include="..\..\ogre_source\ogre_application.h" />
     <ClInclude Include="..\..\physic\physic.h" />
+    <ClInclude Include="..\..\physic\physic_debug.h" />
     <ClInclude Include="..\..\physic\rag_doll.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

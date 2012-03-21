@@ -28,6 +28,9 @@
     <Filter Include="physic">
       <UniqueIdentifier>{b2184770-a393-4873-b191-19d50957290a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ogre_physic">
+      <UniqueIdentifier>{69ffc950-60aa-4579-8b1f-bf598d887681}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\main\main.cpp">
@@ -58,6 +61,12 @@
       <Filter>physic</Filter>
     </ClCompile>
     <ClCompile Include="..\..\physic\rag_doll.cpp">
+      <Filter>physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ogre_physic\ogre_physic_debug.cpp">
+      <Filter>ogre_physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\physic\physic_debug.cpp">
       <Filter>physic</Filter>
     </ClCompile>
   </ItemGroup>
@@ -94,6 +103,12 @@
     </ClInclude>
     <ClInclude Include="..\..\physic\rag_doll.h">
       <Filter>physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\physic\physic_debug.h">
+      <Filter>physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ogre_physic\ogre_physic_debug.h">
+      <Filter>ogre_physic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

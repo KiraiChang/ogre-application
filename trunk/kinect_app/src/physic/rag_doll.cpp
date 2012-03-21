@@ -1,6 +1,8 @@
 #include "rag_doll.h"
 #include "LinearMath/btIDebugDraw.h"
 #include "btBulletDynamicsCommon.h"
+#include "physic_debug.h"
+
 
 #define CONSTRAINT_DEBUG_SIZE 0.2f
 
@@ -35,13 +37,37 @@ btRigidBody* RagDoll::localCreateRigidBody (float mass, const btTransform& start
 }
 
 
-RagDoll::RagDoll(btDynamicsWorld* pWorld):m_pWorld(pWorld)
+RagDoll::RagDoll(btDynamicsWorld* pWorld):
+		m_pWorld(pWorld),
+		m_pDebug(NULL)
 {
+	int i = 0;
+	for(int i = 0; i < BODYPART_COUNT; i ++)
+	{
+		m_pShapes[i] = NULL;
+		m_pBodies[i] = NULL;
+	}
+
+	for(int i = 0; i < JOINT_COUNT; i ++)
+	{
+		m_pJoints[i] = NULL;
+	}
 }
 
 RagDoll::~RagDoll()
 {
 	release();
+}
+
+void RagDoll::update()
+{
+	if(NULL != m_pDebug)
+	{
+		m_pDebug->beginDraw();
+		for(int i = 0; i < BODYPART_COUNT; i ++)
+			m_pDebug->draw(i, m_pBodies[i]);
+		m_pDebug->endDraw();
+	}
 }
 
 void RagDoll::init(const int &x, const int &y, const int &z)
@@ -272,7 +298,20 @@ void RagDoll::release()
 		}
 		m_pWorld = NULL;
 	}
+
+	if(NULL != m_pDebug)
+	{
+		m_pDebug->release();
+		delete m_pDebug;
+		m_pDebug = NULL;
+	}
 }
+
+void RagDoll::setDebug(PhysicDebug *debug)
+{
+	m_pDebug = debug;
+}
+
 
 //{
 //	btVector3 max, min;
