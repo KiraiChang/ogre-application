@@ -52,6 +52,8 @@ void KinectApplication::createScene(void)
 	debug->init(mSceneMgr);
 	m_pRagDoll->setDebug(debug);
 
+
+
 }
 
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)

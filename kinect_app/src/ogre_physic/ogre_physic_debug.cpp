@@ -25,6 +25,7 @@ void OgrePhysicDebug::init(Ogre::SceneManager *sceneMgr)
 	sprintf(name, "m_pDebugBodyNode%d", g_iDebugID);
 	m_pBodyNode = m_pSceneMgr->getRootSceneNode()->
 		createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 0.0f));
+	m_pBodyNode->attachObject(m_pManualObject);
 	g_iDebugID++;
 }
 
@@ -56,14 +57,51 @@ void OgrePhysicDebug::draw(const int &part, btRigidBody *body)
 		}
 		btVector3 min, max;
 		body->getAabb(min, max);
-		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), min.z()));
-		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), min.z()));
-		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), min.z()));
-		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), max.z()));
+
+		//boundingBox.push_back(Ogre::Vector3(min.x()*100,max.y() + 100,max.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(max.x()*100,max.y() + 100,max.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(max.x()*100,max.y() + 100,min.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(min.x()*100,max.y() + 100,min.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(min.x()*100,max.y() + 100,max.z()*100));
+
+		//boundingBox.push_back(Ogre::Vector3(min.x()*100,min.y() - 100,max.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(max.x()*100,min.y() - 100,max.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(max.x()*100,min.y() - 100,min.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(min.x()*100,min.y() - 100,min.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(min.x()*100,min.y() - 100,max.z()*100));
+
+		//boundingBox.push_back(Ogre::Vector3(min.x()*100,max.y() + 100,max.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(max.x()*100,min.y() - 100,max.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(max.x()*100,max.y() + 100,max.z()*100));
+
+		//boundingBox.push_back(Ogre::Vector3(max.x()*100,min.y() - 100,min.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(max.x()*100,max.y() + 100,min.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(min.x()*100,min.y() - 100,min.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(min.x()*100,max.y() + 100,min.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(min.x()*100,min.y() - 100,max.z()*100));
+
+		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
 		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), max.z()));
+		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), min.z()));
 		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), min.z()));
 		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
+
 		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), max.z()));
+		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), max.z()));
+		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), min.z()));
+		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), min.z()));
+		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), max.z()));
+
+		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
+		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), max.z()));
+		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), max.z()));
+
+		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), min.z()));
+		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), min.z()));
+		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), min.z()));
+		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), min.z()));
+		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), max.z()));
+
 		m_mBoundingBox[part] = boundingBox;
 	}
 }
@@ -106,3 +144,75 @@ void OgrePhysicDebug::release(void)
 		m_pSceneMgr = NULL;
 	}
 }
+
+
+
+
+//VERTEX_AABB vb[] = {
+//        {min.x,max.y,max.z, 1.0f, 1.0f, 0.0f}, // 0
+//        {max.x,max.y,max.z, 1.0f, 1.0f, 0.0f}, // 1
+//        {max.x,max.y,min.z, 1.0f, 1.0f, 0.0f}, // 2
+//        {min.x,max.y,min.z, 1.0f, 1.0f, 0.0f}, // 3 up
+//        {min.x,max.y,max.z, 1.0f, 1.0f, 0.0f}, // 0
+//        
+//        {min.x,min.y,max.z, 1.0f, 1.0f, 0.0f}, // 4
+//        {max.x,min.y,max.z, 1.0f, 1.0f, 0.0f}, // 5
+//        {max.x,min.y,min.z, 1.0f, 1.0f, 0.0f}, // 6
+//        {min.x,min.y,min.z, 1.0f, 1.0f, 0.0f}, // 7 down
+//        {min.x,min.y,max.z, 1.0f, 1.0f, 0.0f}, // 8 = 4
+//        
+//        {min.x,max.y,max.z, 1.0f, 1.0f, 0.0f}, // 9 = 0
+//        {max.x,min.y,max.z, 1.0f, 1.0f, 0.0f}, // 10 = 5
+//        {max.x,max.y,max.z, 1.0f, 1.0f, 0.0f}, // 11 = 1
+//        
+//        {max.x,min.y,min.z, 1.0f, 1.0f, 0.0f}, // 12 = 6
+//        {max.x,max.y,min.z, 1.0f, 1.0f, 0.0f}, // 13 = 2
+//        {min.x,min.y,min.z, 1.0f, 1.0f, 0.0f}, // 14 = 7
+//        {min.x,max.y,min.z, 1.0f, 1.0f, 0.0f}, // 15 = 3
+//        {min.x,min.y,max.z, 1.0f, 1.0f, 0.0f}, // 16 = 4
+//	};
+//glDrawArrays(GL_LINE_STRIP, 0, 17);
+
+//Vector3 *min = pBox->getMin();
+//	Vector3 *max = pBox->getMax();
+//    
+//	fnBeginDraw(ePrimitive_Lines);
+//    
+//	fnPushVertex(Vector3(min->x, min->y, min->z));
+//	fnPushVertex(Vector3(max->x, min->y, min->z));
+//    
+//	fnPushVertex(Vector3(min->x, min->y, min->z));
+//	fnPushVertex(Vector3(min->x, max->y, min->z));
+//    
+//	fnPushVertex(Vector3(min->x, min->y, min->z));
+//	fnPushVertex(Vector3(min->x, min->y, max->z));
+//    
+//	fnPushVertex(Vector3(max->x, max->y, max->z));
+//	fnPushVertex(Vector3(min->x, max->y, max->z));
+//    
+//	fnPushVertex(Vector3(max->x, max->y, max->z));
+//	fnPushVertex(Vector3(max->x, min->y, max->z));
+//    
+//	fnPushVertex(Vector3(max->x, max->y, max->z));
+//	fnPushVertex(Vector3(max->x, max->y, min->z));
+//    
+//	fnPushVertex(Vector3(max->x, max->y, min->z));
+//	fnPushVertex(Vector3(min->x, max->y, min->z));
+//    
+//	fnPushVertex(Vector3(max->x, min->y, max->z));
+//	fnPushVertex(Vector3(min->x, min->y, max->z));
+//    
+//	fnPushVertex(Vector3(max->x, max->y, min->z));
+//	fnPushVertex(Vector3(max->x, min->y, min->z));
+//    
+//	fnPushVertex(Vector3(min->x, max->y, max->z));
+//	fnPushVertex(Vector3(min->x, min->y, max->z));
+//    
+//	fnPushVertex(Vector3(min->x, max->y, max->z));
+//	fnPushVertex(Vector3(min->x, max->y, min->z));
+//    
+//	fnPushVertex(Vector3(max->x, min->y, max->z));
+//	fnPushVertex(Vector3(max->x, min->y, min->z));
+//    
+//	fnEndDraw(pRC);
+//glDrawArrays(GL_LINES, 0, 24);
