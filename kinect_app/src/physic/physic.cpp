@@ -32,6 +32,27 @@ void PhysicSimulation::init(const int &x, const int &y, const int &z)
 	m_pDynamicsWorld = new btDiscreteDynamicsWorld(m_pDispatcher, m_pBroadphase, m_pSolver, m_pCollisionConfiguration);
 
 	m_pClock = new btClock();
+
+
+	//setup terrain
+	btTransform Transform;
+	Transform.setIdentity();
+	Transform.setOrigin(btVector3(0, 260, 0));
+
+	// Give it to the motion state
+	btDefaultMotionState *MotionState = new btDefaultMotionState(Transform);
+
+	m_pTerrainShape = new btStaticPlaneShape(btVector3(0,1,0),0);
+
+	// Add Mass
+	btVector3 LocalInertia;
+	m_pTerrainShape->calculateLocalInertia(0, LocalInertia);
+
+	// CReate the rigid body object
+	m_pTerrainBody = new btRigidBody(0, MotionState, m_pTerrainShape, LocalInertia);
+
+	// Add it to the physics world
+	m_pDynamicsWorld->addRigidBody(m_pTerrainBody);
 }
 
 void PhysicSimulation::release(void)
@@ -40,6 +61,22 @@ void PhysicSimulation::release(void)
 	{
 		delete m_pClock;
 		m_pClock = NULL;
+	}
+
+	if(NULL != m_pTerrainBody)
+	{
+		m_pDynamicsWorld->removeRigidBody(m_pTerrainBody);
+
+		delete m_pTerrainBody->getMotionState();
+
+		delete m_pTerrainBody; 
+		m_pTerrainBody = 0;
+	}
+
+	if( NULL != m_pTerrainShape)
+	{
+		delete m_pTerrainShape; 
+		m_pTerrainShape = 0;
 	}
 
 	//delete dynamics world
@@ -96,12 +133,12 @@ void PhysicSimulation::update(const float &timePass)
 			if (ms > minFPS)
 				ms = minFPS;
 
-			m_pDynamicsWorld->stepSimulation(ms / 1000000.f);
+			m_pDynamicsWorld->stepSimulation(ms / 1000000.f, 60);
 		}
 		else if(timePass > 0)
-			m_pDynamicsWorld->stepSimulation(timePass);
+			m_pDynamicsWorld->stepSimulation(timePass, 60);
 		else
-			m_pDynamicsWorld->stepSimulation(0);
+			m_pDynamicsWorld->stepSimulation(0, 60);
 
 		//optional but useful: debug drawing
 		m_pDynamicsWorld->debugDrawWorld();

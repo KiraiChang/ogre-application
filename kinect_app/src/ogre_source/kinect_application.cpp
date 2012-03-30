@@ -69,7 +69,12 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 
 	if(NULL != m_pPhysicSimulation)
 	{
-		//m_pPhysicSimulation->update();
+		//static int count = 100;
+		//if(count > 0)
+		//{
+		m_pPhysicSimulation->update();
+		//count--;
+		//}
 		m_pRagDoll->update();
 	}
 
