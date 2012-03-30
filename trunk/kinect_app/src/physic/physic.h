@@ -8,6 +8,9 @@ class btConstraintSolver;
 class btDefaultCollisionConfiguration;
 class btClock;
 
+class btRigidBody;
+class btCollisionShape;
+
 class PhysicSimulation
 {
 private:
@@ -18,6 +21,8 @@ private:
 	btDefaultCollisionConfiguration*		m_pCollisionConfiguration;
 	btClock*								m_pClock;
 
+	btRigidBody *							m_pTerrainBody;//Terrain
+	btCollisionShape *						m_pTerrainShape;
 	float getDeltaTimeMicroseconds();
 
 public:

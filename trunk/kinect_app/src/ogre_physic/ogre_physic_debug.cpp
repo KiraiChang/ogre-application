@@ -58,49 +58,63 @@ void OgrePhysicDebug::draw(const int &part, btRigidBody *body)
 		btVector3 min, max;
 		body->getAabb(min, max);
 
-		//boundingBox.push_back(Ogre::Vector3(min.x()*100,max.y() + 100,max.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(max.x()*100,max.y() + 100,max.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(max.x()*100,max.y() + 100,min.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(min.x()*100,max.y() + 100,min.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(min.x()*100,max.y() + 100,max.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
+		//boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), max.z()));
+		//boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), min.z()));
+		//boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), min.z()));
+		//boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
 
-		//boundingBox.push_back(Ogre::Vector3(min.x()*100,min.y() - 100,max.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(max.x()*100,min.y() - 100,max.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(max.x()*100,min.y() - 100,min.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(min.x()*100,min.y() - 100,min.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(min.x()*100,min.y() - 100,max.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), max.z()));
+		//boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), max.z()));
+		//boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), min.z()));
+		//boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), min.z()));
+		//boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), max.z()));
 
-		//boundingBox.push_back(Ogre::Vector3(min.x()*100,max.y() + 100,max.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(max.x()*100,min.y() - 100,max.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(max.x()*100,max.y() + 100,max.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
+		//boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), max.z()));
+		//boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), max.z()));
 
-		//boundingBox.push_back(Ogre::Vector3(max.x()*100,min.y() - 100,min.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(max.x()*100,max.y() + 100,min.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(min.x()*100,min.y() - 100,min.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(min.x()*100,max.y() + 100,min.z()*100));
-		//boundingBox.push_back(Ogre::Vector3(min.x()*100,min.y() - 100,max.z()*100));
+		//boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), min.z()));
+		//boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), min.z()));
+		//boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), min.z()));
+		//boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), min.z()));
+		//boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), max.z()));
 
-		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
-		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), max.z()));
-		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), min.z()));
-		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), min.z()));
-		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
-
-		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), max.z()));
-		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), max.z()));
+		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), min.z()));
 		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), min.z()));
+
+		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), min.z()));
+		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), min.z()));
+
 		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), min.z()));
 		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), max.z()));
 
-		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
-		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), max.z()));
 		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), max.z()));
+		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
 
-		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), min.z()));
+		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), max.z()));
+		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), max.z()));
+
+		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), max.z()));
 		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), min.z()));
-		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), min.z()));
+
+		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), min.z()));
 		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), min.z()));
+
+		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), max.z()));
 		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), max.z()));
+
+		boundingBox.push_back(Ogre::Vector3(max.x(), max.y(), min.z()));
+		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), min.z()));
+
+		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
+		boundingBox.push_back(Ogre::Vector3(min.x(), min.y(), max.z()));
+
+		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), max.z()));
+		boundingBox.push_back(Ogre::Vector3(min.x(), max.y(), min.z()));
+
+		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), max.z()));
+		boundingBox.push_back(Ogre::Vector3(max.x(), min.y(), min.z()));
 
 		m_mBoundingBox[part] = boundingBox;
 	}
