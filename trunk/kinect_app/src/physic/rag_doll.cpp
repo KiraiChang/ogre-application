@@ -39,7 +39,8 @@ btRigidBody* RagDoll::localCreateRigidBody (float mass, const btTransform& start
 
 RagDoll::RagDoll(btDynamicsWorld* pWorld):
 		m_pWorld(pWorld),
-		m_pDebug(NULL)
+		m_pDebug(NULL),
+		m_pP2p(NULL)
 {
 	int i = 0;
 	for(int i = 0; i < BODYPART_COUNT; i ++)
@@ -63,15 +64,24 @@ void RagDoll::update()
 {
 	if(m_pBodies[BODYPART_SPINE] != NULL)
 	{
-		m_pBodies[BODYPART_SPINE]->setActivationState(DISABLE_DEACTIVATION);
-		btTransform trans = m_pBodies[BODYPART_LEFT_UPPER_ARM]->getCenterOfMassTransform();
+		//m_pBodies[BODYPART_SPINE]->setActivationState(DISABLE_DEACTIVATION);
+		//btTransform trans = m_pBodies[BODYPART_LEFT_UPPER_ARM]->getCenterOfMassTransform();
 		//m_pBodies[BODYPART_SPINE]->getMotionState()->getWorldTransform(trans);
-		//m_pBodies[BODYPART_LEFT_UPPER_ARM]->translate(vec);
+		//m_pBodies[BODYPART_LEFT_UPPER_ARM]->translate(btVector3(0.5, 0.0, 0.0));
 
-		btTransform transform;
-		transform.setIdentity();
-		transform.setOrigin(btVector3(trans.getOrigin().getX(), btScalar(270.0f/* y */), trans.getOrigin().getZ()));
-		m_pBodies[BODYPART_SPINE]->setCenterOfMassTransform(transform);
+		m_pBodies[BODYPART_SPINE]->translate(btVector3(0.0, 0.1, 0.0));
+		m_pBodies[BODYPART_PELVIS]->translate(btVector3(0.0, 0.1, 0.0));//移動
+		
+		m_pBodies[BODYPART_LEFT_UPPER_ARM]->translate(btVector3(0.1, 0.1, 0.0));
+		m_pBodies[BODYPART_RIGHT_UPPER_ARM]->translate(btVector3(-0.1, 0.1, 0.0));
+
+
+		//m_pBodies[BODYPART_SPINE]->getWorldTransform().setOrigin(btVector3(0.0, 270.0, 0.0));//設定位置
+
+		//btTransform transform;
+		//transform.setIdentity();
+		//transform.setOrigin(btVector3(trans.getOrigin().getX(), btScalar(270.0f/* y */), trans.getOrigin().getZ()));
+		//m_pBodies[BODYPART_SPINE]->setCenterOfMassTransform(transform);
 	}
 	if(NULL != m_pDebug)
 	{

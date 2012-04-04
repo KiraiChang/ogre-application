@@ -6,6 +6,7 @@ class btCollisionShape;
 class btRigidBody;
 class btTypedConstraint;
 class btTransform;
+class btPoint2PointConstraint;
 class PhysicDebug;
 
 class RagDoll
@@ -56,7 +57,7 @@ private:
 	btCollisionShape*							m_pShapes[BODYPART_COUNT];
 	btRigidBody*								m_pBodies[BODYPART_COUNT];
 	btTypedConstraint*							m_pJoints[JOINT_COUNT];
-
+	btPoint2PointConstraint*					m_pP2p;
 	PhysicDebug*								m_pDebug;
 
 private:
