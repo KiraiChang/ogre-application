@@ -30,6 +30,7 @@ btRigidBody* RagDoll::localCreateRigidBody (float mass, const btTransform& start
 
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,shape,localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
+	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
 	m_pWorld->addRigidBody(body);
 
