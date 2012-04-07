@@ -61,7 +61,7 @@ private:
 	PhysicDebug*								m_pDebug;
 
 private:
-	btRigidBody* localCreateRigidBody (float mass, const btTransform& startTransform, btCollisionShape* shape);
+	btRigidBody* localCreateRigidBody (float mass, const btTransform& startTransform, btCollisionShape* shape, void *userPoint);
 public:
 	RagDoll(btDynamicsWorld* pWorld);
 	virtual ~RagDoll();

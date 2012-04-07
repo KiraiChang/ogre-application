@@ -99,6 +99,8 @@
     <ClCompile Include="..\..\physic\physic.cpp" />
     <ClCompile Include="..\..\physic\physic_debug.cpp" />
     <ClCompile Include="..\..\physic\rag_doll.cpp" />
+    <ClCompile Include="..\..\score_system\score_object.cpp" />
+    <ClCompile Include="..\..\score_system\score_system.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\base_math\base_define.h" />
@@ -114,6 +116,8 @@
     <ClInclude Include="..\..\physic\physic.h" />
     <ClInclude Include="..\..\physic\physic_debug.h" />
     <ClInclude Include="..\..\physic\rag_doll.h" />
+    <ClInclude Include="..\..\score_system\score_object.h" />
+    <ClInclude Include="..\..\score_system\score_system.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,7 +1,9 @@
 #include "physic.h"
 #include "btBulletDynamicsCommon.h"
+#include "..\score_system\score_system.h"
+#include "..\score_system\score_object.h"
 
-static bool CustomMaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1)
+static bool MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1)
 {
 
 	float friction0 = colObj0->getFriction();
@@ -33,7 +35,25 @@ static bool CustomMaterialCombinerCallback(btManifoldPoint& cp,	const btCollisio
 	return true;
 }
 
+static bool MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* body0,btCollisionObject* body1)
+{
+	btRigidBody* rigidbody0 = dynamic_cast<btRigidBody*>(body0);
+	btRigidBody* rigidbody1 = dynamic_cast<btRigidBody*>(body1);
+	if(rigidbody0->getUserPointer() != NULL && rigidbody1->getUserPointer() != NULL)
+	{
+		//取出rigidbody內的指標...並檢查兩個的指標是否需要作用
+		ScoreBase *object0 = (ScoreBase *)rigidbody0->getUserPointer();
+		ScoreBase *object1 = (ScoreBase *)rigidbody1->getUserPointer();
+		if(object0->getType() == SCORE_TYPE_BODY || object0->getType() == SCORE_TYPE_HAND)
+		{
+			ScoreSystem::calcScore(object0, object1);
+		}
+	}
+	return false;
+}
+
 extern ContactAddedCallback		gContactAddedCallback;
+extern ContactProcessedCallback gContactProcessedCallback;
 
 PhysicSimulation::PhysicSimulation(void):
 		m_pDynamicsWorld(NULL), 
@@ -53,7 +73,8 @@ PhysicSimulation::~PhysicSimulation(void)
 
 void PhysicSimulation::init(const int &x, const int &y, const int &z)
 {
-	gContactAddedCallback = CustomMaterialCombinerCallback;
+	gContactAddedCallback = MaterialCombinerCallback;
+	gContactProcessedCallback = (ContactProcessedCallback)MaterialProcessedCallback;
 	m_pCollisionConfiguration = new btDefaultCollisionConfiguration();
 
 	m_pDispatcher = new btCollisionDispatcher(m_pCollisionConfiguration);

@@ -3,6 +3,9 @@
 #include "btBulletDynamicsCommon.h"
 #include "physic_debug.h"
 
+#include "..\score_system\score_system.h"
+#include "..\score_system\score_object.h"
+
 
 #define CONSTRAINT_DEBUG_SIZE 0.2f
 
@@ -18,7 +21,7 @@
 #define M_PI_4     0.785398163397448309616
 #endif
 
-btRigidBody* RagDoll::localCreateRigidBody (float mass, const btTransform& startTransform, btCollisionShape* shape)
+btRigidBody* RagDoll::localCreateRigidBody (float mass, const btTransform& startTransform, btCollisionShape* shape, void *userPoint)
 {
 	bool isDynamic = (mass != 0.f);
 
@@ -31,6 +34,8 @@ btRigidBody* RagDoll::localCreateRigidBody (float mass, const btTransform& start
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,shape,localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
 	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+	//把指標放到rigidbody內
+	body->setUserPointer(userPoint);
 
 	m_pWorld->addRigidBody(body);
 
@@ -116,51 +121,51 @@ void RagDoll::init(const int &x, const int &y, const int &z)
 	btTransform transform;
 	transform.setIdentity();
 	transform.setOrigin(btVector3(btScalar(0.), btScalar(1.), btScalar(0.)));
-	m_pBodies[BODYPART_PELVIS] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_PELVIS]);
+	m_pBodies[BODYPART_PELVIS] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_PELVIS], NULL);
 
 	transform.setIdentity();
 	transform.setOrigin(btVector3(btScalar(0.), btScalar(1.2), btScalar(0.)));
-	m_pBodies[BODYPART_SPINE] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_SPINE]);
+	m_pBodies[BODYPART_SPINE] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_SPINE], NULL);
 
 	transform.setIdentity();
 	transform.setOrigin(btVector3(btScalar(0.), btScalar(1.6), btScalar(0.)));
-	m_pBodies[BODYPART_HEAD] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_HEAD]);
+	m_pBodies[BODYPART_HEAD] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_HEAD], NULL);
 
 	transform.setIdentity();
 	transform.setOrigin(btVector3(btScalar(-0.18), btScalar(0.65), btScalar(0.)));
-	m_pBodies[BODYPART_LEFT_UPPER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_LEFT_UPPER_LEG]);
+	m_pBodies[BODYPART_LEFT_UPPER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_LEFT_UPPER_LEG], NULL);
 
 	transform.setIdentity();
 	transform.setOrigin(btVector3(btScalar(-0.18), btScalar(0.2), btScalar(0.)));
-	m_pBodies[BODYPART_LEFT_LOWER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_LEFT_LOWER_LEG]);
+	m_pBodies[BODYPART_LEFT_LOWER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_LEFT_LOWER_LEG], NULL);
 
 	transform.setIdentity();
 	transform.setOrigin(btVector3(btScalar(0.18), btScalar(0.65), btScalar(0.)));
-	m_pBodies[BODYPART_RIGHT_UPPER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_RIGHT_UPPER_LEG]);
+	m_pBodies[BODYPART_RIGHT_UPPER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_RIGHT_UPPER_LEG], NULL);
 
 	transform.setIdentity();
 	transform.setOrigin(btVector3(btScalar(0.18), btScalar(0.2), btScalar(0.)));
-	m_pBodies[BODYPART_RIGHT_LOWER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_RIGHT_LOWER_LEG]);
+	m_pBodies[BODYPART_RIGHT_LOWER_LEG] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_RIGHT_LOWER_LEG], NULL);
 
 	transform.setIdentity();
 	transform.setOrigin(btVector3(btScalar(-0.35), btScalar(1.45), btScalar(0.)));
 	transform.getBasis().setEulerZYX(0,0,M_PI_2);
-	m_pBodies[BODYPART_LEFT_UPPER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_LEFT_UPPER_ARM]);
+	m_pBodies[BODYPART_LEFT_UPPER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_LEFT_UPPER_ARM], ScoreSystem::createScoreObject(SCORE_TYPE_HAND));
 
 	transform.setIdentity();
 	transform.setOrigin(btVector3(btScalar(-0.7), btScalar(1.45), btScalar(0.)));
 	transform.getBasis().setEulerZYX(0,0,M_PI_2);
-	m_pBodies[BODYPART_LEFT_LOWER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_LEFT_LOWER_ARM]);
+	m_pBodies[BODYPART_LEFT_LOWER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_LEFT_LOWER_ARM], NULL);
 
 	transform.setIdentity();
 	transform.setOrigin(btVector3(btScalar(0.35), btScalar(1.45), btScalar(0.)));
 	transform.getBasis().setEulerZYX(0,0,-M_PI_2);
-	m_pBodies[BODYPART_RIGHT_UPPER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_RIGHT_UPPER_ARM]);
+	m_pBodies[BODYPART_RIGHT_UPPER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_RIGHT_UPPER_ARM], ScoreSystem::createScoreObject(SCORE_TYPE_HAND));
 
 	transform.setIdentity();
 	transform.setOrigin(btVector3(btScalar(0.7), btScalar(1.45), btScalar(0.)));
 	transform.getBasis().setEulerZYX(0,0,-M_PI_2);
-	m_pBodies[BODYPART_RIGHT_LOWER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_RIGHT_LOWER_ARM]);
+	m_pBodies[BODYPART_RIGHT_LOWER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_RIGHT_LOWER_ARM], NULL);
 
 	// Setup some damping on the m_pBodies
 	for (int i = 0; i < BODYPART_COUNT; ++i)
@@ -306,7 +311,11 @@ void RagDoll::release()
 			if(NULL != m_pBodies[i])
 			{
 				m_pWorld->removeRigidBody(m_pBodies[i]);
-
+				if(NULL != m_pBodies[i]->getUserPointer())
+				{
+					delete m_pBodies[i]->getUserPointer();
+					m_pBodies[i]->setUserPointer(NULL);
+				}
 				if(NULL != m_pBodies[i]->getMotionState())
 					delete m_pBodies[i]->getMotionState();
 
