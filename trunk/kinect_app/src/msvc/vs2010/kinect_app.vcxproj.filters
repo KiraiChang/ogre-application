@@ -69,14 +69,20 @@
     <ClCompile Include="..\..\ogre_physic\ogre_physic_debug.cpp">
       <Filter>ogre_physic</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\physic\physic_debug.cpp">
-      <Filter>physic</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\score_system\score_system.cpp">
       <Filter>score_system</Filter>
     </ClCompile>
     <ClCompile Include="..\..\score_system\score_object.cpp">
       <Filter>score_system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\physic\physic_rigid_body.cpp">
+      <Filter>physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\physic\physic_debug.cpp">
+      <Filter>physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\physic\physic_shape_base.cpp">
+      <Filter>physic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,9 +119,6 @@
     <ClInclude Include="..\..\physic\rag_doll.h">
       <Filter>physic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\physic\physic_debug.h">
-      <Filter>physic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\ogre_physic\ogre_physic_debug.h">
       <Filter>ogre_physic</Filter>
     </ClInclude>
@@ -124,6 +127,15 @@
     </ClInclude>
     <ClInclude Include="..\..\score_system\score_object.h">
       <Filter>score_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\physic\physic_rigid_body.h">
+      <Filter>physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\physic\physic_debug.h">
+      <Filter>physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\physic\physic_shape_base.h">
+      <Filter>physic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

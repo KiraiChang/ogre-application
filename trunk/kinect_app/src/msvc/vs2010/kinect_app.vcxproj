@@ -97,7 +97,9 @@
     <ClCompile Include="..\..\ogre_source\kinect_application.cpp" />
     <ClCompile Include="..\..\ogre_source\ogre_application.cpp" />
     <ClCompile Include="..\..\physic\physic.cpp" />
+    <ClCompile Include="..\..\physic\physic_shape_base.cpp" />
     <ClCompile Include="..\..\physic\physic_debug.cpp" />
+    <ClCompile Include="..\..\physic\physic_rigid_body.cpp" />
     <ClCompile Include="..\..\physic\rag_doll.cpp" />
     <ClCompile Include="..\..\score_system\score_object.cpp" />
     <ClCompile Include="..\..\score_system\score_system.cpp" />
@@ -114,7 +116,9 @@
     <ClInclude Include="..\..\ogre_source\kinect_application.h" />
     <ClInclude Include="..\..\ogre_source\ogre_application.h" />
     <ClInclude Include="..\..\physic\physic.h" />
+    <ClInclude Include="..\..\physic\physic_rigid_body.h" />
     <ClInclude Include="..\..\physic\physic_debug.h" />
+    <ClInclude Include="..\..\physic\physic_shape_base.h" />
     <ClInclude Include="..\..\physic\rag_doll.h" />
     <ClInclude Include="..\..\score_system\score_object.h" />
     <ClInclude Include="..\..\score_system\score_system.h" />
