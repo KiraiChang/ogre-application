@@ -90,7 +90,7 @@ void KinectApplication::createScene(void)
 	shape->init(100, "cube.mesh", (float *)&Ogre::Vector3(0.01, 0.01, 0.01));
 	m_pRigidBody = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
 	m_pRigidBody->init(shape, NULL, 100, (float *)&Ogre::Vector3(0.0, 280, 0.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
-	m_pRigidBody->force(1, 0, 1, 10);
+	m_pRigidBody->force(-0.5, 0, 1, 0, 0, 0, 10);
 
 	OgreShapeBox *shape1 = new OgreShapeBox(mSceneMgr);
 	shape1->init(101, "cube.mesh", (float *)&Ogre::Vector3(0.01, 0.01, 0.01));

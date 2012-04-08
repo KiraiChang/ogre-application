@@ -170,14 +170,14 @@ void PhysicRigidBody::translate(float x, float y, float z)
 	}
 }
 
-void PhysicRigidBody::force(float x, float y, float z, float force)
+void PhysicRigidBody::force(float x, float y, float z, float ax, float ay, float az, float force)
 {
 	btVector3 linVel(x, y, z);
 	linVel.normalize();
 	linVel*=force;
 
 	m_pBodies->setLinearVelocity(linVel);
-	m_pBodies->setAngularVelocity(btVector3(0,0,0));
+	m_pBodies->setAngularVelocity(btVector3(ax, ay, az));
 }
 
 void PhysicRigidBody::update(void)
