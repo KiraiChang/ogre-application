@@ -26,7 +26,9 @@ public:
 
 	float						getData(unsigned int dataType);
 	void						setData(unsigned int dataType, float data);
+	virtual void				release(void);
 	virtual PHYSIC_SHPAE_TYPE	getType(void) = 0;
+	virtual void				update(float *position, float *quaternion);
 protected:
 };
 //*******************************************************
@@ -47,7 +49,7 @@ private:
 public:
 								PhysicShapeBox(void);
 	virtual						~PhysicShapeBox(void);
-
+	virtual void				release(void);
 	virtual PHYSIC_SHPAE_TYPE	getType(void);
 protected:
 };
@@ -71,7 +73,7 @@ private:
 public:
 								PhysicShapeCone(void);
 	virtual						~PhysicShapeCone(void);
-
+	virtual void				release(void);
 	virtual PHYSIC_SHPAE_TYPE	getType(void);
 protected:
 };
@@ -96,7 +98,7 @@ private:
 public:
 								PhysicShapeCylinder(void);
 	virtual						~PhysicShapeCylinder(void);
-
+	virtual void				release(void);
 	virtual PHYSIC_SHPAE_TYPE	getType(void);
 protected:
 };
@@ -116,7 +118,7 @@ private:
 public:
 								PhysicShapeSphere(void);
 	virtual						~PhysicShapeSphere(void);
-
+	virtual void				release(void);
 	virtual PHYSIC_SHPAE_TYPE	getType(void);
 protected:
 };

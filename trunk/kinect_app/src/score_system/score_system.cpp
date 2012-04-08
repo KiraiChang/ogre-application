@@ -1,6 +1,6 @@
 #include "score_system.h"
 #include "score_object.h"
-
+#include <iostream>
 ScoreSystem *ScoreSystem::g_pSystem = 0;
 
 ScoreSystem::ScoreSystem():m_iScore(0)
@@ -30,10 +30,13 @@ ScoreBase *ScoreSystem::createScoreObject(unsigned int type)
 		object = new ScoreBase(type);
 		break;
 	case SCORE_TYPE_COIN:
+		object = new ScoreCoin(type);
 		break;
 	case SCORE_TYPE_ARROW:
+		object = new ScoreArrow(type);
 		break;
-	case SCORE_TYPE_BOME:
+	case SCORE_TYPE_BOMB:
+		object = new ScoreBomb(type);
 		break;
 	default:
 		break;
@@ -49,6 +52,8 @@ void ScoreSystem::resetScore(void)
 int ScoreSystem::calcScore(ScoreBase *bodyPart, ScoreBase *attachObj)
 {
 	int effectScore = attachObj->getEffect(bodyPart->getType());
+	if(effectScore != 0)
+		std::cout<<"Not Zero"<<std::endl;
 	getSystem()->m_iScore += effectScore;
 	return effectScore;
 }

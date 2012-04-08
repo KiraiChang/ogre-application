@@ -8,7 +8,7 @@ enum ScoreType
 	SCORE_TYPE_BODY,
 	SCORE_TYPE_COIN,
 	SCORE_TYPE_ARROW,
-	SCORE_TYPE_BOME,
+	SCORE_TYPE_BOMB,
 };
 
 //*******************************************************

@@ -13,19 +13,19 @@ static bool MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObjec
 
 	if (colObj0->getCollisionFlags() & btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK)
 	{
-		//friction0 = 1.0;//partId0,index0
-		//restitution0 = 0.f;
+		friction0 = 1.0;//partId0,index0
+		restitution0 = 0.f;
 	}
 	if (colObj1->getCollisionFlags() & btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK)
 	{
-		//if (index1&1)
-		//{
-		//	friction1 = 1.0f;//partId1,index1
-		//} else
-		//{
-		//	friction1 = 0.f;
-		//}
-		//restitution1 = 0.f;
+		if (index1&1)
+		{
+			friction1 = 1.0f;//partId1,index1
+		} else
+		{
+			friction1 = 0.f;
+		}
+		restitution1 = 0.f;
 	}
 
 	//cp.m_combinedFriction = calculateCombinedFriction(friction0,friction1);
@@ -49,7 +49,7 @@ static bool MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* bod
 			ScoreSystem::calcScore(object0, object1);
 		}
 	}
-	return false;
+	return true;
 }
 
 extern ContactAddedCallback		gContactAddedCallback;
@@ -75,18 +75,19 @@ void PhysicSimulation::init(const int &x, const int &y, const int &z)
 {
 	gContactAddedCallback = MaterialCombinerCallback;
 	gContactProcessedCallback = (ContactProcessedCallback)MaterialProcessedCallback;
+
 	m_pCollisionConfiguration = new btDefaultCollisionConfiguration();
 
 	m_pDispatcher = new btCollisionDispatcher(m_pCollisionConfiguration);
 
-	btVector3 worldAabbMin(-x,-y,-z);
-	btVector3 worldAabbMax(x, y, z);
-	m_pBroadphase = new btAxisSweep3 (worldAabbMin, worldAabbMax);
+	//btVector3 worldAabbMin(-x,-y,-z);
+	//btVector3 worldAabbMax(x, y, z);
+	m_pBroadphase = new btDbvtBroadphase();//new btAxisSweep3 (worldAabbMin, worldAabbMax);
 
 	m_pSolver = new btSequentialImpulseConstraintSolver;
 
 	m_pDynamicsWorld = new btDiscreteDynamicsWorld(m_pDispatcher, m_pBroadphase, m_pSolver, m_pCollisionConfiguration);
-
+	m_pDynamicsWorld->setGravity(btVector3(0,-10,0));
 	m_pClock = new btClock();
 
 

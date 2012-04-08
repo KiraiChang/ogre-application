@@ -2,6 +2,10 @@
 #include "../physic/physic.h"
 #include "../physic/rag_doll.h"
 #include "../ogre_physic/ogre_physic_debug.h"
+#include "../ogre_physic/ogre_physic_shape.h"
+#include "../physic/physic_rigid_body.h"
+#include "../score_system/score_system.h"
+#include "../score_system/score_object.h"
 
 #include <Ogre.h>
 
@@ -10,7 +14,10 @@ KinectApplication::KinectApplication(void):
 		m_pKinectDevice(NULL), 
 		m_pPhysicSimulation(NULL),
 		m_bHasDevice(TRUE),
-		m_pRagDoll(NULL)
+		m_pRagDoll(NULL),
+		m_pRagDoll1(NULL),
+		m_pRigidBody(NULL),
+		m_pRigidBody1(NULL)
 {
 	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	{
@@ -29,8 +36,29 @@ KinectApplication::~KinectApplication(void)
 	releaseCharacter();
 	if(NULL != m_pPhysicSimulation)
 	{
-		delete m_pRagDoll;
-		m_pRagDoll = NULL;
+		if(m_pRagDoll != NULL)
+		{
+			delete m_pRagDoll;
+			m_pRagDoll = NULL;
+		}
+
+		if(m_pRagDoll1 != NULL)
+		{
+			delete m_pRagDoll1;
+			m_pRagDoll1 = NULL;
+		}
+
+		if(NULL != m_pRigidBody)
+		{
+			delete m_pRigidBody;
+			m_pRigidBody = NULL;
+		}
+
+		if(NULL != m_pRigidBody1)
+		{
+			delete m_pRigidBody1;
+			m_pRigidBody1 = NULL;
+		}
 
 		delete m_pPhysicSimulation;
 		m_pPhysicSimulation = NULL;
@@ -52,8 +80,22 @@ void KinectApplication::createScene(void)
 	debug->init(mSceneMgr);
 	m_pRagDoll->setDebug(debug);
 
+	m_pRagDoll1 = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
+	m_pRagDoll1->init(0, 275, 0);
+	OgrePhysicDebug *debug1 = new OgrePhysicDebug();
+	debug1->init(mSceneMgr);
+	m_pRagDoll1->setDebug(debug1);
 
+	OgreShapeBox *shape = new OgreShapeBox(mSceneMgr);
+	shape->init(100, "cube.mesh", (float *)&Ogre::Vector3(0.01, 0.01, 0.01));
+	m_pRigidBody = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
+	m_pRigidBody->init(shape, NULL, 100, (float *)&Ogre::Vector3(0.0, 280, 0.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
+	m_pRigidBody->force(0, 1, 0, 10);
 
+	OgreShapeBox *shape1 = new OgreShapeBox(mSceneMgr);
+	shape1->init(101, "cube.mesh", (float *)&Ogre::Vector3(0.01, 0.01, 0.01));
+	m_pRigidBody1 = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
+	m_pRigidBody1->init(shape1, NULL, 1.0, (float *)&Ogre::Vector3(0.0, 285, 0.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
 }
 
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
@@ -69,13 +111,19 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 
 	if(NULL != m_pPhysicSimulation)
 	{
-		//static int count = 100;
-		//if(count > 0)
-		//{
 		m_pPhysicSimulation->update();
-		//count--;
-		//}
-		m_pRagDoll->update();
+
+		if(m_pRagDoll != NULL)
+			m_pRagDoll->update();
+
+		if(m_pRagDoll1 != NULL)
+			m_pRagDoll1->update();
+
+		if(m_pRigidBody != NULL)
+			m_pRigidBody->update();
+
+		if(m_pRigidBody1 != NULL)
+			m_pRigidBody1->update();
 	}
 
 	return bRet;

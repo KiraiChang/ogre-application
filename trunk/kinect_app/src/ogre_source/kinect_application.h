@@ -5,6 +5,7 @@
 #include "ogre_application.h"
 
 class PhysicSimulation;
+class PhysicRigidBody;
 class RagDoll;
 
 class KinectApplication : public OgreApplication
@@ -13,6 +14,9 @@ private:
 	//Physic
 	PhysicSimulation*						m_pPhysicSimulation;
 	RagDoll*								m_pRagDoll;
+	RagDoll*								m_pRagDoll1;
+	PhysicRigidBody*						m_pRigidBody;
+	PhysicRigidBody*						m_pRigidBody1;
 
 	//Kinect
 	KinectDevice *							m_pKinectDevice;
