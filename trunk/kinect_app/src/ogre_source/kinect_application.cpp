@@ -74,11 +74,11 @@ void KinectApplication::createScene(void)
 {
 	OgreApplication::createScene();
 
-	m_pRagDoll = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
-	m_pRagDoll->init(0, 270, 0);
-	OgrePhysicDebug *debug = new OgrePhysicDebug();
-	debug->init(mSceneMgr);
-	m_pRagDoll->setDebug(debug);
+	//m_pRagDoll = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
+	//m_pRagDoll->init(0, 270, 0);
+	//OgrePhysicDebug *debug = new OgrePhysicDebug();
+	//debug->init(mSceneMgr);
+	//m_pRagDoll->setDebug(debug);
 
 	m_pRagDoll1 = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
 	m_pRagDoll1->init(0, 275, 0);
@@ -89,8 +89,8 @@ void KinectApplication::createScene(void)
 	OgreShapeBox *shape = new OgreShapeBox(mSceneMgr);
 	shape->init(100, "cube.mesh", (float *)&Ogre::Vector3(0.01, 0.01, 0.01));
 	m_pRigidBody = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
-	m_pRigidBody->init(shape, NULL, 100, (float *)&Ogre::Vector3(0.0, 280, 0.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
-	m_pRigidBody->force(-0.5, 0, 1, 0, 0, 0, 10);
+	m_pRigidBody->init(shape, NULL, 1, (float *)&Ogre::Vector3(0.0, 280, 0.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
+	//m_pRigidBody->force(-0.5, 0, 1, 0, 0, 0, 10);
 
 	OgreShapeBox *shape1 = new OgreShapeBox(mSceneMgr);
 	shape1->init(101, "cube.mesh", (float *)&Ogre::Vector3(0.01, 0.01, 0.01));

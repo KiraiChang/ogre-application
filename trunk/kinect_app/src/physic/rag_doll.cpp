@@ -36,11 +36,15 @@ btRigidBody* RagDoll::localCreateRigidBody (float mass, const btTransform& start
 
 	m_pWorld->addRigidBody(body);
 
-	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+	//RagDoll Can't move but can detect collision
+	//body->setActivationState(DISABLE_DEACTIVATION);
+	//body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+
+	//RagDoll can simulate physic
+	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 	//把指標放到rigidbody內
 	body->setUserPointer(userPoint);
 
-	body->setActivationState(DISABLE_DEACTIVATION);
 	return body;
 }
 
@@ -77,14 +81,55 @@ void RagDoll::update()
 		//m_pBodies[BODYPART_SPINE]->getMotionState()->getWorldTransform(trans);
 		//m_pBodies[BODYPART_LEFT_UPPER_ARM]->translate(btVector3(0.5, 0.0, 0.0));
 
+		//m_pBodies[BODYPART_HEAD]->translate(btVector3(0.0, 0.1, 0.0));
 		//m_pBodies[BODYPART_SPINE]->translate(btVector3(0.0, 0.1, 0.0));
 		//m_pBodies[BODYPART_PELVIS]->translate(btVector3(0.0, 0.1, 0.0));//移動
 		//
 		//m_pBodies[BODYPART_LEFT_UPPER_ARM]->translate(btVector3(0.1, 0.1, 0.0));
 		//m_pBodies[BODYPART_RIGHT_UPPER_ARM]->translate(btVector3(-0.1, 0.1, 0.0));
 
+		
+		//btTransform trans;
 
-		//m_pBodies[BODYPART_SPINE]->getWorldTransform().setOrigin(btVector3(0.0, 270.0, 0.0));//設定位置
+		//m_pBodies[BODYPART_PELVIS]->getMotionState()->getWorldTransform(trans);
+		//trans.setOrigin(btVector3(0.0, 280.0, 0.0));
+		//m_pBodies[BODYPART_PELVIS]->getMotionState()->setWorldTransform(trans);
+
+		//m_pBodies[BODYPART_SPINE]->getMotionState()->getWorldTransform(trans);
+		//trans.setOrigin(btVector3(0.0, 283, 0.0));
+		//m_pBodies[BODYPART_SPINE]->getMotionState()->setWorldTransform(trans);
+
+		//m_pBodies[BODYPART_HEAD]->getMotionState()->getWorldTransform(trans);
+		//trans.setOrigin(btVector3(0.0, 285, 0.0));
+		//m_pBodies[BODYPART_HEAD]->getMotionState()->setWorldTransform(trans);
+
+		//m_pBodies[BODYPART_LEFT_LOWER_LEG]->getMotionState()->getWorldTransform(trans);
+		//trans.setOrigin(btVector3(0.5, 275.0, 0.0));
+		//m_pBodies[BODYPART_LEFT_LOWER_LEG]->getMotionState()->setWorldTransform(trans);
+
+		//m_pBodies[BODYPART_RIGHT_LOWER_LEG]->getMotionState()->getWorldTransform(trans);
+		//trans.setOrigin(btVector3(-0.5, 275.0, 0.0));
+		//m_pBodies[BODYPART_RIGHT_LOWER_LEG]->getMotionState()->setWorldTransform(trans);
+
+		//m_pBodies[BODYPART_LEFT_UPPER_ARM]->getMotionState()->getWorldTransform(trans);
+		//trans.setOrigin(btVector3(0.5, 285, 0.0));
+		//m_pBodies[BODYPART_LEFT_UPPER_ARM]->getMotionState()->setWorldTransform(trans);
+
+		//m_pBodies[BODYPART_RIGHT_UPPER_ARM]->getMotionState()->getWorldTransform(trans);
+		//trans.setOrigin(btVector3(-0.5, 285, 0.0));
+		//m_pBodies[BODYPART_RIGHT_UPPER_ARM]->getMotionState()->setWorldTransform(trans);
+
+		//m_pBodies[BODYPART_PELVIS]->translate(btVector3(0.0, 280.0, 0.0));
+		//m_pBodies[BODYPART_SPINE]->translate(btVector3(0.0, 283.0, 0.0));
+		//m_pBodies[BODYPART_HEAD]->translate(btVector3(0.0, 285.0, 0.0));
+		//m_pBodies[BODYPART_LEFT_UPPER_LEG]->translate(btVector3(0.3, 278.0, 0.0));
+		//m_pBodies[BODYPART_LEFT_LOWER_LEG]->translate(btVector3(0.5, 275.0, 0.0));
+		//m_pBodies[BODYPART_RIGHT_UPPER_LEG]->translate(btVector3(0.3, 278.0, 0.0));
+		//m_pBodies[BODYPART_RIGHT_LOWER_LEG]->translate(btVector3(-0.5, 275.0, 0.0));
+		//m_pBodies[BODYPART_LEFT_UPPER_ARM]->translate(btVector3(0.5, 285.0, 0.0));
+		//m_pBodies[BODYPART_LEFT_LOWER_ARM]->translate(btVector3(0.3, 283.0, 0.0));
+		//m_pBodies[BODYPART_RIGHT_UPPER_ARM]->translate(btVector3(-0.5, 285.0, 0.0));
+		//m_pBodies[BODYPART_RIGHT_LOWER_ARM]->translate(btVector3(-0.3, 285.0, 0.0));
 
 		//btTransform transform;
 		//transform.setIdentity();
@@ -198,6 +243,9 @@ void RagDoll::init(const int &x, const int &y, const int &z)
 	m_pJoints[JOINT_PELVIS_SPINE] = hingeC;
 	hingeC->setDbgDrawSize(CONSTRAINT_DEBUG_SIZE);
 
+	//m_pP2p = new btPoint2PointConstraint(*m_pBodies[BODYPART_PELVIS], *m_pBodies[BODYPART_SPINE], localA.getOrigin(), localB.getOrigin());
+	//m_pWorld->addConstraint(m_pP2p);
+	//m_pP2p->m_setting.m_tau = 0.001f;
 	m_pWorld->addConstraint(m_pJoints[JOINT_PELVIS_SPINE], true);
 
 
