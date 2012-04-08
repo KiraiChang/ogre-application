@@ -214,17 +214,28 @@ void PhysicSimulation::collisionTest()
 		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
 		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
 
-		int flagsA = obA->getCompanionId();
-		int flagsB = obB->getCompanionId();
-		int numContacts = contactManifold->getNumContacts();
-		for (int j=0;j<numContacts;j++)
+		//int flagsA = obA->getCompanionId();
+		//int flagsB = obB->getCompanionId();
+		//int numContacts = contactManifold->getNumContacts();
+		//for (int j=0;j<numContacts;j++)
+		//{
+		//	btManifoldPoint& pt = contactManifold->getContactPoint(j);
+		//	if (pt.getDistance()<0.f)
+		//	{
+		//		const btVector3& ptA = pt.getPositionWorldOnA();
+		//		const btVector3& ptB = pt.getPositionWorldOnB();
+		//		const btVector3& normalOnB = pt.m_normalWorldOnB;
+		//	}
+		//}
+
+		if(obA->getUserPointer() != NULL && obB->getUserPointer() != NULL)
 		{
-			btManifoldPoint& pt = contactManifold->getContactPoint(j);
-			if (pt.getDistance()<0.f)
+			//取出rigidbody內的指標...並檢查兩個的指標是否需要作用
+			ScoreBase *object0 = (ScoreBase *)obA->getUserPointer();
+			ScoreBase *object1 = (ScoreBase *)obB->getUserPointer();
+			if(object0->getType() == SCORE_TYPE_BODY || object0->getType() == SCORE_TYPE_HAND)
 			{
-				const btVector3& ptA = pt.getPositionWorldOnA();
-				const btVector3& ptB = pt.getPositionWorldOnB();
-				const btVector3& normalOnB = pt.m_normalWorldOnB;
+				ScoreSystem::calcScore(object0, object1);
 			}
 		}
 	}
