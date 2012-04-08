@@ -36,10 +36,11 @@ btRigidBody* RagDoll::localCreateRigidBody (float mass, const btTransform& start
 
 	m_pWorld->addRigidBody(body);
 
-	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 	//把指標放到rigidbody內
 	body->setUserPointer(userPoint);
 
+	body->setActivationState(DISABLE_DEACTIVATION);
 	return body;
 }
 
@@ -167,6 +168,13 @@ void RagDoll::init(const int &x, const int &y, const int &z)
 	transform.setOrigin(btVector3(btScalar(0.7), btScalar(1.45), btScalar(0.)));
 	transform.getBasis().setEulerZYX(0,0,-M_PI_2);
 	m_pBodies[BODYPART_RIGHT_LOWER_ARM] = localCreateRigidBody(btScalar(1.), offset*transform, m_pShapes[BODYPART_RIGHT_LOWER_ARM], ScoreSystem::createScoreObject(SCORE_TYPE_BODY));
+
+	//btVector3 linVel(0, 1, 0);
+	//linVel.normalize();
+	//linVel*=50;
+
+	//m_pBodies[BODYPART_SPINE]->setLinearVelocity(linVel);
+	//m_pBodies[BODYPART_SPINE]->setAngularVelocity(btVector3(0,0,0));
 
 	// Setup some damping on the m_pBodies
 	for (int i = 0; i < BODYPART_COUNT; ++i)
