@@ -28,6 +28,15 @@ void PhysicShapeBase::setData(unsigned int dataType, float data)
 		m_vData[dataType] = data;
 	}
 }
+
+void PhysicShapeBase::release(void)
+{
+	release();
+}
+
+void PhysicShapeBase::update(float *pos, float *qua)
+{
+}
 //*******************************************************
 //********************  BOX  ****************************
 //*******************************************************
@@ -39,9 +48,14 @@ PhysicShapeBox::~PhysicShapeBox()
 {
 }
 
-PHYSIC_SHPAE_TYPE	PhysicShapeBox::getType(void)
+PHYSIC_SHPAE_TYPE PhysicShapeBox::getType(void)
 {
 	return ePhysicShapeBox;
+}
+
+void PhysicShapeBox::release(void)
+{
+	PhysicShapeBase::release();
 }
 //*******************************************************
 //********************  CONE  ***************************
@@ -54,9 +68,14 @@ PhysicShapeCone::~PhysicShapeCone()
 {
 }
 
-PHYSIC_SHPAE_TYPE	PhysicShapeCone::getType(void)
+PHYSIC_SHPAE_TYPE PhysicShapeCone::getType(void)
 {
 	return ePhysicShapeCone;
+}
+
+void PhysicShapeCone::release(void)
+{
+	PhysicShapeBase::release();
 }
 //*******************************************************
 //******************  CYLINDER  *************************
@@ -69,9 +88,14 @@ PhysicShapeCylinder::~PhysicShapeCylinder()
 {
 }
 
-PHYSIC_SHPAE_TYPE	PhysicShapeCylinder::getType(void)
+PHYSIC_SHPAE_TYPE PhysicShapeCylinder::getType(void)
 {
 	return ePhysicShapeCylinder;
+}
+
+void PhysicShapeCylinder::release(void)
+{
+	PhysicShapeBase::release();
 }
 //*******************************************************
 //******************  SPHERE  *************************
@@ -84,9 +108,14 @@ PhysicShapeSphere::~PhysicShapeSphere()
 {
 }
 
-PHYSIC_SHPAE_TYPE	PhysicShapeSphere::getType(void)
+PHYSIC_SHPAE_TYPE PhysicShapeSphere::getType(void)
 {
 	return ePhysicShapeSphere;
+}
+
+void PhysicShapeSphere::release(void)
+{
+	PhysicShapeBase::release();
 }
 //*******************************************************
 //********************  END  ****************************

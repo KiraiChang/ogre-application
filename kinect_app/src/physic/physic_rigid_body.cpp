@@ -8,10 +8,14 @@ btVector3 BT_UNIT_Y(0.0, 1.0, 0.0);
 btVector3 BT_UNIT_X(1.0, 0.0, 0.0);
 btVector3 BT_UNIT_Z(0.0, 0.0, 1.0);
 
+//*******************************************************
+//****************  RIGID_BODY  *************************
+//*******************************************************
+
 btRigidBody* PhysicRigidBody::localCreateRigidBody (float mass, const btTransform& startTransform, btCollisionShape* shape, void *userPoint, int collisionflag)
 {
 	if(shape == NULL)
-		return;
+		return NULL;
 
 	bool isDynamic = (mass != 0.f);
 
@@ -25,12 +29,16 @@ btRigidBody* PhysicRigidBody::localCreateRigidBody (float mass, const btTransfor
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, shape, localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
 
+	body->setRestitution(10);
+	body->setFriction(0.6);
+	//body->setCcdMotionThreshold(1.);
+
+	m_pWorld->addRigidBody(body);
+
 	//set collision flag to rigidbody.
 	body->setCollisionFlags(body->getCollisionFlags() | collisionflag);
 	//把指標放到rigidbody內
 	body->setUserPointer(userPoint);
-
-	m_pWorld->addRigidBody(body);
 
 	return body;
 }
@@ -53,10 +61,13 @@ PhysicRigidBody::~PhysicRigidBody(void)
 {
 }
 
-void PhysicRigidBody::init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, float mass, const btTransform& startTransform, void *userPoint, int collisionflag)
+void PhysicRigidBody::init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, float mass, float *pos, void *userPoint, int collisionflag)
 {
 	if(m_pWorld != NULL)
 	{
+		btTransform trans;
+		trans.setIdentity();
+		trans.setOrigin(*((btVector3 *)pos));
 		m_pDebug = debugShape;
 		m_pShapeData = shapeData;
 		switch(m_pShapeData->getType())
@@ -107,8 +118,7 @@ void PhysicRigidBody::init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, 
 		default:
 			break;
 		}
-		m_pBodies = localCreateRigidBody(mass, startTransform, m_pShapes, userPoint, collisionflag);
-		m_pWorld->addRigidBody(m_pBodies);
+		m_pBodies = localCreateRigidBody(mass, trans, m_pShapes, userPoint, collisionflag);
 	}
 }
 
@@ -116,11 +126,6 @@ void PhysicRigidBody::release(void)
 {
 	if(NULL != m_pWorld)
 	{
-		if(m_pShapeData != NULL)
-		{
-			delete m_pShapeData;
-			m_pShapeData = NULL;
-		}
 		// Remove bodies and shapes
 		if(NULL != m_pBodies)
 		{
@@ -144,6 +149,11 @@ void PhysicRigidBody::release(void)
 	}
 	m_pWorld = NULL;
 
+	if(m_pShapeData != NULL)
+	{
+		delete m_pShapeData;
+		m_pShapeData = NULL;
+	}
 	if(NULL != m_pDebug)
 	{
 		m_pDebug->release();
@@ -151,3 +161,53 @@ void PhysicRigidBody::release(void)
 		m_pDebug = NULL;
 	}
 }
+
+void PhysicRigidBody::translate(float x, float y, float z)
+{
+	if(NULL != m_pBodies)
+	{
+		m_pBodies->translate(btVector3(x, y, z));
+	}
+}
+
+void PhysicRigidBody::force(float x, float y, float z, float force)
+{
+	btVector3 linVel(x, y, z);
+	linVel.normalize();
+	linVel*=force;
+
+	m_pBodies->setLinearVelocity(linVel);
+	m_pBodies->setAngularVelocity(btVector3(0,0,0));
+}
+
+void PhysicRigidBody::update(void)
+{
+	if(m_pWorld == NULL)
+		return;
+
+	if(m_pBodies == NULL)
+		return;
+
+	if(m_pShapes == NULL)
+		return;
+
+	if(NULL != m_pDebug)
+	{
+		m_pDebug->beginDraw();
+		m_pDebug->draw(0, m_pBodies);
+		m_pDebug->endDraw();
+	}
+
+	if(m_pShapeData != NULL)
+	{
+		btQuaternion q = m_pBodies->getOrientation();
+		btTransform trans;
+		m_pBodies->getMotionState()->getWorldTransform(trans);
+		btVector3 pos = trans.getOrigin();
+		m_pShapeData->update((float *)&pos,
+								(float *)&q);
+	}
+}
+//*******************************************************
+//********************  END  ****************************
+//*******************************************************

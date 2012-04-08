@@ -84,6 +84,9 @@
     <ClCompile Include="..\..\physic\physic_shape_base.cpp">
       <Filter>physic</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ogre_physic\ogre_physic_shape.cpp">
+      <Filter>ogre_physic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\base_math\base_define.h">
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="..\..\physic\physic_shape_base.h">
       <Filter>physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ogre_physic\ogre_physic_shape.h">
+      <Filter>ogre_physic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

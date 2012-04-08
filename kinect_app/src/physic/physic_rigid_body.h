@@ -8,6 +8,9 @@ class btTransform;
 class PhysicDebug;
 class PhysicShapeBase;
 
+//*******************************************************
+//****************  RIGID_BODY  *************************
+//*******************************************************
 class PhysicRigidBody
 {
 private:
@@ -25,9 +28,13 @@ public:
 	//PhysicRigidBody(void);
 	~PhysicRigidBody(void);
 
-	void init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, float mass, const btTransform& startTransform, void *userPoint, int collisionflag);
+	void init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, float mass, float *pos, void *userPoint, int collisionflag);
+	void translate(float x, float y, float z);
+	void force(float x, float y, float z, float force);
 	void release(void);
+	void update(void);
 };
-
-
+//*******************************************************
+//********************  END  ****************************
+//*******************************************************
 #endif //_PHYSIC_BODY_H_

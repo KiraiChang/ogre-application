@@ -93,6 +93,7 @@
     <ClCompile Include="..\..\main\main.cpp" />
     <ClCompile Include="..\..\manger_source\object_manger.cpp" />
     <ClCompile Include="..\..\ogre_physic\ogre_physic_debug.cpp" />
+    <ClCompile Include="..\..\ogre_physic\ogre_physic_shape.cpp" />
     <ClCompile Include="..\..\ogre_source\base_application.cpp" />
     <ClCompile Include="..\..\ogre_source\kinect_application.cpp" />
     <ClCompile Include="..\..\ogre_source\ogre_application.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="..\..\kinect\resource.h" />
     <ClInclude Include="..\..\manger_source\object_manger.h" />
     <ClInclude Include="..\..\ogre_physic\ogre_physic_debug.h" />
+    <ClInclude Include="..\..\ogre_physic\ogre_physic_shape.h" />
     <ClInclude Include="..\..\ogre_source\base_application.h" />
     <ClInclude Include="..\..\ogre_source\kinect_application.h" />
     <ClInclude Include="..\..\ogre_source\ogre_application.h" />

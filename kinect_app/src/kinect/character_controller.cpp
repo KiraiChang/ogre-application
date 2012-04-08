@@ -30,7 +30,7 @@ void CharacterController::init(void)
 
 		sprintf(name, "m_pBodyNode%d", m_iKinectID);
 		m_pBodyNode = m_pSceneMgr->getRootSceneNode()->
-			createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 25.0f));
+			createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 0.0f));
 		m_pBodyNode->attachObject(m_pBodyEnt);
 		m_pBodyNode->setScale(5, 5, 5);
 		setupAnimations();
@@ -44,7 +44,7 @@ void CharacterController::init(void)
 		// Create the scene node
 		sprintf(name, "CharNode%d_%d", i, m_iKinectID);
 		m_pCharNode[i] = m_pSceneMgr->getRootSceneNode()->
-			createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 25.0f));
+			createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 0.0f));
 		m_pCharNode[i]->attachObject(m_pCharEnt[i]);
 		m_pCharNode[i]->setScale(0.01, 0.01, 0.01);
 	}
@@ -57,9 +57,9 @@ void CharacterController::update(const NUI_SKELETON_DATA &data)
 	{
 		for(int j = 0; j < NUI_SKELETON_POSITION_COUNT; j++)
 		{
-			m_pCharNode[j]->setPosition(data.SkeletonPositions[j].x*10 + 100,
+			m_pCharNode[j]->setPosition(data.SkeletonPositions[j].x*10 + 0,
 				data.SkeletonPositions[j].y*10 + 270,
-				data.SkeletonPositions[j].z*10 + 100);
+				data.SkeletonPositions[j].z*10 + 0);
 		}
 		if(m_pBodyNode != NULL)
 		{
@@ -75,7 +75,7 @@ void CharacterController::update(const NUI_SKELETON_DATA &data)
 			transformBone("Thigh.R",NUI_SKELETON_POSITION_HIP_RIGHT, data);
 			transformBone("Calf.L",NUI_SKELETON_POSITION_KNEE_LEFT, data);
 			transformBone("Calf.R",NUI_SKELETON_POSITION_KNEE_RIGHT, data);
-			m_pBodyNode->setPosition(150, 270, 150);
+			m_pBodyNode->setPosition(0, 270, 0);
 		}
 	}
 }
