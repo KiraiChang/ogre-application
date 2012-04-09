@@ -139,7 +139,10 @@ void PhysicRigidBody::release(void)
 				m_pBodies->setUserPointer(NULL);
 			}
 			if(NULL != m_pBodies->getMotionState())
+			{
 				delete m_pBodies->getMotionState();
+				m_pBodies->setMotionState(NULL);
+			}
 
 			delete m_pBodies; 
 			m_pBodies = NULL;

@@ -7,8 +7,8 @@
 
 typedef std::list< PhysicRigidBody * > V_RIGID_BODY;
 typedef std::list<  PhysicShapeBase* > V_SHAPE;
-
-class 	btDynamicsWorld;
+class PhysicDebug;
+class btDynamicsWorld;
 namespace Ogre
 {
 	class SceneManager;
@@ -33,7 +33,10 @@ public:
 	void										restart(void);
 
 	void										createShape(const char *modelName, float *scale, float *pos, float *quat);
+	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, PhysicDebug *debug = NULL, void *userPoint = NULL, int flag = 0);
+	void										randomShoot(void);
 	void										initScene(void);
+	void										update(void);
 };
 
 #endif //_GAME_SYSTEM_H_
