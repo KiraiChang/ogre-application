@@ -78,13 +78,13 @@ void GameSystem::createShape(const char *modelName, float *scale, float *pos, fl
 	
 }
 
-PhysicRigidBody *GameSystem::createRidigBody(const char *modelName, float mass, float *scale, float *pos, PhysicDebug *debug, void *userPoint, int flag)
+PhysicRigidBody *GameSystem::createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug, void *userPoint, int flag)
 {
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
 	shape->init(modelName, scale);
 	m_vRigidBody.push_back(new PhysicRigidBody(m_pWorld));
 	PhysicRigidBody *body = m_vRigidBody.back();
-	body->init(shape, debug, mass, pos, userPoint, flag);
+	body->init(shape, debug, mass, pos, quat, userPoint, flag);
 	
 	return body;
 }
@@ -95,15 +95,18 @@ void GameSystem::randomShoot(void)
 	float scale[3] = {1.0, -1.0, 1.0};
 	float pos[3] = {0.0, 3, -45.0};
 	float dir[3] = {0, 0.4, 1.0};
+	float quat[4] = {1.0, 0.0, 0.0, 0.0};
 	if(r == 0)
 	{
 		dir[0] = -0.4;
 		pos[0] = 30;
+		quat[2] = -0.25;
 	}
 	else if(r == 1)
 	{
 		dir[0] = 0.4;
 		pos[0] = -30;
+		quat[2] = 0.25;
 	}
 
 	float roat[3] = {0.0, 0.0, 0.0};
@@ -127,7 +130,7 @@ void GameSystem::randomShoot(void)
 	}
 
 
-	PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, NULL, ScoreSystem::createScoreObject(scoreType), 8);
+	PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(scoreType), 8);
 	body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
 
 }

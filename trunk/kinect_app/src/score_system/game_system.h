@@ -33,7 +33,7 @@ public:
 	void										restart(void);
 
 	void										createShape(const char *modelName, float *scale, float *pos, float *quat);
-	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, PhysicDebug *debug = NULL, void *userPoint = NULL, int flag = 0);
+	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug = NULL, void *userPoint = NULL, int flag = 0);
 	void										randomShoot(void);
 	void										initScene(void);
 	void										update(void);

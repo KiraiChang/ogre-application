@@ -28,7 +28,7 @@ public:
 	//PhysicRigidBody(void);
 	~PhysicRigidBody(void);
 
-	void init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, float mass, float *pos, void *userPoint, int collisionflag);
+	void init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, float mass, float *pos, float *quat, void *userPoint, int collisionflag);
 	void translate(float x, float y, float z);
 	void force(float x, float y, float z, float ax, float ay, float az, float force);
 	void release(void);
