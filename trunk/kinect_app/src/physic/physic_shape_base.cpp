@@ -14,7 +14,7 @@ PhysicShapeBase::~PhysicShapeBase()
 
 float PhysicShapeBase::getData(unsigned int dataType)
 {
-	if(m_vData.size() < dataType)
+	if(m_vData.size() > dataType)
 	{
 		return m_vData[dataType];
 	}
@@ -23,7 +23,7 @@ float PhysicShapeBase::getData(unsigned int dataType)
 
 void PhysicShapeBase::setData(unsigned int dataType, float data)
 {
-	if(m_vData.size() < dataType)
+	if(m_vData.size() > dataType)
 	{
 		m_vData[dataType] = data;
 	}

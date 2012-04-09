@@ -2,6 +2,7 @@
 #define _KINECT_APPLICATION_H_
 
 #include "../kinect/character_controller.h"
+#include "../kinect/physic_kinect.h"
 #include "ogre_application.h"
 
 class PhysicSimulation;
@@ -17,7 +18,7 @@ private:
 	RagDoll*								m_pRagDoll;
 	RagDoll*								m_pRagDoll1;
 	//PhysicRigidBody*						m_pRigidBody;
-	//PhysicRigidBody*						m_pRigidBody1;
+	PhysicRigidBody*						m_pRigidBody1;
 	//OgreShapeBox*							m_pOgreShape;
 	//OgreShapeBox*							m_pOgreShape1;
 	//OgreShapeBox*							m_pOgreShape2;
@@ -28,7 +29,7 @@ private:
 	bool									m_bHasDevice;
 
 	//Ogre
-	CharacterController *					m_vpPlayer[NUI_SKELETON_COUNT];
+	PhysicKinect *							m_vpPlayer[NUI_SKELETON_COUNT];
 
 public:
 	KinectApplication(void);
