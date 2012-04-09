@@ -118,7 +118,8 @@ void GameSystem::randomShoot(void)
 	float speed = 35;
 	char modelName[64] = "";
 	int scoreType = 5;//3 - 5
-	sprintf(modelName, "bomb.mesh");
+	//sprintf(modelName, "bomb.mesh");
+	sprintf(modelName, "arror.mesh");
 
 
 	PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, NULL, ScoreSystem::createScoreObject(scoreType), 8);
