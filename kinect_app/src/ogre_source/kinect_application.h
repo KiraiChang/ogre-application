@@ -18,9 +18,10 @@ private:
 	RagDoll*								m_pRagDoll1;
 	PhysicRigidBody*						m_pRigidBody;
 	PhysicRigidBody*						m_pRigidBody1;
-	OgreShapeBox*							m_pOgreShape;
-	OgreShapeBox*							m_pOgreShape1;
-	OgreShapeBox*							m_pOgreShape2;
+	//OgreShapeBox*							m_pOgreShape;
+	//OgreShapeBox*							m_pOgreShape1;
+	//OgreShapeBox*							m_pOgreShape2;
+	//OgreShapeBox*							m_pOgreShape3;
 
 	//Kinect
 	KinectDevice *							m_pKinectDevice;

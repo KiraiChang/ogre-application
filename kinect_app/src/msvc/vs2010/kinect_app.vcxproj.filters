@@ -87,6 +87,9 @@
     <ClCompile Include="..\..\ogre_physic\ogre_physic_shape.cpp">
       <Filter>ogre_physic</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\score_system\game_system.cpp">
+      <Filter>score_system</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\base_math\base_define.h">
@@ -142,6 +145,9 @@
     </ClInclude>
     <ClInclude Include="..\..\ogre_physic\ogre_physic_shape.h">
       <Filter>ogre_physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\score_system\game_system.h">
+      <Filter>score_system</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
