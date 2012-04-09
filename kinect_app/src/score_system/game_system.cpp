@@ -252,4 +252,9 @@ void GameSystem::update(float timePass)
 		else
 			rIte++;
 	}
+	if(m_fTimePass >= m_fFullTime)
+	{
+		restart();
+		initScene();
+	}
 }
