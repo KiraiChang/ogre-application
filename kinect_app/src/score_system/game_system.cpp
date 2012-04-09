@@ -140,9 +140,11 @@ void GameSystem::initScene(void)
 	createShape("pipeAndBrick.mesh", scale, pos, quat);
 
 	pos[0] = 30;
+	quat[2] = -0.25;
 	createShape("pipeAndBrick.mesh", scale, pos, quat);
 
 	pos[0] = -30;
+	quat[2] = 0.25;
 	createShape("pipeAndBrick.mesh", scale, pos, quat);
 
 	pos[0] = -40;
@@ -152,8 +154,9 @@ void GameSystem::initScene(void)
 	pos[0] = -20;
 	pos[2] = -80;
 	scale[0] = 2.0;
-	scale[1] = 4.0;
+	scale[1] = 3.0;
 	scale[2] = 4.0;
+	quat[2] = 0.05;
 	createShape("rock.mesh", scale, pos, quat);
 
 	pos[0] = 40;
@@ -161,6 +164,7 @@ void GameSystem::initScene(void)
 	scale[0] = 2.0;
 	scale[1] = 3.0;
 	scale[2] = 1.0;
+	quat[2] = -0.1;
 	createShape("rock.mesh", scale, pos, quat);
 
 	pos[0] = 30;
@@ -168,6 +172,7 @@ void GameSystem::initScene(void)
 	scale[0] = 5.0;
 	scale[1] = 6.0;
 	scale[2] = 4.0;
+	quat[2] = -0.15;
 	createShape("rock.mesh", scale, pos, quat);
 
 	pos[0] = 130;
@@ -175,6 +180,7 @@ void GameSystem::initScene(void)
 	scale[0] = 20.0;
 	scale[1] = 22.0;
 	scale[2] = 24.0;
+	quat[2] = -0.1;
 	createShape("rock.mesh", scale, pos, quat);
 
 	pos[0] = -100;
@@ -182,6 +188,7 @@ void GameSystem::initScene(void)
 	scale[0] = 20.0;
 	scale[1] = 24.0;
 	scale[2] = 22.0;
+	quat[2] = 0.2;
 	createShape("rock.mesh", scale, pos, quat);
 }
 
