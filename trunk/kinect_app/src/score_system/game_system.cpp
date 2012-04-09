@@ -1,7 +1,10 @@
 #include "game_system.h"
 #include "score_system.h"
+#include "score_object.h"
 #include "../ogre_physic/ogre_physic_shape.h"
 #include "../physic/physic_debug.h"
+
+#include <random>
 
 GameSystem *GameSystem::g_instance = NULL;
 
@@ -117,9 +120,22 @@ void GameSystem::randomShoot(void)
 	float roat[3] = {-0.1, 0, 0};
 	float speed = 35;
 	char modelName[64] = "";
-	int scoreType = 5;//3 - 5
-	//sprintf(modelName, "bomb.mesh");
-	sprintf(modelName, "arror.mesh");
+	int scoreType = rand() % 3 + 3;//3 - 5
+	switch(scoreType)
+	{
+		case SCORE_TYPE_COIN:
+			sprintf(modelName, "coin.mesh");
+			break;
+		case SCORE_TYPE_ARROW:
+			sprintf(modelName, "arror.mesh");
+			break;
+		case SCORE_TYPE_BOMB:
+			sprintf(modelName, "bomb.mesh");
+			break;
+		default:
+			sprintf(modelName, "bomb.mesh");
+			break;
+	}
 
 
 	PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, NULL, ScoreSystem::createScoreObject(scoreType), 8);
