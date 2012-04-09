@@ -209,7 +209,7 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 	{
 		int score = ScoreSystem::getScore();
 		char text[128];
-		sprintf_s(text, "SCORE:%018d", score);
+		sprintf_s(text, "SCORE:%016d", score);
 		CEGUI::Editbox *edit = (CEGUI::Editbox *)mpSheet->getChild("Root/ScoreText");
 		edit->setText(CEGUI::String (text));
 	}

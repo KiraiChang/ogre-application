@@ -10,7 +10,7 @@ typedef std::list<  PhysicShapeBase* > V_SHAPE;
 class PhysicDebug;
 class btDynamicsWorld;
 
-const float DEF_MAX_PLAY_TIME = 180.0;
+const float DEF_MAX_PLAY_TIME = 120.0;
 
 namespace Ogre
 {
