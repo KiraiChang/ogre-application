@@ -11,6 +11,7 @@ enum PHYSIC_SHPAE_TYPE
 	ePhysicShapeCone,
 	ePhysicShapeCylinder,
 	ePhysicShapeSphere,
+	ePhysicShapeStaticPlane,
 };
 
 //*******************************************************

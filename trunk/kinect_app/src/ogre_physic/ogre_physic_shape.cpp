@@ -2,6 +2,7 @@
 #include <OgreSceneManager.h>
 #include <OgreEntity.h>
 
+unsigned int gCurrentID = 0;
 //*******************************************************
 //********************  BOX  ****************************
 //*******************************************************
@@ -18,15 +19,15 @@ OgreShapeBox::~OgreShapeBox(void)
 	release();
 }
 
-void OgreShapeBox::init(unsigned int id, const char *meshName, float *scale)
+void OgreShapeBox::init(const char *meshName, float *scale)
 {	
 	if(m_pBodyNode == NULL)
 	{
 		char name[64];
-		sprintf(name, "m_pBodyEnt_%d", id);
+		sprintf(name, "m_pShapeBodyEnt%d", gCurrentID);
 		m_pBodyEnt = m_pSceneMgr->createEntity(name, meshName);
 
-		sprintf(name, "m_pBodyNode%d", id);
+		sprintf(name, "m_pShapeBodyNode%d", gCurrentID);
 		m_pBodyNode = m_pSceneMgr->getRootSceneNode()->
 			createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 0.0f));
 		m_pBodyNode->attachObject(m_pBodyEnt);
@@ -37,6 +38,7 @@ void OgreShapeBox::init(unsigned int id, const char *meshName, float *scale)
 		setData(SIZE_X, size.x * scale[0]);
 		setData(SIZE_Y, size.y * scale[1]);
 		setData(SIZE_Z, size.z * scale[2]);
+		gCurrentID++;
 	}
 }
 
@@ -175,28 +177,38 @@ void OgreShapeCylinder::update(float *pos, float *qua)
 //*******************************************************
 //*******************  SPHERE  **************************
 //*******************************************************
-OgreShapeSphere::OgreShapeSphere(Ogre::SceneManager *scene, unsigned int id, const char *meshName):
+OgreShapeSphere::OgreShapeSphere(Ogre::SceneManager *scene):
 		PhysicShapeSphere(), 
 		m_pSceneMgr(scene),
 		m_pBodyNode(NULL),
 		m_pBodyEnt(NULL)
 {
-	char name[64];
-	if(m_pBodyNode == NULL)
-	{
-		sprintf(name, "m_pBodyEnt_%d", id);
-		m_pBodyEnt = m_pSceneMgr->createEntity(name, meshName);
-
-		sprintf(name, "m_pBodyNode%d", id);
-		m_pBodyNode = m_pSceneMgr->getRootSceneNode()->
-			createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 0.0f));
-		m_pBodyNode->attachObject(m_pBodyEnt);
-	}
 }
 
 OgreShapeSphere::~OgreShapeSphere(void)
 {
 	release();
+}
+
+void OgreShapeSphere::init(const char *meshName, float *scale)
+{
+	char name[64];
+	if(m_pBodyNode == NULL)
+	{
+		sprintf(name, "m_pBodyEnt_%d", gCurrentID);
+		m_pBodyEnt = m_pSceneMgr->createEntity(name, meshName);
+
+		sprintf(name, "m_pBodyNode%d", gCurrentID);
+		m_pBodyNode = m_pSceneMgr->getRootSceneNode()->
+			createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 0.0f));
+		m_pBodyNode->attachObject(m_pBodyEnt);
+		m_pBodyNode->setScale(Ogre::Vector3(scale));
+
+		Ogre::Vector3 size = m_pBodyEnt->getBoundingBox().getSize();
+		setData(RADIUS, size.x * scale[0]);
+
+		gCurrentID++;
+	}
 }
 
 void OgreShapeSphere::release(void)

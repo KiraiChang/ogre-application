@@ -80,21 +80,23 @@ void PhysicSimulation::init(const int &x, const int &y, const int &z)
 
 	m_pDispatcher = new btCollisionDispatcher(m_pCollisionConfiguration);
 
-	//btVector3 worldAabbMin(-x,-y,-z);
-	//btVector3 worldAabbMax(x, y, z);
-	m_pBroadphase = new btDbvtBroadphase();//new btAxisSweep3 (worldAabbMin, worldAabbMax);
+	//m_pBroadphase = new btDbvtBroadphase();
+
+	btVector3 worldAabbMin(-x,-y,-z);
+	btVector3 worldAabbMax(x, y, z);
+	m_pBroadphase = new btAxisSweep3 (worldAabbMin, worldAabbMax);
 
 	m_pSolver = new btSequentialImpulseConstraintSolver;
 
 	m_pDynamicsWorld = new btDiscreteDynamicsWorld(m_pDispatcher, m_pBroadphase, m_pSolver, m_pCollisionConfiguration);
-	m_pDynamicsWorld->setGravity(btVector3(0,-10,0));
+	m_pDynamicsWorld->setGravity(btVector3(0, -10, 0));
 	m_pClock = new btClock();
 
 
 	//setup terrain
 	btTransform Transform;
 	Transform.setIdentity();
-	Transform.setOrigin(btVector3(0, 260, 0));
+	Transform.setOrigin(btVector3(0, 0, 0));
 
 	// Give it to the motion state
 	btDefaultMotionState *MotionState = new btDefaultMotionState(Transform);

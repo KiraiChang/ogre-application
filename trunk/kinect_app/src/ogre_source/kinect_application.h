@@ -7,6 +7,7 @@
 class PhysicSimulation;
 class PhysicRigidBody;
 class RagDoll;
+class OgreShapeBox;
 
 class KinectApplication : public OgreApplication
 {
@@ -17,6 +18,9 @@ private:
 	RagDoll*								m_pRagDoll1;
 	PhysicRigidBody*						m_pRigidBody;
 	PhysicRigidBody*						m_pRigidBody1;
+	OgreShapeBox*							m_pOgreShape;
+	OgreShapeBox*							m_pOgreShape1;
+	OgreShapeBox*							m_pOgreShape2;
 
 	//Kinect
 	KinectDevice *							m_pKinectDevice;

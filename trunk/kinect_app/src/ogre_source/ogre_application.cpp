@@ -148,9 +148,9 @@ void OgreApplication::createScene(void)
 	initCamera();
 	initCEGUI();
 	//createCompositor();
-	//createLight();
+	createLight();
 	createShadow();
-	//createSkyDome();
+	createSkyDome();
 	//createTerrain();
 	createCaelum();
 	//mSceneMgr->setFog(Ogre::FOG_LINEAR);
@@ -168,7 +168,7 @@ void OgreApplication::initCamera(void)
 		////mCamera->lookAt(Ogre::Vector3(0, 180, 0));
   //  }
 	//mCamera->setPosition(Ogre::Vector3(0, 270, 80));
-	mCameraNode->setPosition(0, 270, 80);
+	mCameraNode->setPosition(0, 10, 50);
 }
 
 void OgreApplication::initCEGUI(void)
@@ -210,7 +210,7 @@ void OgreApplication::createCompositor(void)
 void OgreApplication::createLight(void)
 {
 	//create Light
-	Ogre::Vector3 lightdir(0.55, -0.3, 0.75);
+	Ogre::Vector3 lightdir(0.55, 1.5, 0.0);
     lightdir.normalise();
     Ogre::Light* pLight = mSceneMgr->createLight("MainLight");
     pLight->setType(Ogre::Light::LT_DIRECTIONAL);
@@ -218,7 +218,7 @@ void OgreApplication::createLight(void)
     pLight->setDiffuseColour(Ogre::ColourValue::White);
     pLight->setSpecularColour(Ogre::ColourValue(0.1, 0.1, 0.1));
 	Ogre::SceneNode *pLightNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	pLightNode ->createChildSceneNode(Ogre::Vector3(750,1000,750))->attachObject(pLight);
+	pLightNode ->createChildSceneNode(Ogre::Vector3(150,300,150))->attachObject(pLight);
 
     //mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 }
