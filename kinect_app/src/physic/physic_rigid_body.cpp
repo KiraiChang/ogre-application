@@ -64,12 +64,13 @@ PhysicRigidBody::~PhysicRigidBody(void)
 {
 }
 
-void PhysicRigidBody::init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, float mass, float *pos, void *userPoint, int collisionflag)
+void PhysicRigidBody::init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, float mass, float *pos, float *quat, void *userPoint, int collisionflag)
 {
 	if(m_pWorld != NULL)
 	{
 		btTransform trans;
 		trans.setIdentity();
+		trans.setRotation(*((btQuaternion *)quat));
 		trans.setOrigin(*((btVector3 *)pos));
 		m_pDebug = debugShape;
 		m_pShapeData = shapeData;
