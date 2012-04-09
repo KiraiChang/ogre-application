@@ -14,9 +14,9 @@
 KinectApplication::KinectApplication(void):
 		m_pKinectDevice(NULL), 
 		m_pPhysicSimulation(NULL),
-		m_bHasDevice(TRUE),
-		m_pRagDoll(NULL),
-		m_pRagDoll1(NULL)
+		m_bHasDevice(TRUE)
+		//m_pRagDoll(NULL),
+		//m_pRagDoll1(NULL),
 		//m_pRigidBody(NULL),
 		//m_pRigidBody1(NULL)
 {
@@ -38,17 +38,17 @@ KinectApplication::~KinectApplication(void)
 	GameSystem::getInstance()->release();
 	if(NULL != m_pPhysicSimulation)
 	{
-		if(m_pRagDoll != NULL)
-		{
-			delete m_pRagDoll;
-			m_pRagDoll = NULL;
-		}
+		//if(m_pRagDoll != NULL)
+		//{
+		//	delete m_pRagDoll;
+		//	m_pRagDoll = NULL;
+		//}
 
-		if(m_pRagDoll1 != NULL)
-		{
-			delete m_pRagDoll1;
-			m_pRagDoll1 = NULL;
-		}
+		//if(m_pRagDoll1 != NULL)
+		//{
+		//	delete m_pRagDoll1;
+		//	m_pRagDoll1 = NULL;
+		//}
 
 		//if(NULL != m_pRigidBody)
 		//{
@@ -97,11 +97,11 @@ void KinectApplication::createScene(void)
 	//debug->init(mSceneMgr);
 	//m_pRagDoll->setDebug(debug);
 
-	m_pRagDoll1 = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
-	m_pRagDoll1->init(0, 5, 25);
-	OgrePhysicDebug *debug1 = new OgrePhysicDebug();
-	debug1->init(mSceneMgr);
-	m_pRagDoll1->setDebug(debug1);
+	//m_pRagDoll1 = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
+	//m_pRagDoll1->init(0, 5, 25);
+	//OgrePhysicDebug *debug1 = new OgrePhysicDebug();
+	//debug1->init(mSceneMgr);
+	//m_pRagDoll1->setDebug(debug1);
 
 	//GameSystem::getInstance()->randomShoot();
 	//GameSystem::getInstance()->randomShoot();
@@ -187,11 +187,11 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 	{
 		float timePass = m_pPhysicSimulation->update();
 
-		if(m_pRagDoll != NULL)
-			m_pRagDoll->update();
+		//if(m_pRagDoll != NULL)
+		//	m_pRagDoll->update();
 
-		if(m_pRagDoll1 != NULL)
-			m_pRagDoll1->update();
+		//if(m_pRagDoll1 != NULL)
+		//	m_pRagDoll1->update();
 
 		//if(m_pRigidBody != NULL)
 		//	m_pRigidBody->update();
