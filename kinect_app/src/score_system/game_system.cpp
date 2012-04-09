@@ -51,44 +51,21 @@ void GameSystem::restart(void)
 	PhysicRigidBody *body;
 	PhysicShapeBase *shape;
 
-	if(m_vRigidBody.size() > 1)
+	for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end(); rIte++)
 	{
-		for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end(); rIte++)
-		{
-			body = *rIte;
-			rIte = m_vRigidBody.erase(rIte);
-			body->release();
-			delete body;
-		}
-	}
-	else if(m_vRigidBody.size() == 1)
-	{
-		body = m_vRigidBody.back();
+		body = *rIte;
 		body->release();
 		delete body;
-		m_vRigidBody.clear();
 	}
+	m_vRigidBody.clear();
 
-	if(m_vShape.size() > 1)
+	for(sIte = m_vShape.begin(); sIte != m_vShape.end(); sIte++)
 	{
-		for(sIte = m_vShape.begin(); sIte != m_vShape.end(); sIte++)
-		{
-			shape = *sIte;
-			sIte = m_vShape.erase(sIte);
-			shape->release();
-			delete shape;
-		}
+		shape = *sIte;
+		shape->release();
+		delete shape;
 	}
-	else if(m_vShape.size() == 1)
-	{
-		for(sIte = m_vShape.begin(); sIte != m_vShape.end(); sIte++)
-		{
-			shape = m_vShape.back();
-			shape->release();
-			delete shape;
-			m_vShape.clear();
-		}
-	}
+	m_vShape.clear();
 
 }
 
@@ -114,26 +91,38 @@ PhysicRigidBody *GameSystem::createRidigBody(const char *modelName, float mass, 
 
 void GameSystem::randomShoot(void)
 {
+	int r = rand() % 3;
 	float scale[3] = {1.0, -1.0, 1.0};
 	float pos[3] = {0.0, 3, -45.0};
-	float dir[3] = {0, 1.0, 2.5};
-	float roat[3] = {-0.1, 0, 0};
+	float dir[3] = {0, 0.4, 1.0};
+	if(r == 0)
+	{
+		dir[0] = -0.4;
+		pos[0] = 30;
+	}
+	else if(r == 1)
+	{
+		dir[0] = 0.4;
+		pos[0] = -30;
+	}
+
+	float roat[3] = {0.0, 0.0, 0.0};
 	float speed = 35;
 	char modelName[64] = "";
 	int scoreType = rand() % 3 + 3;//3 - 5
 	switch(scoreType)
 	{
 		case SCORE_TYPE_COIN:
-			sprintf(modelName, "coin.mesh");
+			sprintf_s(modelName, "coin.mesh");
 			break;
 		case SCORE_TYPE_ARROW:
-			sprintf(modelName, "arror.mesh");
+			sprintf_s(modelName, "arror.mesh");
 			break;
 		case SCORE_TYPE_BOMB:
-			sprintf(modelName, "bomb.mesh");
+			sprintf_s(modelName, "bomb.mesh");
 			break;
 		default:
-			sprintf(modelName, "bomb.mesh");
+			sprintf_s(modelName, "bomb.mesh");
 			break;
 	}
 
@@ -145,18 +134,9 @@ void GameSystem::randomShoot(void)
 
 void GameSystem::initScene(void)
 {
-	float quat[4];
-	float pos[3];
-	float scale[3];
-	for(int i = 0; i < 3; i++)
-	{
-		quat[i] = 0.0;
-		pos[i] = 0.0;
-		scale[i] = 1.0;
-	}
-	quat[3] = 0.0;
-	quat[0] = 1.0;
-	pos[2] = -50.0;
+	float quat[4] = {1.0, 0.0, 0.0, 0.0};
+	float pos[3] = {0.0, 0.0, -50.0};
+	float scale[3] = {1.0, 1.0, 1.0};
 	createShape("pipeAndBrick.mesh", scale, pos, quat);
 
 	pos[0] = 30;
@@ -167,6 +147,41 @@ void GameSystem::initScene(void)
 
 	pos[0] = -40;
 	pos[2] = -60;
+	createShape("rock.mesh", scale, pos, quat);
+
+	pos[0] = -20;
+	pos[2] = -80;
+	scale[0] = 2.0;
+	scale[1] = 4.0;
+	scale[2] = 4.0;
+	createShape("rock.mesh", scale, pos, quat);
+
+	pos[0] = 40;
+	pos[2] = -60;
+	scale[0] = 2.0;
+	scale[1] = 3.0;
+	scale[2] = 1.0;
+	createShape("rock.mesh", scale, pos, quat);
+
+	pos[0] = 30;
+	pos[2] = -100;
+	scale[0] = 5.0;
+	scale[1] = 6.0;
+	scale[2] = 4.0;
+	createShape("rock.mesh", scale, pos, quat);
+
+	pos[0] = 130;
+	pos[2] = -300;
+	scale[0] = 20.0;
+	scale[1] = 22.0;
+	scale[2] = 24.0;
+	createShape("rock.mesh", scale, pos, quat);
+
+	pos[0] = -100;
+	pos[2] = -300;
+	scale[0] = 20.0;
+	scale[1] = 24.0;
+	scale[2] = 22.0;
 	createShape("rock.mesh", scale, pos, quat);
 }
 

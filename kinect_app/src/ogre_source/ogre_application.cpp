@@ -210,22 +210,37 @@ void OgreApplication::createCompositor(void)
 void OgreApplication::createLight(void)
 {
 	//create Light
-	Ogre::Vector3 lightdir(0.55, 1.5, 0.0);
-    lightdir.normalise();
     Ogre::Light* pLight = mSceneMgr->createLight("MainLight");
     pLight->setType(Ogre::Light::LT_DIRECTIONAL);
-    pLight->setDirection(lightdir);
-    pLight->setDiffuseColour(Ogre::ColourValue::White);
-    pLight->setSpecularColour(Ogre::ColourValue(0.1, 0.1, 0.1));
-	Ogre::SceneNode *pLightNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	pLightNode ->createChildSceneNode(Ogre::Vector3(150,300,150))->attachObject(pLight);
+    pLight->setDirection(0.0, -1.0, 0.0);
+    pLight->setDiffuseColour(1.0, 1.0, 1.0);
+    pLight->setSpecularColour(0.4, 0.4, 0.0);
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.0));
 
-    //mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
+	pLight = mSceneMgr->createLight("pLight");
+	pLight->setType(Ogre::Light::LT_POINT);// make this light a point light
+	pLight->setDiffuseColour(1.0, .5, 0.0);      //color the light orange 
+	pLight->setSpecularColour(1.0, 1.0, 0.0);    //yellow highlights
+	pLight->setAttenuation(100, 1.0, 0.045, 0.0075);
+	pLight->setPosition(0.0, 10.0, 50.0);
+
+	pLight = mSceneMgr->createLight("spotLight");
+    pLight->setType(Ogre::Light::LT_SPOTLIGHT);
+    pLight->setDiffuseColour(1.0, 1.0, 1.0);
+    pLight->setSpecularColour(1.0, 1.0, 1.0);
+ 
+    pLight->setDirection(-1, -1, -1);
+    pLight->setPosition(0.0, 20.0, 0.0);
+ 
+    pLight->setSpotlightRange(Ogre::Degree(35), Ogre::Degree(150), 0.1);
 }
 
 void OgreApplication::createShadow(void)
 {
-	mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+	//mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+	mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+	//mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED);
+	
 	mSceneMgr->setShadowColour(Ogre::ColourValue(0.6,0.6,0.6));
 	mSceneMgr->setShadowTextureSize(1024);
 }

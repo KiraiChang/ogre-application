@@ -26,7 +26,7 @@ void OgreShapeBox::init(const char *meshName, float *scale)
 		char name[64];
 		sprintf(name, "m_pShapeBodyEnt%d", gCurrentID);
 		m_pBodyEnt = m_pSceneMgr->createEntity(name, meshName);
-
+		m_pBodyEnt->setCastShadows(true);
 		sprintf(name, "m_pShapeBodyNode%d", gCurrentID);
 		m_pBodyNode = m_pSceneMgr->getRootSceneNode()->
 			createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 0.0f));
@@ -197,7 +197,7 @@ void OgreShapeSphere::init(const char *meshName, float *scale)
 	{
 		sprintf(name, "m_pBodyEnt_%d", gCurrentID);
 		m_pBodyEnt = m_pSceneMgr->createEntity(name, meshName);
-
+		m_pBodyEnt->setCastShadows(true);
 		sprintf(name, "m_pBodyNode%d", gCurrentID);
 		m_pBodyNode = m_pSceneMgr->getRootSceneNode()->
 			createChildSceneNode(name, Ogre::Vector3(0.0f, 0.0f, 0.0f));

@@ -76,6 +76,17 @@ void KinectApplication::createScene(void)
 {
 	OgreApplication::createScene();
 
+	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
+
+	Ogre::MeshManager::getSingleton().createPlane("ground", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		plane, 1500, 1500, 20, 20, true, 1, 50, 50, Ogre::Vector3::UNIT_Z);
+
+	Ogre::Entity* entGround = mSceneMgr->createEntity("GroundEntity", "ground");
+	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entGround);
+
+	entGround->setMaterialName("Examples/Rockwall");
+	entGround->setCastShadows(true);
+
 	GameSystem::getInstance()->init(m_pPhysicSimulation->getDynamicsWorld(), mSceneMgr);
 	GameSystem::getInstance()->initScene();
 
@@ -91,6 +102,9 @@ void KinectApplication::createScene(void)
 	debug1->init(mSceneMgr);
 	m_pRagDoll1->setDebug(debug1);
 
+	GameSystem::getInstance()->randomShoot();
+	GameSystem::getInstance()->randomShoot();
+	GameSystem::getInstance()->randomShoot();
 	GameSystem::getInstance()->randomShoot();
 
 	//OgreShapeSphere *shape = new OgreShapeSphere(mSceneMgr);
