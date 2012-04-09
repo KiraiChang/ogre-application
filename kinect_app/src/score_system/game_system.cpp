@@ -10,7 +10,10 @@ GameSystem *GameSystem::g_instance = NULL;
 
 GameSystem::GameSystem(void):
 		m_pWorld(NULL),
-		m_pSceneMgr(NULL)
+		m_pSceneMgr(NULL),
+		m_fFullTime(DEF_MAX_PLAY_TIME),
+		m_fTimePass(0),
+		m_bShoot(false)
 {
 }
 
@@ -51,6 +54,7 @@ void GameSystem::restart(void)
 	PhysicRigidBody *body;
 	PhysicShapeBase *shape;
 	ScoreSystem::resetScore();
+	m_fTimePass = 0.0f;
 	for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end(); rIte++)
 	{
 		body = *rIte;
@@ -66,7 +70,11 @@ void GameSystem::restart(void)
 		delete shape;
 	}
 	m_vShape.clear();
+}
 
+float GameSystem::getTimePass(void)const
+{
+	return m_fTimePass;
 }
 
 void GameSystem::createShape(const char *modelName, float *scale, float *pos, float *quat)
@@ -91,8 +99,9 @@ PhysicRigidBody *GameSystem::createRidigBody(const char *modelName, float mass, 
 
 void GameSystem::randomShoot(void)
 {
+	m_bShoot = true;
 	int r = rand() % 3;
-	float scale[3] = {1.0, -1.0, 1.0};
+	float scale[3] = {1.0, 1.0, 1.0};
 	float pos[3] = {0.0, 3, -45.0};
 	float dir[3] = {0, 0.4, 1.0};
 	float quat[4] = {1.0, 0.0, 0.0, 0.0};
@@ -195,14 +204,52 @@ void GameSystem::initScene(void)
 	createShape("rock.mesh", scale, pos, quat);
 }
 
-void GameSystem::update(void)
+void GameSystem::update(float timePass)
 {
-	V_RIGID_BODY::iterator rIte;
-	PhysicRigidBody *body;
+	bool shoot = (int)(m_fTimePass + timePass)%5 == 0;
+	if(shoot && !m_bShoot)
+	{
+		randomShoot();
+	}
+	else if(!shoot)
+	{
+		m_bShoot = false;
+	}
+	m_fTimePass += timePass;
 
-	for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end(); rIte++)
+	V_RIGID_BODY::iterator rIte;
+	V_RIGID_BODY::iterator eraseIte;
+	PhysicRigidBody *body;
+	for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end();)
 	{
 		body = *rIte;
+		
 		body->update();
+		float pos[3];
+		body->getPos(pos);
+		if(pos[2] > 50)
+		{
+			eraseIte = rIte;
+			rIte++;
+			m_vRigidBody.erase(eraseIte);
+			body->release();
+			delete body;
+		}
+		else if(body->getUserPointer() != NULL)
+		{
+			ScoreBase *base = (ScoreBase *)body->getUserPointer();
+			if(base->m_bDestory)
+			{
+				eraseIte = rIte;
+				rIte++;
+				m_vRigidBody.erase(eraseIte);
+				body->release();
+				delete body;
+			}
+			else
+				rIte++;
+		}
+		else
+			rIte++;
 	}
 }

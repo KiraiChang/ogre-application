@@ -5,9 +5,9 @@
 //*******************************************************
 
 ScoreBase::ScoreBase(unsigned int type):
-	m_iType(type)
+	m_iType(type),
+	m_bDestory(false)
 {
-
 }
 
 ScoreBase::~ScoreBase(void)

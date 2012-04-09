@@ -103,10 +103,10 @@ void KinectApplication::createScene(void)
 	debug1->init(mSceneMgr);
 	m_pRagDoll1->setDebug(debug1);
 
-	GameSystem::getInstance()->randomShoot();
-	GameSystem::getInstance()->randomShoot();
-	GameSystem::getInstance()->randomShoot();
-	GameSystem::getInstance()->randomShoot();
+	//GameSystem::getInstance()->randomShoot();
+	//GameSystem::getInstance()->randomShoot();
+	//GameSystem::getInstance()->randomShoot();
+	//GameSystem::getInstance()->randomShoot();
 
 	//OgreShapeSphere *shape = new OgreShapeSphere(mSceneMgr);
 	//shape->init("knot.mesh", (float *)&Ogre::Vector3(0.01, -0.01, 0.01));
@@ -154,6 +154,11 @@ void KinectApplication::createUI(void)
 	mpSheet = windowMgr.loadWindowLayout("kinect_game.layout");
  
     CEGUI::System::getSingleton().setGUISheet(mpSheet);
+
+	CEGUI::Slider *slider = (CEGUI::Slider *)mpSheet->getChild("Root/Timepass");
+
+	slider->setCurrentValue(DEF_MAX_PLAY_TIME);
+	slider->setMaxValue(DEF_MAX_PLAY_TIME);
 }
 
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
@@ -166,10 +171,10 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 		if(m_pKinectDevice->getSkeletonFrame(frame))
 			updatePlayer(frame);
 	}
-
+	
 	if(NULL != m_pPhysicSimulation)
 	{
-		m_pPhysicSimulation->update();
+		float timePass = m_pPhysicSimulation->update();
 
 		if(m_pRagDoll != NULL)
 			m_pRagDoll->update();
@@ -182,14 +187,19 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 
 		//if(m_pRigidBody1 != NULL)
 		//	m_pRigidBody1->update();
-		GameSystem::getInstance()->update();
+		GameSystem::getInstance()->update(timePass);
+
+		CEGUI::Slider *slider = (CEGUI::Slider *)mpSheet->getChild("Root/Timepass");
+
+		float current = DEF_MAX_PLAY_TIME - GameSystem::getInstance()->getTimePass();
+		slider->setCurrentValue(current);
 	}
 
 	{
 		int score = ScoreSystem::getScore();
 		char text[128];
 		sprintf_s(text, "SCORE:%018d", score);
-		CEGUI::Editbox *edit = (CEGUI::Editbox *)mpSheet->getChild("Root/ScoreText");;
+		CEGUI::Editbox *edit = (CEGUI::Editbox *)mpSheet->getChild("Root/ScoreText");
 		edit->setText(CEGUI::String (text));
 	}
 	return bRet;

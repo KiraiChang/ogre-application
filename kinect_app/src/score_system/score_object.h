@@ -22,6 +22,7 @@ public:
 	virtual ~ScoreBase(void);
 	unsigned int getType(void)const;
 	virtual int getEffect(unsigned int bodyPart);
+	bool		m_bDestory;
 private:
 	unsigned int m_iType;
 };

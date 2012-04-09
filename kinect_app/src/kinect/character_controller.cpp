@@ -58,7 +58,7 @@ void CharacterController::update(const NUI_SKELETON_DATA &data)
 		for(int j = 0; j < NUI_SKELETON_POSITION_COUNT; j++)
 		{
 			m_pCharNode[j]->setPosition(data.SkeletonPositions[j].x*10 + 0,
-				data.SkeletonPositions[j].y*10 + 270,
+				data.SkeletonPositions[j].y*10 + 0.0,
 				data.SkeletonPositions[j].z*10 + 0);
 		}
 		if(m_pBodyNode != NULL)
@@ -75,7 +75,7 @@ void CharacterController::update(const NUI_SKELETON_DATA &data)
 			transformBone("Thigh.R",NUI_SKELETON_POSITION_HIP_RIGHT, data);
 			transformBone("Calf.L",NUI_SKELETON_POSITION_KNEE_LEFT, data);
 			transformBone("Calf.R",NUI_SKELETON_POSITION_KNEE_RIGHT, data);
-			m_pBodyNode->setPosition(0, 270, 0);
+			m_pBodyNode->setPosition(0, 0.0, 0);
 		}
 	}
 }
