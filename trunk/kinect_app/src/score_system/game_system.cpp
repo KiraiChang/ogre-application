@@ -50,7 +50,7 @@ void GameSystem::restart(void)
 	V_SHAPE::iterator sIte;
 	PhysicRigidBody *body;
 	PhysicShapeBase *shape;
-
+	ScoreSystem::resetScore();
 	for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end(); rIte++)
 	{
 		body = *rIte;

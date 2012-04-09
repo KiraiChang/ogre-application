@@ -75,6 +75,7 @@ const std::string KinectApplication::getApplicationName(void)const
 void KinectApplication::createScene(void)
 {
 	OgreApplication::createScene();
+	createUI();
 
 	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
 
@@ -144,9 +145,15 @@ void KinectApplication::createScene(void)
 	//m_pOgreShape3  = new OgreShapeBox(mSceneMgr);
 	//m_pOgreShape3->init("rock.mesh", (float *)&Ogre::Vector3(1, 1, 1));
 	//m_pOgreShape3->update((float *)&pos, quat);
+}
 
+void KinectApplication::createUI(void)
+{
+	CEGUI::WindowManager &windowMgr = CEGUI::WindowManager::getSingleton();
 
-	
+	mpSheet = windowMgr.loadWindowLayout("kinect_game.layout");
+ 
+    CEGUI::System::getSingleton().setGUISheet(mpSheet);
 }
 
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
@@ -178,6 +185,13 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 		GameSystem::getInstance()->update();
 	}
 
+	{
+		int score = ScoreSystem::getScore();
+		char text[128];
+		sprintf_s(text, "SCORE:%018d", score);
+		CEGUI::Editbox *edit = (CEGUI::Editbox *)mpSheet->getChild("Root/ScoreText");;
+		edit->setText(CEGUI::String (text));
+	}
 	return bRet;
 }
 
