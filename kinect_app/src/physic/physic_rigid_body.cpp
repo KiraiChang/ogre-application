@@ -169,6 +169,19 @@ void PhysicRigidBody::release(void)
 	}
 }
 
+void PhysicRigidBody::setOrigin(float x, float y, float z)
+{
+	if(NULL != m_pBodies)
+	{
+		btTransform trans;
+		m_pBodies->getMotionState()->getWorldTransform(trans);
+		trans.setOrigin(btVector3(x, y, z));
+		m_pBodies->getMotionState()->setWorldTransform(trans);
+		m_pBodies->proceedToTransform(trans);
+		//m_pBodies->setCenterOfMassTransform(trans);
+	}
+}
+
 void PhysicRigidBody::translate(float x, float y, float z)
 {
 	if(NULL != m_pBodies)

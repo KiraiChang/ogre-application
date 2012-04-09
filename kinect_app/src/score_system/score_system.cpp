@@ -52,9 +52,10 @@ void ScoreSystem::resetScore(void)
 int ScoreSystem::calcScore(ScoreBase *bodyPart, ScoreBase *attachObj)
 {
 	int effectScore = attachObj->getEffect(bodyPart->getType());
-	if(effectScore != 0)
-		std::cout<<"Not Zero"<<std::endl;
-	getSystem()->m_iScore += effectScore;
+	if(getSystem()->m_iScore + effectScore > 0)
+		getSystem()->m_iScore += effectScore;
+	else
+		getSystem()->m_iScore = 0;
 	return effectScore;
 }
 

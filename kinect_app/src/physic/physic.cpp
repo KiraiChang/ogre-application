@@ -46,7 +46,8 @@ static bool MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* bod
 		ScoreBase *object1 = (ScoreBase *)rigidbody1->getUserPointer();
 		if(object0->getType() == SCORE_TYPE_BODY || object0->getType() == SCORE_TYPE_HAND)
 		{
-			ScoreSystem::calcScore(object0, object1);
+			if(ScoreSystem::calcScore(object0, object1) != 0)
+				object1->m_bDestory = true;
 		}
 	}
 	return true;

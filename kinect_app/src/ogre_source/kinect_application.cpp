@@ -112,11 +112,15 @@ void KinectApplication::createScene(void)
 	//shape->init("knot.mesh", (float *)&Ogre::Vector3(0.01, -0.01, 0.01));
 	//m_pRigidBody = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
 	//m_pRigidBody->init(shape, NULL, 1, (float *)&Ogre::Vector3(0.0, 10, 25.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
-	
-	//OgreShapeSphere *shape1 = new OgreShapeSphere(mSceneMgr);
-	//shape1->init("bomb.mesh", (float *)&Ogre::Vector3(1, -1, 1));
+
+	//OgrePhysicDebug *debug2 = new OgrePhysicDebug();
+	//debug2->init(mSceneMgr);
+	//float quat[4] = {1.0, 0.0, 0.0, 0.0};
+	//OgreShapeBox *shape1 = new OgreShapeBox(mSceneMgr);
+	//shape1->init("bomb.mesh", (float *)&Ogre::Vector3(10, 10, 10));
 	//m_pRigidBody1 = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
-	//m_pRigidBody1->init(shape1, NULL, 1.0, (float *)&Ogre::Vector3(0.0, 3, -45.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
+	//m_pRigidBody1->init(shape1, debug2, 0.0, (float *)&Ogre::Vector3(0.0, 3, -45.0), quat, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
+	//
 	//m_pRigidBody1->force(0, 1.0, 2.5, -0.1, 0, 0, 35);
 
 
@@ -145,6 +149,11 @@ void KinectApplication::createScene(void)
 	//m_pOgreShape3  = new OgreShapeBox(mSceneMgr);
 	//m_pOgreShape3->init("rock.mesh", (float *)&Ogre::Vector3(1, 1, 1));
 	//m_pOgreShape3->update((float *)&pos, quat);
+
+	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
+	{
+		m_vpPlayer[i] = new PhysicKinect(mSceneMgr, m_pPhysicSimulation->getDynamicsWorld());
+	}
 }
 
 void KinectApplication::createUI(void)
@@ -164,7 +173,9 @@ void KinectApplication::createUI(void)
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
 	bool bRet = OgreApplication::frameEnded(evt);
-	
+	//m_pRigidBody1->setOrigin(0.0, 0.0, 25.0);
+	//m_pRigidBody1->translate(0.0, 10.0, 35.0);
+	//m_pRigidBody1->update();
 	if(NULL != m_pKinectDevice)
 	{
 		NUI_SKELETON_FRAME frame = {0};
@@ -249,26 +260,29 @@ void KinectApplication::updatePlayer(const NUI_SKELETON_FRAME &frame)
 	{
 		if(frame.SkeletonData[i].eTrackingState != NUI_SKELETON_NOT_TRACKED)
 		{
-			if(m_vpPlayer[i] != NULL)
-			{
+			//if(m_vpPlayer[i] != NULL)
+			//{
 				if(m_vpPlayer[i]->getID() != frame.SkeletonData[i].dwTrackingID)
 				{
-					delete m_vpPlayer[i];
-					m_vpPlayer[i] = new CharacterController(mSceneMgr, frame.SkeletonData[i].dwTrackingID);
+					//delete m_vpPlayer[i];
+					//m_vpPlayer[i] = new CharacterController(mSceneMgr, frame.SkeletonData[i].dwTrackingID);
+					m_vpPlayer[i]->release();
+					m_vpPlayer[i]->init(frame.SkeletonData[i].dwTrackingID);
 				}
-			}
-			else
-				m_vpPlayer[i] = new CharacterController(mSceneMgr, frame.SkeletonData[i].dwTrackingID);
+			//}
+			//else
+			//	m_vpPlayer[i] = new CharacterController(mSceneMgr, frame.SkeletonData[i].dwTrackingID);
 
 			m_vpPlayer[i]->update(frame.SkeletonData[i]);
 		}
 		else
 		{
-			if(m_vpPlayer[i] != NULL)
-			{
-				delete m_vpPlayer[i];
-				m_vpPlayer[i] = NULL;
-			}
+			//if(m_vpPlayer[i] != NULL)
+			//{
+			//	delete m_vpPlayer[i];
+			//	m_vpPlayer[i] = NULL;
+			//}
+			m_vpPlayer[i]->release();
 		}
 	}
 }

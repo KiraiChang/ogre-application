@@ -90,6 +90,9 @@
     <ClCompile Include="..\..\score_system\game_system.cpp">
       <Filter>score_system</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\kinect\physic_kinect.cpp">
+      <Filter>kinect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\base_math\base_define.h">
@@ -148,6 +151,9 @@
     </ClInclude>
     <ClInclude Include="..\..\score_system\game_system.h">
       <Filter>score_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kinect\physic_kinect.h">
+      <Filter>kinect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
