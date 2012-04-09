@@ -215,6 +215,21 @@ void PhysicRigidBody::update(void)
 								(float *)&q);
 	}
 }
+
+void PhysicRigidBody::getPos(float *pos)const 
+{
+	btTransform trans;
+	m_pBodies->getMotionState()->getWorldTransform(trans);
+	btVector3 vec = trans.getOrigin();
+	pos[0] = vec.getX();
+	pos[1] = vec.getY();
+	pos[2] = vec.getZ();
+}
+
+void *PhysicRigidBody::getUserPointer()const
+{
+	return m_pBodies->getUserPointer();
+}
 //*******************************************************
 //********************  END  ****************************
 //*******************************************************

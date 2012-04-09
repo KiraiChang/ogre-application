@@ -180,7 +180,7 @@ float PhysicSimulation::getDeltaTimeMicroseconds()
 	return dt;
 }
 
-void PhysicSimulation::update(const float &timePass)
+float PhysicSimulation::update(const float &timePass)
 {
 	if (NULL != m_pDynamicsWorld)
 	{
@@ -193,9 +193,13 @@ void PhysicSimulation::update(const float &timePass)
 				ms = minFPS;
 
 			m_pDynamicsWorld->stepSimulation(ms / 1000000.f, 60);
+			return ms / 1000000.f;
 		}
 		else if(timePass > 0)
+		{
 			m_pDynamicsWorld->stepSimulation(timePass, 60);
+			return timePass;
+		}
 		else
 			m_pDynamicsWorld->stepSimulation(0, 60);
 
@@ -205,6 +209,7 @@ void PhysicSimulation::update(const float &timePass)
 		//test object collision
 		collisionTest();
 	}
+	return timePass;
 }
 
 void PhysicSimulation::collisionTest()
@@ -237,7 +242,8 @@ void PhysicSimulation::collisionTest()
 			ScoreBase *object1 = (ScoreBase *)obB->getUserPointer();
 			if(object0->getType() == SCORE_TYPE_BODY || object0->getType() == SCORE_TYPE_HAND)
 			{
-				ScoreSystem::calcScore(object0, object1);
+				if(ScoreSystem::calcScore(object0, object1) != 0)
+					object1->m_bDestory = true;
 			}
 		}
 	}
