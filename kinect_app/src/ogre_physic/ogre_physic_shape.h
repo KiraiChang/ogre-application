@@ -25,7 +25,7 @@ private:
 public:
 								OgreShapeBox(Ogre::SceneManager *scene);
 	virtual						~OgreShapeBox(void);
-	virtual void				init(unsigned int id, const char *meshName, float *scale);
+	virtual void				init(const char *meshName, float *scale);
 	virtual void				release(void);
 	virtual void				update(float *position, float *quaternion);
 protected:
@@ -78,8 +78,9 @@ private:
 	Ogre::SceneNode *			m_pBodyNode;
 	Ogre::Entity *				m_pBodyEnt;
 public:
-								OgreShapeSphere(Ogre::SceneManager *scene, unsigned int id, const char *meshName);
+								OgreShapeSphere(Ogre::SceneManager *scene);
 	virtual						~OgreShapeSphere(void);
+	virtual void				init(const char *meshName, float *scale);
 	virtual void				release(void);
 	virtual void				update(float *position, float *quaternion);
 protected:

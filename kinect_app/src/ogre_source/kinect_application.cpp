@@ -81,21 +81,41 @@ void KinectApplication::createScene(void)
 	//m_pRagDoll->setDebug(debug);
 
 	m_pRagDoll1 = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
-	m_pRagDoll1->init(0, 275, 0);
+	m_pRagDoll1->init(0, 5, 25);
 	OgrePhysicDebug *debug1 = new OgrePhysicDebug();
 	debug1->init(mSceneMgr);
 	m_pRagDoll1->setDebug(debug1);
 
-	OgreShapeBox *shape = new OgreShapeBox(mSceneMgr);
-	shape->init(100, "cube.mesh", (float *)&Ogre::Vector3(0.01, 0.01, 0.01));
+	OgreShapeSphere *shape = new OgreShapeSphere(mSceneMgr);
+	shape->init("knot.mesh", (float *)&Ogre::Vector3(0.01, -0.01, 0.01));
 	m_pRigidBody = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
-	m_pRigidBody->init(shape, NULL, 1, (float *)&Ogre::Vector3(0.0, 280, 0.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
-	//m_pRigidBody->force(-0.5, 0, 1, 0, 0, 0, 10);
+	m_pRigidBody->init(shape, NULL, 1, (float *)&Ogre::Vector3(0.0, 10, 25.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
+	
 
-	OgreShapeBox *shape1 = new OgreShapeBox(mSceneMgr);
-	shape1->init(101, "cube.mesh", (float *)&Ogre::Vector3(0.01, 0.01, 0.01));
+	OgreShapeSphere *shape1 = new OgreShapeSphere(mSceneMgr);
+	shape1->init("bomb.mesh", (float *)&Ogre::Vector3(1, -1, 1));
 	m_pRigidBody1 = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
-	m_pRigidBody1->init(shape1, NULL, 1.0, (float *)&Ogre::Vector3(0.0, 285, 0.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
+	m_pRigidBody1->init(shape1, NULL, 1.0, (float *)&Ogre::Vector3(0.0, 3, -45.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
+	m_pRigidBody1->force(0, 1.0, 2.5, -0.1, 0, 0, 35);
+
+	m_pOgreShape  = new OgreShapeBox(mSceneMgr);
+	m_pOgreShape->init("pipeAndBrick.mesh", (float *)&Ogre::Vector3(1, 1, 1));
+	float quat[4];
+	for(int i = 0; i < 4; i++)
+		quat[i] = 0.0;
+	quat[0] = 1.0;
+	Ogre::Vector3 pos(0, 0, -50);
+	m_pOgreShape->update((float *)&pos, quat);
+
+	pos.x = 30;
+	m_pOgreShape1  = new OgreShapeBox(mSceneMgr);
+	m_pOgreShape1->init("pipeAndBrick.mesh", (float *)&Ogre::Vector3(1, 1, 1));
+	m_pOgreShape1->update((float *)&pos, quat);
+
+	pos.x = -30;
+	m_pOgreShape2  = new OgreShapeBox(mSceneMgr);
+	m_pOgreShape2->init("pipeAndBrick.mesh", (float *)&Ogre::Vector3(1, 1, 1));
+	m_pOgreShape2->update((float *)&pos, quat);
 }
 
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)

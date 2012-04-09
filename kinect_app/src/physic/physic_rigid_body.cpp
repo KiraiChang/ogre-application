@@ -29,8 +29,11 @@ btRigidBody* PhysicRigidBody::localCreateRigidBody (float mass, const btTransfor
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, shape, localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
 
-	body->setRestitution(10);
-	body->setFriction(0.6);
+	if (isDynamic)
+	{
+		body->setRestitution(10);
+		body->setFriction(0.6);
+	}
 	//body->setCcdMotionThreshold(1.);
 
 	m_pWorld->addRigidBody(body);
