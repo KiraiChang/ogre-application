@@ -16,9 +16,9 @@ KinectApplication::KinectApplication(void):
 		m_pPhysicSimulation(NULL),
 		m_bHasDevice(TRUE),
 		m_pRagDoll(NULL),
-		m_pRagDoll1(NULL),
-		m_pRigidBody(NULL),
-		m_pRigidBody1(NULL)
+		m_pRagDoll1(NULL)
+		//m_pRigidBody(NULL),
+		//m_pRigidBody1(NULL)
 {
 	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	{
@@ -50,17 +50,17 @@ KinectApplication::~KinectApplication(void)
 			m_pRagDoll1 = NULL;
 		}
 
-		if(NULL != m_pRigidBody)
-		{
-			delete m_pRigidBody;
-			m_pRigidBody = NULL;
-		}
+		//if(NULL != m_pRigidBody)
+		//{
+		//	delete m_pRigidBody;
+		//	m_pRigidBody = NULL;
+		//}
 
-		if(NULL != m_pRigidBody1)
-		{
-			delete m_pRigidBody1;
-			m_pRigidBody1 = NULL;
-		}
+		//if(NULL != m_pRigidBody1)
+		//{
+		//	delete m_pRigidBody1;
+		//	m_pRigidBody1 = NULL;
+		//}
 
 		delete m_pPhysicSimulation;
 		m_pPhysicSimulation = NULL;
@@ -91,17 +91,20 @@ void KinectApplication::createScene(void)
 	debug1->init(mSceneMgr);
 	m_pRagDoll1->setDebug(debug1);
 
-	OgreShapeSphere *shape = new OgreShapeSphere(mSceneMgr);
-	shape->init("knot.mesh", (float *)&Ogre::Vector3(0.01, -0.01, 0.01));
-	m_pRigidBody = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
-	m_pRigidBody->init(shape, NULL, 1, (float *)&Ogre::Vector3(0.0, 10, 25.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
-	
+	GameSystem::getInstance()->randomShoot();
 
-	OgreShapeSphere *shape1 = new OgreShapeSphere(mSceneMgr);
-	shape1->init("bomb.mesh", (float *)&Ogre::Vector3(1, -1, 1));
-	m_pRigidBody1 = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
-	m_pRigidBody1->init(shape1, NULL, 1.0, (float *)&Ogre::Vector3(0.0, 3, -45.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
-	m_pRigidBody1->force(0, 1.0, 2.5, -0.1, 0, 0, 35);
+	//OgreShapeSphere *shape = new OgreShapeSphere(mSceneMgr);
+	//shape->init("knot.mesh", (float *)&Ogre::Vector3(0.01, -0.01, 0.01));
+	//m_pRigidBody = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
+	//m_pRigidBody->init(shape, NULL, 1, (float *)&Ogre::Vector3(0.0, 10, 25.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
+	
+	//OgreShapeSphere *shape1 = new OgreShapeSphere(mSceneMgr);
+	//shape1->init("bomb.mesh", (float *)&Ogre::Vector3(1, -1, 1));
+	//m_pRigidBody1 = new PhysicRigidBody(m_pPhysicSimulation->getDynamicsWorld());
+	//m_pRigidBody1->init(shape1, NULL, 1.0, (float *)&Ogre::Vector3(0.0, 3, -45.0), ScoreSystem::createScoreObject(SCORE_TYPE_BOMB), 8);
+	//m_pRigidBody1->force(0, 1.0, 2.5, -0.1, 0, 0, 35);
+
+
 
 	//m_pOgreShape  = new OgreShapeBox(mSceneMgr);
 	//m_pOgreShape->init("pipeAndBrick.mesh", (float *)&Ogre::Vector3(1, 1, 1));
@@ -153,11 +156,12 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 		if(m_pRagDoll1 != NULL)
 			m_pRagDoll1->update();
 
-		if(m_pRigidBody != NULL)
-			m_pRigidBody->update();
+		//if(m_pRigidBody != NULL)
+		//	m_pRigidBody->update();
 
-		if(m_pRigidBody1 != NULL)
-			m_pRigidBody1->update();
+		//if(m_pRigidBody1 != NULL)
+		//	m_pRigidBody1->update();
+		GameSystem::getInstance()->update();
 	}
 
 	return bRet;
