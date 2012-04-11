@@ -15,14 +15,7 @@ class KinectApplication : public OgreApplication
 private:
 	//Physic
 	PhysicSimulation*						m_pPhysicSimulation;
-	//RagDoll*								m_pRagDoll;
-	//RagDoll*								m_pRagDoll1;
-	//PhysicRigidBody*						m_pRigidBody;
-	//PhysicRigidBody*						m_pRigidBody1;
-	//OgreShapeBox*							m_pOgreShape;
-	//OgreShapeBox*							m_pOgreShape1;
-	//OgreShapeBox*							m_pOgreShape2;
-	//OgreShapeBox*							m_pOgreShape3;
+	RagDoll*								m_pRagDoll;
 
 	//Kinect
 	KinectDevice *							m_pKinectDevice;
