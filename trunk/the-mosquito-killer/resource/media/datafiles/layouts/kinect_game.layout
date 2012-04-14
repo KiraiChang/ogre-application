@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="DefaultWindow" Name="Root" >
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Window Type="OgreTray/StaticText" Name="Root/ScoreText" >
+            <Property Name="Text" Value="SCORE:" />
+            <Property Name="HorzExtent" Value="66" />
+            <Property Name="VertExtent" Value="19.8618" />
+            <Property Name="UnifiedAreaRect" Value="{{0.0197266,0},{0.0304689,0},{0.303906,0},{0.102083,0}}" />
+        </Window>
+        <Window Type="OgreTray/Slider" Name="Root/Timepass" >
+            <Property Name="CurrentValue" Value="0" />
+            <Property Name="MaximumValue" Value="1" />
+            <Property Name="ClickStepSize" Value="0.01" />
+            <Property Name="UnifiedAreaRect" Value="{{0.587109,0},{0.05,0},{0.975781,0},{0.0747388,0}}" />
+        </Window>
+    </Window>
+</GUILayout>

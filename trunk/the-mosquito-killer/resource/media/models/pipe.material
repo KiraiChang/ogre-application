@@ -1,0 +1,13 @@
+material piples
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.393926 0.568627 0.25644 1
+			specular 0.252033 0.252033 0.252033 89.6
+			emissive 0 0 0
+		}
+	}
+}

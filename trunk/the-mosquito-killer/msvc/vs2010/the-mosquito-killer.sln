@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kinect_app", "..\..\src\msvc\vs2010\kinect_app.vcxproj", "{2A7EBDE7-8886-4992-AFDD-0709CF2FA61C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2A7EBDE7-8886-4992-AFDD-0709CF2FA61C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2A7EBDE7-8886-4992-AFDD-0709CF2FA61C}.Debug|Win32.Build.0 = Debug|Win32
+		{2A7EBDE7-8886-4992-AFDD-0709CF2FA61C}.Release|Win32.ActiveCfg = Release|Win32
+		{2A7EBDE7-8886-4992-AFDD-0709CF2FA61C}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

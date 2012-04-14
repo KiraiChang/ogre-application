@@ -1,0 +1,39 @@
+material tail
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.91 0.91 0.91 1
+			specular 0 0 0 1
+			emissive 0 0 0
+		}
+	}
+}
+material head
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.921 0.921 0.921 1
+			specular 0.882 0.882 0.882 89.6
+			emissive 0 0 0
+		}
+	}
+}
+material body
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.470588 0.384062 0.156863 1
+			specular 0 0 0 1
+			emissive 0 0 0
+		}
+	}
+}
