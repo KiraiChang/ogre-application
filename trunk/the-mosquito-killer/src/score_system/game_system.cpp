@@ -8,8 +8,8 @@
 
 #include <random>
 
-const float HAND_CHECK_CLOSE_DIST = 4.0f;
-const float HAND_CHECK_OPEN_DIST = 6.0f;
+const float HAND_CHECK_CLOSE_DIST = 2.0f;
+const float HAND_CHECK_OPEN_DIST = 1.0f;
 const float HAND_WAIT_ATTACK_TIMEOUT = 3.0f;
 
 bool GameSystem::MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1)
@@ -79,7 +79,8 @@ GameSystem::GameSystem(void):
 		m_bShoot(false),
 		m_eState(eOnPlaying),
 		m_eHandState(eOnHandOpen),
-		m_fHandClose(0)
+		m_fHandClose(0),
+		m_iCurrentID(0)
 {
 	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	{
@@ -402,6 +403,7 @@ void GameSystem::updatePlayer(const NUI_SKELETON_FRAME &frame)
 				m_vpPlayer[i]->release();
 				m_vpPlayer[i]->init(frame.SkeletonData[i].dwTrackingID);
 			}
+			m_iCurrentID = i;
 			m_vpPlayer[i]->update(frame.SkeletonData[i]);
 		}
 		else
@@ -424,8 +426,8 @@ void GameSystem::updateHandState(float timePass)
 	{
 	case eOnHandOpen:
 		{
-			m_vpPlayer[0]->getPartPos(eKinectRightHand, rightPos);
-			m_vpPlayer[0]->getPartPos(eKinectLeftHand, leftPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectRightHand, rightPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectLeftHand, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
@@ -435,8 +437,8 @@ void GameSystem::updateHandState(float timePass)
 		break;
 	case eOnHandClose:
 		{
-			m_vpPlayer[0]->getPartPos(eKinectRightHand, rightPos);
-			m_vpPlayer[0]->getPartPos(eKinectLeftHand, leftPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectRightHand, rightPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectLeftHand, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
@@ -447,8 +449,8 @@ void GameSystem::updateHandState(float timePass)
 	case eOnHandWaitAttack:
 		{
 			m_fHandClose += timePass;
-			m_vpPlayer[0]->getPartPos(eKinectRightHand, rightPos);
-			m_vpPlayer[0]->getPartPos(eKinectLeftHand, leftPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectRightHand, rightPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectLeftHand, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
@@ -463,8 +465,8 @@ void GameSystem::updateHandState(float timePass)
 		break;
 	case eOnHandAttacked:
 		{
-			m_vpPlayer[0]->getPartPos(eKinectRightHand, rightPos);
-			m_vpPlayer[0]->getPartPos(eKinectLeftHand, leftPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectRightHand, rightPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectLeftHand, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);

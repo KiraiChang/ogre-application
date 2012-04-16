@@ -56,6 +56,7 @@ private:
 	float										m_fHandClose;
 	//kinect
 	PhysicKinect *								m_vpPlayer[NUI_SKELETON_COUNT];
+	DWORD										m_iCurrentID;
 	
 
 public:
