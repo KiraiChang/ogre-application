@@ -51,7 +51,9 @@ private:
 	float										m_fTimePass;
 	bool										m_bShoot;
 	GameState									m_eState;
+	//Hand control
 	HandState									m_eHandState;
+	float										m_fHandClose;
 	//kinect
 	PhysicKinect *								m_vpPlayer[NUI_SKELETON_COUNT];
 	
@@ -77,7 +79,7 @@ public:
 	void										updatePlaying(float timePass);//遊戲中主要的流程
 	void										updatePlayer(const NUI_SKELETON_FRAME &frame);
 	void										updatePlayerDebug(void);
-	void										updateHandState();
+	void										updateHandState(float timePass);
 	void										testCollision();
 
 	static bool									MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* body0,btCollisionObject* body1);
