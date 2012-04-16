@@ -44,7 +44,7 @@ static bool MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* bod
 		//取出rigidbody內的指標...並檢查兩個的指標是否需要作用
 		ScoreBase *object0 = (ScoreBase *)rigidbody0->getUserPointer();
 		ScoreBase *object1 = (ScoreBase *)rigidbody1->getUserPointer();
-		if(object0->getType() == SCORE_TYPE_BODY || object0->getType() == SCORE_TYPE_HAND)
+		if(/*object0->getType() == SCORE_TYPE_BODY ||*/ object0->getType() == SCORE_TYPE_HAND)
 		{
 			if(ScoreSystem::calcScore(object0, object1) != 0)
 				object1->m_bDestory = true;

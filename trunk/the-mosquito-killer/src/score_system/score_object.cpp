@@ -6,13 +6,14 @@
 
 ScoreBase::ScoreBase(unsigned int type):
 	m_iType(type),
-	m_bDestory(false)
+	m_bDestory(false),
+	m_pParent(0)
 {
 }
 
 ScoreBase::~ScoreBase(void)
 {
-
+	m_pParent = 0;
 }
 
 unsigned int ScoreBase::getType(void)const
@@ -23,6 +24,16 @@ unsigned int ScoreBase::getType(void)const
 int ScoreBase::getEffect(unsigned int bodyPart)
 {
 	return 0;
+}
+
+void ScoreBase::regParent(void *parent)
+{
+	m_pParent = parent;
+}
+
+void *ScoreBase::getParent(void)
+{
+	return m_pParent;
 }
 
 //*******************************************************

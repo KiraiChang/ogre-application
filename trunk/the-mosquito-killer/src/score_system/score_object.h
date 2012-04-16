@@ -18,13 +18,16 @@ enum ScoreType
 class ScoreBase
 {
 public:
-	ScoreBase(unsigned int type);
-	virtual ~ScoreBase(void);
-	unsigned int getType(void)const;
-	virtual int getEffect(unsigned int bodyPart);
-	bool		m_bDestory;
+					ScoreBase(unsigned int type);
+	virtual			~ScoreBase(void);
+	unsigned int	getType(void)const;
+	virtual int		getEffect(unsigned int bodyPart);
+	void			regParent(void *parent);
+	void *			getParent(void);
+	bool			m_bDestory;
 private:
-	unsigned int m_iType;
+	unsigned int	m_iType;
+	void *			m_pParent;
 };
 
 //*******************************************************
