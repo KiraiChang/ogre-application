@@ -99,6 +99,23 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 	}
 }
 
+void PhysicKinect::updateDebug(float data[2][3])
+{
+	for(int i = 0; i < BORDY_PART_MAX; i++)
+	{
+		if(m_pBody[i] != NULL)
+		{
+			float x = data[i][0];
+			float y = data[i][1];
+			m_pBody[i]->setOrigin(x, // + data.Position.x,
+									y, // + data.Position.y,
+									//(&data[i])[2], // + data.Position.z
+									25.0);
+			m_pBody[i]->update();
+		}
+	}
+}
+
 void PhysicKinect::getPartPos(unsigned int offset, float *pos)
 {
 	if(offset < BORDY_PART_MAX)

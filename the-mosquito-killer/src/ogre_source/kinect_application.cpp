@@ -66,6 +66,10 @@ void KinectApplication::createScene(void)
 	GameSystem::getInstance()->init(m_pPhysicSimulation->getDynamicsWorld(), mSceneMgr);
 	GameSystem::getInstance()->initPlayer();
 	GameSystem::getInstance()->initScene();
+	if(m_pKinectDevice == NULL)
+	{
+		GameSystem::getInstance()->initPlayer(1);
+	}
 
 	//m_pRagDoll = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
 	//m_pRagDoll->init(0, 0.0, 0);
@@ -100,6 +104,8 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 			if(m_pKinectDevice->getSkeletonFrame(frame))
 				GameSystem::getInstance()->updatePlayer(frame);
 		}
+		else
+			GameSystem::getInstance()->updatePlayerDebug();
 		float timePass = m_pPhysicSimulation->update();
 
 		if(m_pRagDoll != NULL)
@@ -121,6 +127,54 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 		edit->setText(CEGUI::String (text));
 	}
 	return bRet;
+}
+
+    // OIS::KeyListener
+bool KinectApplication::keyPressed( const OIS::KeyEvent &arg )
+{
+
+ 
+	if(m_pKinectDevice == NULL)
+	{
+		if (arg.key == OIS::KC_ESCAPE)
+		{
+			mShutDown = true;
+		}
+		else if (arg.key == OIS::KC_A)
+		{
+			GameSystem::getInstance()->m_vfHandDebugPos[0][0] -= 0.1;
+		}
+		else if(arg.key == OIS::KC_D)
+		{
+			GameSystem::getInstance()->m_vfHandDebugPos[0][0] += 0.1;
+		}
+		else if(arg.key == OIS::KC_W)
+		{
+			GameSystem::getInstance()->m_vfHandDebugPos[0][1] += 0.1;
+		}
+		else if(arg.key == OIS::KC_X)
+		{
+			GameSystem::getInstance()->m_vfHandDebugPos[0][1] -= 0.1;
+		}
+		GameSystem::getInstance()->updatePlayerDebug();
+	}
+	else
+	{
+		OgreApplication::keyPressed(arg);
+		CEGUI::System &sys = CEGUI::System::getSingleton();
+		sys.injectKeyDown(arg.key);
+		sys.injectChar(arg.text);
+		mCameraMan->injectKeyDown(arg);
+	}
+	return true;
+}
+
+bool KinectApplication::keyReleased( const OIS::KeyEvent &arg )
+{
+	OgreApplication::keyReleased(arg);
+    if(CEGUI::System::getSingleton().injectKeyUp(arg.key)) return true;
+    mCameraMan->injectKeyUp(arg);
+    return true;
 }
 
 KinectDevice *KinectApplication::getKinectDevice()
