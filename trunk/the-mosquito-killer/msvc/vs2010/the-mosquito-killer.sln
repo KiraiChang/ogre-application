@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kinect_app", "..\..\src\msvc\vs2010\kinect_app.vcxproj", "{2A7EBDE7-8886-4992-AFDD-0709CF2FA61C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "the-mosquito-killer", "..\..\src\msvc\vs2010\the-mosquito-killer.vcxproj", "{2A7EBDE7-8886-4992-AFDD-0709CF2FA61C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
