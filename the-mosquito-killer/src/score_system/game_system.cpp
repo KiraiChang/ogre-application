@@ -1,10 +1,64 @@
 #include "game_system.h"
 #include "score_system.h"
 #include "score_object.h"
+#include "btBulletDynamicsCommon.h"
 #include "../ogre_physic/ogre_physic_shape.h"
 #include "../physic/physic_debug.h"
+#include <Ogre.h>
 
 #include <random>
+
+const float CHECK_HAND_CLOSE = 5.0f;
+
+bool GameSystem::MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1)
+{
+
+	float friction0 = colObj0->getFriction();
+	float friction1 = colObj1->getFriction();
+	float restitution0 = colObj0->getRestitution();
+	float restitution1 = colObj1->getRestitution();
+
+	if (colObj0->getCollisionFlags() & btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK)
+	{
+		friction0 = 1.0;//partId0,index0
+		restitution0 = 0.f;
+	}
+	if (colObj1->getCollisionFlags() & btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK)
+	{
+		if (index1&1)
+		{
+			friction1 = 1.0f;//partId1,index1
+		} else
+		{
+			friction1 = 0.f;
+		}
+		restitution1 = 0.f;
+	}
+
+	//cp.m_combinedFriction = calculateCombinedFriction(friction0,friction1);
+	//cp.m_combinedRestitution = calculateCombinedRestitution(restitution0,restitution1);
+
+	//this return value is currently ignored, but to be on the safe side: return false if you don't calculate friction
+	return true;
+}
+
+bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* body0,btCollisionObject* body1)
+{
+	btRigidBody* rigidbody0 = dynamic_cast<btRigidBody*>(body0);
+	btRigidBody* rigidbody1 = dynamic_cast<btRigidBody*>(body1);
+	if(rigidbody0->getUserPointer() != NULL && rigidbody1->getUserPointer() != NULL)
+	{
+		//取出rigidbody內的指標...並檢查兩個的指標是否需要作用
+		ScoreBase *object0 = (ScoreBase *)rigidbody0->getUserPointer();
+		ScoreBase *object1 = (ScoreBase *)rigidbody1->getUserPointer();
+		if(/*object0->getType() == SCORE_TYPE_BODY ||*/ object0->getType() == SCORE_TYPE_HAND)
+		{
+			if(ScoreSystem::calcScore(object0, object1) != 0)
+				object1->m_bDestory = true;
+		}
+	}
+	return true;
+}
 
 GameSystem *GameSystem::g_instance = NULL;
 
@@ -13,8 +67,14 @@ GameSystem::GameSystem(void):
 		m_pSceneMgr(NULL),
 		m_fFullTime(DEF_MAX_PLAY_TIME),
 		m_fTimePass(0),
-		m_bShoot(false)
+		m_bShoot(false),
+		m_eState(eOnPlaying),
+		m_eHandState(eOnHandOpen)
 {
+	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
+	{
+		m_vpPlayer[i] = NULL;
+	}
 }
 
 GameSystem::~GameSystem(void)
@@ -43,8 +103,21 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr)
 void GameSystem::release(void)
 {
 	restart();
+	releaseCharacter();
 	m_pWorld = NULL;
 	m_pSceneMgr = NULL;
+}
+
+void GameSystem::releaseCharacter()
+{
+	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
+	{
+		if(m_vpPlayer[i] != NULL)
+		{
+			delete m_vpPlayer[i];
+			m_vpPlayer[i] = NULL;
+		}
+	}
 }
 
 void GameSystem::restart(void)
@@ -204,7 +277,29 @@ void GameSystem::initScene(void)
 	createShape("rock.mesh", scale, pos, quat);
 }
 
+void GameSystem::initPlayer(void)
+{
+	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
+	{
+		m_vpPlayer[i] = new PhysicKinect(m_pSceneMgr, m_pWorld);
+	}
+
+}
+
 void GameSystem::update(float timePass)
+{
+	switch(m_eState)
+	{
+	case eOnPlaying:
+		updatePlaying(timePass);
+	break;
+
+	default:
+		break;
+	}
+}
+
+void GameSystem::updatePlaying(float timePass)
 {
 	bool shoot = (int)(m_fTimePass + timePass)%5 == 0;
 	if(shoot && !m_bShoot)
@@ -256,5 +351,102 @@ void GameSystem::update(float timePass)
 	{
 		restart();
 		initScene();
+	}
+	updateHandState();
+}
+
+void GameSystem::updatePlayer(const NUI_SKELETON_FRAME &frame)
+{
+	for(int i = 0; i < NUI_SKELETON_COUNT; i++ )
+	{
+		if(frame.SkeletonData[i].eTrackingState != NUI_SKELETON_NOT_TRACKED)
+		{
+			if(m_vpPlayer[i]->getID() != frame.SkeletonData[i].dwTrackingID)
+			{
+				m_vpPlayer[i]->release();
+				m_vpPlayer[i]->init(frame.SkeletonData[i].dwTrackingID);
+			}
+			m_vpPlayer[i]->update(frame.SkeletonData[i]);
+		}
+		else
+		{
+			m_vpPlayer[i]->release();
+		}
+	}
+}
+
+void GameSystem::updateHandState()
+{
+	float rightPos[3];
+	float leftPos[3];
+	switch(m_eHandState)
+	{
+	case eOnHandOpen:
+		{
+			m_vpPlayer[0]->getPartPos(eKinectRightHand, rightPos);
+			m_vpPlayer[0]->getPartPos(eKinectLeftHand, leftPos);
+			Ogre::Vector3 right(rightPos);
+			Ogre::Vector3 left(leftPos);
+			float dist = left.distance(right);
+			if(dist < CHECK_HAND_CLOSE)
+				m_eHandState = eOnHandClose;
+		}
+		break;
+	case eOnHandClose:
+		break;
+	case eOnHandWaitAttack:
+		break;
+	case eOnHandAttacked:
+		{
+			m_vpPlayer[0]->getPartPos(eKinectRightHand, rightPos);
+			m_vpPlayer[0]->getPartPos(eKinectLeftHand, leftPos);
+			Ogre::Vector3 right(rightPos);
+			Ogre::Vector3 left(leftPos);
+			float dist = left.distance(right);
+			if(dist > CHECK_HAND_CLOSE)
+				m_eHandState = eOnHandOpen;
+		}
+		break;
+	case eOnHandWaitShoot:
+		break;
+	default:
+		break;
+	}
+}
+
+void GameSystem::testCollision()
+{
+	int numManifolds = m_pWorld->getDispatcher()->getNumManifolds();
+	for (int i=0;i<numManifolds;i++)
+	{
+		btPersistentManifold* contactManifold =  m_pWorld->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
+		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+
+		//int flagsA = obA->getCompanionId();
+		//int flagsB = obB->getCompanionId();
+		//int numContacts = contactManifold->getNumContacts();
+		//for (int j=0;j<numContacts;j++)
+		//{
+		//	btManifoldPoint& pt = contactManifold->getContactPoint(j);
+		//	if (pt.getDistance()<0.f)
+		//	{
+		//		const btVector3& ptA = pt.getPositionWorldOnA();
+		//		const btVector3& ptB = pt.getPositionWorldOnB();
+		//		const btVector3& normalOnB = pt.m_normalWorldOnB;
+		//	}
+		//}
+
+		if(obA->getUserPointer() != NULL && obB->getUserPointer() != NULL)
+		{
+			//取出rigidbody內的指標...並檢查兩個的指標是否需要作用
+			ScoreBase *object0 = (ScoreBase *)obA->getUserPointer();
+			ScoreBase *object1 = (ScoreBase *)obB->getUserPointer();
+			if(object0->getType() == SCORE_TYPE_BODY || object0->getType() == SCORE_TYPE_HAND)
+			{
+				if(ScoreSystem::calcScore(object0, object1) != 0)
+					object1->m_bDestory = true;
+			}
+		}
 	}
 }

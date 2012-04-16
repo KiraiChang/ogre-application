@@ -18,10 +18,6 @@ KinectApplication::KinectApplication(void):
 		m_bHasDevice(TRUE)
 		
 {
-	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
-	{
-		m_vpPlayer[i] = NULL;
-	}
 	if(NULL == m_pPhysicSimulation)
 	{
 		m_pPhysicSimulation = new PhysicSimulation();
@@ -32,7 +28,6 @@ KinectApplication::KinectApplication(void):
 KinectApplication::~KinectApplication(void)
 {
 	releaseKinect();
-	releaseCharacter();
 	GameSystem::getInstance()->release();
 	if(NULL != m_pPhysicSimulation)
 	{
@@ -69,12 +64,8 @@ void KinectApplication::createScene(void)
 	entGround->setCastShadows(true);
 
 	GameSystem::getInstance()->init(m_pPhysicSimulation->getDynamicsWorld(), mSceneMgr);
+	GameSystem::getInstance()->initPlayer();
 	GameSystem::getInstance()->initScene();
-
-	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
-	{
-		m_vpPlayer[i] = new PhysicKinect(mSceneMgr, m_pPhysicSimulation->getDynamicsWorld());
-	}
 
 	//m_pRagDoll = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
 	//m_pRagDoll->init(0, 0.0, 0);
@@ -100,16 +91,15 @@ void KinectApplication::createUI(void)
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
 	bool bRet = OgreApplication::frameEnded(evt);
-
-	if(NULL != m_pKinectDevice)
-	{
-		NUI_SKELETON_FRAME frame = {0};
-		if(m_pKinectDevice->getSkeletonFrame(frame))
-			updatePlayer(frame);
-	}
 	
 	if(NULL != m_pPhysicSimulation)
 	{
+		if(NULL != m_pKinectDevice)
+		{
+			NUI_SKELETON_FRAME frame = {0};
+			if(m_pKinectDevice->getSkeletonFrame(frame))
+				GameSystem::getInstance()->updatePlayer(frame);
+		}
 		float timePass = m_pPhysicSimulation->update();
 
 		if(m_pRagDoll != NULL)
@@ -131,18 +121,6 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 		edit->setText(CEGUI::String (text));
 	}
 	return bRet;
-}
-
-void KinectApplication::releaseCharacter()
-{
-	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
-	{
-		if(m_vpPlayer[i] != NULL)
-		{
-			delete m_vpPlayer[i];
-			m_vpPlayer[i] = NULL;
-		}
-	}
 }
 
 KinectDevice *KinectApplication::getKinectDevice()
@@ -168,25 +146,5 @@ void KinectApplication::releaseKinect()
 		m_pKinectDevice->Nui_Zero();
 		delete m_pKinectDevice;
 		m_pKinectDevice = NULL;
-	}
-}
-
-void KinectApplication::updatePlayer(const NUI_SKELETON_FRAME &frame)
-{
-	for(int i = 0; i < NUI_SKELETON_COUNT; i++ )
-	{
-		if(frame.SkeletonData[i].eTrackingState != NUI_SKELETON_NOT_TRACKED)
-		{
-			if(m_vpPlayer[i]->getID() != frame.SkeletonData[i].dwTrackingID)
-			{
-				m_vpPlayer[i]->release();
-				m_vpPlayer[i]->init(frame.SkeletonData[i].dwTrackingID);
-			}
-			m_vpPlayer[i]->update(frame.SkeletonData[i]);
-		}
-		else
-		{
-			m_vpPlayer[i]->release();
-		}
 	}
 }

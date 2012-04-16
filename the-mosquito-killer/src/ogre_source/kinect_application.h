@@ -21,9 +21,6 @@ private:
 	KinectDevice *							m_pKinectDevice;
 	bool									m_bHasDevice;
 
-	//Ogre
-	PhysicKinect *							m_vpPlayer[NUI_SKELETON_COUNT];
-
 public:
 	KinectApplication(void);
 	virtual ~KinectApplication(void);
@@ -32,8 +29,6 @@ public:
 	virtual void createUI(void);
 
 	virtual bool frameEnded(const Ogre::FrameEvent& evt);
-
-	void releaseCharacter();
 
 	//kinect operator
 	KinectDevice *getKinectDevice(void);

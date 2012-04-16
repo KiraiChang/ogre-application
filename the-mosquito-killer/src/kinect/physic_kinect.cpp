@@ -29,11 +29,11 @@ void PhysicKinect::init(DWORD id)
 	float quat[4] = {1.0, 0.0, 0.0, 0.0};
 
 	
-	m_pBody[0] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
-	m_iBodyID[0] = NUI_SKELETON_POSITION_HAND_LEFT;
+	m_pBody[eKinectLeftHand] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
+	m_iBodyID[eKinectLeftHand] = NUI_SKELETON_POSITION_HAND_LEFT;
 
-	m_pBody[1] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
-	m_iBodyID[1] = NUI_SKELETON_POSITION_HAND_RIGHT;
+	m_pBody[eKinectRightHand] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
+	m_iBodyID[eKinectRightHand] = NUI_SKELETON_POSITION_HAND_RIGHT;
 
 
 	//m_pBody[NUI_SKELETON_POSITION_HIP_CENTER] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
@@ -96,6 +96,14 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 			25.0);
 			m_pBody[i]->update();
 		}
+	}
+}
+
+void PhysicKinect::getPartPos(unsigned int offset, float *pos)
+{
+	if(offset < BORDY_PART_MAX)
+	{
+		m_pBody[offset]->getPos(pos);
 	}
 }
 

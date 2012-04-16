@@ -32,7 +32,6 @@ public:
 	virtual void init(const int &x = 10000, const int &y = 10000, const int &z = 10000);
 	virtual void release(void);
 	virtual float update(const float &timePass = 0);
-	virtual void collisionTest();
 
 	btDynamicsWorld* getDynamicsWorld(void);
 
