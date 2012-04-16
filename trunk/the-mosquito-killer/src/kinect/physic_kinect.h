@@ -7,6 +7,12 @@
 
 const int BORDY_PART_MAX = 2;//NUI_SKELETON_POSITION_COUNT
 
+enum
+{
+	eKinectRightHand = 0,
+	eKinectLeftHand,
+};
+
 class PhysicKinect
 {
 private:
@@ -25,6 +31,7 @@ public:
 	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, 
 																	PhysicDebug *debug, void *userPoint, int flag);
 	void										update(const NUI_SKELETON_DATA &data);
+	void										getPartPos(unsigned int offset, float *pos);
 	DWORD										getID(void)const;
 };
 

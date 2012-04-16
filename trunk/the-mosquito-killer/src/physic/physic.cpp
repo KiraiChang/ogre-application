@@ -1,57 +1,8 @@
 #include "physic.h"
 #include "btBulletDynamicsCommon.h"
+#include "..\score_system\game_system.h"
 #include "..\score_system\score_system.h"
 #include "..\score_system\score_object.h"
-
-static bool MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1)
-{
-
-	float friction0 = colObj0->getFriction();
-	float friction1 = colObj1->getFriction();
-	float restitution0 = colObj0->getRestitution();
-	float restitution1 = colObj1->getRestitution();
-
-	if (colObj0->getCollisionFlags() & btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK)
-	{
-		friction0 = 1.0;//partId0,index0
-		restitution0 = 0.f;
-	}
-	if (colObj1->getCollisionFlags() & btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK)
-	{
-		if (index1&1)
-		{
-			friction1 = 1.0f;//partId1,index1
-		} else
-		{
-			friction1 = 0.f;
-		}
-		restitution1 = 0.f;
-	}
-
-	//cp.m_combinedFriction = calculateCombinedFriction(friction0,friction1);
-	//cp.m_combinedRestitution = calculateCombinedRestitution(restitution0,restitution1);
-
-	//this return value is currently ignored, but to be on the safe side: return false if you don't calculate friction
-	return true;
-}
-
-static bool MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* body0,btCollisionObject* body1)
-{
-	btRigidBody* rigidbody0 = dynamic_cast<btRigidBody*>(body0);
-	btRigidBody* rigidbody1 = dynamic_cast<btRigidBody*>(body1);
-	if(rigidbody0->getUserPointer() != NULL && rigidbody1->getUserPointer() != NULL)
-	{
-		//取出rigidbody內的指標...並檢查兩個的指標是否需要作用
-		ScoreBase *object0 = (ScoreBase *)rigidbody0->getUserPointer();
-		ScoreBase *object1 = (ScoreBase *)rigidbody1->getUserPointer();
-		if(/*object0->getType() == SCORE_TYPE_BODY ||*/ object0->getType() == SCORE_TYPE_HAND)
-		{
-			if(ScoreSystem::calcScore(object0, object1) != 0)
-				object1->m_bDestory = true;
-		}
-	}
-	return true;
-}
 
 extern ContactAddedCallback		gContactAddedCallback;
 extern ContactProcessedCallback gContactProcessedCallback;
@@ -74,8 +25,8 @@ PhysicSimulation::~PhysicSimulation(void)
 
 void PhysicSimulation::init(const int &x, const int &y, const int &z)
 {
-	gContactAddedCallback = MaterialCombinerCallback;
-	gContactProcessedCallback = (ContactProcessedCallback)MaterialProcessedCallback;
+	gContactAddedCallback = GameSystem::MaterialCombinerCallback;
+	gContactProcessedCallback = (ContactProcessedCallback)GameSystem::MaterialProcessedCallback;
 
 	m_pCollisionConfiguration = new btDefaultCollisionConfiguration();
 
@@ -208,46 +159,9 @@ float PhysicSimulation::update(const float &timePass)
 		m_pDynamicsWorld->debugDrawWorld();
 
 		//test object collision
-		collisionTest();
+		GameSystem::getInstance()->testCollision();
 	}
 	return timePass;
-}
-
-void PhysicSimulation::collisionTest()
-{
-	int numManifolds = m_pDynamicsWorld->getDispatcher()->getNumManifolds();
-	for (int i=0;i<numManifolds;i++)
-	{
-		btPersistentManifold* contactManifold =  m_pDynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
-		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
-		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
-
-		//int flagsA = obA->getCompanionId();
-		//int flagsB = obB->getCompanionId();
-		//int numContacts = contactManifold->getNumContacts();
-		//for (int j=0;j<numContacts;j++)
-		//{
-		//	btManifoldPoint& pt = contactManifold->getContactPoint(j);
-		//	if (pt.getDistance()<0.f)
-		//	{
-		//		const btVector3& ptA = pt.getPositionWorldOnA();
-		//		const btVector3& ptB = pt.getPositionWorldOnB();
-		//		const btVector3& normalOnB = pt.m_normalWorldOnB;
-		//	}
-		//}
-
-		if(obA->getUserPointer() != NULL && obB->getUserPointer() != NULL)
-		{
-			//取出rigidbody內的指標...並檢查兩個的指標是否需要作用
-			ScoreBase *object0 = (ScoreBase *)obA->getUserPointer();
-			ScoreBase *object1 = (ScoreBase *)obB->getUserPointer();
-			if(object0->getType() == SCORE_TYPE_BODY || object0->getType() == SCORE_TYPE_HAND)
-			{
-				if(ScoreSystem::calcScore(object0, object1) != 0)
-					object1->m_bDestory = true;
-			}
-		}
-	}
 }
 
 btDynamicsWorld* PhysicSimulation::getDynamicsWorld(void)
