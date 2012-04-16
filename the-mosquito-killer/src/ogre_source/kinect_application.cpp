@@ -76,11 +76,11 @@ void KinectApplication::createScene(void)
 		m_vpPlayer[i] = new PhysicKinect(mSceneMgr, m_pPhysicSimulation->getDynamicsWorld());
 	}
 
-	m_pRagDoll = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
-	m_pRagDoll->init(0, 0.0, 0);
-	OgrePhysicDebug *debug = new OgrePhysicDebug();
-	debug->init(mSceneMgr);
-	m_pRagDoll->setDebug(debug);
+	//m_pRagDoll = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
+	//m_pRagDoll->init(0, 0.0, 0);
+	//OgrePhysicDebug *debug = new OgrePhysicDebug();
+	//debug->init(mSceneMgr);
+	//m_pRagDoll->setDebug(debug);
 }
 
 void KinectApplication::createUI(void)

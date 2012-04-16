@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\ogre_source\base_application.cpp">
+      <Filter>ogre_application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ogre_source\kinect_application.cpp">
+      <Filter>ogre_application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ogre_source\ogre_application.cpp">
+      <Filter>ogre_application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\base_math\base_vector .cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\kinect\kinect_device.cpp">
+      <Filter>kinect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\kinect\character_controller.cpp">
+      <Filter>kinect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\kinect\physic_kinect.cpp">
+      <Filter>kinect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\physic\physic.cpp">
+      <Filter>physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\physic\physic_debug.cpp">
+      <Filter>physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\physic\physic_rigid_body.cpp">
+      <Filter>physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\physic\physic_shape_base.cpp">
+      <Filter>physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\physic\rag_doll.cpp">
+      <Filter>physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\score_system\score_system.cpp">
+      <Filter>game_system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\score_system\score_object.cpp">
+      <Filter>game_system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\score_system\game_system.cpp">
+      <Filter>game_system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ogre_physic\ogre_physic_debug.cpp">
+      <Filter>ogre_physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ogre_physic\ogre_physic_shape.cpp">
+      <Filter>ogre_physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\main\main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\ogre_source\base_application.h">
+      <Filter>ogre_application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ogre_source\kinect_application.h">
+      <Filter>ogre_application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ogre_source\ogre_application.h">
+      <Filter>ogre_application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\base_math\base_define.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\base_math\base_vector.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kinect\kinect_device.h">
+      <Filter>kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kinect\character_controller.h">
+      <Filter>kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kinect\physic_kinect.h">
+      <Filter>kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\physic\physic.h">
+      <Filter>physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\physic\physic_debug.h">
+      <Filter>physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\physic\physic_rigid_body.h">
+      <Filter>physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\physic\physic_shape_base.h">
+      <Filter>physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\physic\rag_doll.h">
+      <Filter>physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\kinect\resource.h">
+      <Filter>kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\score_system\score_system.h">
+      <Filter>game_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\score_system\score_object.h">
+      <Filter>game_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\score_system\game_system.h">
+      <Filter>game_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ogre_physic\ogre_physic_shape.h">
+      <Filter>ogre_physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ogre_physic\ogre_physic_debug.h">
+      <Filter>ogre_physic</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ogre_application">
+      <UniqueIdentifier>{77feefbf-8f99-482e-b2ba-6522a535f64d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{5bb2964b-508e-49da-be7b-53b811df5e25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kinect">
+      <UniqueIdentifier>{c084329b-1b46-491d-995e-47278d07629a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="physic">
+      <UniqueIdentifier>{b72e7ede-9a9f-46f6-8844-113281eb289e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game_system">
+      <UniqueIdentifier>{6c5a1ea1-c8e2-4dda-8bb2-58ef1849081e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ogre_physic">
+      <UniqueIdentifier>{fdeb81f8-8e5a-4643-9c88-98763d08e37b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{aef26763-ba18-4b06-86c8-46cbf60ade88}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
