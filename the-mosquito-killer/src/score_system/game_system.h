@@ -22,6 +22,15 @@ namespace Ogre
 
 class GameSystem
 {
+public:
+	enum HandState
+	{
+		eOnHandOpen = 0,
+		eOnHandClose,
+		eOnHandWaitAttack,
+		eOnHandAttacked,
+		eOnHandWaitShoot,
+	};
 private:
 												GameSystem(void);
 private:
@@ -30,15 +39,6 @@ private:
 		eOnBegin = 0,
 		eOnPlaying,
 		eOnEnd,
-	};
-
-	enum HandState
-	{
-		eOnHandOpen = 0,
-		eOnHandClose,
-		eOnHandWaitAttack,
-		eOnHandAttacked,
-		eOnHandWaitShoot,
 	};
 
 	static GameSystem *							g_instance;
@@ -62,6 +62,7 @@ public:
 	void										releaseCharacter(void);
 	void										restart(void);
 	float										getTimePass(void)const;
+	HandState									getHandState(void)const;
 
 	void										createShape(const char *modelName, float *scale, float *pos, float *quat);
 	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug = NULL, void *userPoint = NULL, int flag = 0);

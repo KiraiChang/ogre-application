@@ -51,10 +51,12 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		//取出rigidbody內的指標...並檢查兩個的指標是否需要作用
 		ScoreBase *object0 = (ScoreBase *)rigidbody0->getUserPointer();
 		ScoreBase *object1 = (ScoreBase *)rigidbody1->getUserPointer();
+		GameSystem::HandState eState = GameSystem::getInstance()->getHandState();
 		if(/*object0->getType() == SCORE_TYPE_BODY ||*/ object0->getType() == SCORE_TYPE_HAND)
 		{
-			if(ScoreSystem::calcScore(object0, object1) != 0)
-				object1->m_bDestory = true;
+			if(eState == eOnHandWaitAttack)
+				if(ScoreSystem::calcScore(object0, object1) != 0)
+					object1->m_bDestory = true;
 		}
 	}
 	return true;
@@ -148,6 +150,11 @@ void GameSystem::restart(void)
 float GameSystem::getTimePass(void)const
 {
 	return m_fTimePass;
+}
+
+GameSystem::HandState GameSystem::getHandState(void)const
+{
+	return m_eHandState;
 }
 
 void GameSystem::createShape(const char *modelName, float *scale, float *pos, float *quat)
@@ -389,12 +396,32 @@ void GameSystem::updateHandState()
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
 			if(dist < CHECK_HAND_CLOSE)
-				m_eHandState = eOnHandClose;
+				m_eHandState = eOnHandWaitAttack;
 		}
 		break;
 	case eOnHandClose:
+		{
+			m_vpPlayer[0]->getPartPos(eKinectRightHand, rightPos);
+			m_vpPlayer[0]->getPartPos(eKinectLeftHand, leftPos);
+			Ogre::Vector3 right(rightPos);
+			Ogre::Vector3 left(leftPos);
+			float dist = left.distance(right);
+			if(dist > CHECK_HAND_CLOSE)
+				m_eHandState = eOnHandOpen;
+		}
 		break;
 	case eOnHandWaitAttack:
+		{
+			m_vpPlayer[0]->getPartPos(eKinectRightHand, rightPos);
+			m_vpPlayer[0]->getPartPos(eKinectLeftHand, leftPos);
+			Ogre::Vector3 right(rightPos);
+			Ogre::Vector3 left(leftPos);
+			float dist = left.distance(right);
+			if(dist < CHECK_HAND_CLOSE)
+				m_eHandState = eOnHandClose;
+			else
+				m_eHandState = eOnHandOpen;
+		}
 		break;
 	case eOnHandAttacked:
 		{
@@ -403,7 +430,9 @@ void GameSystem::updateHandState()
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
-			if(dist > CHECK_HAND_CLOSE)
+			if(dist < CHECK_HAND_CLOSE)
+				m_eHandState = eOnHandClose;
+			else
 				m_eHandState = eOnHandOpen;
 		}
 		break;

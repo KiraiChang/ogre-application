@@ -103,7 +103,8 @@ void PhysicKinect::getPartPos(unsigned int offset, float *pos)
 {
 	if(offset < BORDY_PART_MAX)
 	{
-		m_pBody[offset]->getPos(pos);
+		if(m_pBody[offset] != NULL)
+			m_pBody[offset]->getPos(pos);
 	}
 }
 
