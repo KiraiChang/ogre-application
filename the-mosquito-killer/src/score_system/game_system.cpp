@@ -61,6 +61,8 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 				{
 					object1->m_bDestory = true;
 					GameSystem::getInstance()->setHandState(eOnHandClose);
+					//rigidbody1->clearForces();
+					//rigidbody1->setGravity(btVector3(0.0, -1.0, 0.0));
 				}
 		}
 	}
