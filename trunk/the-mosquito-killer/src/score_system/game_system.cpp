@@ -8,7 +8,8 @@
 
 #include <random>
 
-const float CHECK_HAND_CLOSE = 5.0f;
+const float CHECK_HAND_CLOSE = 6.0f;
+const float CHECK_HAND_OPEN = 4.0f;
 
 bool GameSystem::MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1)
 {
@@ -56,7 +57,10 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		{
 			if(eState == eOnHandWaitAttack)
 				if(ScoreSystem::calcScore(object0, object1) != 0)
+				{
 					object1->m_bDestory = true;
+					GameSystem::getInstance()->setHandState(eOnHandClose);
+				}
 		}
 	}
 	return true;
@@ -77,6 +81,14 @@ GameSystem::GameSystem(void):
 	{
 		m_vpPlayer[i] = NULL;
 	}
+
+		m_vfHandDebugPos[0][0] = 3.0;
+		m_vfHandDebugPos[0][1] = 8.0;
+		m_vfHandDebugPos[0][2] = 50.0;
+
+		m_vfHandDebugPos[1][0] = -3.0;
+		m_vfHandDebugPos[1][1] = 8.0;
+		m_vfHandDebugPos[1][2] = 50.0;
 }
 
 GameSystem::~GameSystem(void)
@@ -155,6 +167,11 @@ float GameSystem::getTimePass(void)const
 GameSystem::HandState GameSystem::getHandState(void)const
 {
 	return m_eHandState;
+}
+
+void GameSystem::setHandState(GameSystem::HandState state)
+{
+	m_eHandState = state;
 }
 
 void GameSystem::createShape(const char *modelName, float *scale, float *pos, float *quat)
@@ -293,6 +310,14 @@ void GameSystem::initPlayer(void)
 
 }
 
+void GameSystem::initPlayer(unsigned int playerCount)
+{
+	for(int i = 0; i < playerCount; i++)
+	{
+		m_vpPlayer[i]->init(i);
+	}
+}
+
 void GameSystem::update(float timePass)
 {
 	switch(m_eState)
@@ -382,6 +407,11 @@ void GameSystem::updatePlayer(const NUI_SKELETON_FRAME &frame)
 	}
 }
 
+void GameSystem::updatePlayerDebug(void)
+{
+	m_vpPlayer[0]->updateDebug(m_vfHandDebugPos);
+}
+
 void GameSystem::updateHandState()
 {
 	float rightPos[3];
@@ -406,7 +436,7 @@ void GameSystem::updateHandState()
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
-			if(dist > CHECK_HAND_CLOSE)
+			if(dist > CHECK_HAND_OPEN)
 				m_eHandState = eOnHandOpen;
 		}
 		break;
@@ -417,10 +447,10 @@ void GameSystem::updateHandState()
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
-			if(dist < CHECK_HAND_CLOSE)
-				m_eHandState = eOnHandClose;
-			else
+			if(dist > CHECK_HAND_OPEN)
 				m_eHandState = eOnHandOpen;
+			//else if(dist < CHECK_HAND_CLOSE)
+			//	m_eHandState = eOnHandClose;
 		}
 		break;
 	case eOnHandAttacked:
@@ -430,10 +460,10 @@ void GameSystem::updateHandState()
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
-			if(dist < CHECK_HAND_CLOSE)
-				m_eHandState = eOnHandClose;
-			else
+			if(dist > CHECK_HAND_OPEN)
 				m_eHandState = eOnHandOpen;
+			else if(dist < CHECK_HAND_CLOSE)
+				m_eHandState = eOnHandClose;
 		}
 		break;
 	case eOnHandWaitShoot:

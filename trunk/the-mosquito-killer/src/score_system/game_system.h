@@ -31,6 +31,7 @@ public:
 		eOnHandAttacked,
 		eOnHandWaitShoot,
 	};
+	float										m_vfHandDebugPos[2][3];
 private:
 												GameSystem(void);
 private:
@@ -53,6 +54,7 @@ private:
 	HandState									m_eHandState;
 	//kinect
 	PhysicKinect *								m_vpPlayer[NUI_SKELETON_COUNT];
+	
 
 public:
 												~GameSystem(void);
@@ -63,15 +65,18 @@ public:
 	void										restart(void);
 	float										getTimePass(void)const;
 	HandState									getHandState(void)const;
+	void										setHandState(HandState state);
 
 	void										createShape(const char *modelName, float *scale, float *pos, float *quat);
 	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug = NULL, void *userPoint = NULL, int flag = 0);
 	void										randomShoot(void);
 	void										initScene(void);
 	void										initPlayer(void);
+	void										initPlayer(unsigned int playerCount);
 	void										update(float timePass);//根據遊戲狀態分配要進入哪個流程
 	void										updatePlaying(float timePass);//遊戲中主要的流程
 	void										updatePlayer(const NUI_SKELETON_FRAME &frame);
+	void										updatePlayerDebug(void);
 	void										updateHandState();
 	void										testCollision();
 

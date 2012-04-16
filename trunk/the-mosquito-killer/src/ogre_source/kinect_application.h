@@ -29,7 +29,9 @@ public:
 	virtual void createUI(void);
 
 	virtual bool frameEnded(const Ogre::FrameEvent& evt);
-
+	// OIS::KeyListener
+    virtual bool keyPressed( const OIS::KeyEvent &arg );
+    virtual bool keyReleased( const OIS::KeyEvent &arg );
 	//kinect operator
 	KinectDevice *getKinectDevice(void);
 	void releaseKinect(void);
