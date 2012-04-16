@@ -8,9 +8,10 @@ PhysicKinect::PhysicKinect(Ogre::SceneManager *scene, btDynamicsWorld *world):
 	m_pSceneMgr(scene),
 	m_pWorld(world)
 {
-	for(int i = 0; i < NUI_SKELETON_POSITION_COUNT; i ++)
+	for(int i = 0; i < BORDY_PART_MAX; i ++)
 	{
 		m_pBody[i] = NULL;
+		m_iBodyID[i] = 0;
 	}
 }
 
@@ -27,28 +28,34 @@ void PhysicKinect::init(DWORD id)
 	float pos[3] = {0.0, 0.0, 25.0};
 	float quat[4] = {1.0, 0.0, 0.0, 0.0};
 
-	m_pBody[NUI_SKELETON_POSITION_HIP_CENTER] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
+	
+	m_pBody[0] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
+	m_iBodyID[0] = NUI_SKELETON_POSITION_HAND_LEFT;
+
+	m_pBody[1] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
+	m_iBodyID[1] = NUI_SKELETON_POSITION_HAND_RIGHT;
+
+
+	//m_pBody[NUI_SKELETON_POSITION_HIP_CENTER] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	//m_pBody[NUI_SKELETON_POSITION_SPINE] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
-	m_pBody[NUI_SKELETON_POSITION_SHOULDER_CENTER] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
-	m_pBody[NUI_SKELETON_POSITION_HEAD] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
+	//m_pBody[NUI_SKELETON_POSITION_SHOULDER_CENTER] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
+	//m_pBody[NUI_SKELETON_POSITION_HEAD] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	//m_pBody[NUI_SKELETON_POSITION_SHOULDER_LEFT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	//m_pBody[NUI_SKELETON_POSITION_ELBOW_LEFT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	//m_pBody[NUI_SKELETON_POSITION_WRIST_LEFT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
-
-	m_pBody[NUI_SKELETON_POSITION_HAND_LEFT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
 
 	//m_pBody[NUI_SKELETON_POSITION_SHOULDER_RIGHT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	//m_pBody[NUI_SKELETON_POSITION_ELBOW_RIGHT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	//m_pBody[NUI_SKELETON_POSITION_WRIST_RIGHT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 
-	m_pBody[NUI_SKELETON_POSITION_HAND_RIGHT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
+
 
 	//m_pBody[NUI_SKELETON_POSITION_HIP_LEFT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
-	m_pBody[NUI_SKELETON_POSITION_KNEE_LEFT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
+	//m_pBody[NUI_SKELETON_POSITION_KNEE_LEFT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	//m_pBody[NUI_SKELETON_POSITION_ANKLE_LEFT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	//m_pBody[NUI_SKELETON_POSITION_FOOT_LEFT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	//m_pBody[NUI_SKELETON_POSITION_HIP_RIGHT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
-	m_pBody[NUI_SKELETON_POSITION_KNEE_RIGHT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
+	//m_pBody[NUI_SKELETON_POSITION_KNEE_RIGHT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	//m_pBody[NUI_SKELETON_POSITION_ANKLE_RIGHT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	//m_pBody[NUI_SKELETON_POSITION_FOOT_RIGHT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	
@@ -56,7 +63,7 @@ void PhysicKinect::init(DWORD id)
 
 void PhysicKinect::release(void)
 {
-	for(int i = 0; i < NUI_SKELETON_POSITION_COUNT; i ++)
+	for(int i = 0; i < BORDY_PART_MAX; i ++)
 	{
 		if(NULL != m_pBody[i])
 		{
@@ -79,13 +86,13 @@ PhysicRigidBody *PhysicKinect::createRidigBody(const char *modelName, float mass
 
 void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 {
-	for(int i = 0; i < NUI_SKELETON_POSITION_COUNT; i++)
+	for(int i = 0; i < BORDY_PART_MAX; i++)
 	{
 		if(m_pBody[i] != NULL)
 		{
-			m_pBody[i]->setOrigin(data.SkeletonPositions[i].x * DEF_POWER_RADIN, // + data.Position.x,
-			data.SkeletonPositions[i].y * DEF_POWER_RADIN, // + data.Position.y,
-			//data.SkeletonPositions[i].z * DEF_POWER_RADIN, // + data.Position.z
+			m_pBody[i]->setOrigin(data.SkeletonPositions[m_iBodyID[i]].x * DEF_POWER_RADIN, // + data.Position.x,
+			data.SkeletonPositions[m_iBodyID[i]].y * DEF_POWER_RADIN, // + data.Position.y,
+			//data.SkeletonPositions[m_iBodyID[i]].z * DEF_POWER_RADIN, // + data.Position.z
 			25.0);
 			m_pBody[i]->update();
 		}

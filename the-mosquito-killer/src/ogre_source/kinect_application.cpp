@@ -177,28 +177,15 @@ void KinectApplication::updatePlayer(const NUI_SKELETON_FRAME &frame)
 	{
 		if(frame.SkeletonData[i].eTrackingState != NUI_SKELETON_NOT_TRACKED)
 		{
-			//if(m_vpPlayer[i] != NULL)
-			//{
-				if(m_vpPlayer[i]->getID() != frame.SkeletonData[i].dwTrackingID)
-				{
-					//delete m_vpPlayer[i];
-					//m_vpPlayer[i] = new CharacterController(mSceneMgr, frame.SkeletonData[i].dwTrackingID);
-					m_vpPlayer[i]->release();
-					m_vpPlayer[i]->init(frame.SkeletonData[i].dwTrackingID);
-				}
-			//}
-			//else
-			//	m_vpPlayer[i] = new CharacterController(mSceneMgr, frame.SkeletonData[i].dwTrackingID);
-
+			if(m_vpPlayer[i]->getID() != frame.SkeletonData[i].dwTrackingID)
+			{
+				m_vpPlayer[i]->release();
+				m_vpPlayer[i]->init(frame.SkeletonData[i].dwTrackingID);
+			}
 			m_vpPlayer[i]->update(frame.SkeletonData[i]);
 		}
 		else
 		{
-			//if(m_vpPlayer[i] != NULL)
-			//{
-			//	delete m_vpPlayer[i];
-			//	m_vpPlayer[i] = NULL;
-			//}
 			m_vpPlayer[i]->release();
 		}
 	}

@@ -5,13 +5,16 @@
 #include "../physic/physic_rigid_body.h"
 #include "../ogre_physic/ogre_physic_shape.h"
 
+const int BORDY_PART_MAX = 2;//NUI_SKELETON_POSITION_COUNT
+
 class PhysicKinect
 {
 private:
 	DWORD										m_iKinectID;
 	Ogre::SceneManager*							m_pSceneMgr;
 	btDynamicsWorld*							m_pWorld;
-	PhysicRigidBody*							m_pBody[NUI_SKELETON_POSITION_COUNT];
+	PhysicRigidBody*							m_pBody[BORDY_PART_MAX];
+	unsigned int								m_iBodyID[BORDY_PART_MAX];
 
 public:
 												PhysicKinect(Ogre::SceneManager *scene, btDynamicsWorld *world);
