@@ -6,9 +6,11 @@ enum ScoreType
 	SCORE_TYPE_BASE,
 	SCORE_TYPE_HAND,
 	SCORE_TYPE_BODY,
-	SCORE_TYPE_COIN,
-	SCORE_TYPE_ARROW,
-	SCORE_TYPE_BOMB,
+	SCORE_TYPE_WEAPON,
+	SCORE_TYPE_ENEMY,
+	//SCORE_TYPE_COIN,
+	//SCORE_TYPE_ARROW,
+	//SCORE_TYPE_BOMB,
 };
 
 //*******************************************************
@@ -18,55 +20,78 @@ enum ScoreType
 class ScoreBase
 {
 public:
-					ScoreBase(unsigned int type);
-	virtual			~ScoreBase(void);
-	unsigned int	getType(void)const;
-	virtual int		getEffect(unsigned int bodyPart);
-	void			regParent(void *parent);
-	void *			getParent(void);
-	bool			m_bDestory;
+							ScoreBase(unsigned int type);
+	virtual					~ScoreBase(void);
+	unsigned int			getType(void)const;
+	virtual int				getEffect(unsigned int bodyPart)const;
+	void					regParent(void *parent);
+	void *					getParent(void);
+	bool					m_bDestory;
 private:
-	unsigned int	m_iType;
-	void *			m_pParent;
+	unsigned int			m_iType;
+	void *					m_pParent;
 };
 
 //*******************************************************
-//********************  COIN  ***************************
+//*******************  WEAPON  **************************
 //*******************************************************
-
-class ScoreCoin : public ScoreBase
+class ScoreWeapon : public ScoreBase
 {
 public:
-	ScoreCoin(unsigned int type);
-	virtual ~ScoreCoin(void);
-	virtual int getEffect(unsigned int bodyPart);
+							ScoreWeapon(unsigned int type);
+	virtual					~ScoreWeapon(void);
+	virtual int				getEffect(unsigned int bodyPart)const;
 private:
 };
-
 //*******************************************************
-//********************  ARROW  **************************
+//********************  ENEMY  **************************
 //*******************************************************
-class ScoreArrow : public ScoreBase
+class ScoreEnemy : public ScoreBase
 {
 public:
-	ScoreArrow(unsigned int type);
-	virtual ~ScoreArrow(void);
-	virtual int getEffect(unsigned int bodyPart);
+							ScoreEnemy(unsigned int type, int score);
+	virtual					~ScoreEnemy(void);
+	virtual int				getEffect(unsigned int bodyPart)const;
 private:
+	int						m_iScore;
 };
-
-//*******************************************************
-//********************  BOMB  ***************************
-//*******************************************************
-
-class ScoreBomb : public ScoreBase
-{
-public:
-	ScoreBomb(unsigned int type);
-	virtual ~ScoreBomb(void);
-	virtual int getEffect(unsigned int bodyPart);
-private:
-};
+////*******************************************************
+////********************  COIN  ***************************
+////*******************************************************
+//
+//class ScoreCoin : public ScoreBase
+//{
+//public:
+//	ScoreCoin(unsigned int type);
+//	virtual ~ScoreCoin(void);
+//	virtual int getEffect(unsigned int bodyPart)const;
+//private:
+//};
+//
+////*******************************************************
+////********************  ARROW  **************************
+////*******************************************************
+//class ScoreArrow : public ScoreBase
+//{
+//public:
+//	ScoreArrow(unsigned int type);
+//	virtual ~ScoreArrow(void);
+//	virtual int getEffect(unsigned int bodyPart)const;
+//private:
+//};
+//
+////*******************************************************
+////********************  BOMB  ***************************
+////*******************************************************
+//
+//class ScoreBomb : public ScoreBase
+//{
+//public:
+//	ScoreBomb(unsigned int type);
+//	virtual ~ScoreBomb(void);
+//	virtual int getEffect(unsigned int bodyPart)const;
+//private:
+//};
 
 //*******************************************************
 //*********************  END  ***************************

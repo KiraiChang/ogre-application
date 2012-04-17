@@ -21,7 +21,7 @@ unsigned int ScoreBase::getType(void)const
 	return m_iType;
 }
 
-int ScoreBase::getEffect(unsigned int bodyPart)
+int ScoreBase::getEffect(unsigned int bodyPart)const
 {
 	return 0;
 }
@@ -37,88 +37,134 @@ void *ScoreBase::getParent(void)
 }
 
 //*******************************************************
-//********************  COIN  ***************************
+//*******************  WEAPON  **************************
 //*******************************************************
+ScoreWeapon::ScoreWeapon(unsigned int type):
+		ScoreBase(type)
+{
 
-ScoreCoin::ScoreCoin(unsigned int type):ScoreBase(type)
+}
+
+ScoreWeapon::~ScoreWeapon(void)
 {
 }
 
-ScoreCoin::~ScoreCoin(void)
+int ScoreWeapon::getEffect(unsigned int bodyPart)const
 {
-}
-
-int ScoreCoin::getEffect(unsigned int bodyPart)
-{
-	int effect = 0;
-	switch(bodyPart)
-	{
-	case SCORE_TYPE_HAND:
-		effect = 20;
-		break;
-	case SCORE_TYPE_BODY:
-		effect = 10;
-		break;
-	}
-	return effect;
+	return 0;
 }
 
 //*******************************************************
-//********************  ARROW  **************************
+//********************  ENEMY  **************************
 //*******************************************************
-
-ScoreArrow::ScoreArrow(unsigned int type):ScoreBase(type)
+ScoreEnemy::ScoreEnemy(unsigned int type, int score):
+		ScoreBase(type),
+		m_iScore(score)
 {
 
 }
 
-ScoreArrow::~ScoreArrow(void)
-{
-}
-
-int ScoreArrow::getEffect(unsigned int bodyPart)
-{
-	int effect = 0;
-	switch(bodyPart)
-	{
-	case SCORE_TYPE_HAND:
-		effect = 10;
-		break;
-	case SCORE_TYPE_BODY:
-		effect = -10;
-		break;
-	}
-	return effect;
-}
-
-//*******************************************************
-//********************  BOMB  ***************************
-//*******************************************************
-
-ScoreBomb::ScoreBomb(unsigned int type):ScoreBase(type)
+ScoreEnemy::~ScoreEnemy(void)
 {
 
 }
-ScoreBomb::~ScoreBomb(void)
+
+int ScoreEnemy::getEffect(unsigned int bodyPart)const
 {
+		int effect = 0;
+		switch(bodyPart)
+		{
+		case SCORE_TYPE_HAND:
+			effect = m_iScore;
+			break;
+		case SCORE_TYPE_WEAPON:
+			effect = m_iScore;
+			break;
+		}
+		return effect;
 }
-
-int ScoreBomb::getEffect(unsigned int bodyPart)
-{
-	int effect = 0;
-	switch(bodyPart)
-	{
-	case SCORE_TYPE_HAND:
-		effect = -10;
-		break;
-	case SCORE_TYPE_BODY:
-		effect = -20;
-		break;
-	}
-	return effect;
-}
-
-
+////*******************************************************
+////********************  COIN  ***************************
+////*******************************************************
+//
+//ScoreCoin::ScoreCoin(unsigned int type):ScoreBase(type)
+//{
+//}
+//
+//ScoreCoin::~ScoreCoin(void)
+//{
+//}
+//
+//int ScoreCoin::getEffect(unsigned int bodyPart)const
+//{
+//	int effect = 0;
+//	switch(bodyPart)
+//	{
+//	case SCORE_TYPE_HAND:
+//		effect = 20;
+//		break;
+//	case SCORE_TYPE_BODY:
+//		effect = 10;
+//		break;
+//	}
+//	return effect;
+//}
+//
+////*******************************************************
+////********************  ARROW  **************************
+////*******************************************************
+//
+//ScoreArrow::ScoreArrow(unsigned int type):ScoreBase(type)
+//{
+//
+//}
+//
+//ScoreArrow::~ScoreArrow(void)
+//{
+//}
+//
+//int ScoreArrow::getEffect(unsigned int bodyPart)const
+//{
+//	int effect = 0;
+//	switch(bodyPart)
+//	{
+//	case SCORE_TYPE_HAND:
+//		effect = 10;
+//		break;
+//	case SCORE_TYPE_BODY:
+//		effect = -10;
+//		break;
+//	}
+//	return effect;
+//}
+//
+////*******************************************************
+////********************  BOMB  ***************************
+////*******************************************************
+//
+//ScoreBomb::ScoreBomb(unsigned int type):ScoreBase(type)
+//{
+//
+//}
+//ScoreBomb::~ScoreBomb(void)
+//{
+//}
+//
+//int ScoreBomb::getEffect(unsigned int bodyPart)const
+//{
+//	int effect = 0;
+//	switch(bodyPart)
+//	{
+//	case SCORE_TYPE_HAND:
+//		effect = -10;
+//		break;
+//	case SCORE_TYPE_BODY:
+//		effect = -20;
+//		break;
+//	}
+//	return effect;
+//}
+//
 //*******************************************************
 //*********************  END  ***************************
 //*******************************************************

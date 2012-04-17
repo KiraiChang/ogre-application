@@ -11,7 +11,7 @@ private:
 public:
 	static ScoreSystem *getSystem(void);
 	virtual ~ScoreSystem(void);
-	static ScoreBase *createScoreObject(unsigned int type);
+	static ScoreBase *createScoreObject(unsigned int type, int score = 0);
 	static void resetScore(void);
 	static int calcScore(ScoreBase *bodyPart, ScoreBase *attachObj);
 	static int getScore(void);
