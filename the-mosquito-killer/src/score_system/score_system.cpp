@@ -19,7 +19,7 @@ ScoreSystem::~ScoreSystem()
 {
 }
 
-ScoreBase *ScoreSystem::createScoreObject(unsigned int type)
+ScoreBase *ScoreSystem::createScoreObject(unsigned int type, int score)
 {
 	ScoreBase *object = 0;
 	switch(type)
@@ -29,15 +29,21 @@ ScoreBase *ScoreSystem::createScoreObject(unsigned int type)
 	case SCORE_TYPE_BODY:
 		object = new ScoreBase(type);
 		break;
-	case SCORE_TYPE_COIN:
-		object = new ScoreCoin(type);
+	case SCORE_TYPE_WEAPON:
+		object = new ScoreWeapon(type);
 		break;
-	case SCORE_TYPE_ARROW:
-		object = new ScoreArrow(type);
+	case SCORE_TYPE_ENEMY:
+		object = new ScoreEnemy(type, score);
 		break;
-	case SCORE_TYPE_BOMB:
-		object = new ScoreBomb(type);
-		break;
+	//case SCORE_TYPE_COIN:
+	//	object = new ScoreCoin(type);
+	//	break;
+	//case SCORE_TYPE_ARROW:
+	//	object = new ScoreArrow(type);
+	//	break;
+	//case SCORE_TYPE_BOMB:
+	//	object = new ScoreBomb(type);
+	//	break;
 	default:
 		break;
 	}

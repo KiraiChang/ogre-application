@@ -224,24 +224,25 @@ void GameSystem::randomShoot(void)
 	float speed = 35;
 	char modelName[64] = "";
 	int scoreType = rand() % 3 + 3;//3 - 5
-	switch(scoreType)
-	{
-		case SCORE_TYPE_COIN:
-			sprintf_s(modelName, "coin.mesh");
-			break;
-		case SCORE_TYPE_ARROW:
-			sprintf_s(modelName, "arror.mesh");
-			break;
-		case SCORE_TYPE_BOMB:
-			sprintf_s(modelName, "bomb.mesh");
-			break;
-		default:
-			sprintf_s(modelName, "bomb.mesh");
-			break;
-	}
+	sprintf_s(modelName, "bomb.mesh");
+	//switch(scoreType)
+	//{
+	//	case SCORE_TYPE_COIN:
+	//		sprintf_s(modelName, "coin.mesh");
+	//		break;
+	//	case SCORE_TYPE_ARROW:
+	//		sprintf_s(modelName, "arror.mesh");
+	//		break;
+	//	case SCORE_TYPE_BOMB:
+	//		sprintf_s(modelName, "bomb.mesh");
+	//		break;
+	//	default:
+	//		sprintf_s(modelName, "bomb.mesh");
+	//		break;
+	//}
 
 
-	PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(scoreType), 8);
+	PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
 	body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
 
 }
