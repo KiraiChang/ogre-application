@@ -65,6 +65,16 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 					//rigidbody1->setGravity(btVector3(0.0, -1.0, 0.0));
 				}
 		}
+		else if(object0->getType() == SCORE_TYPE_WEAPON)
+		{
+			if(ScoreSystem::calcScore(object0, object1) != 0)
+			{
+				object1->m_bDestory = true;
+				GameSystem::getInstance()->setHandState(eOnHandClose);
+				//rigidbody1->clearForces();
+				//rigidbody1->setGravity(btVector3(0.0, -1.0, 0.0));
+			}
+		}
 	}
 	return true;
 }

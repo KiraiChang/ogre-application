@@ -10,7 +10,8 @@ OgreShapeBox::OgreShapeBox(Ogre::SceneManager *scene):
 		PhysicShapeBox(), 
 		m_pSceneMgr(scene),
 		m_pBodyNode(NULL),
-		m_pBodyEnt(NULL)
+		m_pBodyEnt(NULL),
+		m_pAnimationState(NULL)
 {
 }
 
@@ -68,6 +69,13 @@ void OgreShapeBox::update(float *pos, float *qua)
 	m_pBodyNode->setOrientation(*((Ogre::Quaternion *)qua));
 	m_pBodyNode->setPosition(*((Ogre::Vector3 *)pos));
 }
+
+void OgreShapeBox::setAnimation(const char *aniName)
+{
+	m_pAnimationState = m_pBodyEnt->getAnimationState(aniName);
+	m_pAnimationState->setLoop(true);
+	m_pAnimationState->setEnabled(true);
+}
 //*******************************************************
 //********************  CONE  ***************************
 //*******************************************************
@@ -75,7 +83,8 @@ OgreShapeCone::OgreShapeCone(Ogre::SceneManager *scene, unsigned int id, const c
 		PhysicShapeCone(), 
 		m_pSceneMgr(scene),
 		m_pBodyNode(NULL),
-		m_pBodyEnt(NULL)
+		m_pBodyEnt(NULL),
+		m_pAnimationState(NULL)
 {
 	char name[64];
 	if(m_pBodyNode == NULL)
@@ -121,6 +130,13 @@ void OgreShapeCone::update(float *pos, float *qua)
 	m_pBodyNode->setOrientation(*((Ogre::Quaternion *)qua));
 	m_pBodyNode->setPosition(*((Ogre::Vector3 *)pos));
 }
+
+void OgreShapeCone::setAnimation(const char *aniName)
+{
+	m_pAnimationState = m_pBodyEnt->getAnimationState(aniName);
+	m_pAnimationState->setLoop(true);
+	m_pAnimationState->setEnabled(true);
+}
 //*******************************************************
 //******************  CYLINDER  *************************
 //*******************************************************
@@ -128,7 +144,8 @@ OgreShapeCylinder::OgreShapeCylinder(Ogre::SceneManager *scene, unsigned int id,
 		PhysicShapeCylinder(), 
 		m_pSceneMgr(scene),
 		m_pBodyNode(NULL),
-		m_pBodyEnt(NULL)
+		m_pBodyEnt(NULL),
+		m_pAnimationState(NULL)
 {
 	char name[64];
 	if(m_pBodyNode == NULL)
@@ -174,6 +191,13 @@ void OgreShapeCylinder::update(float *pos, float *qua)
 	m_pBodyNode->setOrientation(*((Ogre::Quaternion *)qua));
 	m_pBodyNode->setPosition(*((Ogre::Vector3 *)pos));
 }
+
+void OgreShapeCylinder::setAnimation(const char *aniName)
+{
+	m_pAnimationState = m_pBodyEnt->getAnimationState(aniName);
+	m_pAnimationState->setLoop(true);
+	m_pAnimationState->setEnabled(true);
+}
 //*******************************************************
 //*******************  SPHERE  **************************
 //*******************************************************
@@ -181,7 +205,8 @@ OgreShapeSphere::OgreShapeSphere(Ogre::SceneManager *scene):
 		PhysicShapeSphere(), 
 		m_pSceneMgr(scene),
 		m_pBodyNode(NULL),
-		m_pBodyEnt(NULL)
+		m_pBodyEnt(NULL),
+		m_pAnimationState(NULL)
 {
 }
 
@@ -236,6 +261,13 @@ void OgreShapeSphere::update(float *pos, float *qua)
 {
 	m_pBodyNode->setOrientation(*((Ogre::Quaternion *)qua));
 	m_pBodyNode->setPosition(*((Ogre::Vector3 *)pos));
+}
+
+void OgreShapeSphere::setAnimation(const char *aniName)
+{
+	m_pAnimationState = m_pBodyEnt->getAnimationState(aniName);
+	m_pAnimationState->setLoop(true);
+	m_pAnimationState->setEnabled(true);
 }
 //*******************************************************
 //********************  END  ****************************
