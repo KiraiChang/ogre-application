@@ -73,14 +73,14 @@ public:
 	void										createShape(const char *modelName, float *scale, float *pos, float *quat);
 	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug = NULL, void *userPoint = NULL, int flag = 0);
 	void										randomShoot(void);
-	void										initScene(void);
-	void										initPlayer(void);
-	void										initPlayer(unsigned int playerCount);
+	void										initScene(void);//產生場景
+	void										initPlayer(void);//產生空的玩家類別
+	void										initPlayer(unsigned int playerCount);//初始化人數
 	void										update(float timePass);//根據遊戲狀態分配要進入哪個流程
 	void										updatePlaying(float timePass);//遊戲中主要的流程
 	void										updatePlayer(const NUI_SKELETON_FRAME &frame);
-	void										updatePlayerDebug(void);
-	void										updateHandState(float timePass);
+	void										updatePlayerDebug(void);//若是沒有kinect採取的動作
+	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
 	void										testCollision();
 
 	static bool									MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* body0,btCollisionObject* body1);
