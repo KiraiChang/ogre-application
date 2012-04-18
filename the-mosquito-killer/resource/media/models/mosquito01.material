@@ -27,7 +27,7 @@ material fly
 
 			texture_unit
 			{
-				texture terrible-Role1_Fly_2.psd
+				texture terrible-Role1_Fly_color.jpg
 				tex_coord_set 0
 				colour_op modulate
 				scale 1 1
