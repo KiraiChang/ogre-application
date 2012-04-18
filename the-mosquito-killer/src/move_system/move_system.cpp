@@ -2,6 +2,7 @@
 //*******************************************************
 //*****************  MOVE_BASE  *************************
 //*******************************************************
+const float DEPTH_MOSQUITO_MOVE = -50;
 MoveBase::MoveBase(Ogre::Node *node):
 	t(0),
 	m_pNode(node)
@@ -85,10 +86,13 @@ Ogre::Quaternion MoveBase::getOrientation(void)const
 }
 
 
-void MoveBase::update(void)
+void MoveBase::update(bool &destory)
 {
 	if(m_pNode == NULL)
 		return;
+
+	if(m_pNode->getPosition().z < DEPTH_MOSQUITO_MOVE)
+		destory = true;
 
 	Ogre::Vector3 d = m_pNode->getPosition() - P4;
 

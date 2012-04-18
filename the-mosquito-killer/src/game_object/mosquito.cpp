@@ -29,7 +29,7 @@ void MosquitoBase::init(Ogre::SceneManager *scene, btDynamicsWorld *world)
 	m_pWorld = world;
 }
 
-void MosquitoBase::create(const char *modelName, float mass, float *scale, float *pos, float *quat, int flag, int score)
+void MosquitoBase::create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score)
 {
 	//create shape
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
@@ -42,7 +42,7 @@ void MosquitoBase::create(const char *modelName, float mass, float *scale, float
 	//create physic body
 	m_pBody = new PhysicRigidBody(m_pWorld);
 	PhysicDebug *debug = NULL;
-	m_pBody->init(shape, debug, mass, pos, quat, m_pScore, flag);
+	m_pBody->init(shape, debug, mass, pos, quat, m_pScore, 8);
 
 	//create move type
 	m_pMove = new MoveBase(shape->getNode());
@@ -74,7 +74,7 @@ void MosquitoBase::update(void)
 	{
 		if(m_pMove != NULL)
 		{
-			m_pMove->update();
+			m_pMove->update(m_bDestory);
 		
 			Ogre::Vector3 pos= m_pMove->getPosition();
 			Ogre::Quaternion q= m_pMove->getOrientation();

@@ -25,7 +25,7 @@ public:
 								MosquitoBase(void);
 	virtual						~MosquitoBase(void);
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
-	virtual void				create(const char *modelName, float mass, float *scale, float *pos, float *quat, int flag, int score);
+	virtual void				create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score);
 	virtual void				release(void);
 	virtual void				update(void);
 	virtual bool				isDestory(void)const		{return m_bDestory;}

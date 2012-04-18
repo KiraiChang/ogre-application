@@ -23,7 +23,7 @@ private:
 public:
 	Ogre::Vector3			getPosition(void)const;
 	Ogre::Quaternion		getOrientation(void)const;
-	virtual void			update(void);
+	virtual void			update(bool &destory);
 };
 //*******************************************************
 //********************  END  ****************************

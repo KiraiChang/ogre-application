@@ -138,6 +138,19 @@ void GameSystem::release(void)
 	m_pSceneMgr = NULL;
 }
 
+void GameSystem::releaseMosquito(void)
+{
+	V_MOSQUITO::iterator rIte;
+	MosquitoBase *body;
+	for(rIte = m_vMosquito.begin(); rIte != m_vMosquito.end(); rIte++)
+	{
+		body = *rIte;
+		body->release();
+		delete body;
+	}
+	m_vMosquito.clear();
+}
+
 void GameSystem::releaseCharacter()
 {
 	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
@@ -173,6 +186,8 @@ void GameSystem::restart(void)
 		delete shape;
 	}
 	m_vShape.clear();
+
+	releaseMosquito();
 }
 
 float GameSystem::getTimePass(void)const
@@ -208,6 +223,13 @@ PhysicRigidBody *GameSystem::createRidigBody(const char *modelName, float mass, 
 	body->init(shape, debug, mass, pos, quat, userPoint, flag);
 	
 	return body;
+}
+
+void GameSystem::createMosquito(const char *modelName, float mass, float *scale, float *pos, float *quat, int score)
+{
+	m_vMosquito.push_back(new MosquitoBase());
+	m_vMosquito.back()->init(m_pSceneMgr, m_pWorld);
+	m_vMosquito.back()->create(modelName, mass, scale, pos, quat, score);
 }
 
 void GameSystem::randomShoot(void)
@@ -251,12 +273,12 @@ void GameSystem::randomShoot(void)
 	//		sprintf_s(modelName, "bomb.mesh");
 	//		break;
 	//}
-	OgrePhysicDebug *debug = new OgrePhysicDebug();
-	debug->init(m_pSceneMgr);
+	//OgrePhysicDebug *debug = new OgrePhysicDebug();
+	//debug->init(m_pSceneMgr);
 	sprintf_s(modelName, "mosquito01.mesh");
-	PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
-	body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
-
+	//PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
+	//body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
+	createMosquito(modelName, 1.0, scale, pos, quat, 100);
 }
 
 void GameSystem::initScene(void)
