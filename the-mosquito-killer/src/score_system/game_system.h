@@ -1,6 +1,7 @@
 #ifndef _GAME_SYSTEM_H_
 #define _GAME_SYSTEM_H_
 
+#include "../game_object/mosquito.h"
 #include "../physic/physic_shape_base.h"
 #include "../physic/physic_rigid_body.h"
 #include "../kinect/physic_kinect.h"
@@ -8,6 +9,7 @@
 
 typedef std::list< PhysicRigidBody * > V_RIGID_BODY;
 typedef std::list<  PhysicShapeBase* > V_SHAPE;
+typedef std::list< MosquitoBase * > V_MOSQUITO;
 class PhysicDebug;
 class btDynamicsWorld;
 class btManifoldPoint;
@@ -46,6 +48,7 @@ private:
 	btDynamicsWorld*							m_pWorld;
 	Ogre::SceneManager *						m_pSceneMgr;
 	V_RIGID_BODY								m_vRigidBody;
+	V_MOSQUITO									m_vMosquito;
 	V_SHAPE										m_vShape;
 	float										m_fFullTime;
 	float										m_fTimePass;
@@ -77,6 +80,7 @@ public:
 	void										initPlayer(void);//產生空的玩家類別
 	void										initPlayer(unsigned int playerCount);//初始化人數
 	void										update(float timePass);//根據遊戲狀態分配要進入哪個流程
+	void										updateMosquito(float timePass);//更新蚊子的狀態及位置
 	void										updatePlaying(float timePass);//遊戲中主要的流程
 	void										updatePlayer(const NUI_SKELETON_FRAME &frame);
 	void										updatePlayerDebug(void);//若是沒有kinect採取的動作

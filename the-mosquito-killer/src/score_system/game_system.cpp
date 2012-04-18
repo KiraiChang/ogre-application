@@ -3,6 +3,7 @@
 #include "score_object.h"
 #include "btBulletDynamicsCommon.h"
 #include "../ogre_physic/ogre_physic_shape.h"
+#include "../ogre_physic/ogre_physic_debug.h"
 #include "../physic/physic_debug.h"
 #include <Ogre.h>
 
@@ -233,8 +234,8 @@ void GameSystem::randomShoot(void)
 	float roat[3] = {0.0, 0.0, 0.0};
 	float speed = 35;
 	char modelName[64] = "";
-	int scoreType = rand() % 3 + 3;//3 - 5
-	sprintf_s(modelName, "bomb.mesh");
+	//int scoreType = rand() % 3 + 3;//3 - 5
+	
 	//switch(scoreType)
 	//{
 	//	case SCORE_TYPE_COIN:
@@ -250,9 +251,10 @@ void GameSystem::randomShoot(void)
 	//		sprintf_s(modelName, "bomb.mesh");
 	//		break;
 	//}
-
-
-	PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
+	OgrePhysicDebug *debug = new OgrePhysicDebug();
+	debug->init(m_pSceneMgr);
+	sprintf_s(modelName, "mosquito01.mesh");
+	PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
 	body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
 
 }
@@ -395,12 +397,36 @@ void GameSystem::updatePlaying(float timePass)
 		else
 			rIte++;
 	}
+	updateMosquito(timePass);
 	if(m_fTimePass >= m_fFullTime)
 	{
 		restart();
 		initScene();
 	}
 	updateHandState(timePass);
+}
+
+void GameSystem::updateMosquito(float timePass)
+{
+	V_MOSQUITO::iterator rIte;
+	V_MOSQUITO::iterator eraseIte;
+	MosquitoBase *body;
+	for(rIte = m_vMosquito.begin(); rIte != m_vMosquito.end();)
+	{
+		body = *rIte;
+		body->update();
+
+		if(body->isDestory())
+		{
+			eraseIte = rIte;
+			rIte++;
+			m_vMosquito.erase(eraseIte);
+			body->release();
+			delete body;
+		}
+		else
+			rIte++;
+	}
 }
 
 void GameSystem::updatePlayer(const NUI_SKELETON_FRAME &frame)

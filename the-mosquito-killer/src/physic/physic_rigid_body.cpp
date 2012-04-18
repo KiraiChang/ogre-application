@@ -229,6 +229,28 @@ void PhysicRigidBody::update(void)
 	}
 }
 
+void PhysicRigidBody::update(float *pos, float *quat)
+{
+	if(m_pWorld == NULL)
+		return;
+
+	if(m_pBodies == NULL)
+		return;
+
+	if(m_pShapes == NULL)
+		return;
+
+	if(NULL != m_pBodies)
+	{
+		btTransform trans;
+		m_pBodies->getMotionState()->getWorldTransform(trans);
+		trans.setOrigin(*(btVector3 *)pos);
+		trans.setRotation(*(btQuaternion *)quat);
+		m_pBodies->getMotionState()->setWorldTransform(trans);
+		m_pBodies->proceedToTransform(trans);
+	}
+}
+
 void PhysicRigidBody::getPos(float *pos)const 
 {
 	if(m_pBodies != NULL)

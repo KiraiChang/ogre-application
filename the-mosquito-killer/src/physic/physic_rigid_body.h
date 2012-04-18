@@ -34,6 +34,7 @@ public:
 	void force(float x, float y, float z, float ax, float ay, float az, float force);
 	void release(void);
 	void update(void);
+	void update(float *pos, float *quat);
 	void getPos(float *pos)const;
 	void *getUserPointer()const;
 };

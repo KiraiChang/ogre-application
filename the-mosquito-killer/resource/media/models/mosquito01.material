@@ -1,0 +1,91 @@
+material blinn3
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.573 0.0031515 0 1
+			specular 0.5 0.5 0.5 89.6
+			emissive 0 0 0
+		}
+	}
+}
+material fly
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 1 1 1 1
+			specular 0.5 0.5 0.5 89.6
+			emissive 0 0 0
+
+			scene_blend alpha_blend
+			depth_write off
+
+			texture_unit
+			{
+				texture terrible-Role1_Fly_2.psd
+				tex_coord_set 0
+				colour_op modulate
+				scale 1 1
+				scroll 0 0
+				rotate 0
+			}
+		}
+	}
+}
+material lambert2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0 0 0 1
+			specular 0 0 0 1
+			emissive 0 0 0
+		}
+	}
+}
+material blinn6
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 1 1 1 1
+			specular 0.5 0.5 0.5 89.6
+			emissive 0 0 0
+		}
+	}
+}
+material blinn2
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 1 0.5985 0 1
+			specular 0.5 0.5 0.5 89.6
+			emissive 0 0 0
+		}
+	}
+}
+material blinn5
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.887 0.739949 0.735323 1
+			specular 0.5 0.5 0.5 89.6
+			emissive 0 0 0
+		}
+	}
+}
