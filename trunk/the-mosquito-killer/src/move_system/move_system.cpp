@@ -2,7 +2,7 @@
 //*******************************************************
 //*****************  MOVE_BASE  *************************
 //*******************************************************
-const float DEPTH_MOSQUITO_MOVE = -50;
+const float DEPTH_MOSQUITO_MOVE = -250;
 MoveBase::MoveBase(Ogre::Node *node):
 	t(0),
 	m_pNode(node)
@@ -32,7 +32,7 @@ void MoveBase::move(void)
 
 		m_pNode->setPosition(nextPos);
 
-		if(m_pNode->getPosition().z > -20)
+		//if(m_pNode->getPosition().z > -20)
 			m_pNode->translate(Ogre::Vector3(0,0,-0.2));
 
 	t += 0.004;
