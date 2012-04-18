@@ -67,6 +67,7 @@ public:
 	static GameSystem *							getInstance(void);
 	void										init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr);
 	void										release(void);
+	void										releaseMosquito(void);
 	void										releaseCharacter(void);
 	void										restart(void);
 	float										getTimePass(void)const;
@@ -75,6 +76,7 @@ public:
 
 	void										createShape(const char *modelName, float *scale, float *pos, float *quat);
 	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug = NULL, void *userPoint = NULL, int flag = 0);
+	void										createMosquito(const char *modelName, float mass, float *scale, float *pos, float *quat, int score);
 	void										randomShoot(void);
 	void										initScene(void);//產生場景
 	void										initPlayer(void);//產生空的玩家類別
