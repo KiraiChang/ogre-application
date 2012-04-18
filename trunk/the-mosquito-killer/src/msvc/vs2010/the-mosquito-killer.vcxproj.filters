@@ -38,13 +38,13 @@
       <Filter>physic</Filter>
     </ClCompile>
     <ClCompile Include="..\..\score_system\score_system.cpp">
-      <Filter>game_system</Filter>
+      <Filter>score_system</Filter>
     </ClCompile>
     <ClCompile Include="..\..\score_system\score_object.cpp">
-      <Filter>game_system</Filter>
+      <Filter>score_system</Filter>
     </ClCompile>
     <ClCompile Include="..\..\score_system\game_system.cpp">
-      <Filter>game_system</Filter>
+      <Filter>score_system</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ogre_physic\ogre_physic_debug.cpp">
       <Filter>ogre_physic</Filter>
@@ -54,6 +54,12 @@
     </ClCompile>
     <ClCompile Include="..\..\main\main.cpp">
       <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\move_system\move_system.cpp">
+      <Filter>move_system</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_object\mosquito.cpp">
+      <Filter>game_object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,19 +106,25 @@
       <Filter>kinect</Filter>
     </ClInclude>
     <ClInclude Include="..\..\score_system\score_system.h">
-      <Filter>game_system</Filter>
+      <Filter>score_system</Filter>
     </ClInclude>
     <ClInclude Include="..\..\score_system\score_object.h">
-      <Filter>game_system</Filter>
+      <Filter>score_system</Filter>
     </ClInclude>
     <ClInclude Include="..\..\score_system\game_system.h">
-      <Filter>game_system</Filter>
+      <Filter>score_system</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ogre_physic\ogre_physic_shape.h">
       <Filter>ogre_physic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ogre_physic\ogre_physic_debug.h">
       <Filter>ogre_physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\move_system\move_system.h">
+      <Filter>move_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_object\mosquito.h">
+      <Filter>game_object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -128,14 +140,20 @@
     <Filter Include="physic">
       <UniqueIdentifier>{b72e7ede-9a9f-46f6-8844-113281eb289e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="game_system">
-      <UniqueIdentifier>{6c5a1ea1-c8e2-4dda-8bb2-58ef1849081e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ogre_physic">
       <UniqueIdentifier>{fdeb81f8-8e5a-4643-9c88-98763d08e37b}</UniqueIdentifier>
     </Filter>
     <Filter Include="main">
       <UniqueIdentifier>{aef26763-ba18-4b06-86c8-46cbf60ade88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="move_system">
+      <UniqueIdentifier>{8d882b8f-c00d-4544-aeb8-cceeca929d03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="game_object">
+      <UniqueIdentifier>{451aee6e-0c53-46ef-b08c-9da6499889df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="score_system">
+      <UniqueIdentifier>{6c5a1ea1-c8e2-4dda-8bb2-58ef1849081e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

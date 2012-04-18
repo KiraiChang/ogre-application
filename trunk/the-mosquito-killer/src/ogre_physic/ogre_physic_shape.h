@@ -30,6 +30,7 @@ public:
 	virtual void				release(void);
 	virtual void				update(float *position, float *quaternion);
 	virtual void				setAnimation(const char *aniName);
+	Ogre::SceneNode *			getNode(void)const							{return m_pBodyNode;}
 protected:
 };
 //*******************************************************
