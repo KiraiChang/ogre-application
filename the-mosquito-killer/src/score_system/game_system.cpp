@@ -45,6 +45,37 @@ bool GameSystem::MaterialCombinerCallback(btManifoldPoint& cp,	const btCollision
 	return true;
 }
 
+void checkDestory(ScoreBase *object0, ScoreBase *object1)
+{
+	if(ScoreSystem::calcScore(object0, object1) != 0)
+	{
+		object1->m_bDestory = true;
+		GameSystem::getInstance()->setHandState(GameSystem::eOnHandClose);
+		if(object1->getParent() != NULL)
+		{
+			switch(((MosquitoBase *)object1->getParent())->getType())
+			{	
+			case eMosquitoBase:
+				{
+					((MosquitoBase *)object1->getParent())->setDestory();
+				}
+				break;
+			case eMosquitoSplit:
+				{
+					int number = ((MosquitoSplit *)object1->getParent())->getSplitNumber();
+					((MosquitoSplit *)object1->getParent())->setDestory();
+					//create "number" 
+				}
+				break;
+			case eMosquitoFat:
+				break;
+			default:
+				break;
+			}
+		}
+	}
+}
+
 bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* body0,btCollisionObject* body1)
 {
 	btRigidBody* rigidbody0 = dynamic_cast<btRigidBody*>(body0);
@@ -225,9 +256,22 @@ PhysicRigidBody *GameSystem::createRidigBody(const char *modelName, float mass, 
 	return body;
 }
 
-void GameSystem::createMosquito(const char *modelName, float mass, float *scale, float *pos, float *quat, int score)
+void GameSystem::createMosquito(MOSQUITO_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData)
 {
-	m_vMosquito.push_back(new MosquitoBase());
+	switch(type)
+	{
+	case eMosquitoSplit:
+		m_vMosquito.push_back(new MosquitoSplit());
+		((MosquitoSplit *)m_vMosquito.back())->setSplitNumber(otherData);
+		break;
+	case eMosquitoFat:
+		m_vMosquito.push_back(new MosquitoFat());
+		((MosquitoFat *)m_vMosquito.back())->setBloodNumber(otherData);
+		break;
+	default:
+		m_vMosquito.push_back(new MosquitoBase());
+		break;
+	}
 	m_vMosquito.back()->init(m_pSceneMgr, m_pWorld);
 	m_vMosquito.back()->create(modelName, mass, scale, pos, quat, score);
 }
@@ -244,13 +288,13 @@ void GameSystem::randomShoot(void)
 	{
 		dir[0] = -0.4;
 		pos[0] = 30;
-		quat[2] = -0.25;
+		//quat[2] = -0.25;
 	}
 	else if(r == 1)
 	{
 		dir[0] = 0.4;
 		pos[0] = -30;
-		quat[2] = 0.25;
+		//quat[2] = 0.25;
 	}
 
 	float roat[3] = {0.0, 0.0, 0.0};
@@ -278,7 +322,7 @@ void GameSystem::randomShoot(void)
 	sprintf_s(modelName, "mosquito01.mesh");
 	//PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
 	//body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
-	createMosquito(modelName, 1.0, scale, pos, quat, 100);
+	createMosquito(eMosquitoBase, modelName, 1.0, scale, pos, quat, 100);
 }
 
 void GameSystem::initScene(void)

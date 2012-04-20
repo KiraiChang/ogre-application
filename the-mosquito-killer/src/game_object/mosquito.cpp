@@ -34,6 +34,7 @@ void MosquitoBase::create(const char *modelName, float mass, float *scale, float
 	//create shape
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
 	shape->init(modelName, scale);
+	shape->update(pos, quat);
 
 	//create score object
 	m_pScore = ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, score);
@@ -82,7 +83,74 @@ void MosquitoBase::update(void)
 		}
 	}
 }
+//*******************************************************
+//***************  MOSQUITO_SPLIT  **********************
+//*******************************************************
+MosquitoSplit::MosquitoSplit(void):
+	MosquitoBase(), 
+	m_iSplitNumber(0)
+{
+}
 
+MosquitoSplit::~MosquitoSplit(void)
+{
+	release();
+}
+
+void MosquitoSplit::init(Ogre::SceneManager *scene, btDynamicsWorld *world)
+{
+	MosquitoBase::init(scene, world);
+}
+
+void MosquitoSplit::create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score)
+{
+	MosquitoBase::create(modelName, mass, scale, pos, quat, score);
+}
+
+void MosquitoSplit::release(void)
+{
+
+	MosquitoBase::release();
+}
+
+void MosquitoSplit::update(void)
+{
+	MosquitoBase::update();
+}
+//*******************************************************
+//****************  MOSQUITO_FAT  ***********************
+//*******************************************************
+MosquitoFat::MosquitoFat(void):
+	MosquitoBase(), 
+	m_iBloodNumber(0)
+{
+}
+
+MosquitoFat::~MosquitoFat(void)
+{
+	release();
+}
+
+void MosquitoFat::init(Ogre::SceneManager *scene, btDynamicsWorld *world)
+{
+	MosquitoBase::init(scene, world);
+}
+
+void MosquitoFat::create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score)
+{
+	MosquitoBase::create(modelName, mass, scale, pos, quat, score);
+}
+
+void MosquitoFat::release(void)
+{
+
+	MosquitoBase::release();
+}
+
+void MosquitoFat::update(void)
+{
+	MosquitoBase::update();
+}
 //*******************************************************
 //********************  END  ****************************
 //*******************************************************
