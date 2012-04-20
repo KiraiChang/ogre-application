@@ -402,13 +402,24 @@ void GameSystem::update(float timePass)
 {
 	switch(m_eState)
 	{
+	case eOnMenu:
+		updateMenu(timePass);
+		break;
 	case eOnPlaying:
 		updatePlaying(timePass);
-	break;
+		break;
+	case eOnEnd:
+		updateEnd(timePass);
+		break;
 
 	default:
 		break;
 	}
+}
+
+void GameSystem::updateMenu(float timePass)
+{
+	m_eState = eOnPlaying;
 }
 
 void GameSystem::updatePlaying(float timePass)
@@ -466,6 +477,11 @@ void GameSystem::updatePlaying(float timePass)
 		initScene();
 	}
 	updateHandState(timePass);
+}
+
+void GameSystem::updateEnd(float timePass)//µ²ºâµe­±
+{
+	m_eState = eOnMenu;
 }
 
 void GameSystem::updateMosquito(float timePass)
