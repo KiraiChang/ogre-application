@@ -49,7 +49,7 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 {
 	if(ScoreSystem::calcScore(object0, object1) != 0)
 	{
-		object1->m_bDestory = true;
+		//object1->m_bDestory = true;
 		GameSystem::getInstance()->setHandState(GameSystem::eOnHandClose);
 		if(object1->getParent() != NULL)
 		{
@@ -68,6 +68,7 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 				}
 				break;
 			case eMosquitoFat:
+				((MosquitoFat *)object1->getParent())->decreaseBlood();
 				break;
 			default:
 				break;
@@ -89,23 +90,18 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		if(/*object0->getType() == SCORE_TYPE_BODY ||*/ object0->getType() == SCORE_TYPE_HAND)
 		{
 			if(eState == eOnHandWaitAttack)
-				if(ScoreSystem::calcScore(object0, object1) != 0)
-				{
-					object1->m_bDestory = true;
-					GameSystem::getInstance()->setHandState(eOnHandClose);
-					//rigidbody1->clearForces();
-					//rigidbody1->setGravity(btVector3(0.0, -1.0, 0.0));
-				}
+				checkDestory(object0, object1);
 		}
 		else if(object0->getType() == SCORE_TYPE_WEAPON)
 		{
-			if(ScoreSystem::calcScore(object0, object1) != 0)
-			{
-				object1->m_bDestory = true;
-				GameSystem::getInstance()->setHandState(eOnHandClose);
-				//rigidbody1->clearForces();
-				//rigidbody1->setGravity(btVector3(0.0, -1.0, 0.0));
-			}
+			//if(ScoreSystem::calcScore(object0, object1) != 0)
+			//{
+			//	object1->m_bDestory = true;
+			//	GameSystem::getInstance()->setHandState(eOnHandClose);
+			//	//rigidbody1->clearForces();
+			//	//rigidbody1->setGravity(btVector3(0.0, -1.0, 0.0));
+			//}
+			checkDestory(object0, object1);
 		}
 	}
 	return true;
@@ -428,41 +424,41 @@ void GameSystem::updatePlaying(float timePass)
 	}
 	m_fTimePass += timePass;
 
-	V_RIGID_BODY::iterator rIte;
-	V_RIGID_BODY::iterator eraseIte;
-	PhysicRigidBody *body;
-	for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end();)
-	{
-		body = *rIte;
-		
-		body->update();
-		float pos[3];
-		body->getPos(pos);
-		if(pos[2] > 50)
-		{
-			eraseIte = rIte;
-			rIte++;
-			m_vRigidBody.erase(eraseIte);
-			body->release();
-			delete body;
-		}
-		else if(body->getUserPointer() != NULL)
-		{
-			ScoreBase *base = (ScoreBase *)body->getUserPointer();
-			if(base->m_bDestory)
-			{
-				eraseIte = rIte;
-				rIte++;
-				m_vRigidBody.erase(eraseIte);
-				body->release();
-				delete body;
-			}
-			else
-				rIte++;
-		}
-		else
-			rIte++;
-	}
+	//V_RIGID_BODY::iterator rIte;
+	//V_RIGID_BODY::iterator eraseIte;
+	//PhysicRigidBody *body;
+	//for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end();)
+	//{
+	//	body = *rIte;
+	//	
+	//	body->update();
+	//	float pos[3];
+	//	body->getPos(pos);
+	//	if(pos[2] > 50)
+	//	{
+	//		eraseIte = rIte;
+	//		rIte++;
+	//		m_vRigidBody.erase(eraseIte);
+	//		body->release();
+	//		delete body;
+	//	}
+	//	else if(body->getUserPointer() != NULL)
+	//	{
+	//		ScoreBase *base = (ScoreBase *)body->getUserPointer();
+	//		if(base->m_bDestory)
+	//		{
+	//			eraseIte = rIte;
+	//			rIte++;
+	//			m_vRigidBody.erase(eraseIte);
+	//			body->release();
+	//			delete body;
+	//		}
+	//		else
+	//			rIte++;
+	//	}
+	//	else
+	//		rIte++;
+	//}
 	updateMosquito(timePass);
 	if(m_fTimePass >= m_fFullTime)
 	{
@@ -609,16 +605,16 @@ void GameSystem::testCollision()
 		//	}
 		//}
 
-		if(obA->getUserPointer() != NULL && obB->getUserPointer() != NULL)
-		{
-			//取出rigidbody內的指標...並檢查兩個的指標是否需要作用
-			ScoreBase *object0 = (ScoreBase *)obA->getUserPointer();
-			ScoreBase *object1 = (ScoreBase *)obB->getUserPointer();
-			if(object0->getType() == SCORE_TYPE_BODY || object0->getType() == SCORE_TYPE_HAND)
-			{
-				if(ScoreSystem::calcScore(object0, object1) != 0)
-					object1->m_bDestory = true;
-			}
-		}
+		//if(obA->getUserPointer() != NULL && obB->getUserPointer() != NULL)
+		//{
+		//	//取出rigidbody內的指標...並檢查兩個的指標是否需要作用
+		//	ScoreBase *object0 = (ScoreBase *)obA->getUserPointer();
+		//	ScoreBase *object1 = (ScoreBase *)obB->getUserPointer();
+		//	if(object0->getType() == SCORE_TYPE_BODY || object0->getType() == SCORE_TYPE_HAND)
+		//	{
+		//		if(ScoreSystem::calcScore(object0, object1) != 0)
+		//			object1->m_bDestory = true;
+		//	}
+		//}
 	}
 }
