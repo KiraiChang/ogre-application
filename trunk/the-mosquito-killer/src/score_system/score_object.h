@@ -26,7 +26,7 @@ public:
 	virtual int				getEffect(unsigned int bodyPart)const;
 	void					regParent(void *parent);
 	void *					getParent(void);
-	bool					m_bDestory;
+	//bool					m_bDestory;
 private:
 	unsigned int			m_iType;
 	void *					m_pParent;
