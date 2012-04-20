@@ -39,9 +39,9 @@ private:
 private:
 	enum GameState
 	{
-		eOnBegin = 0,
-		eOnPlaying,
-		eOnEnd,
+		eOnMenu = 0,//主選單畫面
+		eOnPlaying,//遊戲中畫面
+		eOnEnd,//結算畫面
 	};
 
 	static GameSystem *							g_instance;
@@ -83,7 +83,9 @@ public:
 	void										initPlayer(unsigned int playerCount);//初始化人數
 	void										update(float timePass);//根據遊戲狀態分配要進入哪個流程
 	void										updateMosquito(float timePass);//更新蚊子的狀態及位置
+	void										updateMenu(float timePass);//主要menu畫面
 	void										updatePlaying(float timePass);//遊戲中主要的流程
+	void										updateEnd(float timePass);//結算畫面
 	void										updatePlayer(const NUI_SKELETON_FRAME &frame);
 	void										updatePlayerDebug(void);//若是沒有kinect採取的動作
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
