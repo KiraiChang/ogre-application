@@ -74,7 +74,7 @@ public:
 	virtual MOSQUITO_TYPE		getType(void)				{return eMosquitoFat;}
 	void						setBloodNumber(int number)	{m_iBloodNumber = number;}
 	void						decreaseBlood()				{m_iBloodNumber--;}
-	virtual bool				isDestory(void)const		{return m_bDestory || m_iBloodNumber <= 0;}
+	virtual bool				isDestory(void)const		{return m_iBloodNumber <= 0;}
 };
 //*******************************************************
 //********************  END  ****************************
