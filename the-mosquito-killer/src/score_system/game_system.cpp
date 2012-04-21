@@ -8,9 +8,13 @@
 #include <Ogre.h>
 
 #include <random>
-
+extern Ogre::Log* m_pLog;
+const float HAND_CHECK_AIM_POSE_DIST = 1.5f;
 const float HAND_CHECK_CLOSE_DIST = 2.0f;
 const float HAND_CHECK_OPEN_DIST = 1.0f;
+//const float HAND_CHECK_RIGHT_HAND_DIST = 1.5f;
+const float HAND_CHECK_RIGHT_HAND_SPEED = 5.0f;
+const float HAND_CHECK_SHOOT_TIMEPASS = 0.5f;
 const float HAND_WAIT_ATTACK_TIMEOUT = 3.0f;
 
 bool GameSystem::MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1)
@@ -117,8 +121,10 @@ GameSystem::GameSystem(void):
 		m_bShoot(false),
 		m_eState(eOnPlaying),
 		m_eHandState(eOnHandOpen),
-		m_fHandClose(0),
-		m_iCurrentID(0)
+		m_fHandCloseTime(0),
+		m_iCurrentID(0),
+		m_fRightHandZPos(0),
+		m_fShootTimePass(0)
 {
 	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	{
@@ -435,41 +441,41 @@ void GameSystem::updatePlaying(float timePass)
 	}
 	m_fTimePass += timePass;
 
-	//V_RIGID_BODY::iterator rIte;
-	//V_RIGID_BODY::iterator eraseIte;
-	//PhysicRigidBody *body;
-	//for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end();)
-	//{
-	//	body = *rIte;
-	//	
-	//	body->update();
-	//	float pos[3];
-	//	body->getPos(pos);
-	//	if(pos[2] > 50)
-	//	{
-	//		eraseIte = rIte;
-	//		rIte++;
-	//		m_vRigidBody.erase(eraseIte);
-	//		body->release();
-	//		delete body;
-	//	}
-	//	else if(body->getUserPointer() != NULL)
-	//	{
-	//		ScoreBase *base = (ScoreBase *)body->getUserPointer();
-	//		if(base->m_bDestory)
-	//		{
-	//			eraseIte = rIte;
-	//			rIte++;
-	//			m_vRigidBody.erase(eraseIte);
-	//			body->release();
-	//			delete body;
-	//		}
-	//		else
-	//			rIte++;
-	//	}
-	//	else
-	//		rIte++;
-	//}
+	V_RIGID_BODY::iterator rIte;
+	V_RIGID_BODY::iterator eraseIte;
+	PhysicRigidBody *body;
+	for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end();)
+	{
+		body = *rIte;
+		
+		body->update();
+		float pos[3];
+		body->getPos(pos);
+		if(pos[1] <= 0)
+		{
+			eraseIte = rIte;
+			rIte++;
+			m_vRigidBody.erase(eraseIte);
+			body->release();
+			delete body;
+		}
+		//else if(body->getUserPointer() != NULL)
+		//{
+		//	ScoreBase *base = (ScoreBase *)body->getUserPointer();
+		//	if(base->m_bDestory)
+		//	{
+		//		eraseIte = rIte;
+		//		rIte++;
+		//		m_vRigidBody.erase(eraseIte);
+		//		body->release();
+		//		delete body;
+		//	}
+		//	else
+		//		rIte++;
+		//}
+		else
+			rIte++;
+	}
 	updateMosquito(timePass);
 	if(m_fTimePass >= m_fFullTime)
 	{
@@ -547,7 +553,18 @@ void GameSystem::updateHandState(float timePass)
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
 			if(dist < HAND_CHECK_CLOSE_DIST)
+			{
 				m_eHandState = eOnHandWaitAttack;
+			}
+
+			char msg[64];
+			sprintf(msg, "rightPos[2] - leftPos[2]:%f\n", rightPos[2] - leftPos[2]);
+			m_pLog->logMessage(msg);
+			if((rightPos[2] - leftPos[2]) > HAND_CHECK_AIM_POSE_DIST)
+			{
+				m_eHandState = eOnHandWaitShoot;
+			}
+			
 		}
 		break;
 	case eOnHandClose:
@@ -563,7 +580,7 @@ void GameSystem::updateHandState(float timePass)
 		break;
 	case eOnHandWaitAttack:
 		{
-			m_fHandClose += timePass;
+			m_fHandCloseTime += timePass;
 			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectRightHand, rightPos);
 			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectLeftHand, leftPos);
 			Ogre::Vector3 right(rightPos);
@@ -571,10 +588,10 @@ void GameSystem::updateHandState(float timePass)
 			float dist = left.distance(right);
 			if(dist > HAND_CHECK_OPEN_DIST)
 				m_eHandState = eOnHandOpen;
-			else if(m_fHandClose > HAND_WAIT_ATTACK_TIMEOUT)
+			else if(m_fHandCloseTime > HAND_WAIT_ATTACK_TIMEOUT)
 			{
 				m_eHandState = eOnHandClose;
-				m_fHandClose = 0.0;
+				m_fHandCloseTime = 0.0;
 			}
 		}
 		break;
@@ -592,6 +609,35 @@ void GameSystem::updateHandState(float timePass)
 		}
 		break;
 	case eOnHandWaitShoot:
+		{
+			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectRightHand, rightPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectLeftHand, leftPos);
+			m_fShootTimePass += timePass;
+			if(m_fShootTimePass > HAND_CHECK_SHOOT_TIMEPASS)
+			{
+				float speed = (m_fRightHandZPos - rightPos[2]) / m_fShootTimePass;
+				m_fShootTimePass = 0.0f;
+				char msg[128];
+				sprintf(msg, "m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
+				m_pLog->logMessage(msg);
+				if(speed > HAND_CHECK_RIGHT_HAND_SPEED)
+				{
+					sprintf(msg, "shoot, m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
+					m_pLog->logMessage(msg);
+					float quat[4] = {1.0, 0.0, 0.0, 0.0};
+					float pos[3] = {rightPos[0], rightPos[1], rightPos[2] - 5};
+					float scale[3] = {1.0, 1.0, 1.0};
+					PhysicRigidBody *body = createRidigBody("bomb.mesh", 1.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_WEAPON), 8);
+
+					body->force(leftPos[0]-rightPos[0], leftPos[1]-rightPos[1], leftPos[2]-rightPos[2], 0.0, 0.0, 0.0, 35);
+				}
+				m_fRightHandZPos = rightPos[2];
+			}
+			if((rightPos[2] - leftPos[2]) <= HAND_CHECK_AIM_POSE_DIST - 1.0)
+			{
+				m_eHandState = eOnHandOpen;
+			}
+		}
 		break;
 	default:
 		break;

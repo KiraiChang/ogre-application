@@ -15,7 +15,7 @@ This source file is part of the
 -----------------------------------------------------------------------------
 */
 #include "base_application.h"
-
+Ogre::Log *m_pLog = 0;
 //-------------------------------------------------------------------------------------
 BaseApplication::BaseApplication(void)
     : mRoot(0),
@@ -221,6 +221,12 @@ void BaseApplication::go(void)
 //-------------------------------------------------------------------------------------
 bool BaseApplication::setup(void)
 {
+	Ogre::LogManager* logMgr = new Ogre::LogManager();
+ 
+	m_pLog = Ogre::LogManager::getSingleton().createLog("OgreLogfile.log", true, true, false);
+	m_pLog->setDebugOutputEnabled(true);
+
+
     mRoot = new Ogre::Root(mPluginsCfg);
 
     setupResources();
