@@ -29,6 +29,7 @@ This source file is part of the
 #include <OgreSceneManager.h>
 #include <OgreRenderWindow.h>
 #include <OgreConfigFile.h>
+#include <OgreLogManager.h>
 
 #include <OISEvents.h>
 #include <OISInputManager.h>
@@ -46,7 +47,6 @@ public:
 
     virtual void go(void);
 	virtual const std::string getApplicationName(void)const;
-
 protected:
     virtual bool setup();
     virtual bool configure(void);

@@ -92,8 +92,8 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 		{
 			m_pBody[i]->setOrigin(data.SkeletonPositions[m_iBodyID[i]].x * DEF_POWER_RADIN, // + data.Position.x,
 			data.SkeletonPositions[m_iBodyID[i]].y * DEF_POWER_RADIN, // + data.Position.y,
-			//data.SkeletonPositions[m_iBodyID[i]].z * DEF_POWER_RADIN, // + data.Position.z
-			25.0);
+			data.SkeletonPositions[m_iBodyID[i]].z * DEF_POWER_RADIN // + data.Position.z
+			);
 			m_pBody[i]->update();
 		}
 	}
@@ -107,10 +107,11 @@ void PhysicKinect::updateDebug(float data[2][3])
 		{
 			float x = data[i][0];
 			float y = data[i][1];
+			float z = data[i][2];
 			m_pBody[i]->setOrigin(x, // + data.Position.x,
 									y, // + data.Position.y,
-									//(&data[i])[2], // + data.Position.z
-									25.0);
+									z // + data.Position.z
+									);
 			m_pBody[i]->update();
 		}
 	}

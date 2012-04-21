@@ -56,7 +56,9 @@ private:
 	GameState									m_eState;
 	//Hand control
 	HandState									m_eHandState;
-	float										m_fHandClose;
+	float										m_fHandCloseTime;
+	float										m_fShootTimePass;
+	float										m_fRightHandZPos;
 	//kinect
 	PhysicKinect *								m_vpPlayer[NUI_SKELETON_COUNT];
 	DWORD										m_iCurrentID;
