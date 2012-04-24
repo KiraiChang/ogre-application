@@ -59,10 +59,10 @@ public:
 
 	//create resource
 	virtual void createScene(void);
-	void initCamera(void);
+	virtual void initCamera(void);
 	void initCEGUI(void);
 	void createCompositor(void);
-	void createLight(void);
+	virtual void createLight(void);
 	void createShadow(void);
 	void createSkyDome(void);
 	void createTerrain(void);

@@ -47,7 +47,7 @@ public:
 
     virtual void go(void);
 	virtual const std::string getApplicationName(void)const;
-protected:
+public:
     virtual bool setup();
     virtual bool configure(void);
     virtual void chooseSceneManager(void);

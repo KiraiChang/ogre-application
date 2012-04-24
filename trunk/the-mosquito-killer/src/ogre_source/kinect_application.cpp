@@ -8,6 +8,10 @@
 #include "../score_system/score_object.h"
 #include "../score_system/game_system.h"
 
+#include <iostream>
+#include <fstream>
+#include <json_spirit.h>
+
 #include <Ogre.h>
 
 
@@ -45,6 +49,56 @@ KinectApplication::~KinectApplication(void)
 const std::string KinectApplication::getApplicationName(void)const
 {
 	return "The Mosquito Killer";
+}
+
+void KinectApplication::createCamera(void)
+{
+	std::ifstream is("camera.cfg");
+	if(is.is_open())
+	{
+		json_spirit::mValue value;
+		json_spirit::read(is, value);
+		json_spirit::mObject obj;
+		obj = value.get_obj()["camera"].get_obj();
+
+		// Create the camera
+		mCamera = mSceneMgr->createCamera(obj["name"].get_str());
+
+		mCameraNode = mSceneMgr->createSceneNode(obj["node_name"].get_str());
+		mCameraNode->attachObject((Ogre::MovableObject *)mCamera);
+		mCameraNode->setPosition(obj["position"].get_array()[0].get_real(),
+								obj["position"].get_array()[1].get_real(),
+								obj["position"].get_array()[2].get_real());
+		// Look back along -Z
+		mCamera->lookAt(Ogre::Vector3(obj["look_at"].get_array()[0].get_real(),
+								obj["look_at"].get_array()[1].get_real(),
+								obj["look_at"].get_array()[2].get_real()));
+		//mCamera->setNearClipDistance(5);
+		mCamera->setNearClipDistance(obj["near_clip"].get_real());
+		mCamera->setFarClipDistance(obj["far_clip"].get_real()); 
+	}
+	else
+	{
+		// Create the camera
+		mCamera = mSceneMgr->createCamera("PlayerCam");
+
+		mCameraNode = mSceneMgr->createSceneNode("CameraNode");
+		mCameraNode->attachObject((Ogre::MovableObject *)mCamera);
+		// Position it at 500 in Z direction
+		//mCamera->setPosition(Ogre::Vector3(0,270,0));
+		mCameraNode->setPosition(0, 0, 0);
+		// Look back along -Z
+		mCamera->lookAt(Ogre::Vector3(0,0,0));
+		//mCamera->setNearClipDistance(5);
+		mCamera->setNearClipDistance(0.1);
+		mCamera->setFarClipDistance(500); 
+	}
+
+    mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
+}
+
+void KinectApplication::initCamera(void)
+{
 }
 
 void KinectApplication::createScene(void)
@@ -91,6 +145,109 @@ void KinectApplication::createUI(void)
 
 	slider->setCurrentValue(DEF_MAX_PLAY_TIME);
 	slider->setMaxValue(DEF_MAX_PLAY_TIME);
+}
+
+void KinectApplication::createLight(void)
+{
+	Ogre::Light* pLight = NULL;
+
+	std::ifstream is("scene_light.cfg");
+	if(is.is_open())
+	{
+		json_spirit::mValue value;
+		json_spirit::read(is, value);
+		json_spirit::mArray arr;
+		json_spirit::mObject obj;
+		arr = value.get_obj()["scene_light"].get_array();
+		for(int i = 0; i <arr.size();i++)
+		{
+			obj = arr[i].get_obj();
+			switch(obj["type"].get_int())
+			{
+			case Ogre::Light::LT_POINT:
+				{
+					pLight = mSceneMgr->createLight(obj["lightName"].get_str());
+					pLight->setType(Ogre::Light::LT_POINT);
+					pLight->setDiffuseColour(obj["diffuse"].get_array()[0].get_real(),
+							obj["diffuse"].get_array()[1].get_real(),
+							obj["diffuse"].get_array()[2].get_real());
+					pLight->setSpecularColour(obj["specular"].get_array()[0].get_real(),
+							obj["specular"].get_array()[1].get_real(),
+							obj["specular"].get_array()[2].get_real());
+					pLight->setPosition(obj["position"].get_array()[0].get_real(),
+							obj["position"].get_array()[1].get_real(),
+							obj["position"].get_array()[2].get_real());
+					pLight->setAttenuation(obj["attenuation"].get_array()[0].get_real(),
+							obj["attenuation"].get_array()[1].get_real(),
+							obj["attenuation"].get_array()[2].get_real(),
+							obj["attenuation"].get_array()[3].get_real());
+				}
+				break;
+			case Ogre::Light::LT_DIRECTIONAL:
+				{
+					pLight = mSceneMgr->createLight(obj["lightName"].get_str());
+					pLight->setType(Ogre::Light::LT_DIRECTIONAL);
+					pLight->setDiffuseColour(obj["diffuse"].get_array()[0].get_real(),
+							obj["diffuse"].get_array()[1].get_real(),
+							obj["diffuse"].get_array()[2].get_real());
+					pLight->setSpecularColour(obj["specular"].get_array()[0].get_real(),
+							obj["specular"].get_array()[1].get_real(),
+							obj["specular"].get_array()[2].get_real());
+					pLight->setDirection(obj["direction"].get_array()[0].get_real(),
+							obj["direction"].get_array()[1].get_real(),
+							obj["direction"].get_array()[2].get_real());
+				}
+				break;
+			case Ogre::Light::LT_SPOTLIGHT:
+				{
+					pLight = mSceneMgr->createLight(obj["lightName"].get_str());
+					pLight->setType(Ogre::Light::LT_SPOTLIGHT);
+					pLight->setDiffuseColour(obj["diffuse"].get_array()[0].get_real(),
+							obj["diffuse"].get_array()[1].get_real(),
+							obj["diffuse"].get_array()[2].get_real());
+					pLight->setSpecularColour(obj["specular"].get_array()[0].get_real(),
+							obj["specular"].get_array()[1].get_real(),
+							obj["specular"].get_array()[2].get_real());
+					pLight->setPosition(obj["position"].get_array()[0].get_real(),
+							obj["position"].get_array()[1].get_real(),
+							obj["position"].get_array()[2].get_real());
+					pLight->setDirection(obj["direction"].get_array()[0].get_real(),
+						obj["direction"].get_array()[1].get_real(),
+						obj["direction"].get_array()[2].get_real());
+					pLight->setSpotlightRange(Ogre::Degree(obj["range"].get_array()[0].get_real()),
+						Ogre::Degree(obj["range"].get_array()[1].get_real()),
+						obj["range"].get_array()[2].get_real());
+				}
+				break;
+			}
+		}
+	}
+	else
+	{
+		//create Light
+		pLight = mSceneMgr->createLight("directLight");
+		pLight->setType(Ogre::Light::LT_DIRECTIONAL);
+		pLight->setDirection(0.0, -1.0, 0.0);
+		pLight->setDiffuseColour(1.0, 1.0, 1.0);
+		pLight->setSpecularColour(0.4, 0.4, 0.0);
+		mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.0));
+
+		pLight = mSceneMgr->createLight("pointLight");
+		pLight->setType(Ogre::Light::LT_POINT);// make this light a point light
+		pLight->setDiffuseColour(1.0, .5, 0.0);      //color the light orange 
+		pLight->setSpecularColour(1.0, 1.0, 0.0);    //yellow highlights
+		pLight->setAttenuation(100, 1.0, 0.045, 0.0075);
+		pLight->setPosition(0.0, 10.0, 50.0);
+
+		pLight = mSceneMgr->createLight("spotLight");
+		pLight->setType(Ogre::Light::LT_SPOTLIGHT);
+		pLight->setDiffuseColour(1.0, 1.0, 1.0);
+		pLight->setSpecularColour(1.0, 1.0, 1.0);
+
+		pLight->setDirection(-1, -1, -1);
+		pLight->setPosition(0.0, 20.0, 0.0);
+		pLight->setSpotlightRange(Ogre::Degree(35), Ogre::Degree(150), 0.1);
+	}
 }
 
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
