@@ -5,22 +5,33 @@
 #include "../physic/physic_rigid_body.h"
 #include "../ogre_physic/ogre_physic_shape.h"
 
-const int BORDY_PART_MAX = 2;//NUI_SKELETON_POSITION_COUNT
+//const int BORDY_PART_MAX = 2;//NUI_SKELETON_POSITION_COUNT
 
 enum
 {
 	eKinectRightHand = 0,
 	eKinectLeftHand,
+	eKinectBodyPart,
 };
 
 class PhysicKinect
 {
 private:
+	enum SCALE_POSITION
+	{
+		eScaleX = 0,
+		eScaleY,
+		eScaleZ,
+		eScaleCount,
+	};
+private:
 	DWORD										m_iKinectID;
 	Ogre::SceneManager*							m_pSceneMgr;
 	btDynamicsWorld*							m_pWorld;
-	PhysicRigidBody*							m_pBody[BORDY_PART_MAX];
-	unsigned int								m_iBodyID[BORDY_PART_MAX];
+	PhysicRigidBody*							m_pBody[eKinectBodyPart];//拍擊蚊子時用的ridig body
+	OgreShapeBox*								m_pShape[eKinectBodyPart];//射擊時用的mesh
+	unsigned int								m_iBodyID[eKinectBodyPart];
+	float										m_vfScale[eScaleCount];
 
 public:
 												PhysicKinect(Ogre::SceneManager *scene, btDynamicsWorld *world);

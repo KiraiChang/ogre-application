@@ -165,6 +165,10 @@ bool KinectApplication::keyPressed( const OIS::KeyEvent &arg )
 		CEGUI::System &sys = CEGUI::System::getSingleton();
 		sys.injectKeyDown(arg.key);
 		sys.injectChar(arg.text);
+		if (arg.key == OIS::KC_ESCAPE)
+		{
+			mShutDown = true;
+		}
 		mCameraMan->injectKeyDown(arg);
 	}
 	return true;
