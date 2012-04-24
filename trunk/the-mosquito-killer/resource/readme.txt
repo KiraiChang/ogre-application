@@ -4,3 +4,4 @@ application
 	debug "debug binary place here"
 	media "other resource place here"
 		datafiles "CEGUI resource place here"
+	configure "game configure put here"
