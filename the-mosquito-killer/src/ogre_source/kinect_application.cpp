@@ -53,7 +53,7 @@ const std::string KinectApplication::getApplicationName(void)const
 
 void KinectApplication::createCamera(void)
 {
-	std::ifstream is("camera.cfg");
+	std::ifstream is("../configure/camera.cfg");
 	if(is.is_open())
 	{
 		json_spirit::mValue value;
@@ -151,7 +151,7 @@ void KinectApplication::createLight(void)
 {
 	Ogre::Light* pLight = NULL;
 
-	std::ifstream is("scene_light.cfg");
+	std::ifstream is("../configure/scene_light.cfg");
 	if(is.is_open())
 	{
 		json_spirit::mValue value;

@@ -37,7 +37,7 @@ void PhysicKinect::init(DWORD id)
 	float pos[3] = {0.0, 0.0, 25.0};
 	float quat[4] = {1.0, 0.0, 0.0, 0.0};
 
-	std::ifstream is("kinect_device.cfg");
+	std::ifstream is("../configure/kinect_device.cfg");
 	if(is.is_open())
 	{
 		json_spirit::mValue value;
