@@ -210,14 +210,14 @@ void OgreApplication::createCompositor(void)
 void OgreApplication::createLight(void)
 {
 	//create Light
-    Ogre::Light* pLight = mSceneMgr->createLight("MainLight");
+    Ogre::Light* pLight = mSceneMgr->createLight("directLight");
     pLight->setType(Ogre::Light::LT_DIRECTIONAL);
     pLight->setDirection(0.0, -1.0, 0.0);
     pLight->setDiffuseColour(1.0, 1.0, 1.0);
     pLight->setSpecularColour(0.4, 0.4, 0.0);
 	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.0));
 
-	pLight = mSceneMgr->createLight("pLight");
+	pLight = mSceneMgr->createLight("pointLight");
 	pLight->setType(Ogre::Light::LT_POINT);// make this light a point light
 	pLight->setDiffuseColour(1.0, .5, 0.0);      //color the light orange 
 	pLight->setSpecularColour(1.0, 1.0, 0.0);    //yellow highlights

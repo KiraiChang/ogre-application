@@ -25,8 +25,11 @@ public:
 	KinectApplication(void);
 	virtual ~KinectApplication(void);
 	virtual const std::string getApplicationName(void)const;
+	virtual void createCamera(void);
+	virtual void initCamera(void);
 	virtual void createScene(void);
 	virtual void createUI(void);
+	virtual void createLight(void);
 
 	virtual bool frameEnded(const Ogre::FrameEvent& evt);
 	// OIS::KeyListener
