@@ -44,6 +44,12 @@ void PhysicKinect::init(DWORD id)
 		json_spirit::read(is, value);
 		json_spirit::mObject obj;
 		obj = value.get_obj();
+		if(obj.count("move_scale") > 0)
+		{
+			m_vfScale[0] = obj["move_scale"].get_array()[0].get_real();
+			m_vfScale[1] = obj["move_scale"].get_array()[1].get_real();
+			m_vfScale[2] = obj["move_scale"].get_array()[2].get_real();
+		}
 		scale[0] = obj["left_hand_ridigi_body"].get_obj()["scale"].get_array()[0].get_real();
 		scale[1] = obj["left_hand_ridigi_body"].get_obj()["scale"].get_array()[1].get_real();
 		scale[2] = obj["left_hand_ridigi_body"].get_obj()["scale"].get_array()[2].get_real();
