@@ -61,6 +61,12 @@
     <ClCompile Include="..\..\game_object\mosquito.cpp">
       <Filter>game_object</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\game_object\weapon.cpp">
+      <Filter>game_object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\move_system\shoot_system.cpp">
+      <Filter>move_system</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_source\base_application.h">
@@ -125,6 +131,12 @@
     </ClInclude>
     <ClInclude Include="..\..\game_object\mosquito.h">
       <Filter>game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_object\weapon.h">
+      <Filter>game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\move_system\shoot_system.h">
+      <Filter>move_system</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

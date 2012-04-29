@@ -1,23 +1,21 @@
-#ifndef _MOVE_SYSTEM_H_
-#define _MOVE_SYSTEM_H_
+#ifndef _SHOOT_SYSTEM_H_
+#define _SHOOT_SYSTEM_H_
 #include <Ogre.h>
 //*******************************************************
 //*****************  MOVE_BASE  *************************
 //*******************************************************
-class MoveBase
+class ShootBase
 {
 public:
 private:
 	Ogre::Vector3			P0;
-	Ogre::Vector3			P4;
+	Ogre::Vector3			P2;
 	Ogre::Vector3			C1;
-	Ogre::Vector3			C2;
-	Ogre::Vector3			C3;
 	Ogre::Node*				m_pNode;
 	float					t;
 public:
-							MoveBase(Ogre::Node *node);
-	virtual					~MoveBase();
+							ShootBase(Ogre::Node *node);
+	virtual					~ShootBase();
 private:
 	virtual void			setRoute(void);
 	virtual void			move(void);
