@@ -2,6 +2,7 @@
 #define _GAME_SYSTEM_H_
 
 #include "../game_object/mosquito.h"
+#include "../game_object/weapon.h"
 #include "../physic/physic_shape_base.h"
 #include "../physic/physic_rigid_body.h"
 #include "../kinect/physic_kinect.h"
@@ -10,6 +11,7 @@
 typedef std::list< PhysicRigidBody * > V_RIGID_BODY;
 typedef std::list<  PhysicShapeBase* > V_SHAPE;
 typedef std::list< MosquitoBase * > V_MOSQUITO;
+typedef std::list< WeaponKnife * > V_WEAPON;
 class PhysicDebug;
 class btDynamicsWorld;
 class btManifoldPoint;
@@ -50,6 +52,7 @@ private:
 	V_RIGID_BODY								m_vRigidBody;
 	V_MOSQUITO									m_vMosquito;
 	V_SHAPE										m_vShape;
+	V_WEAPON									m_vWeapon;
 	float										m_fFullTime;
 	float										m_fTimePass;
 	bool										m_bShoot;
@@ -62,6 +65,8 @@ private:
 	//kinect
 	PhysicKinect *								m_vpPlayer[NUI_SKELETON_COUNT];
 	DWORD										m_iCurrentID;
+	int											NumBomb;
+	int											NumBook;
 	
 
 public:
@@ -70,6 +75,7 @@ public:
 	void										init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr);
 	void										release(void);
 	void										releaseMosquito(void);
+	void										releaseWeapon(void);
 	void										releaseCharacter(void);
 	void										restart(void);
 	float										getTimePass(void)const;
@@ -77,14 +83,16 @@ public:
 	void										setHandState(HandState state);
 
 	void										createShape(const char *modelName, float *scale, float *pos, float *quat);
+	void										createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData);
 	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug = NULL, void *userPoint = NULL, int flag = 0);
 	void										createMosquito(MOSQUITO_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData = 0);
-	void										randomShoot(void);
+	void										randomShoot(MOSQUITO_TYPE type);
 	void										initScene(void);//產生場景
 	void										initPlayer(void);//產生空的玩家類別
 	void										initPlayer(unsigned int playerCount);//初始化人數
 	void										update(float timePass);//根據遊戲狀態分配要進入哪個流程
 	void										updateMosquito(float timePass);//更新蚊子的狀態及位置
+	void										updateWeapon(float timePass);//更新蚊子的狀態及位置
 	void										updateMenu(float timePass);//主要menu畫面
 	void										updatePlaying(float timePass);//遊戲中主要的流程
 	void										updateEnd(float timePass);//結算畫面

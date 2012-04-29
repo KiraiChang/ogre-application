@@ -124,19 +124,21 @@ GameSystem::GameSystem(void):
 		m_fHandCloseTime(0),
 		m_iCurrentID(0),
 		m_fRightHandZPos(0),
-		m_fShootTimePass(0)
+		m_fShootTimePass(0),
+		NumBook(0),
+		NumBomb(0)
 {
 	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	{
 		m_vpPlayer[i] = NULL;
 	}
 
-		m_vfHandDebugPos[0][0] = 3.0;
-		m_vfHandDebugPos[0][1] = 8.0;
+		m_vfHandDebugPos[0][0] = 5.0;
+		m_vfHandDebugPos[0][1] = 50.0;
 		m_vfHandDebugPos[0][2] = 50.0;
 
-		m_vfHandDebugPos[1][0] = -3.0;
-		m_vfHandDebugPos[1][1] = 8.0;
+		m_vfHandDebugPos[1][0] = -5.0;
+		m_vfHandDebugPos[1][1] = 50.0;
 		m_vfHandDebugPos[1][2] = 50.0;
 }
 
@@ -184,6 +186,19 @@ void GameSystem::releaseMosquito(void)
 	m_vMosquito.clear();
 }
 
+void GameSystem::releaseWeapon(void)
+{
+	V_WEAPON::iterator rIte;
+	WeaponKnife *body;
+	for(rIte = m_vWeapon.begin(); rIte != m_vWeapon.end(); rIte++)
+	{
+		body = *rIte;
+		body->release();
+		delete body;
+	}
+	m_vWeapon.clear();
+}
+
 void GameSystem::releaseCharacter()
 {
 	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
@@ -221,6 +236,7 @@ void GameSystem::restart(void)
 	m_vShape.clear();
 
 	releaseMosquito();
+	releaseWeapon();
 }
 
 float GameSystem::getTimePass(void)const
@@ -278,25 +294,54 @@ void GameSystem::createMosquito(MOSQUITO_TYPE type, const char *modelName, float
 	m_vMosquito.back()->create(modelName, mass, scale, pos, quat, score);
 }
 
-void GameSystem::randomShoot(void)
+void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData)
+{
+	switch(type)
+	{
+	case eWeaponBook:
+		m_vWeapon.push_back(new WeaponBook());
+		//((WeaponBook *)m_vWeapon.back())->setSplitNumber(otherData);
+		break;
+	case eWeaponBomb:
+		m_vWeapon.push_back(new WeaponBomb());
+		//((WeaponBomb *)m_vWeapon.back())->setBloodNumber(otherData);
+		break;
+	default:
+		m_vWeapon.push_back(new WeaponKnife());
+		break;
+	}
+	m_vWeapon.back()->init(m_pSceneMgr, m_pWorld);
+	m_vWeapon.back()->create(modelName, mass, scale, pos, quat, score);
+}
+
+
+
+void GameSystem::randomShoot(MOSQUITO_TYPE type)
 {
 	m_bShoot = true;
-	int r = rand() % 3;
+	srand((unsigned)time(0));
+	int r = rand() % 4;
 	float scale[3] = {1.0, 1.0, 1.0};
-	float pos[3] = {0.0, 3, -45.0};
+	float pos[3] = {0.0, 20, -600.0};
 	float dir[3] = {0, 0.4, 1.0};
 	float quat[4] = {1.0, 0.0, 0.0, 0.0};
 	if(r == 0)
 	{
-		dir[0] = -0.4;
-		pos[0] = 30;
-		//quat[2] = -0.25;
+		pos[0] = 50;
 	}
 	else if(r == 1)
 	{
-		dir[0] = 0.4;
-		pos[0] = -30;
-		//quat[2] = 0.25;
+		pos[0] = -50;
+	}
+	else if(r == 2)
+	{
+		pos[0] = -50;
+		pos[1] = 60;
+	}
+	else
+	{
+		pos[0] = 50;
+		pos[1] = 60;
 	}
 
 	float roat[3] = {0.0, 0.0, 0.0};
@@ -324,11 +369,11 @@ void GameSystem::randomShoot(void)
 	sprintf_s(modelName, "mosquito01.mesh");
 	//PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
 	//body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
-	createMosquito(eMosquitoBase, modelName, 1.0, scale, pos, quat, 100);
+	createMosquito(type, modelName, 1.0, scale, pos, quat, 100);
 }
 
 void GameSystem::initScene(void)
-{
+{/*
 	float quat[4] = {1.0, 0.0, 0.0, 0.0};
 	float pos[3] = {0.0, 0.0, -50.0};
 	float scale[3] = {1.0, 1.0, 1.0};
@@ -384,7 +429,7 @@ void GameSystem::initScene(void)
 	scale[1] = 24.0;
 	scale[2] = 22.0;
 	quat[2] = 0.2;
-	createShape("rock.mesh", scale, pos, quat);
+	createShape("rock.mesh", scale, pos, quat);*/
 }
 
 void GameSystem::initPlayer(void)
@@ -433,7 +478,27 @@ void GameSystem::updatePlaying(float timePass)
 	bool shoot = (int)(m_fTimePass + timePass)%5 == 0;
 	if(shoot && !m_bShoot)
 	{
-		randomShoot();
+		if(m_fTimePass >= 30 && m_fTimePass <= 40)  // first attack of many mosquitos
+		{
+			randomShoot(eMosquitoBase); // we can decide the type of mosquito
+			randomShoot(eMosquitoBase);
+			randomShoot(eMosquitoBase);
+		}
+		else if(m_fTimePass >= 60 && m_fTimePass <= 70)  // second attack of many mosquitos
+		{
+			randomShoot(eMosquitoBase);
+			randomShoot(eMosquitoBase);
+			randomShoot(eMosquitoBase);
+		}
+		else if(m_fTimePass >= 90 && m_fTimePass <= 100)  // second attack of many mosquitos
+		{
+			randomShoot(eMosquitoBase);
+			randomShoot(eMosquitoBase);
+			randomShoot(eMosquitoBase);
+		}
+
+		else
+		randomShoot(eMosquitoBase);
 	}
 	else if(!shoot)
 	{
@@ -477,6 +542,7 @@ void GameSystem::updatePlaying(float timePass)
 			rIte++;
 	}
 	updateMosquito(timePass);
+	updateWeapon(timePass);
 	if(m_fTimePass >= m_fFullTime)
 	{
 		restart();
@@ -505,6 +571,29 @@ void GameSystem::updateMosquito(float timePass)
 			eraseIte = rIte;
 			rIte++;
 			m_vMosquito.erase(eraseIte);
+			body->release();
+			delete body;
+		}
+		else
+			rIte++;
+	}
+}
+
+void GameSystem::updateWeapon(float timePass)
+{
+	V_WEAPON::iterator rIte;
+	V_WEAPON::iterator eraseIte;
+	WeaponKnife *body;
+	for(rIte = m_vWeapon.begin(); rIte != m_vWeapon.end();)
+	{
+		body = *rIte;
+		body->update();
+
+		if(body->isDestory())
+		{
+			eraseIte = rIte;
+			rIte++;
+			m_vWeapon.erase(eraseIte);
 			body->release();
 			delete body;
 		}
@@ -624,12 +713,25 @@ void GameSystem::updateHandState(float timePass)
 				{
 					sprintf(msg, "shoot, m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
 					m_pLog->logMessage(msg);
+					
 					float quat[4] = {1.0, 0.0, 0.0, 0.0};
-					float pos[3] = {rightPos[0], rightPos[1], rightPos[2] - 5};
+					float pos[3] = {0.0,40.0,0.0};
 					float scale[3] = {1.0, 1.0, 1.0};
-					PhysicRigidBody *body = createRidigBody("bomb.mesh", 1.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_WEAPON), 8);
 
-					body->force(leftPos[0]-rightPos[0], leftPos[1]-rightPos[1], leftPos[2]-rightPos[2], 0.0, 0.0, 0.0, 35);
+					if(NumBomb > 0)
+					{
+						createWeapon(eWeaponBomb,"bomb.mesh", 1.0, scale, pos, quat, 100,1);
+						NumBomb--;
+					}
+					else if(NumBook > 0)
+					{
+						createWeapon(eWeaponBook,"bomb.mesh", 1.0, scale, pos, quat, 100,1);
+						NumBook--;
+					}
+					else
+					{
+						createWeapon(eWeaponKnife,"bomb.mesh", 1.0, scale, pos, quat, 100,1);
+					}
 				}
 				m_fRightHandZPos = rightPos[2];
 			}

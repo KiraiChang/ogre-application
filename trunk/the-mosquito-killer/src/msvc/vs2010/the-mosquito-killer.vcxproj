@@ -90,11 +90,13 @@
   <ItemGroup>
     <ClCompile Include="..\..\base_math\base_vector .cpp" />
     <ClCompile Include="..\..\game_object\mosquito.cpp" />
+    <ClCompile Include="..\..\game_object\weapon.cpp" />
     <ClCompile Include="..\..\kinect\character_controller.cpp" />
     <ClCompile Include="..\..\kinect\kinect_device.cpp" />
     <ClCompile Include="..\..\kinect\physic_kinect.cpp" />
     <ClCompile Include="..\..\main\main.cpp" />
     <ClCompile Include="..\..\move_system\move_system.cpp" />
+    <ClCompile Include="..\..\move_system\shoot_system.cpp" />
     <ClCompile Include="..\..\ogre_physic\ogre_physic_debug.cpp" />
     <ClCompile Include="..\..\ogre_physic\ogre_physic_shape.cpp" />
     <ClCompile Include="..\..\ogre_source\base_application.cpp" />
@@ -113,11 +115,13 @@
     <ClInclude Include="..\..\base_math\base_define.h" />
     <ClInclude Include="..\..\base_math\base_vector.h" />
     <ClInclude Include="..\..\game_object\mosquito.h" />
+    <ClInclude Include="..\..\game_object\weapon.h" />
     <ClInclude Include="..\..\kinect\character_controller.h" />
     <ClInclude Include="..\..\kinect\kinect_device.h" />
     <ClInclude Include="..\..\kinect\physic_kinect.h" />
     <ClInclude Include="..\..\kinect\resource.h" />
     <ClInclude Include="..\..\move_system\move_system.h" />
+    <ClInclude Include="..\..\move_system\shoot_system.h" />
     <ClInclude Include="..\..\ogre_physic\ogre_physic_debug.h" />
     <ClInclude Include="..\..\ogre_physic\ogre_physic_shape.h" />
     <ClInclude Include="..\..\ogre_source\base_application.h" />
