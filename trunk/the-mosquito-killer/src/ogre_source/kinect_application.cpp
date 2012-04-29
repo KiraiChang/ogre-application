@@ -125,7 +125,7 @@ void KinectApplication::createScene(void)
 		GameSystem::getInstance()->initPlayer(1);
 	}
 	else
-		m_pKinectDevice->setCameraElevationAngle(15);
+		m_pKinectDevice->setCameraElevationAngle(0);
 	//m_pRagDoll = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
 	//m_pRagDoll->init(0, 0.0, 0);
 	//OgrePhysicDebug *debug = new OgrePhysicDebug();
