@@ -116,10 +116,11 @@ GameSystem *GameSystem::g_instance = NULL;
 GameSystem::GameSystem(void):
 		m_pWorld(NULL),
 		m_pSceneMgr(NULL),
-		m_fFullTime(DEF_MAX_PLAY_TIME),
+		//m_fFullTime(0),
 		m_fTimePass(0),
-		m_bShoot(false),
-		m_eState(eOnPlaying),
+		//m_bShoot(false),
+		m_bUIInit(TRUE),
+		m_eState(eOnMenu),
 		m_eHandState(eOnHandOpen),
 		m_fHandCloseTime(0),
 		m_iCurrentID(0),
@@ -169,6 +170,7 @@ void GameSystem::release(void)
 {
 	restart();
 	releaseCharacter();
+	m_waveSystem.release();
 	m_pWorld = NULL;
 	m_pSceneMgr = NULL;
 }
@@ -237,6 +239,8 @@ void GameSystem::restart(void)
 
 	releaseMosquito();
 	releaseWeapon();
+	m_waveSystem.init(0);
+	m_bUIInit = TRUE;
 }
 
 float GameSystem::getTimePass(void)const
@@ -318,7 +322,7 @@ void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mas
 
 void GameSystem::randomShoot(MOSQUITO_TYPE type)
 {
-	m_bShoot = true;
+	//m_bShoot = true;
 	srand((unsigned)time(0));
 	int r = rand() % 4;
 	float scale[3] = {1.0, 1.0, 1.0};
@@ -470,41 +474,55 @@ void GameSystem::update(float timePass)
 
 void GameSystem::updateMenu(float timePass)
 {
+	restart();
+	initScene();
 	m_eState = eOnPlaying;
 }
 
 void GameSystem::updatePlaying(float timePass)
 {
-	bool shoot = (int)(m_fTimePass + timePass)%5 == 0;
-	if(shoot && !m_bShoot)
-	{
-		if(m_fTimePass >= 30 && m_fTimePass <= 40)  // first attack of many mosquitos
-		{
-			randomShoot(eMosquitoBase); // we can decide the type of mosquito
-			randomShoot(eMosquitoBase);
-			randomShoot(eMosquitoBase);
-		}
-		else if(m_fTimePass >= 60 && m_fTimePass <= 70)  // second attack of many mosquitos
-		{
-			randomShoot(eMosquitoBase);
-			randomShoot(eMosquitoBase);
-			randomShoot(eMosquitoBase);
-		}
-		else if(m_fTimePass >= 90 && m_fTimePass <= 100)  // second attack of many mosquitos
-		{
-			randomShoot(eMosquitoBase);
-			randomShoot(eMosquitoBase);
-			randomShoot(eMosquitoBase);
-		}
+	//bool shoot = (int)(m_fTimePass + timePass)%5 == 0;
+	//if(shoot && !m_bShoot)
+	//{
+	//	if(m_fTimePass >= 30 && m_fTimePass <= 40)  // first attack of many mosquitos
+	//	{
+	//		randomShoot(eMosquitoBase); // we can decide the type of mosquito
+	//		randomShoot(eMosquitoBase);
+	//		randomShoot(eMosquitoBase);
+	//	}
+	//	else if(m_fTimePass >= 60 && m_fTimePass <= 70)  // second attack of many mosquitos
+	//	{
+	//		randomShoot(eMosquitoBase);
+	//		randomShoot(eMosquitoBase);
+	//		randomShoot(eMosquitoBase);
+	//	}
+	//	else if(m_fTimePass >= 90 && m_fTimePass <= 100)  // second attack of many mosquitos
+	//	{
+	//		randomShoot(eMosquitoBase);
+	//		randomShoot(eMosquitoBase);
+	//		randomShoot(eMosquitoBase);
+	//	}
 
-		else
-		randomShoot(eMosquitoBase);
-	}
-	else if(!shoot)
-	{
-		m_bShoot = false;
-	}
+	//	else
+	//	randomShoot(eMosquitoBase);
+	//}
+	//else if(!shoot)
+	//{
+	//	m_bShoot = false;
+	//}
 	m_fTimePass += timePass;
+	//if(m_fTimePass >= m_fFullTime)
+	//{
+	//	restart();
+	//	initScene();
+	//}
+	if(m_waveSystem.work(timePass))
+	{
+		if(m_vMosquito.size() <= 0)
+		{
+			m_eState = eOnEnd;
+		}
+	}
 
 	V_RIGID_BODY::iterator rIte;
 	V_RIGID_BODY::iterator eraseIte;
@@ -543,11 +561,6 @@ void GameSystem::updatePlaying(float timePass)
 	}
 	updateMosquito(timePass);
 	updateWeapon(timePass);
-	if(m_fTimePass >= m_fFullTime)
-	{
-		restart();
-		initScene();
-	}
 	updateHandState(timePass);
 }
 
@@ -744,6 +757,11 @@ void GameSystem::updateHandState(float timePass)
 	default:
 		break;
 	}
+}
+
+float GameSystem::getFullTime(void)const												
+{
+	return  m_waveSystem.getFullTime();;
 }
 
 void GameSystem::testCollision()

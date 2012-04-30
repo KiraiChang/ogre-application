@@ -6,6 +6,7 @@
 #include "../physic/physic_shape_base.h"
 #include "../physic/physic_rigid_body.h"
 #include "../kinect/physic_kinect.h"
+#include "wave_system.h"
 #include <list>
 
 typedef std::list< PhysicRigidBody * > V_RIGID_BODY;
@@ -36,6 +37,7 @@ public:
 		eOnHandWaitShoot,
 	};
 	float										m_vfHandDebugPos[2][3];
+	bool										m_bUIInit;
 private:
 												GameSystem(void);
 private:
@@ -47,15 +49,14 @@ private:
 	};
 
 	static GameSystem *							g_instance;
+	WaveSystem									m_waveSystem;
 	btDynamicsWorld*							m_pWorld;
 	Ogre::SceneManager *						m_pSceneMgr;
 	V_RIGID_BODY								m_vRigidBody;
 	V_MOSQUITO									m_vMosquito;
 	V_SHAPE										m_vShape;
 	V_WEAPON									m_vWeapon;
-	float										m_fFullTime;
 	float										m_fTimePass;
-	bool										m_bShoot;
 	GameState									m_eState;
 	//Hand control
 	HandState									m_eHandState;
@@ -100,6 +101,7 @@ public:
 	void										updatePlayerDebug(void);//若是沒有kinect採取的動作
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
 	void										testCollision();
+	float										getFullTime(void)const;
 
 	static bool									MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* body0,btCollisionObject* body1);
 	static bool									MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1);

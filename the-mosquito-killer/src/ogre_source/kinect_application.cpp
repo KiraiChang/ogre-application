@@ -141,10 +141,10 @@ void KinectApplication::createUI(void)
  
     CEGUI::System::getSingleton().setGUISheet(mpSheet);
 
-	CEGUI::Slider *slider = (CEGUI::Slider *)mpSheet->getChild("Root/Timepass");
+	//CEGUI::Slider *slider = (CEGUI::Slider *)mpSheet->getChild("Root/Timepass");
 
-	slider->setCurrentValue(DEF_MAX_PLAY_TIME);
-	slider->setMaxValue(DEF_MAX_PLAY_TIME);
+	//slider->setCurrentValue(DEF_MAX_PLAY_TIME);
+	//slider->setMaxValue(DEF_MAX_PLAY_TIME);
 }
 
 void KinectApplication::createLight(void)
@@ -270,10 +270,16 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 			m_pRagDoll->update();
 
 		GameSystem::getInstance()->update(timePass);
-
 		CEGUI::Slider *slider = (CEGUI::Slider *)mpSheet->getChild("Root/Timepass");
+		if(GameSystem::getInstance()->m_bUIInit)
+		{
+			GameSystem::getInstance()->m_bUIInit = FALSE;
 
-		float current = DEF_MAX_PLAY_TIME - GameSystem::getInstance()->getTimePass();
+			//slider->setCurrentValue(GameSystem::getInstance()->getFullTime());
+			slider->setMaxValue(GameSystem::getInstance()->getFullTime());
+		}
+
+		float current = GameSystem::getInstance()->getFullTime() - GameSystem::getInstance()->getTimePass();
 		slider->setCurrentValue(current);
 	}
 
