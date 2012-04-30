@@ -67,6 +67,9 @@
     <ClCompile Include="..\..\move_system\shoot_system.cpp">
       <Filter>move_system</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\score_system\wave_system.cpp">
+      <Filter>score_system</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_source\base_application.h">
@@ -137,6 +140,9 @@
     </ClInclude>
     <ClInclude Include="..\..\move_system\shoot_system.h">
       <Filter>move_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\score_system\wave_system.h">
+      <Filter>score_system</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
