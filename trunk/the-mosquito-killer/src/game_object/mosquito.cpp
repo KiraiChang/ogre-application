@@ -69,13 +69,13 @@ void MosquitoBase::release(void)
 	m_pScore = NULL;//release in rigidbody
 }
 
-void MosquitoBase::update(void)
+void MosquitoBase::update(float timepass)
 {
 	if(m_pBody != NULL)
 	{
 		if(m_pMove != NULL)
 		{
-			m_pMove->update(m_bDestory);
+			m_pMove->update(m_bDestory, timepass);
 		
 			Ogre::Vector3 pos= m_pMove->getPosition();
 			Ogre::Quaternion q= m_pMove->getOrientation();
@@ -113,9 +113,9 @@ void MosquitoSplit::release(void)
 	MosquitoBase::release();
 }
 
-void MosquitoSplit::update(void)
+void MosquitoSplit::update(float timepass)
 {
-	MosquitoBase::update();
+	MosquitoBase::update(timepass);
 }
 //*******************************************************
 //****************  MOSQUITO_FAT  ***********************
@@ -147,9 +147,9 @@ void MosquitoFat::release(void)
 	MosquitoBase::release();
 }
 
-void MosquitoFat::update(void)
+void MosquitoFat::update(float timepass)
 {
-	MosquitoBase::update();
+	MosquitoBase::update(timepass);
 }
 //*******************************************************
 //********************  END  ****************************

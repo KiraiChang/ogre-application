@@ -577,7 +577,7 @@ void GameSystem::updateMosquito(float timePass)
 	for(rIte = m_vMosquito.begin(); rIte != m_vMosquito.end();)
 	{
 		body = *rIte;
-		body->update();
+		body->update(timePass);
 
 		if(body->isDestory())
 		{

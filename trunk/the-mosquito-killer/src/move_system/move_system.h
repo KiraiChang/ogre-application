@@ -20,11 +20,11 @@ public:
 	virtual					~MoveBase();
 private:
 	virtual void			setRoute(void);
-	virtual void			move(void);
+	virtual void			move(float timepass);
 public:
 	Ogre::Vector3			getPosition(void)const;
 	Ogre::Quaternion		getOrientation(void)const;
-	virtual void			update(bool &destory);
+	virtual void			update(bool &destory, float timepass);
 };
 //*******************************************************
 //********************  END  ****************************
