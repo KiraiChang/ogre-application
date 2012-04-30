@@ -16,7 +16,7 @@ MoveBase::~MoveBase()
 	m_pNode = NULL;
 }
 
-void MoveBase::move(void)
+void MoveBase::move(float timepass)
 {
 	Ogre::Vector3 nextPos;
 
@@ -32,11 +32,13 @@ void MoveBase::move(void)
 		m_pNode->setPosition(nextPos);
 
 		//if(m_pNode->getPosition().z > -20)
-			m_pNode->translate(Ogre::Vector3(0,0,0.2));
+			//m_pNode->translate(Ogre::Vector3(0,0,0.2));
+		m_pNode->translate(Ogre::Vector3(0,0, timepass * 10));
 
-	t += 0.016;
+		//t += 0.016;
+		t+=timepass;
 
-	if(t > 1) t =1;
+		if(t > 1) t =1;
 	}
 }
 
@@ -87,7 +89,7 @@ Ogre::Quaternion MoveBase::getOrientation(void)const
 }
 
 
-void MoveBase::update(bool &destory)
+void MoveBase::update(bool &destory, float timepass)
 {
 	if(m_pNode == NULL)
 		return;
@@ -103,7 +105,7 @@ void MoveBase::update(bool &destory)
 		//std::cout<<"------- the P4" << Mosqu->P4<<"and the pos :"<<Mosqu->getPosition()<<std::endl;
 	}
 	else		//keep flying
-		move();
+		move(timepass);
 }
 //*******************************************************
 //*****************  MOVE_BASE  *************************

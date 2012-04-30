@@ -34,7 +34,7 @@ public:
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
 	virtual void				create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score);
 	virtual void				release(void);
-	virtual void				update(void);
+	virtual void				update(float timepass);
 	virtual MOSQUITO_TYPE		getType(void)				{return eMosquitoBase;}
 	virtual bool				isDestory(void)const		{return m_bDestory;}
 	virtual void				setDestory(void)			{m_bDestory = 1;}
@@ -52,7 +52,7 @@ public:
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
 	virtual void				create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score);
 	virtual void				release(void);
-	virtual void				update(void);
+	virtual void				update(float timepass);
 	void						setSplitNumber(int number)	{m_iSplitNumber = number;}
 	int							getSplitNumber()			{return m_iSplitNumber;}
 	virtual MOSQUITO_TYPE		getType(void)				{return eMosquitoSplit;}
@@ -70,7 +70,7 @@ public:
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
 	virtual void				create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score);
 	virtual void				release(void);
-	virtual void				update(void);
+	virtual void				update(float timepass);
 	virtual MOSQUITO_TYPE		getType(void)				{return eMosquitoFat;}
 	void						setBloodNumber(int number)	{m_iBloodNumber = number;}
 	void						decreaseBlood()				{m_iBloodNumber--;}
