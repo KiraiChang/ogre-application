@@ -11,7 +11,7 @@
 			"m_iScore":100,
 			"m_iParaData":0,
 			"m_fTimepass":3.0,
-			"m_iCount":10
+			"m_iCount":1
 		},
 		{
 			"m_eType":"eMosquitoSplit",
@@ -23,7 +23,7 @@
 			"m_iScore":100,
 			"m_iParaData":0,
 			"m_fTimepass":6.0,
-			"m_iCount":5
+			"m_iCount":2
 		},
 		{
 			"m_eType":"eMosquitoFat",
@@ -33,9 +33,9 @@
 			"m_vfQuat[4]":[1.0, 0.0, 0.0, 0.0],
 			"m_fMoveSpeed":1.0,
 			"m_iScore":100,
-			"m_iParaData":0,
+			"m_iParaData":10,
 			"m_fTimepass":6.0,
-			"m_iCount":1
+			"m_iCount":5
 		},
 	]
 }
