@@ -64,10 +64,12 @@ void OgreShapeBox::release(void)
 	}
 }
 
-void OgreShapeBox::update(float *pos, float *qua)
+void OgreShapeBox::update(float timePass, float *pos, float *qua)
 {
 	m_pBodyNode->setOrientation(*((Ogre::Quaternion *)qua));
 	m_pBodyNode->setPosition(*((Ogre::Vector3 *)pos));
+	if(m_pAnimationState != NULL)
+		m_pAnimationState->addTime(timePass);
 }
 
 void OgreShapeBox::setAnimation(const char *aniName)
@@ -125,10 +127,12 @@ void OgreShapeCone::release(void)
 	}
 }
 
-void OgreShapeCone::update(float *pos, float *qua)
+void OgreShapeCone::update(float timePass, float *pos, float *qua)
 {
 	m_pBodyNode->setOrientation(*((Ogre::Quaternion *)qua));
 	m_pBodyNode->setPosition(*((Ogre::Vector3 *)pos));
+	if(m_pAnimationState != NULL)
+		m_pAnimationState->addTime(timePass);
 }
 
 void OgreShapeCone::setAnimation(const char *aniName)
@@ -186,10 +190,12 @@ void OgreShapeCylinder::release(void)
 	}
 }
 
-void OgreShapeCylinder::update(float *pos, float *qua)
+void OgreShapeCylinder::update(float timePass, float *pos, float *qua)
 {
 	m_pBodyNode->setOrientation(*((Ogre::Quaternion *)qua));
 	m_pBodyNode->setPosition(*((Ogre::Vector3 *)pos));
+	if(m_pAnimationState != NULL)
+		m_pAnimationState->addTime(timePass);
 }
 
 void OgreShapeCylinder::setAnimation(const char *aniName)
@@ -257,10 +263,12 @@ void OgreShapeSphere::release(void)
 	}
 }
 
-void OgreShapeSphere::update(float *pos, float *qua)
+void OgreShapeSphere::update(float timePass, float *pos, float *qua)
 {
 	m_pBodyNode->setOrientation(*((Ogre::Quaternion *)qua));
 	m_pBodyNode->setPosition(*((Ogre::Vector3 *)pos));
+	if(m_pAnimationState != NULL)
+		m_pAnimationState->addTime(timePass);
 }
 
 void OgreShapeSphere::setAnimation(const char *aniName)

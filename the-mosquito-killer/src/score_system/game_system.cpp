@@ -263,8 +263,7 @@ void GameSystem::createShape(const char *modelName, float *scale, float *pos, fl
 	m_vShape.push_back(new OgreShapeBox(m_pSceneMgr));
 	OgreShapeBox *shape  = (OgreShapeBox *)m_vShape.back();
 	shape->init(modelName, scale);
-	shape->update(pos, quat);
-	
+	shape->update(0.0, pos, quat);
 }
 
 PhysicRigidBody *GameSystem::createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug, void *userPoint, int flag)
@@ -296,7 +295,7 @@ void GameSystem::createMosquito(MOSQUITO_TYPE type, const char *modelName, float
 	}
 	m_vMosquito.back()->init(m_pSceneMgr, m_pWorld);
 	m_vMosquito.back()->create(modelName, mass, scale, pos, quat, score);
-	//m_vMosquito.back()->setAnimation("move");
+	m_vMosquito.back()->setAnimation("move");
 }
 
 void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData)
@@ -532,7 +531,7 @@ void GameSystem::updatePlaying(float timePass)
 	{
 		body = *rIte;
 		
-		body->update();
+		body->update(timePass);
 		float pos[3];
 		body->getPos(pos);
 		if(pos[1] <= 0)
@@ -601,7 +600,7 @@ void GameSystem::updateWeapon(float timePass)
 	for(rIte = m_vWeapon.begin(); rIte != m_vWeapon.end();)
 	{
 		body = *rIte;
-		body->update();
+		body->update(timePass);
 
 		if(body->isDestory())
 		{

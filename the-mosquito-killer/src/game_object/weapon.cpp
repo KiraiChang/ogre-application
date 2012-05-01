@@ -32,7 +32,7 @@ void WeaponKnife::create(const char *modelName, float mass, float *scale, float 
 	//create shape
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
 	shape->init(modelName, scale);
-	shape->update(pos, quat);
+	shape->update(0.0, pos, quat);
 
 	//create score object
 	m_pScore = ScoreSystem::createScoreObject(SCORE_TYPE_WEAPON, score);
@@ -67,7 +67,7 @@ void WeaponKnife::release(void)
 	m_pScore = NULL;//release in rigidbody
 }
 
-void WeaponKnife::update(void)
+void WeaponKnife::update(float timePass)
 {
 	if(m_pBody != NULL)
 	{
@@ -77,7 +77,8 @@ void WeaponKnife::update(void)
 		
 			Ogre::Vector3 pos= m_pMove->getPosition();
 			Ogre::Quaternion q= m_pMove->getOrientation();
-			m_pBody->update((float *)&pos, (float *)&q);
+			m_pBody->update(timePass, (float *)&pos, (float *)&q);
+			m_pBody->update(timePass);
 		}
 	}
 }

@@ -150,7 +150,7 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 			data.SkeletonPositions[m_iBodyID[i]].y * m_vfScale[eScaleY], // + data.Position.y,
 			data.SkeletonPositions[m_iBodyID[i]].z * m_vfScale[eScaleZ] // + data.Position.z
 			);
-			m_pBody[i]->update();
+			m_pBody[i]->update(0.0);
 		}
 	}
 }
@@ -168,7 +168,7 @@ void PhysicKinect::updateDebug(float data[2][3])
 									y, // + data.Position.y,
 									z // + data.Position.z
 									);
-			m_pBody[i]->update();
+			m_pBody[i]->update(0.0);
 		}
 	}
 }
