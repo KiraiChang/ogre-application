@@ -30,6 +30,7 @@ public:
 	virtual void				release(void);
 	virtual PHYSIC_SHPAE_TYPE	getType(void) = 0;
 	virtual void				update(float *position, float *quaternion);
+	virtual void				setAnimation(const char *aniName);
 protected:
 };
 //*******************************************************

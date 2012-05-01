@@ -37,6 +37,9 @@ void PhysicShapeBase::release(void)
 void PhysicShapeBase::update(float *pos, float *qua)
 {
 }
+void PhysicShapeBase::setAnimation(const char *aniName)
+{
+}
 //*******************************************************
 //********************  BOX  ****************************
 //*******************************************************

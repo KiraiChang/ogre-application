@@ -37,6 +37,7 @@ public:
 	void update(float *pos, float *quat);
 	void getPos(float *pos)const;
 	void *getUserPointer()const;
+	void setAnimation(const char * aniName);
 };
 //*******************************************************
 //********************  END  ****************************
