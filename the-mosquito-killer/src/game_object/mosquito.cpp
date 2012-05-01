@@ -83,6 +83,12 @@ void MosquitoBase::update(float timepass)
 		}
 	}
 }
+
+void MosquitoBase::setAnimation(const char *aniName)
+{
+	if(m_pBody != NULL)
+		m_pBody->setAnimation(aniName);
+}
 //*******************************************************
 //***************  MOSQUITO_SPLIT  **********************
 //*******************************************************

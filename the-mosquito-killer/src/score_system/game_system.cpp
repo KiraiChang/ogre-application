@@ -296,6 +296,7 @@ void GameSystem::createMosquito(MOSQUITO_TYPE type, const char *modelName, float
 	}
 	m_vMosquito.back()->init(m_pSceneMgr, m_pWorld);
 	m_vMosquito.back()->create(modelName, mass, scale, pos, quat, score);
+	//m_vMosquito.back()->setAnimation("move");
 }
 
 void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData)

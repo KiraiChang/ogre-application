@@ -268,6 +268,12 @@ void *PhysicRigidBody::getUserPointer()const
 {
 	return m_pBodies->getUserPointer();
 }
+
+void PhysicRigidBody::setAnimation(const char * aniName)
+{
+	if(m_pShapeData != NULL)
+		m_pShapeData->setAnimation(aniName);
+}
 //*******************************************************
 //********************  END  ****************************
 //*******************************************************
