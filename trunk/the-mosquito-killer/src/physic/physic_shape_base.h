@@ -29,7 +29,7 @@ public:
 	void						setData(unsigned int dataType, float data);
 	virtual void				release(void);
 	virtual PHYSIC_SHPAE_TYPE	getType(void) = 0;
-	virtual void				update(float *position, float *quaternion);
+	virtual void				update(float timePass, float *position, float *quaternion);
 	virtual void				setAnimation(const char *aniName);
 protected:
 };

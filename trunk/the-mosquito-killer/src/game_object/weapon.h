@@ -35,7 +35,7 @@ public:
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
 	virtual void				create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score);
 	virtual void				release(void);
-	virtual void				update(void);
+	virtual void				update(float timePass);
 	virtual WEAPON_TYPE			getType(void)				{return eWeaponKnife;}
 	virtual bool				isDestory(void)const		{return m_bDestory;}
 	virtual void				setDestory(void)			{m_bDestory = 1;}

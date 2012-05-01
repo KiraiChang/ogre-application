@@ -34,7 +34,7 @@ void MosquitoBase::create(const char *modelName, float mass, float *scale, float
 	//create shape
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
 	shape->init(modelName, scale);
-	shape->update(pos, quat);
+	shape->update(0.0, pos, quat);
 
 	//create score object
 	m_pScore = ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, score);
@@ -79,7 +79,8 @@ void MosquitoBase::update(float timepass)
 		
 			Ogre::Vector3 pos= m_pMove->getPosition();
 			Ogre::Quaternion q= m_pMove->getOrientation();
-			m_pBody->update((float *)&pos, (float *)&q);
+			m_pBody->update(timepass, (float *)&pos, (float *)&q);
+			m_pBody->update(timepass);
 		}
 	}
 }

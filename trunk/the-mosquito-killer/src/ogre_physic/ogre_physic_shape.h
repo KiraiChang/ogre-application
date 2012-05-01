@@ -28,7 +28,7 @@ public:
 	virtual						~OgreShapeBox(void);
 	virtual void				init(const char *meshName, float *scale);
 	virtual void				release(void);
-	virtual void				update(float *position, float *quaternion);
+	virtual void				update(float timePass, float *position, float *quaternion);
 	virtual void				setAnimation(const char *aniName);
 	Ogre::SceneNode *			getNode(void)const							{return m_pBodyNode;}
 protected:
@@ -49,7 +49,7 @@ public:
 								OgreShapeCone(Ogre::SceneManager *scene, unsigned int id, const char *meshName);
 	virtual						~OgreShapeCone(void);
 	virtual void				release(void);
-	virtual void				update(float *position, float *quaternion);
+	virtual void				update(float timePass, float *position, float *quaternion);
 	virtual void				setAnimation(const char *aniName);
 protected:
 };
@@ -69,7 +69,7 @@ public:
 								OgreShapeCylinder(Ogre::SceneManager *scene, unsigned int id, const char *meshName);
 	virtual						~OgreShapeCylinder(void);
 	virtual void				release(void);
-	virtual void				update(float *position, float *quaternion);
+	virtual void				update(float timePass, float *position, float *quaternion);
 	virtual void				setAnimation(const char *aniName);
 protected:
 };
@@ -90,7 +90,7 @@ public:
 	virtual						~OgreShapeSphere(void);
 	virtual void				init(const char *meshName, float *scale);
 	virtual void				release(void);
-	virtual void				update(float *position, float *quaternion);
+	virtual void				update(float timePass, float *position, float *quaternion);
 	virtual void				setAnimation(const char *aniName);
 protected:
 };

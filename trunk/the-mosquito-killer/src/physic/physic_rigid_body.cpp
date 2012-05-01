@@ -200,7 +200,7 @@ void PhysicRigidBody::force(float x, float y, float z, float ax, float ay, float
 	m_pBodies->setAngularVelocity(btVector3(ax, ay, az));
 }
 
-void PhysicRigidBody::update(void)
+void PhysicRigidBody::update(float timePass)
 {
 	if(m_pWorld == NULL)
 		return;
@@ -224,12 +224,13 @@ void PhysicRigidBody::update(void)
 		btTransform trans;
 		m_pBodies->getMotionState()->getWorldTransform(trans);
 		btVector3 pos = trans.getOrigin();
-		m_pShapeData->update((float *)&pos,
+		m_pShapeData->update(timePass,
+								(float *)&pos,
 								(float *)&q);
 	}
 }
 
-void PhysicRigidBody::update(float *pos, float *quat)
+void PhysicRigidBody::update(float timePass, float *pos, float *quat)
 {
 	if(m_pWorld == NULL)
 		return;
