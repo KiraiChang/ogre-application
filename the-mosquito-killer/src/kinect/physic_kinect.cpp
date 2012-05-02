@@ -143,20 +143,23 @@ PhysicRigidBody *PhysicKinect::createRidigBody(const char *modelName, float mass
 void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 {
 	int id = 0;
+	m_vfOverallPos[eScaleX] = data.Position.x;
+	m_vfOverallPos[eScaleY] = data.Position.y;
+	m_vfOverallPos[eScaleZ] = data.Position.z;
 	for(int i = 0; i < NUI_SKELETON_POSITION_COUNT; i++)
 	{
-		m_vfSkeleton[i][0] = data.SkeletonPositions[i].x;
-		m_vfSkeleton[i][1] = data.SkeletonPositions[i].y;
-		m_vfSkeleton[i][2] = data.SkeletonPositions[i].z;
+		m_vfSkeleton[i][eScaleX] = data.SkeletonPositions[i].x;
+		m_vfSkeleton[i][eScaleY] = data.SkeletonPositions[i].y;
+		m_vfSkeleton[i][eScaleZ] = data.SkeletonPositions[i].z;
 		if(id <eKinectBodyPart)
 		{
 			if(i == m_iBodyID[id])
 			{
 				if(m_pBody[i] != NULL)
 				{
-					m_pBody[i]->setOrigin(m_vfSkeleton[i][0] * m_vfScale[eScaleX],
-										m_vfSkeleton[i][1] * m_vfScale[eScaleY],
-										m_vfSkeleton[i][2] * m_vfScale[eScaleZ]
+					m_pBody[i]->setOrigin(m_vfSkeleton[i][eScaleX] * m_vfScale[eScaleX],
+										m_vfSkeleton[i][eScaleY] * m_vfScale[eScaleY],
+										m_vfSkeleton[i][eScaleZ] * m_vfScale[eScaleZ]
 					);
 					m_pBody[i]->update(0.0);
 					id++;

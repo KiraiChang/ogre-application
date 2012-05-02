@@ -33,6 +33,7 @@ private:
 	unsigned int								m_iBodyID[eKinectBodyPart];
 	float										m_vfScale[eScaleCount];
 	float										m_vfSkeleton[NUI_SKELETON_POSITION_COUNT][eScaleCount];
+	float										m_vfOverallPos[eScaleCount];
 
 public:
 												PhysicKinect(Ogre::SceneManager *scene, btDynamicsWorld *world);
