@@ -5,12 +5,12 @@
 #include "../physic/physic_rigid_body.h"
 #include "../ogre_physic/ogre_physic_shape.h"
 
-//const int BORDY_PART_MAX = 2;//NUI_SKELETON_POSITION_COUNT
+//const int BORDY_PART_MAX = 2;//
 
 enum
 {
-	eKinectRightHand = 0,
-	eKinectLeftHand,
+	eKinectLeftHand = 0,
+	eKinectRightHand,
 	eKinectBodyPart,
 };
 
@@ -32,6 +32,7 @@ private:
 	OgreShapeBox*								m_pShape[eKinectBodyPart];//®gÀ»®É¥Îªºmesh
 	unsigned int								m_iBodyID[eKinectBodyPart];
 	float										m_vfScale[eScaleCount];
+	float										m_vfSkeleton[NUI_SKELETON_POSITION_COUNT][eScaleCount];
 
 public:
 												PhysicKinect(Ogre::SceneManager *scene, btDynamicsWorld *world);
