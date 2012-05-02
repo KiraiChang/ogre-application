@@ -142,17 +142,39 @@ PhysicRigidBody *PhysicKinect::createRidigBody(const char *modelName, float mass
 
 void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 {
-	for(int i = 0; i < eKinectBodyPart; i++)
+	int id = 0;
+	for(int i = 0; i < NUI_SKELETON_POSITION_COUNT; i++)
 	{
-		if(m_pBody[i] != NULL)
+		m_vfSkeleton[i][0] = data.SkeletonPositions[i].x;
+		m_vfSkeleton[i][1] = data.SkeletonPositions[i].y;
+		m_vfSkeleton[i][2] = data.SkeletonPositions[i].z;
+		if(id <eKinectBodyPart)
 		{
-			m_pBody[i]->setOrigin(data.SkeletonPositions[m_iBodyID[i]].x * m_vfScale[eScaleX], // + data.Position.x,
-			data.SkeletonPositions[m_iBodyID[i]].y * m_vfScale[eScaleY], // + data.Position.y,
-			data.SkeletonPositions[m_iBodyID[i]].z * m_vfScale[eScaleZ] // + data.Position.z
-			);
-			m_pBody[i]->update(0.0);
+			if(i == m_iBodyID[id])
+			{
+				if(m_pBody[i] != NULL)
+				{
+					m_pBody[i]->setOrigin(m_vfSkeleton[i][0] * m_vfScale[eScaleX],
+										m_vfSkeleton[i][1] * m_vfScale[eScaleY],
+										m_vfSkeleton[i][2] * m_vfScale[eScaleZ]
+					);
+					m_pBody[i]->update(0.0);
+					id++;
+				}
+			}
 		}
 	}
+	//for(int i = 0; i < eKinectBodyPart; i++)
+	//{
+	//	if(m_pBody[i] != NULL)
+	//	{
+	//		m_pBody[i]->setOrigin(data.SkeletonPositions[m_iBodyID[i]].x * m_vfScale[eScaleX], // + data.Position.x,
+	//		data.SkeletonPositions[m_iBodyID[i]].y * m_vfScale[eScaleY], // + data.Position.y,
+	//		data.SkeletonPositions[m_iBodyID[i]].z * m_vfScale[eScaleZ] // + data.Position.z
+	//		);
+	//		m_pBody[i]->update(0.0);
+	//	}
+	//}
 }
 
 void PhysicKinect::updateDebug(float data[2][3])
@@ -175,11 +197,13 @@ void PhysicKinect::updateDebug(float data[2][3])
 
 void PhysicKinect::getPartPos(unsigned int offset, float *pos)
 {
-	if(offset < eKinectBodyPart)
-	{
-		if(m_pBody[offset] != NULL)
-			m_pBody[offset]->getPos(pos);
-	}
+	//if(offset < eKinectBodyPart)
+	//{
+	//	if(m_pBody[offset] != NULL)
+	//		m_pBody[offset]->getPos(pos);
+	//}
+	if(offset < NUI_SKELETON_POSITION_COUNT)
+		pos = m_vfSkeleton[offset];
 }
 
 DWORD PhysicKinect::getID(void)const
