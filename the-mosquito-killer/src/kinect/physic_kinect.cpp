@@ -146,6 +146,9 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 	m_vfOverallPos[eScaleX] = data.Position.x;
 	m_vfOverallPos[eScaleY] = data.Position.y;
 	m_vfOverallPos[eScaleZ] = data.Position.z;
+	float scaleX = m_vfScale[eScaleX] * m_vfOverallPos[eScaleZ];
+	float scaleY = m_vfScale[eScaleY] * m_vfOverallPos[eScaleZ];
+	float scaleZ = m_vfScale[eScaleZ] * m_vfOverallPos[eScaleZ];
 	for(int i = 0; i < NUI_SKELETON_POSITION_COUNT; i++)
 	{
 		m_vfSkeleton[i][eScaleX] = data.SkeletonPositions[i].x;
@@ -155,13 +158,13 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 		{
 			if(i == m_iBodyID[id])
 			{
-				if(m_pBody[i] != NULL)
+				if(m_pBody[id] != NULL)
 				{
-					m_pBody[i]->setOrigin(m_vfSkeleton[i][eScaleX] * m_vfScale[eScaleX],
-										m_vfSkeleton[i][eScaleY] * m_vfScale[eScaleY],
-										m_vfSkeleton[i][eScaleZ] * m_vfScale[eScaleZ]
+					m_pBody[id]->setOrigin(m_vfSkeleton[i][eScaleX] * scaleX,
+										m_vfSkeleton[i][eScaleY] * scaleY,
+										m_vfSkeleton[i][eScaleZ] * scaleZ
 					);
-					m_pBody[i]->update(0.0);
+					m_pBody[id]->update(0.0);
 					id++;
 				}
 			}
