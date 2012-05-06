@@ -93,7 +93,7 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		GameSystem::HandState eState = GameSystem::getInstance()->getHandState();
 		if(/*object0->getType() == SCORE_TYPE_BODY ||*/ object0->getType() == SCORE_TYPE_HAND)
 		{
-			if(eState == eOnHandWaitAttack)
+			//if(eState == eOnHandWaitAttack)
 				checkDestory(object0, object1);
 		}
 		else if(object0->getType() == SCORE_TYPE_WEAPON)
@@ -562,6 +562,7 @@ void GameSystem::updatePlaying(float timePass)
 	updateMosquito(timePass);
 	updateWeapon(timePass);
 	updateHandState(timePass);
+	testCollision();
 }
 
 void GameSystem::updateEnd(float timePass)//µ²ºâµe­±
@@ -773,19 +774,19 @@ void GameSystem::testCollision()
 		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
 		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
 
-		//int flagsA = obA->getCompanionId();
-		//int flagsB = obB->getCompanionId();
-		//int numContacts = contactManifold->getNumContacts();
-		//for (int j=0;j<numContacts;j++)
-		//{
-		//	btManifoldPoint& pt = contactManifold->getContactPoint(j);
-		//	if (pt.getDistance()<0.f)
-		//	{
-		//		const btVector3& ptA = pt.getPositionWorldOnA();
-		//		const btVector3& ptB = pt.getPositionWorldOnB();
-		//		const btVector3& normalOnB = pt.m_normalWorldOnB;
-		//	}
-		//}
+		int flagsA = obA->getCompanionId();
+		int flagsB = obB->getCompanionId();
+		int numContacts = contactManifold->getNumContacts();
+		for (int j=0;j<numContacts;j++)
+		{
+			//btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			//if (pt.getDistance()<0.f)
+			//{
+			//	const btVector3& ptA = pt.getPositionWorldOnA();
+			//	const btVector3& ptB = pt.getPositionWorldOnB();
+			//	const btVector3& normalOnB = pt.m_normalWorldOnB;
+			//}
+		}
 
 		//if(obA->getUserPointer() != NULL && obB->getUserPointer() != NULL)
 		//{
