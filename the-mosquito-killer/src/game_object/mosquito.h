@@ -26,13 +26,14 @@ private:
 	PhysicRigidBody*			m_pBody;
 	MoveBase*					m_pMove;
 	ScoreBase*					m_pScore;
+	float						m_fMoveSpeed;
 protected:
 	bool						m_bDestory;
 public:
 								MosquitoBase(void);
 	virtual						~MosquitoBase(void);
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
-	virtual void				create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score);
+	virtual void				create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *quat, int score);
 	virtual void				release(void);
 	virtual void				update(float timepass);
 	virtual MOSQUITO_TYPE		getType(void)				{return eMosquitoBase;}
@@ -51,7 +52,7 @@ public:
 								MosquitoSplit(void);
 	virtual						~MosquitoSplit(void);
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
-	virtual void				create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score);
+	virtual void				create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *quat, int score);
 	virtual void				release(void);
 	virtual void				update(float timepass);
 	void						setSplitNumber(int number)	{m_iSplitNumber = number;}
@@ -69,7 +70,7 @@ public:
 								MosquitoFat(void);
 	virtual						~MosquitoFat(void);
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
-	virtual void				create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score);
+	virtual void				create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *quat, int score);
 	virtual void				release(void);
 	virtual void				update(float timepass);
 	virtual MOSQUITO_TYPE		getType(void)				{return eMosquitoFat;}

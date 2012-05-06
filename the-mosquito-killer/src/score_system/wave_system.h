@@ -13,6 +13,7 @@ public:
 	float							m_vfPos[3];
 	float							m_vfQuat[4];
 	float							m_fMoveSpeed;
+	unsigned int					m_uiMoveType;
 	int								m_iScore;
 	int								m_iParaData;
 

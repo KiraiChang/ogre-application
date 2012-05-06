@@ -209,7 +209,11 @@ void PhysicKinect::getPartPos(unsigned int offset, float *pos)
 	//		m_pBody[offset]->getPos(pos);
 	//}
 	if(offset < NUI_SKELETON_POSITION_COUNT)
-		pos = m_vfSkeleton[offset];
+	{
+		pos[0] = m_vfSkeleton[offset][0];
+		pos[1] = m_vfSkeleton[offset][1];
+		pos[2] = m_vfSkeleton[offset][2];
+	}
 }
 
 DWORD PhysicKinect::getID(void)const

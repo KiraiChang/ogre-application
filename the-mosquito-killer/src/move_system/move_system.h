@@ -4,7 +4,34 @@
 //*******************************************************
 //*****************  MOVE_BASE  *************************
 //*******************************************************
+enum MOVE_TYPE
+{
+	eMoveRandom,
+	eMoveStraight,
+};
+
 class MoveBase
+{
+protected:
+	Ogre::Node*				m_pNode;
+public:
+							MoveBase(Ogre::Node *node);
+	virtual					~MoveBase();
+	virtual void			release();
+
+	virtual void			setRoute(void) = 0;
+	virtual void			move(float moveDistance) = 0;
+	virtual bool			isChangeRoute(void) = 0;
+
+	Ogre::Vector3			getPosition(void)const;
+	Ogre::Quaternion		getOrientation(void)const;
+	void					update(bool &destory, float moveDistance);
+};
+
+//*******************************************************
+//****************  MOVE_RANDOM  ************************
+//*******************************************************
+class MoveRandom : public MoveBase
 {
 public:
 private:
@@ -16,15 +43,27 @@ private:
 	Ogre::Node*				m_pNode;
 	float					t;
 public:
-							MoveBase(Ogre::Node *node);
-	virtual					~MoveBase();
-private:
+							MoveRandom(Ogre::Node *node);
+	virtual					~MoveRandom();
+	virtual void			release();
+
 	virtual void			setRoute(void);
-	virtual void			move(float timepass);
+	virtual void			move(float moveDistance);
+	virtual bool			isChangeRoute(void);
+};
+//*******************************************************
+//***************  MOVE_STRAIGHT  ***********************
+//*******************************************************
+class MoveStraight : public MoveBase
+{
 public:
-	Ogre::Vector3			getPosition(void)const;
-	Ogre::Quaternion		getOrientation(void)const;
-	virtual void			update(bool &destory, float timepass);
+							MoveStraight(Ogre::Node *node);
+	virtual					~MoveStraight();
+	virtual void			release();
+
+	virtual void			setRoute(void);
+	virtual bool			isChangeRoute(void);
+	virtual void			move(float moveDistance);
 };
 //*******************************************************
 //********************  END  ****************************

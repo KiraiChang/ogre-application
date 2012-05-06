@@ -5,3 +5,4 @@ application
 	media "other resource place here"
 		datafiles "CEGUI resource place here"
 	configure "game configure put here"
+	stage "game mosquito data put here"

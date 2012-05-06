@@ -3,9 +3,10 @@
 	[
 		{
 			"m_eType":"eMosquitoBase",
+			"m_uiMoveType":"eMoveStraight",
 			"m_sModelName":"mosquito01.mesh",
 			"m_vfScale[3]":[1.0, 1.0, 1.0],
-			"m_vfPos[3]":[0.0, 20.0, -100.0],
+			"m_vfPos[3]":[0.0, 50.0, -100.0],
 			"m_vfQuat[4]":[1.0, 0.0, 0.0, 0.0],
 			"m_fMoveSpeed":1.0,
 			"m_iScore":100,
@@ -15,9 +16,10 @@
 		},
 		{
 			"m_eType":"eMosquitoSplit",
+			"m_uiMoveType":"eMoveStraight",
 			"m_sModelName":"mosquito01.mesh",
 			"m_vfScale[3]":[1.0, 1.0, 1.0],
-			"m_vfPos[3]":[0.0, 20.0, -100.0],
+			"m_vfPos[3]":[0.0, 50.0, -100.0],
 			"m_vfQuat[4]":[1.0, 0.0, 0.0, 0.0],
 			"m_fMoveSpeed":1.0,
 			"m_iScore":100,
@@ -27,9 +29,10 @@
 		},
 		{
 			"m_eType":"eMosquitoFat",
+			"m_uiMoveType":"eMoveStraight",
 			"m_sModelName":"mosquito01.mesh",
 			"m_vfScale[3]":[1.0, 1.0, 1.0],
-			"m_vfPos[3]":[0.0, 20.0, -100.0],
+			"m_vfPos[3]":[0.0, 50.0, -100.0],
 			"m_vfQuat[4]":[1.0, 0.0, 0.0, 0.0],
 			"m_fMoveSpeed":1.0,
 			"m_iScore":100,
