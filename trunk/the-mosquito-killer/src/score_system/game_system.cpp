@@ -93,7 +93,7 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		GameSystem::HandState eState = GameSystem::getInstance()->getHandState();
 		if(/*object0->getType() == SCORE_TYPE_BODY ||*/ object0->getType() == SCORE_TYPE_HAND)
 		{
-			//if(eState == eOnHandWaitAttack)
+			if(eState == eOnHandWaitAttack)
 				checkDestory(object0, object1);
 		}
 		else if(object0->getType() == SCORE_TYPE_WEAPON)

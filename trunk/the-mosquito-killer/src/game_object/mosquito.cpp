@@ -5,6 +5,7 @@
 #include "../physic/physic_rigid_body.h"
 #include "../move_system/move_system.h"
 #include "../ogre_physic/ogre_physic_shape.h"
+#include "../ogre_physic/ogre_physic_debug.h"
 #include "../score_system/score_system.h"
 #include "../score_system/score_object.h"
 
@@ -43,7 +44,7 @@ void MosquitoBase::create(const char *modelName, unsigned int moveType, float sp
 
 	//create physic body
 	m_pBody = new PhysicRigidBody(m_pWorld);
-	PhysicDebug *debug = NULL;
+	PhysicDebug *debug = new OgrePhysicDebug();
 	m_pBody->init(shape, debug, mass, pos, quat, m_pScore, 8);
 
 	//create move type
