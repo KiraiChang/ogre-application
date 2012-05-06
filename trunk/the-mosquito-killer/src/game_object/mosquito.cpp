@@ -29,8 +29,9 @@ void MosquitoBase::init(Ogre::SceneManager *scene, btDynamicsWorld *world)
 	m_pWorld = world;
 }
 
-void MosquitoBase::create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score)
+void MosquitoBase::create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *quat, int score)
 {
+	m_fMoveSpeed = speed;
 	//create shape
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
 	shape->init(modelName, scale);
@@ -46,7 +47,15 @@ void MosquitoBase::create(const char *modelName, float mass, float *scale, float
 	m_pBody->init(shape, debug, mass, pos, quat, m_pScore, 8);
 
 	//create move type
-	m_pMove = new MoveBase(shape->getNode());
+	switch(moveType)
+	{
+	case eMoveStraight:
+		m_pMove = new MoveStraight(shape->getNode());
+		break;
+	default:
+		m_pMove = new MoveRandom(shape->getNode());
+		break;
+	}
 }
 
 void MosquitoBase::release(void)
@@ -75,7 +84,7 @@ void MosquitoBase::update(float timepass)
 	{
 		if(m_pMove != NULL)
 		{
-			m_pMove->update(m_bDestory, timepass);
+			m_pMove->update(m_bDestory, timepass * m_fMoveSpeed);
 		
 			Ogre::Vector3 pos= m_pMove->getPosition();
 			Ogre::Quaternion q= m_pMove->getOrientation();
@@ -109,9 +118,9 @@ void MosquitoSplit::init(Ogre::SceneManager *scene, btDynamicsWorld *world)
 	MosquitoBase::init(scene, world);
 }
 
-void MosquitoSplit::create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score)
+void MosquitoSplit::create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *quat, int score)
 {
-	MosquitoBase::create(modelName, mass, scale, pos, quat, score);
+	MosquitoBase::create(modelName, moveType, speed, mass, scale, pos, quat, score);
 }
 
 void MosquitoSplit::release(void)
@@ -143,9 +152,9 @@ void MosquitoFat::init(Ogre::SceneManager *scene, btDynamicsWorld *world)
 	MosquitoBase::init(scene, world);
 }
 
-void MosquitoFat::create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score)
+void MosquitoFat::create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *quat, int score)
 {
-	MosquitoBase::create(modelName, mass, scale, pos, quat, score);
+	MosquitoBase::create(modelName, moveType, speed, mass, scale, pos, quat, score);
 }
 
 void MosquitoFat::release(void)

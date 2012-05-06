@@ -277,7 +277,7 @@ PhysicRigidBody *GameSystem::createRidigBody(const char *modelName, float mass, 
 	return body;
 }
 
-void GameSystem::createMosquito(MOSQUITO_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData)
+void GameSystem::createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float speed, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData)
 {
 	switch(type)
 	{
@@ -294,7 +294,7 @@ void GameSystem::createMosquito(MOSQUITO_TYPE type, const char *modelName, float
 		break;
 	}
 	m_vMosquito.back()->init(m_pSceneMgr, m_pWorld);
-	m_vMosquito.back()->create(modelName, mass, scale, pos, quat, score);
+	m_vMosquito.back()->create(modelName, moveType, speed, mass, scale, pos, quat, score);
 	m_vMosquito.back()->setAnimation("move");
 }
 
@@ -370,10 +370,10 @@ void GameSystem::randomShoot(MOSQUITO_TYPE type)
 	//}
 	//OgrePhysicDebug *debug = new OgrePhysicDebug();
 	//debug->init(m_pSceneMgr);
-	sprintf_s(modelName, "mosquito01.mesh");
+	//sprintf_s(modelName, "mosquito01.mesh");
 	//PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
 	//body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
-	createMosquito(type, modelName, 1.0, scale, pos, quat, 100);
+	//createMosquito(type, modelName, 1.0, scale, pos, quat, 100);
 }
 
 void GameSystem::initScene(void)
@@ -649,8 +649,8 @@ void GameSystem::updateHandState(float timePass)
 	{
 	case eOnHandOpen:
 		{
-			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectRightHand, rightPos);
-			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectLeftHand, leftPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
@@ -671,8 +671,8 @@ void GameSystem::updateHandState(float timePass)
 		break;
 	case eOnHandClose:
 		{
-			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectRightHand, rightPos);
-			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectLeftHand, leftPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
@@ -683,8 +683,8 @@ void GameSystem::updateHandState(float timePass)
 	case eOnHandWaitAttack:
 		{
 			m_fHandCloseTime += timePass;
-			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectRightHand, rightPos);
-			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectLeftHand, leftPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
@@ -699,8 +699,8 @@ void GameSystem::updateHandState(float timePass)
 		break;
 	case eOnHandAttacked:
 		{
-			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectRightHand, rightPos);
-			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectLeftHand, leftPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = left.distance(right);
@@ -712,8 +712,8 @@ void GameSystem::updateHandState(float timePass)
 		break;
 	case eOnHandWaitShoot:
 		{
-			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectRightHand, rightPos);
-			m_vpPlayer[m_iCurrentID]->getPartPos(eKinectLeftHand, leftPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			m_fShootTimePass += timePass;
 			if(m_fShootTimePass > HAND_CHECK_SHOOT_TIMEPASS)
 			{
@@ -761,7 +761,7 @@ void GameSystem::updateHandState(float timePass)
 
 float GameSystem::getFullTime(void)const												
 {
-	return  m_waveSystem.getFullTime();;
+	return  m_waveSystem.getFullTime();
 }
 
 void GameSystem::testCollision()

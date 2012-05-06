@@ -1,5 +1,6 @@
 #include "wave_system.h"
 #include "game_system.h"
+#include "../move_system/move_system.h"
 
 #include <iostream>
 #include <fstream>
@@ -60,6 +61,19 @@ void WaveSystem::init(unsigned int stage)
 			data.m_iParaData = obj["m_iParaData"].get_int();
 			data.m_fTimepass = obj["m_fTimepass"].get_real();
 			data.m_iCount = obj["m_iCount"].get_int();
+			if(obj.count("m_uiMoveType") <= 0)
+			{
+				data.m_uiMoveType = 0;
+			}
+			else
+			{
+				if(obj["m_uiMoveType"].get_str() == "eMoveRandom")
+					data.m_uiMoveType = eMoveRandom;
+				else if(obj["m_uiMoveType"].get_str() == "eMoveStraight")
+					data.m_uiMoveType = eMoveStraight;
+				else
+					data.m_uiMoveType = eMoveRandom;
+			}
 			m_vMosquitoData.push_back(data);
 			m_fTotalTime += data.m_fTimepass;
 		}
@@ -85,6 +99,8 @@ bool WaveSystem::work(float timepass)
 			for(int i = 0; i < m_vMosquitoData[m_iCurrentIndex].m_iCount; i++)
 			{
 				GameSystem::getInstance()->createMosquito(m_vMosquitoData[m_iCurrentIndex].m_eType,
+					m_vMosquitoData[m_iCurrentIndex].m_uiMoveType,
+					m_vMosquitoData[m_iCurrentIndex].m_fMoveSpeed,
 					m_vMosquitoData[m_iCurrentIndex].m_sModelName.c_str(),
 					0.0,
 					m_vMosquitoData[m_iCurrentIndex].m_vfScale,

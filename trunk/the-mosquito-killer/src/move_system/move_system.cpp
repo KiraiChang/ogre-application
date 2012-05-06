@@ -4,19 +4,70 @@
 //*******************************************************
 const float DEPTH_MOSQUITO_MOVE = 100;
 MoveBase::MoveBase(Ogre::Node *node):
-	t(0),
 	m_pNode(node)
+{
+}
+
+MoveBase::~MoveBase()
+{
+	release();
+}
+
+void MoveBase::release()
+{
+	m_pNode = NULL;
+}
+
+
+Ogre::Vector3 MoveBase::getPosition(void)const
+{
+	return m_pNode->getPosition();
+}
+
+Ogre::Quaternion MoveBase::getOrientation(void)const
+{
+	return m_pNode->getOrientation();
+}
+
+
+void MoveBase::update(bool &destory, float moveDistance)
+{
+	if(m_pNode == NULL)
+		return;
+
+	if(m_pNode->getPosition().z > DEPTH_MOSQUITO_MOVE)
+		destory = true;
+
+	if(isChangeRoute())
+	{
+		setRoute();
+	}
+	else		//keep flying
+		move(moveDistance);
+}
+
+//*******************************************************
+//****************  MOVE_RANDOM  ************************
+//*******************************************************
+MoveRandom::MoveRandom(Ogre::Node *node):
+	MoveBase(node),
+	t(0)
 {
 	P0 = m_pNode->getPosition();
 	P4 = m_pNode->getPosition();
 }
 
-MoveBase::~MoveBase()
+MoveRandom::~MoveRandom()
+{
+	release();
+}
+
+void MoveRandom::release()
 {
 	m_pNode = NULL;
 }
 
-void MoveBase::move(float timepass)
+void MoveRandom::move(float moveDistance)
 {
 	Ogre::Vector3 nextPos;
 
@@ -33,16 +84,16 @@ void MoveBase::move(float timepass)
 
 		//if(m_pNode->getPosition().z > -20)
 			//m_pNode->translate(Ogre::Vector3(0,0,0.2));
-		m_pNode->translate(Ogre::Vector3(0,0, timepass * 10));
+		m_pNode->translate(Ogre::Vector3(0,0, moveDistance * 10));
 
 		//t += 0.016;
-		t+=timepass;
+		t+=moveDistance;
 
 		if(t > 1) t =1;
 	}
 }
 
-void MoveBase::setRoute(void)
+void MoveRandom::setRoute(void)
 {
 	t = 0;
 
@@ -78,34 +129,46 @@ void MoveBase::setRoute(void)
 	P4 = Ogre::Vector3(rx,ry,0);
 }
 
-Ogre::Vector3 MoveBase::getPosition(void)const
+bool MoveRandom::isChangeRoute(void)
 {
-	return m_pNode->getPosition();
-}
-
-Ogre::Quaternion MoveBase::getOrientation(void)const
-{
-	return m_pNode->getOrientation();
-}
-
-
-void MoveBase::update(bool &destory, float timepass)
-{
-	if(m_pNode == NULL)
-		return;
-
-	if(m_pNode->getPosition().z > DEPTH_MOSQUITO_MOVE)
-		destory = true;
-
 	Ogre::Vector3 d = m_pNode->getPosition() - P4;
+	if(d.x < 1.5 && d.x > -1.5 && d.y < 1.5 && d.y > -1.5)
+		return true;
+	else
+		return false;
+}
 
-	if(d.x < 1.5 && d.x > -1.5 && d.y < 1.5 && d.y > -1.5)	//if end of fly , so create new route
-	{
-		setRoute();
-		//std::cout<<"------- the P4" << Mosqu->P4<<"and the pos :"<<Mosqu->getPosition()<<std::endl;
-	}
-	else		//keep flying
-		move(timepass);
+//*******************************************************
+//***************  MOVE_STRAIGHT  ***********************
+//*******************************************************
+
+MoveStraight::MoveStraight(Ogre::Node *node):
+	MoveBase(node)
+{
+}
+
+MoveStraight::~MoveStraight()
+{
+	release();
+}
+
+void MoveStraight::release()
+{
+	MoveBase::release();
+}
+
+void MoveStraight::setRoute(void)
+{
+}
+
+bool MoveStraight::isChangeRoute(void)
+{
+	return false;
+}
+
+void MoveStraight::move(float moveDistance)
+{
+	m_pNode->translate(Ogre::Vector3(0,0, moveDistance * 10));
 }
 //*******************************************************
 //*****************  MOVE_BASE  *************************
