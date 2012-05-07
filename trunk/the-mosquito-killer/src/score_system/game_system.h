@@ -87,7 +87,7 @@ public:
 	void										createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData);
 	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug = NULL, void *userPoint = NULL, int flag = 0);
 	void										createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float speed, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData = 0);
-	void										randomShoot(MOSQUITO_TYPE type);
+	void										randomShoot(MOSQUITO_TYPE type = eMosquitoBase);
 	void										initScene(void);//產生場景
 	void										initPlayer(void);//產生空的玩家類別
 	void										initPlayer(unsigned int playerCount);//初始化人數

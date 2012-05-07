@@ -243,6 +243,10 @@ void PhysicRigidBody::update(float timePass, float *pos, float *quat)
 
 	if(NULL != m_pBodies)
 	{
+		btVector3 linVel(pos[0], pos[1], pos[2]);
+		linVel.normalize();
+		m_pBodies->setLinearVelocity(linVel);
+
 		btTransform trans;
 		m_pBodies->getMotionState()->getWorldTransform(trans);
 		trans.setOrigin(*(btVector3 *)pos);

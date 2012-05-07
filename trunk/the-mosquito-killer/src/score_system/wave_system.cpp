@@ -102,13 +102,14 @@ bool WaveSystem::work(float timepass)
 					m_vMosquitoData[m_iCurrentIndex].m_uiMoveType,
 					m_vMosquitoData[m_iCurrentIndex].m_fMoveSpeed,
 					m_vMosquitoData[m_iCurrentIndex].m_sModelName.c_str(),
-					0.0,
+					1.0,
 					m_vMosquitoData[m_iCurrentIndex].m_vfScale,
 					m_vMosquitoData[m_iCurrentIndex].m_vfPos,
 					m_vMosquitoData[m_iCurrentIndex].m_vfQuat,
 					m_vMosquitoData[m_iCurrentIndex].m_iScore,
 					m_vMosquitoData[m_iCurrentIndex].m_iParaData);
 			}
+			//GameSystem::getInstance()->randomShoot();
 			m_iCurrentIndex++;
 			m_fTimepass = 0.0;
 		}

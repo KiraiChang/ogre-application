@@ -326,7 +326,7 @@ void GameSystem::randomShoot(MOSQUITO_TYPE type)
 	srand((unsigned)time(0));
 	int r = rand() % 4;
 	float scale[3] = {1.0, 1.0, 1.0};
-	float pos[3] = {0.0, 20, -600.0};
+	float pos[3] = {0.0, 20, -100.0};
 	float dir[3] = {0, 0.4, 1.0};
 	float quat[4] = {1.0, 0.0, 0.0, 0.0};
 	if(r == 0)
@@ -368,11 +368,11 @@ void GameSystem::randomShoot(MOSQUITO_TYPE type)
 	//		sprintf_s(modelName, "bomb.mesh");
 	//		break;
 	//}
-	//OgrePhysicDebug *debug = new OgrePhysicDebug();
-	//debug->init(m_pSceneMgr);
-	//sprintf_s(modelName, "mosquito01.mesh");
-	//PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
-	//body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
+	OgrePhysicDebug *debug = new OgrePhysicDebug();
+	debug->init(m_pSceneMgr);
+	sprintf_s(modelName, "mosquito01.mesh");
+	PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
+	body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
 	//createMosquito(type, modelName, 1.0, scale, pos, quat, 100);
 }
 
