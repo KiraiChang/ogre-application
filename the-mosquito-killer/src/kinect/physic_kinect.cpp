@@ -177,17 +177,36 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 			}
 		}
 	}
-	//for(int i = 0; i < eKinectBodyPart; i++)
-	//{
-	//	if(m_pBody[i] != NULL)
-	//	{
-	//		m_pBody[i]->setOrigin(data.SkeletonPositions[m_iBodyID[i]].x * m_vfScale[eScaleX], // + data.Position.x,
-	//		data.SkeletonPositions[m_iBodyID[i]].y * m_vfScale[eScaleY], // + data.Position.y,
-	//		data.SkeletonPositions[m_iBodyID[i]].z * m_vfScale[eScaleZ] // + data.Position.z
-	//		);
-	//		m_pBody[i]->update(0.0);
-	//	}
-	//}
+
+	float posL[3], posR[3];
+	m_pBody[eKinectLeftHand]->getPos(posL);
+	m_pBody[eKinectRightHand]->getPos(posR);
+	float distance = abs(posL[2] - posR[2]);
+	float radin = distance / 13;
+	for(int i = 0; i < eKinectBodyPart; i++)
+	{
+		if(m_pBody[i] != NULL)
+		{
+			if(radin <= MIN_RADIN)
+			{
+				if(i == eKinectLeftHand)
+					m_pBody[i]->setEulerZYX(0.0, 0.0, -MIN_RADIN);
+				else
+					m_pBody[i]->setEulerZYX(0.0, 0.0, MIN_RADIN);
+			}
+			else if(radin >= MAX_RADIN)
+			{
+				if(i == eKinectLeftHand)
+					m_pBody[i]->setEulerZYX(0.0, 0.0, -MAX_RADIN);
+				else
+					m_pBody[i]->setEulerZYX(0.0, 0.0, MAX_RADIN);
+			}
+			else if(i == eKinectLeftHand)
+				m_pBody[i]->setEulerZYX(0.0, 0.0, -radin);
+			else
+				m_pBody[i]->setEulerZYX(0.0, 0.0, radin);
+		}
+	}
 }
 
 void PhysicKinect::updateDebug(float data[3], float distance)
