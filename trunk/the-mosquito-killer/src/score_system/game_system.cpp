@@ -16,6 +16,7 @@ const float HAND_CHECK_OPEN_DIST = 1.0f;
 const float HAND_CHECK_RIGHT_HAND_SPEED = 5.0f;
 const float HAND_CHECK_SHOOT_TIMEPASS = 0.5f;
 const float HAND_WAIT_ATTACK_TIMEOUT = 3.0f;
+const float HAND_DEBUG_DISTANCE = 30.0f;
 
 bool GameSystem::MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1)
 {
@@ -121,6 +122,9 @@ GameSystem::GameSystem(void):
 		//m_bShoot(false),
 		m_bUIInit(TRUE),
 		m_eState(eOnMenu),
+		m_eDebugHandVState(eHandMoveVNothing),
+		m_eDebugHandHState(eHandMoveHNothing),
+		m_eDebugHandAttackState(eHandAttackWait),
 		m_eHandState(eOnHandOpen),
 		m_fHandCloseTime(0),
 		m_iCurrentID(0),
@@ -134,13 +138,11 @@ GameSystem::GameSystem(void):
 		m_vpPlayer[i] = NULL;
 	}
 
-		m_vfHandDebugPos[0][0] = 5.0;
-		m_vfHandDebugPos[0][1] = 50.0;
-		m_vfHandDebugPos[0][2] = 50.0;
+		m_vfHandDebugPos[0] = 0.0;
+		m_vfHandDebugPos[1] = 50.0;
+		m_vfHandDebugPos[2] = 50.0;
 
-		m_vfHandDebugPos[1][0] = -5.0;
-		m_vfHandDebugPos[1][1] = 50.0;
-		m_vfHandDebugPos[1][2] = 50.0;
+		m_fTwoHandDistance = HAND_DEBUG_DISTANCE;
 }
 
 GameSystem::~GameSystem(void)
@@ -637,9 +639,49 @@ void GameSystem::updatePlayer(const NUI_SKELETON_FRAME &frame)
 	}
 }
 
-void GameSystem::updatePlayerDebug(void)
+void GameSystem::updatePlayerDebug(float timePass)
 {
-	m_vpPlayer[0]->updateDebug(m_vfHandDebugPos);
+	switch(m_eDebugHandVState)
+	{
+	case eHandMoveUp:
+		m_vfHandDebugPos[1] += timePass * 10;
+		break;
+	case eHandMoveDown:
+		m_vfHandDebugPos[1] -= timePass * 10;
+		break;
+	}
+
+	switch(m_eDebugHandHState)
+	{
+	case eHandMoveRight:
+		m_vfHandDebugPos[0] += timePass * 10;
+		break;
+	case eHandMoveLeft:
+		m_vfHandDebugPos[0] -= timePass * 10;
+		break;
+	}
+
+	switch(m_eDebugHandAttackState)
+	{
+	case eHandAttacking:
+		{
+			m_fTwoHandDistance -= timePass * 30;
+			if(m_fTwoHandDistance <= 0)
+				m_eDebugHandAttackState = eHandAttacked;
+		}
+		break;
+	case eHandAttacked:
+		{
+			m_fTwoHandDistance += timePass * 30;
+			if(m_fTwoHandDistance >= HAND_DEBUG_DISTANCE)
+			{
+				m_fTwoHandDistance = HAND_DEBUG_DISTANCE;
+				m_eDebugHandAttackState = eHandAttackWait;
+			}
+		}
+		break;
+	}
+	m_vpPlayer[0]->updateDebug(m_vfHandDebugPos, m_fTwoHandDistance);
 }
 
 void GameSystem::updateHandState(float timePass)

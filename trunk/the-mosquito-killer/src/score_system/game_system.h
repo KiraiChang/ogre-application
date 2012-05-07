@@ -28,6 +28,27 @@ namespace Ogre
 class GameSystem
 {
 public:
+	enum DebugHandVState
+	{
+		eHandMoveVNothing,
+		eHandMoveUp,
+		eHandMoveDown,
+	};
+
+	enum DebugHandHState
+	{
+		eHandMoveHNothing,
+		eHandMoveRight,
+		eHandMoveLeft,
+	};
+
+	enum DebugHandAttackState
+	{
+		eHandAttackWait,
+		eHandAttacking,
+		eHandAttacked,
+	};
+
 	enum HandState
 	{
 		eOnHandOpen = 0,
@@ -36,7 +57,11 @@ public:
 		eOnHandAttacked,
 		eOnHandWaitShoot,
 	};
-	float										m_vfHandDebugPos[2][3];
+	DebugHandVState								m_eDebugHandVState;
+	DebugHandHState								m_eDebugHandHState;
+	DebugHandAttackState						m_eDebugHandAttackState;
+	float										m_vfHandDebugPos[3];
+	float										m_fTwoHandDistance;
 	bool										m_bUIInit;
 private:
 												GameSystem(void);
@@ -98,7 +123,7 @@ public:
 	void										updatePlaying(float timePass);//遊戲中主要的流程
 	void										updateEnd(float timePass);//結算畫面
 	void										updatePlayer(const NUI_SKELETON_FRAME &frame);
-	void										updatePlayerDebug(void);//若是沒有kinect採取的動作
+	void										updatePlayerDebug(float timePass);//若是沒有kinect採取的動作
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
 	void										testCollision();
 	float										getFullTime(void)const;

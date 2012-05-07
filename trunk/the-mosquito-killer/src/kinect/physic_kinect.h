@@ -44,7 +44,7 @@ public:
 	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, 
 																	PhysicDebug *debug, void *userPoint, int flag);
 	void										update(const NUI_SKELETON_DATA &data);
-	void										updateDebug(float data[2][3]);
+	void										updateDebug(float data[3], float distance);
 	void										getPartPos(unsigned int offset, float *pos);
 	DWORD										getID(void)const;
 };
