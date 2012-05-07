@@ -40,6 +40,7 @@ public:
 	virtual bool				isDestory(void)const		{return m_bDestory;}
 	virtual void				setDestory(void)			{m_bDestory = 1;}
 	virtual void				setAnimation(const char *aniName);
+	void						getPos(float *pos);
 };
 //*******************************************************
 //***************  MOSQUITO_SPLIT  **********************

@@ -2,6 +2,7 @@
 #include "score_system.h"
 #include "score_object.h"
 #include "btBulletDynamicsCommon.h"
+#include "../move_system/move_system.h"
 #include "../ogre_physic/ogre_physic_shape.h"
 #include "../ogre_physic/ogre_physic_debug.h"
 #include "../physic/physic_debug.h"
@@ -68,8 +69,28 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 			case eMosquitoSplit:
 				{
 					int number = ((MosquitoSplit *)object1->getParent())->getSplitNumber();
+					float scale[3] = {1.0, 1.0, 1.0};
+					float quat[4] = {1.0, 0.0, 0.0, 0.0};
+					float pos[3];
+					float distance = 0;
+					((MosquitoSplit *)object1->getParent())->getPos(pos);
 					((MosquitoSplit *)object1->getParent())->setDestory();
 					//create "number" 
+					for(int i = 0; i < number; i++)
+					{
+						pos[2] -= abs(pos[2] / 2);
+						pos[0] += distance;
+						GameSystem::getInstance()->createMosquito(eMosquitoBase,
+							eMoveStraight,
+							3.0,
+							"mosquito01.mesh",
+							1.0,
+							scale,
+							pos,
+							quat,
+							100);
+						distance += 5.0f;
+					}
 				}
 				break;
 			case eMosquitoFat:
