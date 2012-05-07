@@ -300,30 +300,30 @@ bool KinectApplication::keyPressed( const OIS::KeyEvent &arg )
  
 	if(m_pKinectDevice == NULL)
 	{
-		if (arg.key == OIS::KC_ESCAPE)
-		{
-			mShutDown = true;
-		}
-		else if (arg.key == OIS::KC_A)
-		{
-			GameSystem::getInstance()->m_vfHandDebugPos[0][0] -= 0.1;
-		}
-		else if(arg.key == OIS::KC_D)
-		{
-			GameSystem::getInstance()->m_vfHandDebugPos[0][0] += 0.1;
-		}
-		else if(arg.key == OIS::KC_W)
-		{
-			GameSystem::getInstance()->m_vfHandDebugPos[0][1] += 0.1;
-		}
-		else if(arg.key == OIS::KC_X)
-		{
-			GameSystem::getInstance()->m_vfHandDebugPos[0][1] -= 0.1;
-		}
-		GameSystem::getInstance()->updatePlayerDebug();
-	}
-	else
-	{
+	//	if (arg.key == OIS::KC_ESCAPE)
+	//	{
+	//		mShutDown = true;
+	//	}
+	//	else if (arg.key == OIS::KC_A)
+	//	{
+	//		GameSystem::getInstance()->m_vfHandDebugPos[0][0] -= 0.1;
+	//	}
+	//	else if(arg.key == OIS::KC_D)
+	//	{
+	//		GameSystem::getInstance()->m_vfHandDebugPos[0][0] += 0.1;
+	//	}
+	//	else if(arg.key == OIS::KC_W)
+	//	{
+	//		GameSystem::getInstance()->m_vfHandDebugPos[0][1] += 0.1;
+	//	}
+	//	else if(arg.key == OIS::KC_X)
+	//	{
+	//		GameSystem::getInstance()->m_vfHandDebugPos[0][1] -= 0.1;
+	//	}
+	//	GameSystem::getInstance()->updatePlayerDebug();
+	//}
+	//else
+	//{
 		OgreApplication::keyPressed(arg);
 		CEGUI::System &sys = CEGUI::System::getSingleton();
 		sys.injectKeyDown(arg.key);

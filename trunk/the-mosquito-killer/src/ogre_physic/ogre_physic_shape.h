@@ -29,6 +29,7 @@ public:
 	virtual void				init(const char *meshName, float *scale);
 	virtual void				release(void);
 	virtual void				update(float timePass, float *position, float *quaternion);
+	virtual void				update(float timePass);
 	virtual void				setAnimation(const char *aniName);
 	Ogre::SceneNode *			getNode(void)const							{return m_pBodyNode;}
 protected:

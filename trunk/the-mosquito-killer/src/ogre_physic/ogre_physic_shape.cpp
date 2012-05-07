@@ -72,6 +72,13 @@ void OgreShapeBox::update(float timePass, float *pos, float *qua)
 		m_pAnimationState->addTime(timePass);
 }
 
+
+void OgreShapeBox::update(float timePass)
+{
+	if(m_pAnimationState != NULL)
+		m_pAnimationState->addTime(timePass);
+}
+
 void OgreShapeBox::setAnimation(const char *aniName)
 {
 	m_pAnimationState = m_pBodyEnt->getAnimationState(aniName);
