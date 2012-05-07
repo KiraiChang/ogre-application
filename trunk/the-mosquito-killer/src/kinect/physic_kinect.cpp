@@ -7,6 +7,8 @@
 #include <json_spirit.h>
 
 const float DEF_POWER_RADIN = 10.0f;
+const float MIN_RADIN = 1.5f;
+const float MAX_RADIN = 2.35f;
 
 PhysicKinect::PhysicKinect(Ogre::SceneManager *scene, btDynamicsWorld *world):
 	m_pSceneMgr(scene),
@@ -191,6 +193,7 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 void PhysicKinect::updateDebug(float data[3], float distance)
 {
 	int skeletonid = NUI_SKELETON_POSITION_HAND_LEFT;
+	float radin = distance / 13;
 	for(int i = 0; i < eKinectBodyPart; i++)
 	{
 		if(m_pBody[i] != NULL)
@@ -210,6 +213,24 @@ void PhysicKinect::updateDebug(float data[3], float distance)
 									z // + data.Position.z
 									);
 			m_pBody[i]->update(0.0);
+			if(radin <= MIN_RADIN)
+			{
+				if(i == eKinectLeftHand)
+					m_pBody[i]->setEulerZYX(0.0, 0.0, -MIN_RADIN);
+				else
+					m_pBody[i]->setEulerZYX(0.0, 0.0, MIN_RADIN);
+			}
+			else if(radin >= MAX_RADIN)
+			{
+				if(i == eKinectLeftHand)
+					m_pBody[i]->setEulerZYX(0.0, 0.0, -MAX_RADIN);
+				else
+					m_pBody[i]->setEulerZYX(0.0, 0.0, MAX_RADIN);
+			}
+			else if(i == eKinectLeftHand)
+				m_pBody[i]->setEulerZYX(0.0, 0.0, -radin);
+			else
+				m_pBody[i]->setEulerZYX(0.0, 0.0, radin);
 			m_vfSkeleton[skeletonid][eScaleX] = x;
 			m_vfSkeleton[skeletonid][eScaleY] = y;
 			m_vfSkeleton[skeletonid][eScaleZ] = z;

@@ -35,6 +35,7 @@ public:
 	void release(void);
 	void update(float timePass);
 	void update(float timePass, float *pos, float *quat);
+	void setEulerZYX (const float &yaw, const float &pitch, const float &roll);
 	void getPos(float *pos)const;
 	void *getUserPointer()const;
 	void setAnimation(const char * aniName);

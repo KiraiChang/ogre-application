@@ -268,6 +268,20 @@ void PhysicRigidBody::update(float timePass, float *pos, float *quat)
 	}
 }
 
+void PhysicRigidBody::setEulerZYX (const float &yaw, const float &pitch, const float &roll)
+{
+	if(m_pBodies != NULL)
+	{
+		btTransform trans;
+		btQuaternion q;
+		m_pBodies->getMotionState()->getWorldTransform(trans);
+		q = trans.getRotation();
+		q.setEulerZYX(yaw, pitch, roll);
+		trans.setRotation(q);
+		m_pBodies->getMotionState()->setWorldTransform(trans);
+	}
+}
+
 void PhysicRigidBody::getPos(float *pos)const 
 {
 	if(m_pBodies != NULL)
