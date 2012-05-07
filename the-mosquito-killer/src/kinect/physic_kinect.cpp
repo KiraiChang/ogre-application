@@ -188,20 +188,31 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 	//}
 }
 
-void PhysicKinect::updateDebug(float data[2][3])
+void PhysicKinect::updateDebug(float data[3], float distance)
 {
+	int skeletonid = NUI_SKELETON_POSITION_HAND_LEFT;
 	for(int i = 0; i < eKinectBodyPart; i++)
 	{
 		if(m_pBody[i] != NULL)
 		{
-			float x = data[i][0];
-			float y = data[i][1];
-			float z = data[i][2];
+			float x;
+			if(i == eKinectLeftHand)
+				x = data[0] + distance;
+			else
+			{
+				skeletonid = NUI_SKELETON_POSITION_HAND_RIGHT;
+				x = data[0] - distance;
+			}
+			float y = data[1];
+			float z = data[2];
 			m_pBody[i]->setOrigin(x, // + data.Position.x,
 									y, // + data.Position.y,
 									z // + data.Position.z
 									);
 			m_pBody[i]->update(0.0);
+			m_vfSkeleton[skeletonid][eScaleX] = x;
+			m_vfSkeleton[skeletonid][eScaleY] = y;
+			m_vfSkeleton[skeletonid][eScaleZ] = z;
 		}
 	}
 }
