@@ -45,6 +45,7 @@ void MosquitoBase::create(const char *modelName, unsigned int moveType, float sp
 	//create physic body
 	m_pBody = new PhysicRigidBody(m_pWorld);
 	PhysicDebug *debug = new OgrePhysicDebug();
+	((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
 	m_pBody->init(shape, debug, mass, pos, quat, m_pScore, 8);
 
 	//create move type
@@ -90,7 +91,7 @@ void MosquitoBase::update(float timepass)
 			Ogre::Vector3 pos= m_pMove->getPosition();
 			Ogre::Quaternion q= m_pMove->getOrientation();
 			m_pBody->update(timepass, (float *)&pos, (float *)&q);
-			m_pBody->update(timepass);
+			//m_pBody->update(timepass);
 		}
 	}
 }

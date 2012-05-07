@@ -250,6 +250,18 @@ void PhysicRigidBody::update(float timePass, float *pos, float *quat)
 		m_pBodies->getMotionState()->setWorldTransform(trans);
 		m_pBodies->proceedToTransform(trans);
 	}
+
+	if(NULL != m_pDebug)
+	{
+		m_pDebug->beginDraw();
+		m_pDebug->draw(0, m_pBodies);
+		m_pDebug->endDraw();
+	}
+
+	if(m_pShapeData != NULL)
+	{
+		m_pShapeData->update(timePass);
+	}
 }
 
 void PhysicRigidBody::getPos(float *pos)const 
