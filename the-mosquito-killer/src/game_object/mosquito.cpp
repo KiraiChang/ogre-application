@@ -101,6 +101,17 @@ void MosquitoBase::setAnimation(const char *aniName)
 	if(m_pBody != NULL)
 		m_pBody->setAnimation(aniName);
 }
+
+void MosquitoBase::getPos(float *pos)
+{
+	if(m_pMove != NULL)
+	{
+		Ogre::Vector3 p= m_pMove->getPosition();
+		pos[0] = p.x;
+		pos[1] = p.y;
+		pos[2] = p.z;
+	}
+}
 //*******************************************************
 //***************  MOSQUITO_SPLIT  **********************
 //*******************************************************
