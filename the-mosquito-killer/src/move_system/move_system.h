@@ -40,7 +40,6 @@ private:
 	Ogre::Vector3			C1;
 	Ogre::Vector3			C2;
 	Ogre::Vector3			C3;
-	Ogre::Node*				m_pNode;
 	float					t;
 public:
 							MoveRandom(Ogre::Node *node);
