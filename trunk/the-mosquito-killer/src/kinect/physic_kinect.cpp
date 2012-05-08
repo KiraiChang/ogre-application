@@ -69,17 +69,23 @@ void PhysicKinect::init(DWORD id)
 		m_pBody[eKinectRightHand] = createRidigBody(obj["right_hand_ridigi_body"].get_obj()["mesh_name"].get_str().c_str(), 0.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
 		m_iBodyID[eKinectRightHand] = NUI_SKELETON_POSITION_HAND_RIGHT;
 
-		scale[0] = obj["left_hand"].get_obj()["scale"].get_array()[0].get_real();
-		scale[1] = obj["left_hand"].get_obj()["scale"].get_array()[1].get_real();
-		scale[2] = obj["left_hand"].get_obj()["scale"].get_array()[2].get_real();
-		m_pShape[eKinectLeftHand] = new OgreShapeBox(m_pSceneMgr);
-		m_pShape[eKinectLeftHand]->init(obj["left_hand"].get_obj()["mesh_name"].get_str().c_str(), scale);
+		if(obj.count("left_hand") > 0)
+		{
+			scale[0] = obj["left_hand"].get_obj()["scale"].get_array()[0].get_real();
+			scale[1] = obj["left_hand"].get_obj()["scale"].get_array()[1].get_real();
+			scale[2] = obj["left_hand"].get_obj()["scale"].get_array()[2].get_real();
+			m_pShape[eKinectLeftHand] = new OgreShapeBox(m_pSceneMgr);
+			m_pShape[eKinectLeftHand]->init(obj["left_hand"].get_obj()["mesh_name"].get_str().c_str(), scale);
+		}
 
-		scale[0] = obj["right_hand"].get_obj()["scale"].get_array()[0].get_real();
-		scale[1] = obj["right_hand"].get_obj()["scale"].get_array()[1].get_real();
-		scale[2] = obj["right_hand"].get_obj()["scale"].get_array()[2].get_real();
-		m_pShape[eKinectRightHand] = new OgreShapeBox(m_pSceneMgr);
-		m_pShape[eKinectRightHand]->init(obj["left_hand"].get_obj()["mesh_name"].get_str().c_str(), scale);
+		if(obj.count("right_hand") > 0)
+		{
+			scale[0] = obj["right_hand"].get_obj()["scale"].get_array()[0].get_real();
+			scale[1] = obj["right_hand"].get_obj()["scale"].get_array()[1].get_real();
+			scale[2] = obj["right_hand"].get_obj()["scale"].get_array()[2].get_real();
+			m_pShape[eKinectRightHand] = new OgreShapeBox(m_pSceneMgr);
+			m_pShape[eKinectRightHand]->init(obj["left_hand"].get_obj()["mesh_name"].get_str().c_str(), scale);
+		}
 	}
 	else
 	{
@@ -129,7 +135,10 @@ void PhysicKinect::release(void)
 			m_pBody[i]->release();
 			delete m_pBody[i];
 			m_pBody[i] = NULL;
+		}
 
+		if(NULL != m_pShape[i])
+		{
 			m_pShape[i]->release();
 			delete m_pShape[i];
 			m_pShape[i] = NULL;
