@@ -6,29 +6,11 @@ material blinn5
 		{
 			ambient 0 0 0 1
 			diffuse 0.887 0.739949 0.735323 1
-			specular 0.5 0.5 0.5 1 89.6
+			specular 0.5 0.5 0.5 89.6
+			emissive 0 0 0
 		}
-
 	}
-
 }
-
-
-
-material threeToneBrightnessShader
-{
-	technique
-	{
-		pass
-		{
-		}
-
-	}
-
-}
-
-
-
 material blinn6
 {
 	technique
@@ -36,15 +18,12 @@ material blinn6
 		pass
 		{
 			ambient 0 0 0 1
-			specular 0.5 0.5 0.5 1 89.6
+			diffuse 1 1 1 1
+			specular 0.5 0.5 0.5 89.6
+			emissive 0 0 0
 		}
-
 	}
-
 }
-
-
-
 material lambert2
 {
 	technique
@@ -53,14 +32,11 @@ material lambert2
 		{
 			ambient 0 0 0 1
 			diffuse 0 0 0 1
+			specular 0 0 0 1
+			emissive 0 0 0
 		}
-
 	}
-
 }
-
-
-
 material fly
 {
 	technique
@@ -68,28 +44,22 @@ material fly
 		pass
 		{
 			ambient 0 0 0 1
-			specular 0.5 0.5 0.5 1 89.6
+			diffuse 1 1 1 1
+			specular 0.5 0.5 0.5 89.6
+			emissive 0 0 0
+
+			scene_blend alpha_blend
+			depth_write off
 
 			texture_unit
 			{
 				texture terrible-Role1_Fly_color.jpg
+				tex_coord_set 0
+				colour_op modulate
+				scale 1 1
+				scroll 0 0
+				rotate 0
 			}
 		}
-
 	}
-
-}
-
-
-
-material threeToneBrightnessShader1
-{
-	technique
-	{
-		pass
-		{
-		}
-
-	}
-
 }
