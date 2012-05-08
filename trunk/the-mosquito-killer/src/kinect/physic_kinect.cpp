@@ -181,8 +181,8 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 	float posL[3], posR[3];
 	m_pBody[eKinectLeftHand]->getPos(posL);
 	m_pBody[eKinectRightHand]->getPos(posR);
-	float distance = abs(posL[2] - posR[2]);
-	float radin = distance / 13;
+	float distance = abs(posL[0] - posR[0]) * scaleX;
+	float radin = distance / 400;
 	for(int i = 0; i < eKinectBodyPart; i++)
 	{
 		if(m_pBody[i] != NULL)
