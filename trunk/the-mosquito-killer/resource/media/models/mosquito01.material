@@ -11,15 +11,28 @@ material blinn5
 		}
 	}
 }
-material blinn6
+material head1
 {
 	technique
 	{
 		pass
 		{
 			ambient 0 0 0 1
-			diffuse 1 1 1 1
+			diffuse 1 0.5985 0 1
 			specular 0.5 0.5 0.5 89.6
+			emissive 0 0 0
+		}
+	}
+}
+material body_simple
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.58482 0.742 0.43778 1
+			specular 0 0 0 1
 			emissive 0 0 0
 		}
 	}
@@ -60,6 +73,19 @@ material fly
 				scroll 0 0
 				rotate 0
 			}
+		}
+	}
+}
+material mouth_simple
+{
+	technique
+	{
+		pass
+		{
+			ambient 0 0 0 1
+			diffuse 0.372549 0.0584391 0.0584391 1
+			specular 0 0 0 1
+			emissive 0 0 0
 		}
 	}
 }
