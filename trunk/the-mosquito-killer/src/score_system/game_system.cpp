@@ -163,8 +163,8 @@ GameSystem::GameSystem(void):
 	}
 
 		m_vfHandDebugPos[0] = 0.0;
-		m_vfHandDebugPos[1] = 50.0;
-		m_vfHandDebugPos[2] = 50.0;
+		m_vfHandDebugPos[1] = 20.0;
+		m_vfHandDebugPos[2] = 20.0;
 
 		m_fTwoHandDistance = HAND_DEBUG_DISTANCE;
 }
