@@ -15,8 +15,10 @@ namespace Ogre
 	// Forward declarations
 	class SceneManager;
 	class SceneNode;
- 
-	class nodeProperty
+	class Entity;
+	typedef std::vector< SceneNode * > VP_SCENE_NODE;
+	typedef std::vector< Entity * > VP_ENTITY;
+	class NodeProperty
 	{
 	public:
 		String nodeName;
@@ -24,22 +26,26 @@ namespace Ogre
 		String valueName;
 		String typeName;
  
-		nodeProperty(const String &node, const String &propertyName, const String &value, const String &type)
+		NodeProperty(const String &node, const String &propertyName, const String &value, const String &type)
 			: nodeName(node), propertyNm(propertyName), valueName(value), typeName(type) {}
 	};
  
 	class DotSceneLoader
 	{
 	public:
-		DotSceneLoader() : mSceneMgr(0) {}
-		virtual ~DotSceneLoader() {}
- 
+		DotSceneLoader() : m_pSceneMgr(0) {}
+		virtual void release();
+		virtual ~DotSceneLoader() {release();}
+		
 		void parseDotScene(const String &SceneName, const String &groupName, SceneManager *yourSceneMgr, SceneNode *pAttachNode = NULL, const String &sPrependNode = "");
 		String getProperty(const String &ndNm, const String &prop);
+		
  
-		std::vector<nodeProperty> nodeProperties;
+		std::vector<NodeProperty> nodeProperties;
 		std::vector<String> staticObjects;
 		std::vector<String> dynamicObjects;
+		VP_SCENE_NODE m_vpSceneNode;
+		VP_ENTITY m_vpEntity;
  
 	protected:
 		void processScene(TiXmlElement *XMLRoot);
@@ -80,8 +86,8 @@ namespace Ogre
 		ColourValue parseColour(TiXmlElement *XMLNode);
  
  
-		SceneManager *mSceneMgr;
-		SceneNode *mAttachNode;
+		SceneManager *m_pSceneMgr;
+		SceneNode *m_pSceneRoot;
 		String m_sGroupName;
 		String m_sPrependNode;
 	};

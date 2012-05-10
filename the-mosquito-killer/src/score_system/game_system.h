@@ -1,6 +1,7 @@
 #ifndef _GAME_SYSTEM_H_
 #define _GAME_SYSTEM_H_
 
+#include "dot_scene_loader.h"
 #include "../game_object/mosquito.h"
 #include "../game_object/weapon.h"
 #include "../physic/physic_shape_base.h"
@@ -72,14 +73,14 @@ private:
 		eOnPlaying,//遊戲中畫面
 		eOnEnd,//結算畫面
 	};
-
+	Ogre::DotSceneLoader						m_dotSceneLoader;
 	static GameSystem *							g_instance;
 	WaveSystem									m_waveSystem;
 	btDynamicsWorld*							m_pWorld;
 	Ogre::SceneManager *						m_pSceneMgr;
-	V_RIGID_BODY								m_vRigidBody;
+	//V_RIGID_BODY								m_vRigidBody;
 	V_MOSQUITO									m_vMosquito;
-	V_SHAPE										m_vShape;
+	//V_SHAPE										m_vShape;
 	V_WEAPON									m_vWeapon;
 	float										m_fTimePass;
 	GameState									m_eState;

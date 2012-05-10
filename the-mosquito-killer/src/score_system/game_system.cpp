@@ -197,6 +197,7 @@ void GameSystem::release(void)
 	restart();
 	releaseCharacter();
 	m_waveSystem.release();
+	m_dotSceneLoader.release();
 	m_pWorld = NULL;
 	m_pSceneMgr = NULL;
 }
@@ -247,24 +248,26 @@ void GameSystem::restart(void)
 	PhysicShapeBase *shape;
 	ScoreSystem::resetScore();
 	m_fTimePass = 0.0f;
-	for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end(); rIte++)
-	{
-		body = *rIte;
-		body->release();
-		delete body;
-	}
-	m_vRigidBody.clear();
+	//for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end(); rIte++)
+	//{
+	//	body = *rIte;
+	//	body->release();
+	//	delete body;
+	//}
+	//m_vRigidBody.clear();
 
-	for(sIte = m_vShape.begin(); sIte != m_vShape.end(); sIte++)
-	{
-		shape = *sIte;
-		shape->release();
-		delete shape;
-	}
-	m_vShape.clear();
+	//for(sIte = m_vShape.begin(); sIte != m_vShape.end(); sIte++)
+	//{
+	//	shape = *sIte;
+	//	shape->release();
+	//	delete shape;
+	//}
+	//m_vShape.clear();
 
 	releaseMosquito();
 	releaseWeapon();
+	m_dotSceneLoader.release();
+	m_dotSceneLoader.parseDotScene("../scene/stage00.scene", "scene", m_pSceneMgr);
 	m_waveSystem.init(0);
 	m_bUIInit = TRUE;
 }
@@ -286,21 +289,22 @@ void GameSystem::setHandState(GameSystem::HandState state)
 
 void GameSystem::createShape(const char *modelName, float *scale, float *pos, float *quat)
 {
-	m_vShape.push_back(new OgreShapeBox(m_pSceneMgr));
-	OgreShapeBox *shape  = (OgreShapeBox *)m_vShape.back();
-	shape->init(modelName, scale);
-	shape->update(0.0, pos, quat);
+	//m_vShape.push_back(new OgreShapeBox(m_pSceneMgr));
+	//OgreShapeBox *shape  = (OgreShapeBox *)m_vShape.back();
+	//shape->init(modelName, scale);
+	//shape->update(0.0, pos, quat);
 }
 
 PhysicRigidBody *GameSystem::createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug, void *userPoint, int flag)
 {
-	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
-	shape->init(modelName, scale);
-	m_vRigidBody.push_back(new PhysicRigidBody(m_pWorld));
-	PhysicRigidBody *body = m_vRigidBody.back();
-	body->init(shape, debug, mass, pos, quat, userPoint, flag);
-	
-	return body;
+	//OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
+	//shape->init(modelName, scale);
+	//m_vRigidBody.push_back(new PhysicRigidBody(m_pWorld));
+	//PhysicRigidBody *body = m_vRigidBody.back();
+	//body->init(shape, debug, mass, pos, quat, userPoint, flag);
+	//
+	//return body;
+	return NULL;
 }
 
 void GameSystem::createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float speed, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData)
@@ -394,11 +398,11 @@ void GameSystem::randomShoot(MOSQUITO_TYPE type)
 	//		sprintf_s(modelName, "bomb.mesh");
 	//		break;
 	//}
-	OgrePhysicDebug *debug = new OgrePhysicDebug();
-	debug->init(m_pSceneMgr);
-	sprintf_s(modelName, "mosquito01.mesh");
-	PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
-	body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
+	//OgrePhysicDebug *debug = new OgrePhysicDebug();
+	//debug->init(m_pSceneMgr);
+	//sprintf_s(modelName, "mosquito01.mesh");
+	//PhysicRigidBody *body = createRidigBody(modelName, 1.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, 100), 8);
+	//body->force(dir[0], dir[1], dir[2], roat[0], roat[1], roat[2], speed);
 	//createMosquito(type, modelName, 1.0, scale, pos, quat, 100);
 }
 
@@ -501,7 +505,6 @@ void GameSystem::update(float timePass)
 void GameSystem::updateMenu(float timePass)
 {
 	restart();
-	initScene();
 	m_eState = eOnPlaying;
 }
 
@@ -550,41 +553,41 @@ void GameSystem::updatePlaying(float timePass)
 		}
 	}
 
-	V_RIGID_BODY::iterator rIte;
-	V_RIGID_BODY::iterator eraseIte;
-	PhysicRigidBody *body;
-	for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end();)
-	{
-		body = *rIte;
-		
-		body->update(timePass);
-		float pos[3];
-		body->getPos(pos);
-		if(pos[1] <= 0)
-		{
-			eraseIte = rIte;
-			rIte++;
-			m_vRigidBody.erase(eraseIte);
-			body->release();
-			delete body;
-		}
-		//else if(body->getUserPointer() != NULL)
-		//{
-		//	ScoreBase *base = (ScoreBase *)body->getUserPointer();
-		//	if(base->m_bDestory)
-		//	{
-		//		eraseIte = rIte;
-		//		rIte++;
-		//		m_vRigidBody.erase(eraseIte);
-		//		body->release();
-		//		delete body;
-		//	}
-		//	else
-		//		rIte++;
-		//}
-		else
-			rIte++;
-	}
+	//V_RIGID_BODY::iterator rIte;
+	//V_RIGID_BODY::iterator eraseIte;
+	//PhysicRigidBody *body;
+	//for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end();)
+	//{
+	//	body = *rIte;
+	//	
+	//	body->update(timePass);
+	//	float pos[3];
+	//	body->getPos(pos);
+	//	if(pos[1] <= 0)
+	//	{
+	//		eraseIte = rIte;
+	//		rIte++;
+	//		m_vRigidBody.erase(eraseIte);
+	//		body->release();
+	//		delete body;
+	//	}
+	//	//else if(body->getUserPointer() != NULL)
+	//	//{
+	//	//	ScoreBase *base = (ScoreBase *)body->getUserPointer();
+	//	//	if(base->m_bDestory)
+	//	//	{
+	//	//		eraseIte = rIte;
+	//	//		rIte++;
+	//	//		m_vRigidBody.erase(eraseIte);
+	//	//		body->release();
+	//	//		delete body;
+	//	//	}
+	//	//	else
+	//	//		rIte++;
+	//	//}
+	//	else
+	//		rIte++;
+	//}
 	updateMosquito(timePass);
 	updateWeapon(timePass);
 	updateHandState(timePass);
