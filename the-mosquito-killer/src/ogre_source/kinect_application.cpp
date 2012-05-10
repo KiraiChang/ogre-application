@@ -106,16 +106,16 @@ void KinectApplication::createScene(void)
 	OgreApplication::createScene();
 	createUI();
 
-	Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
+	//Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
 
-	Ogre::MeshManager::getSingleton().createPlane("ground", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		plane, 1500, 1500, 20, 20, true, 1, 50, 50, Ogre::Vector3::UNIT_Z);
+	//Ogre::MeshManager::getSingleton().createPlane("ground", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	//	plane, 1500, 1500, 20, 20, true, 1, 50, 50, Ogre::Vector3::UNIT_Z);
 
-	Ogre::Entity* entGround = mSceneMgr->createEntity("GroundEntity", "ground");
-	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entGround);
+	//Ogre::Entity* entGround = mSceneMgr->createEntity("GroundEntity", "ground");
+	//mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entGround);
 
-	entGround->setMaterialName("Examples/Rockwall");
-	entGround->setCastShadows(true);
+	//entGround->setMaterialName("Examples/Rockwall");
+	//entGround->setCastShadows(true);
 
 	GameSystem::getInstance()->init(m_pPhysicSimulation->getDynamicsWorld(), mSceneMgr);
 	GameSystem::getInstance()->initPlayer();
