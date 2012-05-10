@@ -2,14 +2,56 @@
 #include "tinyxml.h"
 #include <Ogre.h>
  
-using namespace std;
+//using namespace std;
 using namespace Ogre;
  
+void DotSceneLoader::release()
+{
+	SceneNode *m_pBodyNode = NULL;
+	Entity *m_pBodyEnt = NULL;
+	VP_SCENE_NODE::iterator nodeIte;
+	VP_ENTITY::iterator entityIte;
+	if(m_pSceneMgr)
+	{
+		for(nodeIte = m_vpSceneNode.begin(); nodeIte != m_vpSceneNode.end(); ++nodeIte)
+		{
+			m_pBodyNode = *nodeIte;
+			if(m_pBodyNode!= NULL)
+			{
+				m_pBodyNode->detachAllObjects();
+			}
+		}
+
+		for(entityIte = m_vpEntity.begin(); entityIte != m_vpEntity.end(); ++entityIte)
+		{
+			m_pBodyEnt = *entityIte;
+			if(m_pBodyEnt != NULL)
+			{
+				m_pSceneMgr->destroyEntity(m_pBodyEnt);
+				m_pBodyEnt = NULL;
+			}
+		}
+		m_vpEntity.clear();
+
+		for(nodeIte = m_vpSceneNode.begin(); nodeIte != m_vpSceneNode.end(); ++nodeIte)
+		{
+			m_pBodyNode = *nodeIte;
+			if(m_pBodyNode!= NULL)
+			{
+				m_pBodyNode->detachAllObjects();
+				m_pSceneMgr->destroySceneNode(m_pBodyNode);
+				m_pBodyNode = NULL;
+			}
+		}
+		m_vpSceneNode.clear();
+	}
+}
+
 void DotSceneLoader::parseDotScene(const String &SceneName, const String &groupName, SceneManager *yourSceneMgr, SceneNode *pAttachNode, const String &sPrependNode)
 {
 	// set up shared object values
 	m_sGroupName = groupName;
-	mSceneMgr = yourSceneMgr;
+	m_pSceneMgr = yourSceneMgr;
 	m_sPrependNode = sPrependNode;
 	staticObjects.clear();
 	dynamicObjects.clear();
@@ -20,8 +62,8 @@ void DotSceneLoader::parseDotScene(const String &SceneName, const String &groupN
 	try
 	{
 		// Strip the path
-		Ogre::String basename, path;
-		Ogre::StringUtil::splitFilename(SceneName, basename, path);
+		String basename, path;
+		StringUtil::splitFilename(SceneName, basename, path);
  
 		DataStreamPtr pStream = ResourceGroupManager::getSingleton().
 			openResource( basename, groupName );
@@ -61,9 +103,9 @@ void DotSceneLoader::parseDotScene(const String &SceneName, const String &groupN
 	}
  
 	// figure out where to attach any nodes we create
-	mAttachNode = pAttachNode;
-	if(!mAttachNode)
-		mAttachNode = mSceneMgr->getRootSceneNode();
+	m_pSceneRoot = pAttachNode;
+	if(!m_pSceneRoot)
+		m_pSceneRoot = m_pSceneMgr->getRootSceneNode();
  
 	// Process the scene
 	processScene(XMLRoot);
@@ -96,40 +138,40 @@ void DotSceneLoader::processScene(TiXmlElement *XMLRoot)
 	if(pElement)
 		processNodes(pElement);
  
-	// Process externals (?)
-	pElement = XMLRoot->FirstChildElement("externals");
-	if(pElement)
-		processExternals(pElement);
+	//// Process externals (?)
+	//pElement = XMLRoot->FirstChildElement("externals");
+	//if(pElement)
+	//	processExternals(pElement);
  
 	// Process environment (?)
 	pElement = XMLRoot->FirstChildElement("environment");
 	if(pElement)
 		processEnvironment(pElement);
  
-	// Process terrain (?)
-	pElement = XMLRoot->FirstChildElement("terrain");
-	if(pElement)
-		processTerrain(pElement);
- 
-	// Process userDataReference (?)
-	pElement = XMLRoot->FirstChildElement("userDataReference");
-	if(pElement)
-		processUserDataReference(pElement);
- 
-	// Process octree (?)
-	pElement = XMLRoot->FirstChildElement("octree");
-	if(pElement)
-		processOctree(pElement);
- 
-	// Process light (?)
-	pElement = XMLRoot->FirstChildElement("light");
-	if(pElement)
-		processLight(pElement);
- 
-	// Process camera (?)
-	pElement = XMLRoot->FirstChildElement("camera");
-	if(pElement)
-		processCamera(pElement);
+	//// Process terrain (?)
+	//pElement = XMLRoot->FirstChildElement("terrain");
+	//if(pElement)
+	//	processTerrain(pElement);
+ //
+	//// Process userDataReference (?)
+	//pElement = XMLRoot->FirstChildElement("userDataReference");
+	//if(pElement)
+	//	processUserDataReference(pElement);
+ //
+	//// Process octree (?)
+	//pElement = XMLRoot->FirstChildElement("octree");
+	//if(pElement)
+	//	processOctree(pElement);
+ //
+	//// Process light (?)
+	//pElement = XMLRoot->FirstChildElement("light");
+	//if(pElement)
+	//	processLight(pElement);
+ //
+	//// Process camera (?)
+	//pElement = XMLRoot->FirstChildElement("camera");
+	//if(pElement)
+	//	processCamera(pElement);
 }
  
 void DotSceneLoader::processNodes(TiXmlElement *XMLNode)
@@ -148,24 +190,24 @@ void DotSceneLoader::processNodes(TiXmlElement *XMLNode)
 	pElement = XMLNode->FirstChildElement("position");
 	if(pElement)
 	{
-		mAttachNode->setPosition(parseVector3(pElement));
-		mAttachNode->setInitialState();
+		m_pSceneRoot->setPosition(parseVector3(pElement));
+		m_pSceneRoot->setInitialState();
 	}
  
 	// Process rotation (?)
 	pElement = XMLNode->FirstChildElement("rotation");
 	if(pElement)
 	{
-		mAttachNode->setOrientation(parseQuaternion(pElement));
-		mAttachNode->setInitialState();
+		m_pSceneRoot->setOrientation(parseQuaternion(pElement));
+		m_pSceneRoot->setInitialState();
 	}
  
 	// Process scale (?)
 	pElement = XMLNode->FirstChildElement("scale");
 	if(pElement)
 	{
-		mAttachNode->setScale(parseVector3(pElement));
-		mAttachNode->setInitialState();
+		m_pSceneRoot->setScale(parseVector3(pElement));
+		m_pSceneRoot->setInitialState();
 	}
 }
  
@@ -206,13 +248,13 @@ void DotSceneLoader::processEnvironment(TiXmlElement *XMLNode)
 	// Process colourAmbient (?)
 	pElement = XMLNode->FirstChildElement("colourAmbient");
 	if(pElement)
-		mSceneMgr->setAmbientLight(parseColour(pElement));
+		m_pSceneMgr->setAmbientLight(parseColour(pElement));
  
 	// Process colourBackground (?)
 	//! @todo Set the background colour of all viewports (RenderWindow has to be provided then)
 	pElement = XMLNode->FirstChildElement("colourBackground");
 	if(pElement)
-		;//mSceneMgr->set(parseColour(pElement));
+		;//m_pSceneMgr->set(parseColour(pElement));
  
 	// Process userDataReference (?)
 	pElement = XMLNode->FirstChildElement("userDataReference");
@@ -242,7 +284,7 @@ void DotSceneLoader::processLight(TiXmlElement *XMLNode, SceneNode *pParent)
 	String id = getAttrib(XMLNode, "id");
  
 	// Create the light
-	Light *pLight = mSceneMgr->createLight(name);
+	Light *pLight = m_pSceneMgr->createLight(name);
 	if(pParent)
 		pParent->attachObject(pLight);
  
@@ -307,7 +349,7 @@ void DotSceneLoader::processCamera(TiXmlElement *XMLNode, SceneNode *pParent)
 	String projectionType = getAttrib(XMLNode, "projectionType", "perspective");
  
 	// Create the camera
-	Camera *pCamera = mSceneMgr->createCamera(name);
+	Camera *pCamera = m_pSceneMgr->createCamera(name);
 	if(pParent)
 		pParent->attachObject(pCamera);
  
@@ -375,6 +417,7 @@ void DotSceneLoader::processNode(TiXmlElement *XMLNode, SceneNode *pParent)
 	String name = m_sPrependNode + getAttrib(XMLNode, "name");
  
 	// Create the scene node
+	
 	SceneNode *pNode;
 	if(name.empty())
 	{
@@ -382,7 +425,7 @@ void DotSceneLoader::processNode(TiXmlElement *XMLNode, SceneNode *pParent)
 		if(pParent)
 			pNode = pParent->createChildSceneNode();
 		else
-			pNode = mAttachNode->createChildSceneNode();
+			pNode = m_pSceneRoot->createChildSceneNode();
 	}
 	else
 	{
@@ -390,9 +433,10 @@ void DotSceneLoader::processNode(TiXmlElement *XMLNode, SceneNode *pParent)
 		if(pParent)
 			pNode = pParent->createChildSceneNode(name);
 		else
-			pNode = mAttachNode->createChildSceneNode(name);
+			pNode = m_pSceneRoot->createChildSceneNode(name);
 	}
- 
+	m_vpSceneNode.push_back(pNode);
+
 	// Process other attributes
 	String id = getAttrib(XMLNode, "id");
 	bool isTarget = getAttribBool(XMLNode, "isTarget");
@@ -530,7 +574,7 @@ void DotSceneLoader::processLookTarget(TiXmlElement *XMLNode, SceneNode *pParent
 	{
 		if(!nodeName.empty())
 		{
-			SceneNode *pLookNode = mSceneMgr->getSceneNode(nodeName);
+			SceneNode *pLookNode = m_pSceneMgr->getSceneNode(nodeName);
 			position = pLookNode->_getDerivedPosition();
 		}
  
@@ -564,7 +608,7 @@ void DotSceneLoader::processTrackTarget(TiXmlElement *XMLNode, SceneNode *pParen
 	// Setup the track target
 	try
 	{
-		SceneNode *pTrackNode = mSceneMgr->getSceneNode(nodeName);
+		SceneNode *pTrackNode = m_pSceneMgr->getSceneNode(nodeName);
 		pParent->setAutoTracking(true, pTrackNode, localDirection, offset);
 	}
 	catch(Ogre::Exception &/*e*/)
@@ -606,7 +650,7 @@ void DotSceneLoader::processEntity(TiXmlElement *XMLNode, SceneNode *pParent)
 	try
 	{
 		MeshManager::getSingleton().load(meshFile, m_sGroupName);
-		pEntity = mSceneMgr->createEntity(name, meshFile);
+		pEntity = m_pSceneMgr->createEntity(name, meshFile);
 		pEntity->setCastShadows(castShadows);
 		pParent->attachObject(pEntity);
  
@@ -617,6 +661,7 @@ void DotSceneLoader::processEntity(TiXmlElement *XMLNode, SceneNode *pParent)
 	{
 		LogManager::getSingleton().logMessage("[DotSceneLoader] Error loading an entity!");
 	}
+	m_vpEntity.push_back(pEntity);
  
 	// Process userDataReference (?)
 	pElement = XMLNode->FirstChildElement("userDataReference");
@@ -636,7 +681,7 @@ void DotSceneLoader::processParticleSystem(TiXmlElement *XMLNode, SceneNode *pPa
 	// Create the particle system
 	try
 	{
-		ParticleSystem *pParticles = mSceneMgr->createParticleSystem(name, file);
+		ParticleSystem *pParticles = m_pSceneMgr->createParticleSystem(name, file);
 		pParent->attachObject(pParticles);
 	}
 	catch(Ogre::Exception &/*e*/)
@@ -682,7 +727,7 @@ void DotSceneLoader::processFog(TiXmlElement *XMLNode)
 		colourDiffuse = parseColour(pElement);
  
 	// Setup the fog
-	mSceneMgr->setFog(mode, colourDiffuse, expDensity, linearStart, linearEnd);
+	m_pSceneMgr->setFog(mode, colourDiffuse, expDensity, linearStart, linearEnd);
 }
  
 void DotSceneLoader::processSkyBox(TiXmlElement *XMLNode)
@@ -701,7 +746,7 @@ void DotSceneLoader::processSkyBox(TiXmlElement *XMLNode)
 		rotation = parseQuaternion(pElement);
  
 	// Setup the sky box
-	mSceneMgr->setSkyBox(true, material, distance, drawFirst, rotation, m_sGroupName);
+	m_pSceneMgr->setSkyBox(true, material, distance, drawFirst, rotation, m_sGroupName);
 }
  
 void DotSceneLoader::processSkyDome(TiXmlElement *XMLNode)
@@ -722,7 +767,7 @@ void DotSceneLoader::processSkyDome(TiXmlElement *XMLNode)
 		rotation = parseQuaternion(pElement);
  
 	// Setup the sky dome
-	mSceneMgr->setSkyDome(true, material, curvature, tiling, distance, drawFirst, rotation, 16, 16, -1, m_sGroupName);
+	m_pSceneMgr->setSkyDome(true, material, curvature, tiling, distance, drawFirst, rotation, 16, 16, -1, m_sGroupName);
 }
  
 void DotSceneLoader::processSkyPlane(TiXmlElement *XMLNode)
@@ -742,7 +787,7 @@ void DotSceneLoader::processSkyPlane(TiXmlElement *XMLNode)
 	Plane plane;
 	plane.normal = Vector3(planeX, planeY, planeZ);
 	plane.d = planeD;
-	mSceneMgr->setSkyPlane(true, plane, material, scale, tiling, drawFirst, bow, 1, 1, m_sGroupName);
+	m_pSceneMgr->setSkyPlane(true, plane, material, scale, tiling, drawFirst, bow, 1, 1, m_sGroupName);
 }
  
 void DotSceneLoader::processClipping(TiXmlElement *XMLNode)
