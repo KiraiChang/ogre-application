@@ -119,8 +119,8 @@ void BaseApplication::createFrameListener(void)
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
 
     mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mMouse, this);
-    mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
-    mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
+    //mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
+    //mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
     mTrayMgr->hideCursor();
 
     // create a params panel for displaying sample details
@@ -140,7 +140,7 @@ void BaseApplication::createFrameListener(void)
     mDetailsPanel = mTrayMgr->createParamsPanel(OgreBites::TL_NONE, "DetailsPanel", 200, items);
     mDetailsPanel->setParamValue(9, "Bilinear");
     mDetailsPanel->setParamValue(10, "Solid");
-    mDetailsPanel->hide();
+    //mDetailsPanel->hide();
 
     mRoot->addFrameListener(this);
 }
@@ -153,12 +153,12 @@ void BaseApplication::destroyScene(void)
 void BaseApplication::createViewports(void)
 {
     // Create one viewport, entire window
-    Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
+    mViewport = mWindow->addViewport(mCamera);
+    mViewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
 
     // Alter the camera aspect ratio to match the viewport
     mCamera->setAspectRatio(
-        Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+        Ogre::Real(mViewport->getActualWidth()) / Ogre::Real(mViewport->getActualHeight()));
 }
 //-------------------------------------------------------------------------------------
 void BaseApplication::setupResources(void)
