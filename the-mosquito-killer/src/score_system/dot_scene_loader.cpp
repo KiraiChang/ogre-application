@@ -9,8 +9,10 @@ void DotSceneLoader::release()
 {
 	SceneNode *m_pBodyNode = NULL;
 	Entity *m_pBodyEnt = NULL;
+	Light *pLight = NULL;
 	VP_SCENE_NODE::iterator nodeIte;
 	VP_ENTITY::iterator entityIte;
+	VP_LIGHT::iterator lightIte;
 	if(m_pSceneMgr)
 	{
 		for(nodeIte = m_vpSceneNode.begin(); nodeIte != m_vpSceneNode.end(); ++nodeIte)
@@ -32,6 +34,17 @@ void DotSceneLoader::release()
 			}
 		}
 		m_vpEntity.clear();
+
+		for(lightIte = m_vpLight.begin(); lightIte != m_vpLight.end(); ++lightIte)
+		{
+			pLight = *lightIte;
+			if(pLight!= NULL)
+			{
+				m_pSceneMgr->destroyLight(pLight);
+				pLight = NULL;
+			}
+		}
+		m_vpLight.clear();
 
 		for(nodeIte = m_vpSceneNode.begin(); nodeIte != m_vpSceneNode.end(); ++nodeIte)
 		{
@@ -148,6 +161,11 @@ void DotSceneLoader::processScene(TiXmlElement *XMLRoot)
 	if(pElement)
 		processEnvironment(pElement);
  
+	// Process light (?)
+	pElement = XMLRoot->FirstChildElement("light");
+	if(pElement)
+		processLight(pElement);
+
 	//// Process terrain (?)
 	//pElement = XMLRoot->FirstChildElement("terrain");
 	//if(pElement)
@@ -162,12 +180,7 @@ void DotSceneLoader::processScene(TiXmlElement *XMLRoot)
 	//pElement = XMLRoot->FirstChildElement("octree");
 	//if(pElement)
 	//	processOctree(pElement);
- //
-	//// Process light (?)
-	//pElement = XMLRoot->FirstChildElement("light");
-	//if(pElement)
-	//	processLight(pElement);
- //
+ 
 	//// Process camera (?)
 	//pElement = XMLRoot->FirstChildElement("camera");
 	//if(pElement)
@@ -285,6 +298,7 @@ void DotSceneLoader::processLight(TiXmlElement *XMLNode, SceneNode *pParent)
  
 	// Create the light
 	Light *pLight = m_pSceneMgr->createLight(name);
+	m_vpLight.push_back(pLight);
 	if(pParent)
 		pParent->attachObject(pLight);
  
