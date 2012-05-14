@@ -16,8 +16,10 @@ namespace Ogre
 	class SceneManager;
 	class SceneNode;
 	class Entity;
+	class Light;
 	typedef std::vector< SceneNode * > VP_SCENE_NODE;
 	typedef std::vector< Entity * > VP_ENTITY;
+	typedef std::vector< Light * > VP_LIGHT;
 	class NodeProperty
 	{
 	public:
@@ -46,6 +48,7 @@ namespace Ogre
 		std::vector<String> dynamicObjects;
 		VP_SCENE_NODE m_vpSceneNode;
 		VP_ENTITY m_vpEntity;
+		VP_LIGHT m_vpLight;
  
 	protected:
 		void processScene(TiXmlElement *XMLRoot);
