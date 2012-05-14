@@ -16,7 +16,7 @@ enum
 
 class PhysicKinect
 {
-private:
+public:
 	enum SCALE_POSITION
 	{
 		eScaleX = 0,
@@ -46,6 +46,7 @@ public:
 	void										update(const NUI_SKELETON_DATA &data);
 	void										updateDebug(float data[3], float distance);
 	void										getPartPos(unsigned int offset, float *pos);
+	float										getScale(unsigned int offset);
 	DWORD										getID(void)const;
 };
 

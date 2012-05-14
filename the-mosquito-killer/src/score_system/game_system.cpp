@@ -11,8 +11,8 @@
 #include <random>
 extern Ogre::Log* m_pLog;
 const float HAND_CHECK_AIM_POSE_DIST = 1.5f;
-const float HAND_CHECK_CLOSE_DIST = 2.0f;
-const float HAND_CHECK_OPEN_DIST = 3.0f;
+const float HAND_CHECK_CLOSE_DIST = 2.5f;
+const float HAND_CHECK_OPEN_DIST = 30.0f;
 //const float HAND_CHECK_RIGHT_HAND_DIST = 1.5f;
 const float HAND_CHECK_RIGHT_HAND_SPEED = 5.0f;
 const float HAND_CHECK_SHOOT_TIMEPASS = 0.5f;
@@ -727,7 +727,7 @@ void GameSystem::updateHandState(float timePass)
 			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
-			float dist = left.distance(right);
+			float dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
 			if(dist < HAND_CHECK_CLOSE_DIST)
 			{
 				m_eHandState = eOnHandWaitAttack;
@@ -749,9 +749,15 @@ void GameSystem::updateHandState(float timePass)
 			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
-			float dist = left.distance(right);
+			float dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
 			if(dist > HAND_CHECK_OPEN_DIST)
+			{
 				m_eHandState = eOnHandOpen;
+			}
+			else
+			{
+				int i =0;
+			}
 		}
 		break;
 	case eOnHandWaitAttack:
@@ -761,7 +767,7 @@ void GameSystem::updateHandState(float timePass)
 			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
-			float dist = left.distance(right);
+			float dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
 			if(dist > HAND_CHECK_OPEN_DIST)
 				m_eHandState = eOnHandOpen;
 			else if(m_fHandCloseTime > HAND_WAIT_ATTACK_TIMEOUT)
@@ -777,7 +783,7 @@ void GameSystem::updateHandState(float timePass)
 			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
-			float dist = left.distance(right);
+			float dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
 			if(dist > HAND_CHECK_OPEN_DIST)
 				m_eHandState = eOnHandOpen;
 			else if(dist < HAND_CHECK_CLOSE_DIST)

@@ -281,6 +281,15 @@ void PhysicKinect::getPartPos(unsigned int offset, float *pos)
 	}
 }
 
+float PhysicKinect::getScale(unsigned int offset)
+{
+	if(offset < eScaleCount)
+	{
+		return m_vfScale[offset] * m_vfOverallPos[eScaleZ];
+	}
+	return 0;
+}
+
 DWORD PhysicKinect::getID(void)const
 {
 	return m_iKinectID;
