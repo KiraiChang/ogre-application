@@ -168,7 +168,7 @@ void OgreApplication::initCamera(void)
 		////mCamera->lookAt(Ogre::Vector3(0, 180, 0));
   //  }
 	//mCamera->setPosition(Ogre::Vector3(0, 270, 80));
-	mCameraNode->setPosition(0, 10, 50);
+	//mCameraNode->setPosition(0, 10, 50);
 }
 
 void OgreApplication::initCEGUI(void)
@@ -526,8 +526,8 @@ CEGUI::MouseButton convertButton(OIS::MouseButtonID buttonID)
 bool OgreApplication::mouseMoved( const OIS::MouseEvent &arg )
 {
 	CEGUI::System::getSingleton().injectMouseMove(arg.state.X.rel, arg.state.Y.rel);
-	if(mMousePress == MOUSE_PRESS_RIGHT)
-		mCameraMan->injectMouseMove(arg);
+	//if(mMousePress == MOUSE_PRESS_RIGHT)
+	//	mCameraMan->injectMouseMove(arg);
 	return true;
 }
 

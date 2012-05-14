@@ -141,6 +141,7 @@ GameSystem *GameSystem::g_instance = NULL;
 GameSystem::GameSystem(void):
 		m_pWorld(NULL),
 		m_pSceneMgr(NULL),
+		m_pWindow(NULL),
 		//m_fFullTime(0),
 		m_fTimePass(0),
 		//m_bShoot(false),
@@ -183,13 +184,16 @@ GameSystem *GameSystem::getInstance(void)
 	return g_instance;
 }
 
-void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr)
+void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow *pWindow)
 {
 	if(m_pWorld == NULL)
 		m_pWorld = world;
 
 	if(m_pSceneMgr == NULL)
 		m_pSceneMgr = sceneMgr;
+
+	if(m_pWindow == NULL)
+		m_pWindow = pWindow;
 }
 
 void GameSystem::release(void)
@@ -267,7 +271,7 @@ void GameSystem::restart(void)
 	releaseMosquito();
 	releaseWeapon();
 	m_dotSceneLoader.release();
-	m_dotSceneLoader.parseDotScene("../scene/stage00.scene", "scene", m_pSceneMgr);
+	m_dotSceneLoader.parseDotScene("../scene/stage00.scene", "scene", m_pSceneMgr, m_pWindow);
 	m_waveSystem.init(0);
 	m_bUIInit = TRUE;
 }

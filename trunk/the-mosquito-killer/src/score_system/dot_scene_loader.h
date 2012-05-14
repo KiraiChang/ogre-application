@@ -17,9 +17,14 @@ namespace Ogre
 	class SceneNode;
 	class Entity;
 	class Light;
+	class Camera; 
+	class RenderWindow;
+	class Viewport;
 	typedef std::vector< SceneNode * > VP_SCENE_NODE;
 	typedef std::vector< Entity * > VP_ENTITY;
 	typedef std::vector< Light * > VP_LIGHT;
+	typedef std::vector< Camera * > VP_CAMERA;
+
 	class NodeProperty
 	{
 	public:
@@ -35,20 +40,23 @@ namespace Ogre
 	class DotSceneLoader
 	{
 	public:
-		DotSceneLoader() : m_pSceneMgr(0) {}
+		DotSceneLoader() : m_pSceneMgr(0), m_pWindow(0), m_pCurrentVP(0) {}
 		virtual void release();
 		virtual ~DotSceneLoader() {release();}
 		
-		void parseDotScene(const String &SceneName, const String &groupName, SceneManager *yourSceneMgr, SceneNode *pAttachNode = NULL, const String &sPrependNode = "");
+		void parseDotScene(const String &SceneName, const String &groupName, SceneManager *yourSceneMgr, Ogre::RenderWindow* pWindow, SceneNode *pAttachNode = NULL, const String &sPrependNode = "");
 		String getProperty(const String &ndNm, const String &prop);
 		
  
 		std::vector<NodeProperty> nodeProperties;
 		std::vector<String> staticObjects;
 		std::vector<String> dynamicObjects;
+		RenderWindow* m_pWindow;
+		Viewport* m_pCurrentVP;
 		VP_SCENE_NODE m_vpSceneNode;
 		VP_ENTITY m_vpEntity;
 		VP_LIGHT m_vpLight;
+		VP_CAMERA m_vpCamera;
  
 	protected:
 		void processScene(TiXmlElement *XMLRoot);
@@ -62,6 +70,7 @@ namespace Ogre
 		void processOctree(TiXmlElement *XMLNode);
 		void processLight(TiXmlElement *XMLNode, SceneNode *pParent = 0);
 		void processCamera(TiXmlElement *XMLNode, SceneNode *pParent = 0);
+		void processViewport(Camera *pCamera);
  
 		void processNode(TiXmlElement *XMLNode, SceneNode *pParent = 0);
 		void processLookTarget(TiXmlElement *XMLNode, SceneNode *pParent);
