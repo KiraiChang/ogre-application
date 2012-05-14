@@ -278,6 +278,9 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 
 			//slider->setCurrentValue(GameSystem::getInstance()->getFullTime());
 			slider->setMaxValue(GameSystem::getInstance()->getFullTime());
+
+			//mViewport->setCamera(GameSystem::getInstance()->m_dotSceneLoader.m_vpCamera.back());
+			//mCameraMan->setCamera(GameSystem::getInstance()->m_dotSceneLoader.m_vpCamera.back());
 		}
 
 		float current = GameSystem::getInstance()->getFullTime() - GameSystem::getInstance()->getTimePass();
@@ -326,9 +329,9 @@ bool KinectApplication::keyPressed( const OIS::KeyEvent &arg )
 				GameSystem::getInstance()->m_eDebugHandAttackState = GameSystem::eHandAttacking;
 			}
 		}
-	}
-	else
-	{
+	//}
+	//else
+	//{
 		OgreApplication::keyPressed(arg);
 		CEGUI::System &sys = CEGUI::System::getSingleton();
 		sys.injectKeyDown(arg.key);

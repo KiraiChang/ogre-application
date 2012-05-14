@@ -79,6 +79,7 @@ public:
 
     Ogre::Root *mRoot;
 	Ogre::SceneNode *mCameraNode;
+	Ogre::Viewport* mViewport;
     Ogre::Camera* mCamera;
     Ogre::SceneManager* mSceneMgr;
     Ogre::RenderWindow* mWindow;

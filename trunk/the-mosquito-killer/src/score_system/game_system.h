@@ -65,6 +65,7 @@ public:
 	float										m_vfHandDebugPos[3];
 	float										m_fTwoHandDistance;
 	bool										m_bUIInit;
+	Ogre::DotSceneLoader						m_dotSceneLoader;
 private:
 												GameSystem(void);
 private:
@@ -74,7 +75,7 @@ private:
 		eOnPlaying,//遊戲中畫面
 		eOnEnd,//結算畫面
 	};
-	Ogre::DotSceneLoader						m_dotSceneLoader;
+	
 	static GameSystem *							g_instance;
 	WaveSystem									m_waveSystem;
 	btDynamicsWorld*							m_pWorld;
