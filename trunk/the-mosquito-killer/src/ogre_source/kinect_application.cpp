@@ -149,105 +149,105 @@ void KinectApplication::createUI(void)
 
 void KinectApplication::createLight(void)
 {
-	Ogre::Light* pLight = NULL;
+	//Ogre::Light* pLight = NULL;
 
-	std::ifstream is("../configure/scene_light.cfg");
-	if(is.is_open())
-	{
-		json_spirit::mValue value;
-		json_spirit::read(is, value);
-		json_spirit::mArray arr;
-		json_spirit::mObject obj;
-		arr = value.get_obj()["scene_light"].get_array();
-		for(int i = 0; i <arr.size();i++)
-		{
-			obj = arr[i].get_obj();
-			switch(obj["type"].get_int())
-			{
-			case Ogre::Light::LT_POINT:
-				{
-					pLight = mSceneMgr->createLight(obj["lightName"].get_str());
-					pLight->setType(Ogre::Light::LT_POINT);
-					pLight->setDiffuseColour(obj["diffuse"].get_array()[0].get_real(),
-							obj["diffuse"].get_array()[1].get_real(),
-							obj["diffuse"].get_array()[2].get_real());
-					pLight->setSpecularColour(obj["specular"].get_array()[0].get_real(),
-							obj["specular"].get_array()[1].get_real(),
-							obj["specular"].get_array()[2].get_real());
-					pLight->setPosition(obj["position"].get_array()[0].get_real(),
-							obj["position"].get_array()[1].get_real(),
-							obj["position"].get_array()[2].get_real());
-					pLight->setAttenuation(obj["attenuation"].get_array()[0].get_real(),
-							obj["attenuation"].get_array()[1].get_real(),
-							obj["attenuation"].get_array()[2].get_real(),
-							obj["attenuation"].get_array()[3].get_real());
-				}
-				break;
-			case Ogre::Light::LT_DIRECTIONAL:
-				{
-					pLight = mSceneMgr->createLight(obj["lightName"].get_str());
-					pLight->setType(Ogre::Light::LT_DIRECTIONAL);
-					pLight->setDiffuseColour(obj["diffuse"].get_array()[0].get_real(),
-							obj["diffuse"].get_array()[1].get_real(),
-							obj["diffuse"].get_array()[2].get_real());
-					pLight->setSpecularColour(obj["specular"].get_array()[0].get_real(),
-							obj["specular"].get_array()[1].get_real(),
-							obj["specular"].get_array()[2].get_real());
-					pLight->setDirection(obj["direction"].get_array()[0].get_real(),
-							obj["direction"].get_array()[1].get_real(),
-							obj["direction"].get_array()[2].get_real());
-				}
-				break;
-			case Ogre::Light::LT_SPOTLIGHT:
-				{
-					pLight = mSceneMgr->createLight(obj["lightName"].get_str());
-					pLight->setType(Ogre::Light::LT_SPOTLIGHT);
-					pLight->setDiffuseColour(obj["diffuse"].get_array()[0].get_real(),
-							obj["diffuse"].get_array()[1].get_real(),
-							obj["diffuse"].get_array()[2].get_real());
-					pLight->setSpecularColour(obj["specular"].get_array()[0].get_real(),
-							obj["specular"].get_array()[1].get_real(),
-							obj["specular"].get_array()[2].get_real());
-					pLight->setPosition(obj["position"].get_array()[0].get_real(),
-							obj["position"].get_array()[1].get_real(),
-							obj["position"].get_array()[2].get_real());
-					pLight->setDirection(obj["direction"].get_array()[0].get_real(),
-						obj["direction"].get_array()[1].get_real(),
-						obj["direction"].get_array()[2].get_real());
-					pLight->setSpotlightRange(Ogre::Degree(obj["range"].get_array()[0].get_real()),
-						Ogre::Degree(obj["range"].get_array()[1].get_real()),
-						obj["range"].get_array()[2].get_real());
-				}
-				break;
-			}
-		}
-	}
-	else
-	{
-		//create Light
-		pLight = mSceneMgr->createLight("directLight");
-		pLight->setType(Ogre::Light::LT_DIRECTIONAL);
-		pLight->setDirection(0.0, -1.0, 0.0);
-		pLight->setDiffuseColour(1.0, 1.0, 1.0);
-		pLight->setSpecularColour(0.4, 0.4, 0.0);
-		mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.0));
+	//std::ifstream is("../configure/scene_light.cfg");
+	//if(is.is_open())
+	//{
+	//	json_spirit::mValue value;
+	//	json_spirit::read(is, value);
+	//	json_spirit::mArray arr;
+	//	json_spirit::mObject obj;
+	//	arr = value.get_obj()["scene_light"].get_array();
+	//	for(int i = 0; i <arr.size();i++)
+	//	{
+	//		obj = arr[i].get_obj();
+	//		switch(obj["type"].get_int())
+	//		{
+	//		case Ogre::Light::LT_POINT:
+	//			{
+	//				pLight = mSceneMgr->createLight(obj["lightName"].get_str());
+	//				pLight->setType(Ogre::Light::LT_POINT);
+	//				pLight->setDiffuseColour(obj["diffuse"].get_array()[0].get_real(),
+	//						obj["diffuse"].get_array()[1].get_real(),
+	//						obj["diffuse"].get_array()[2].get_real());
+	//				pLight->setSpecularColour(obj["specular"].get_array()[0].get_real(),
+	//						obj["specular"].get_array()[1].get_real(),
+	//						obj["specular"].get_array()[2].get_real());
+	//				pLight->setPosition(obj["position"].get_array()[0].get_real(),
+	//						obj["position"].get_array()[1].get_real(),
+	//						obj["position"].get_array()[2].get_real());
+	//				pLight->setAttenuation(obj["attenuation"].get_array()[0].get_real(),
+	//						obj["attenuation"].get_array()[1].get_real(),
+	//						obj["attenuation"].get_array()[2].get_real(),
+	//						obj["attenuation"].get_array()[3].get_real());
+	//			}
+	//			break;
+	//		case Ogre::Light::LT_DIRECTIONAL:
+	//			{
+	//				pLight = mSceneMgr->createLight(obj["lightName"].get_str());
+	//				pLight->setType(Ogre::Light::LT_DIRECTIONAL);
+	//				pLight->setDiffuseColour(obj["diffuse"].get_array()[0].get_real(),
+	//						obj["diffuse"].get_array()[1].get_real(),
+	//						obj["diffuse"].get_array()[2].get_real());
+	//				pLight->setSpecularColour(obj["specular"].get_array()[0].get_real(),
+	//						obj["specular"].get_array()[1].get_real(),
+	//						obj["specular"].get_array()[2].get_real());
+	//				pLight->setDirection(obj["direction"].get_array()[0].get_real(),
+	//						obj["direction"].get_array()[1].get_real(),
+	//						obj["direction"].get_array()[2].get_real());
+	//			}
+	//			break;
+	//		case Ogre::Light::LT_SPOTLIGHT:
+	//			{
+	//				pLight = mSceneMgr->createLight(obj["lightName"].get_str());
+	//				pLight->setType(Ogre::Light::LT_SPOTLIGHT);
+	//				pLight->setDiffuseColour(obj["diffuse"].get_array()[0].get_real(),
+	//						obj["diffuse"].get_array()[1].get_real(),
+	//						obj["diffuse"].get_array()[2].get_real());
+	//				pLight->setSpecularColour(obj["specular"].get_array()[0].get_real(),
+	//						obj["specular"].get_array()[1].get_real(),
+	//						obj["specular"].get_array()[2].get_real());
+	//				pLight->setPosition(obj["position"].get_array()[0].get_real(),
+	//						obj["position"].get_array()[1].get_real(),
+	//						obj["position"].get_array()[2].get_real());
+	//				pLight->setDirection(obj["direction"].get_array()[0].get_real(),
+	//					obj["direction"].get_array()[1].get_real(),
+	//					obj["direction"].get_array()[2].get_real());
+	//				pLight->setSpotlightRange(Ogre::Degree(obj["range"].get_array()[0].get_real()),
+	//					Ogre::Degree(obj["range"].get_array()[1].get_real()),
+	//					obj["range"].get_array()[2].get_real());
+	//			}
+	//			break;
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	//create Light
+	//	pLight = mSceneMgr->createLight("directLight");
+	//	pLight->setType(Ogre::Light::LT_DIRECTIONAL);
+	//	pLight->setDirection(0.0, -1.0, 0.0);
+	//	pLight->setDiffuseColour(1.0, 1.0, 1.0);
+	//	pLight->setSpecularColour(0.4, 0.4, 0.0);
+	//	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.0));
 
-		pLight = mSceneMgr->createLight("pointLight");
-		pLight->setType(Ogre::Light::LT_POINT);// make this light a point light
-		pLight->setDiffuseColour(1.0, .5, 0.0);      //color the light orange 
-		pLight->setSpecularColour(1.0, 1.0, 0.0);    //yellow highlights
-		pLight->setAttenuation(100, 1.0, 0.045, 0.0075);
-		pLight->setPosition(0.0, 10.0, 50.0);
+	//	pLight = mSceneMgr->createLight("pointLight");
+	//	pLight->setType(Ogre::Light::LT_POINT);// make this light a point light
+	//	pLight->setDiffuseColour(1.0, .5, 0.0);      //color the light orange 
+	//	pLight->setSpecularColour(1.0, 1.0, 0.0);    //yellow highlights
+	//	pLight->setAttenuation(100, 1.0, 0.045, 0.0075);
+	//	pLight->setPosition(0.0, 10.0, 50.0);
 
-		pLight = mSceneMgr->createLight("spotLight");
-		pLight->setType(Ogre::Light::LT_SPOTLIGHT);
-		pLight->setDiffuseColour(1.0, 1.0, 1.0);
-		pLight->setSpecularColour(1.0, 1.0, 1.0);
+	//	pLight = mSceneMgr->createLight("spotLight");
+	//	pLight->setType(Ogre::Light::LT_SPOTLIGHT);
+	//	pLight->setDiffuseColour(1.0, 1.0, 1.0);
+	//	pLight->setSpecularColour(1.0, 1.0, 1.0);
 
-		pLight->setDirection(-1, -1, -1);
-		pLight->setPosition(0.0, 20.0, 0.0);
-		pLight->setSpotlightRange(Ogre::Degree(35), Ogre::Degree(150), 0.1);
-	}
+	//	pLight->setDirection(-1, -1, -1);
+	//	pLight->setPosition(0.0, 20.0, 0.0);
+	//	pLight->setSpotlightRange(Ogre::Degree(35), Ogre::Degree(150), 0.1);
+	//}
 }
 
 bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
@@ -329,9 +329,9 @@ bool KinectApplication::keyPressed( const OIS::KeyEvent &arg )
 				GameSystem::getInstance()->m_eDebugHandAttackState = GameSystem::eHandAttacking;
 			}
 		}
-	//}
-	//else
-	//{
+	}
+	else
+	{
 		OgreApplication::keyPressed(arg);
 		CEGUI::System &sys = CEGUI::System::getSingleton();
 		sys.injectKeyDown(arg.key);
