@@ -10,9 +10,11 @@ void DotSceneLoader::release()
 	SceneNode *m_pBodyNode = NULL;
 	Entity *m_pBodyEnt = NULL;
 	Light *pLight = NULL;
+	Camera *pCamera = NULL;
 	VP_SCENE_NODE::iterator nodeIte;
 	VP_ENTITY::iterator entityIte;
 	VP_LIGHT::iterator lightIte;
+	VP_CAMERA::iterator cameraIte;
 	if(m_pSceneMgr)
 	{
 		for(nodeIte = m_vpSceneNode.begin(); nodeIte != m_vpSceneNode.end(); ++nodeIte)
@@ -46,6 +48,19 @@ void DotSceneLoader::release()
 		}
 		m_vpLight.clear();
 
+		for(cameraIte = m_vpCamera.begin(); cameraIte != m_vpCamera.end(); ++cameraIte)
+		{
+			pCamera = *cameraIte;
+			if(pCamera!= NULL)
+			{
+				m_pSceneMgr->destroyCamera(pCamera);
+				pCamera = NULL;
+			}
+		}
+		m_vpCamera.clear();
+
+		 
+
 		for(nodeIte = m_vpSceneNode.begin(); nodeIte != m_vpSceneNode.end(); ++nodeIte)
 		{
 			m_pBodyNode = *nodeIte;
@@ -57,15 +72,22 @@ void DotSceneLoader::release()
 			}
 		}
 		m_vpSceneNode.clear();
+
+		if(m_pCurrentVP != NULL)
+		{
+			m_pWindow->removeViewport(m_pCurrentVP->getZOrder());
+			m_pCurrentVP = NULL;
+		}
 	}
 }
 
-void DotSceneLoader::parseDotScene(const String &SceneName, const String &groupName, SceneManager *yourSceneMgr, SceneNode *pAttachNode, const String &sPrependNode)
+void DotSceneLoader::parseDotScene(const String &SceneName, const String &groupName, SceneManager *yourSceneMgr, Ogre::RenderWindow* pWindow, SceneNode *pAttachNode, const String &sPrependNode)
 {
 	// set up shared object values
 	m_sGroupName = groupName;
 	m_pSceneMgr = yourSceneMgr;
 	m_sPrependNode = sPrependNode;
+	m_pWindow = pWindow;
 	staticObjects.clear();
 	dynamicObjects.clear();
  
@@ -181,7 +203,7 @@ void DotSceneLoader::processScene(TiXmlElement *XMLRoot)
 	//if(pElement)
 	//	processOctree(pElement);
  
-	//// Process camera (?)
+	// Process camera (?)
 	//pElement = XMLRoot->FirstChildElement("camera");
 	//if(pElement)
 	//	processCamera(pElement);
@@ -364,6 +386,7 @@ void DotSceneLoader::processCamera(TiXmlElement *XMLNode, SceneNode *pParent)
  
 	// Create the camera
 	Camera *pCamera = m_pSceneMgr->createCamera(name);
+	m_vpCamera.push_back(pCamera);
 	if(pParent)
 		pParent->attachObject(pCamera);
  
@@ -423,6 +446,17 @@ void DotSceneLoader::processCamera(TiXmlElement *XMLNode, SceneNode *pParent)
 	pElement = XMLNode->FirstChildElement("userDataReference");
 	if(pElement)
 		;//!< @todo Implement the camera user data reference
+
+	//processViewport(pCamera);
+}
+
+void DotSceneLoader::processViewport(Camera *pCamera)
+{
+	if(m_pCurrentVP == NULL)
+	{
+		m_pCurrentVP = m_pWindow->addViewport(pCamera);
+		m_pCurrentVP->setBackgroundColour(Ogre::ColourValue(0,0,0));
+	}
 }
  
 void DotSceneLoader::processNode(TiXmlElement *XMLNode, SceneNode *pParent)

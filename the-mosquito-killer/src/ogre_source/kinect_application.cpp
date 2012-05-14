@@ -117,7 +117,7 @@ void KinectApplication::createScene(void)
 	//entGround->setMaterialName("Examples/Rockwall");
 	//entGround->setCastShadows(true);
 
-	GameSystem::getInstance()->init(m_pPhysicSimulation->getDynamicsWorld(), mSceneMgr);
+	GameSystem::getInstance()->init(m_pPhysicSimulation->getDynamicsWorld(), mSceneMgr, mWindow);
 	GameSystem::getInstance()->initPlayer();
 	GameSystem::getInstance()->initScene();
 	if(m_pKinectDevice == NULL)

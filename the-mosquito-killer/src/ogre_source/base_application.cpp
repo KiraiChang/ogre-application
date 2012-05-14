@@ -19,6 +19,7 @@ Ogre::Log *m_pLog = 0;
 //-------------------------------------------------------------------------------------
 BaseApplication::BaseApplication(void)
     : mRoot(0),
+	mCameraNode(0),
     mCamera(0),
     mSceneMgr(0),
     mWindow(0),

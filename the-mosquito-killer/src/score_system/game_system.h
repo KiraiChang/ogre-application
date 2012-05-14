@@ -24,6 +24,7 @@ const float DEF_MAX_PLAY_TIME = 120.0;
 namespace Ogre
 {
 	class SceneManager;
+	class RenderWindow;
 }
 
 class GameSystem
@@ -78,6 +79,7 @@ private:
 	WaveSystem									m_waveSystem;
 	btDynamicsWorld*							m_pWorld;
 	Ogre::SceneManager *						m_pSceneMgr;
+	Ogre::RenderWindow *						m_pWindow;
 	//V_RIGID_BODY								m_vRigidBody;
 	V_MOSQUITO									m_vMosquito;
 	//V_SHAPE										m_vShape;
@@ -99,7 +101,7 @@ private:
 public:
 												~GameSystem(void);
 	static GameSystem *							getInstance(void);
-	void										init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr);
+	void										init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow *pWindow);
 	void										release(void);
 	void										releaseMosquito(void);
 	void										releaseWeapon(void);
