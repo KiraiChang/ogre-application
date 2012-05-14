@@ -123,6 +123,7 @@ void KinectApplication::createScene(void)
 	if(m_pKinectDevice == NULL)
 	{
 		GameSystem::getInstance()->initPlayer(1);
+		GameSystem::getInstance()->m_bIsDebug = true;
 	}
 	else
 		m_pKinectDevice->setCameraElevationAngle(10);

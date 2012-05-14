@@ -66,6 +66,7 @@ public:
 	float										m_fTwoHandDistance;
 	bool										m_bUIInit;
 	Ogre::DotSceneLoader						m_dotSceneLoader;
+	bool										m_bIsDebug;
 private:
 												GameSystem(void);
 private:
