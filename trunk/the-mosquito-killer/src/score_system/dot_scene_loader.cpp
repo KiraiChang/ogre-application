@@ -83,6 +83,8 @@ void DotSceneLoader::release()
 
 void DotSceneLoader::parseDotScene(const String &SceneName, const String &groupName, SceneManager *yourSceneMgr, Ogre::RenderWindow* pWindow, SceneNode *pAttachNode, const String &sPrependNode)
 {
+	if(yourSceneMgr == NULL)
+		return;
 	// set up shared object values
 	m_sGroupName = groupName;
 	m_pSceneMgr = yourSceneMgr;

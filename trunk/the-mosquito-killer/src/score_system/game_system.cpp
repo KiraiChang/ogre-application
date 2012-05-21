@@ -6,6 +6,7 @@
 #include "../ogre_physic/ogre_physic_shape.h"
 #include "../ogre_physic/ogre_physic_debug.h"
 #include "../physic/physic_debug.h"
+#include "audio_system.h"
 #include <Ogre.h>
 
 #include <random>
@@ -56,6 +57,9 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 	if(ScoreSystem::calcScore(object0, object1) != 0)
 	{
 		//object1->m_bDestory = true;
+		float pos[3];
+		float scale[3] = {1.0, 1.0, 1.0};
+		float quat[4] = {1.0, 0.0, 0.0, 0.0};
 		GameSystem::getInstance()->setHandState(GameSystem::eOnHandClose);
 		if(object1->getParent() != NULL)
 		{
@@ -63,18 +67,18 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 			{	
 			case eMosquitoBase:
 				{
+					((MosquitoBase *)object1->getParent())->getPos(pos);
 					((MosquitoBase *)object1->getParent())->setDestory();
+					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos, 50.0f);
 				}
 				break;
 			case eMosquitoSplit:
 				{
 					int number = ((MosquitoSplit *)object1->getParent())->getSplitNumber();
-					float scale[3] = {1.0, 1.0, 1.0};
-					float quat[4] = {1.0, 0.0, 0.0, 0.0};
-					float pos[3];
 					float distance = 0;
 					((MosquitoSplit *)object1->getParent())->getPos(pos);
 					((MosquitoSplit *)object1->getParent())->setDestory();
+					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
 					//create "number" 
 					for(int i = 0; i < number; i++)
 					{
@@ -94,7 +98,11 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 				}
 				break;
 			case eMosquitoFat:
-				((MosquitoFat *)object1->getParent())->decreaseBlood();
+				{
+					((MosquitoFat *)object1->getParent())->getPos(pos);
+					((MosquitoFat *)object1->getParent())->decreaseBlood();
+					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
+				}
 				break;
 			default:
 				break;
@@ -205,6 +213,7 @@ void GameSystem::release(void)
 	m_dotSceneLoader.release();
 	m_pWorld = NULL;
 	m_pSceneMgr = NULL;
+	AudioSystem::getInstance()->release();
 }
 
 void GameSystem::releaseMosquito(void)
@@ -274,6 +283,7 @@ void GameSystem::restart(void)
 	m_dotSceneLoader.release();
 	m_dotSceneLoader.parseDotScene("../scene/stage00.scene", "scene", m_pSceneMgr, m_pWindow);
 	m_waveSystem.init(0);
+	AudioSystem::getInstance()->play2D("../music/ophelia.mp3");
 	m_bUIInit = TRUE;
 }
 
@@ -505,6 +515,7 @@ void GameSystem::update(float timePass)
 	default:
 		break;
 	}
+	AudioSystem::getInstance()->update(timePass);
 }
 
 void GameSystem::updateMenu(float timePass)

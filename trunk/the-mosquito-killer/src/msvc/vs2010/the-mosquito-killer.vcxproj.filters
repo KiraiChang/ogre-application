@@ -73,6 +73,9 @@
     <ClCompile Include="..\..\score_system\dot_scene_loader.cpp">
       <Filter>score_system</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\score_system\audio_system.cpp">
+      <Filter>score_system</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_source\base_application.h">
@@ -148,6 +151,9 @@
       <Filter>score_system</Filter>
     </ClInclude>
     <ClInclude Include="..\..\score_system\dot_scene_loader.h">
+      <Filter>score_system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\score_system\audio_system.h">
       <Filter>score_system</Filter>
     </ClInclude>
   </ItemGroup>
