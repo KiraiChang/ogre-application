@@ -67,6 +67,8 @@ public:
 	bool										m_bUIInit;
 	Ogre::DotSceneLoader						m_dotSceneLoader;
 	bool										m_bIsDebug;
+	float										m_vfCameraPos[3];
+	float										m_vfCameraDir[3];
 private:
 												GameSystem(void);
 private:

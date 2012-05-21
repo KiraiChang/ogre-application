@@ -69,7 +69,7 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 				{
 					((MosquitoBase *)object1->getParent())->getPos(pos);
 					((MosquitoBase *)object1->getParent())->setDestory();
-					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos, 50.0f);
+					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
 				}
 				break;
 			case eMosquitoSplit:
@@ -283,7 +283,8 @@ void GameSystem::restart(void)
 	m_dotSceneLoader.release();
 	m_dotSceneLoader.parseDotScene("../scene/stage00.scene", "scene", m_pSceneMgr, m_pWindow);
 	m_waveSystem.init(0);
-	AudioSystem::getInstance()->play2D("../music/ophelia.mp3");
+	AudioSystem::getInstance()->restart();
+	AudioSystem::getInstance()->play3DBGM("../music/ophelia.mp3", m_vfCameraPos, 50.0f);
 	m_bUIInit = TRUE;
 }
 
