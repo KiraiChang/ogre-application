@@ -7,6 +7,7 @@
 #include "../score_system/score_system.h"
 #include "../score_system/score_object.h"
 #include "../score_system/game_system.h"
+#include "../score_system/audio_system.h"
 
 #include <iostream>
 #include <fstream>
@@ -54,6 +55,8 @@ const std::string KinectApplication::getApplicationName(void)const
 void KinectApplication::createCamera(void)
 {
 	std::ifstream is("../configure/camera.cfg");
+	float pos[3] = {0.0, 0.0, 0.0};
+	float dir[3] = {0.0, 0.0, 1.0};
 	if(is.is_open())
 	{
 		json_spirit::mValue value;
@@ -69,10 +72,16 @@ void KinectApplication::createCamera(void)
 		mCameraNode->setPosition(obj["position"].get_array()[0].get_real(),
 								obj["position"].get_array()[1].get_real(),
 								obj["position"].get_array()[2].get_real());
+		pos[0] = obj["position"].get_array()[0].get_real();
+		pos[1] = obj["position"].get_array()[1].get_real();
+		pos[2] = obj["position"].get_array()[2].get_real();
 		// Look back along -Z
 		mCamera->lookAt(Ogre::Vector3(obj["look_at"].get_array()[0].get_real(),
 								obj["look_at"].get_array()[1].get_real(),
 								obj["look_at"].get_array()[2].get_real()));
+		dir[0] = obj["look_at"].get_array()[0].get_real();
+		dir[1] = obj["look_at"].get_array()[1].get_real();
+		dir[2] = obj["look_at"].get_array()[2].get_real();
 		//mCamera->setNearClipDistance(5);
 		mCamera->setNearClipDistance(obj["near_clip"].get_real());
 		mCamera->setFarClipDistance(obj["far_clip"].get_real()); 
@@ -93,7 +102,7 @@ void KinectApplication::createCamera(void)
 		mCamera->setNearClipDistance(0.1);
 		mCamera->setFarClipDistance(500); 
 	}
-
+	AudioSystem::getInstance()->setListenerPosition(pos, dir);
     mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
 }
 
