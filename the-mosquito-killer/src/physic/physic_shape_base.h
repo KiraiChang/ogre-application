@@ -32,6 +32,7 @@ public:
 	virtual void				update(float timePass, float *position, float *quaternion);
 	virtual void				update(float timePass);
 	virtual void				setAnimation(const char *aniName);
+	virtual void				setParticle(const char *fileName);
 protected:
 };
 //*******************************************************

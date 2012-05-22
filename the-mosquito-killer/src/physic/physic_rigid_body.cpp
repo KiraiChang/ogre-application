@@ -305,6 +305,12 @@ void PhysicRigidBody::setAnimation(const char * aniName)
 	if(m_pShapeData != NULL)
 		m_pShapeData->setAnimation(aniName);
 }
+
+void PhysicRigidBody::setParticle(const char *fileName)
+{
+	if(m_pShapeData != NULL)
+		m_pShapeData->setParticle(fileName);
+}
 //*******************************************************
 //********************  END  ****************************
 //*******************************************************

@@ -256,10 +256,10 @@ void GameSystem::releaseCharacter()
 
 void GameSystem::restart(void)
 {
-	V_RIGID_BODY::iterator rIte;
-	V_SHAPE::iterator sIte;
-	PhysicRigidBody *body;
-	PhysicShapeBase *shape;
+	//V_RIGID_BODY::iterator rIte;
+	//V_SHAPE::iterator sIte;
+	//PhysicRigidBody *body;
+	//PhysicShapeBase *shape;
 	ScoreSystem::resetScore();
 	m_fTimePass = 0.0f;
 	//for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end(); rIte++)
@@ -751,9 +751,9 @@ void GameSystem::updateHandState(float timePass)
 				m_eHandState = eOnHandWaitAttack;
 			}
 
-			char msg[64];
-			sprintf(msg, "rightPos[2] - leftPos[2]:%f\n", rightPos[2] - leftPos[2]);
-			m_pLog->logMessage(msg);
+			//char msg[64];
+			//sprintf(msg, "rightPos[2] - leftPos[2]:%f\n", rightPos[2] - leftPos[2]);
+			//m_pLog->logMessage(msg);
 			if((rightPos[2] - leftPos[2]) > HAND_CHECK_AIM_POSE_DIST)
 			{
 				m_eHandState = eOnHandWaitShoot;
@@ -829,13 +829,13 @@ void GameSystem::updateHandState(float timePass)
 			{
 				float speed = (m_fRightHandZPos - rightPos[2]) / m_fShootTimePass;
 				m_fShootTimePass = 0.0f;
-				char msg[128];
-				sprintf(msg, "m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
-				m_pLog->logMessage(msg);
+				//char msg[128];
+				//sprintf(msg, "m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
+				//m_pLog->logMessage(msg);
 				if(speed > HAND_CHECK_RIGHT_HAND_SPEED)
 				{
-					sprintf(msg, "shoot, m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
-					m_pLog->logMessage(msg);
+					//sprintf(msg, "shoot, m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
+					//m_pLog->logMessage(msg);
 					
 					float quat[4] = {1.0, 0.0, 0.0, 0.0};
 					float pos[3] = {0.0,40.0,0.0};
