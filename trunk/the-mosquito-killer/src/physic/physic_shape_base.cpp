@@ -45,6 +45,10 @@ void PhysicShapeBase::update(float timePass)
 void PhysicShapeBase::setAnimation(const char *aniName)
 {
 }
+
+void PhysicShapeBase::setParticle(const char *fileName)
+{
+}
 //*******************************************************
 //********************  BOX  ****************************
 //*******************************************************

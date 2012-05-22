@@ -1,6 +1,6 @@
 #include "ogre_physic_shape.h"
-#include <OgreSceneManager.h>
-#include <OgreEntity.h>
+#include <Ogre.h>
+
 
 unsigned int gCurrentID = 0;
 //*******************************************************
@@ -11,6 +11,7 @@ OgreShapeBox::OgreShapeBox(Ogre::SceneManager *scene):
 		m_pSceneMgr(scene),
 		m_pBodyNode(NULL),
 		m_pBodyEnt(NULL),
+		m_pParticleSystem(NULL),
 		m_pAnimationState(NULL)
 {
 }
@@ -56,6 +57,15 @@ void OgreShapeBox::release(void)
 			m_pBodyEnt = NULL;
 		}
 
+		if(m_pParticleSystem != NULL)
+		{
+			if(m_pBodyNode)
+				m_pBodyNode->detachObject(m_pParticleSystem);
+
+			m_pSceneMgr->destroyParticleSystem(m_pParticleSystem);
+			m_pParticleSystem = NULL;
+		}
+
 		if(m_pBodyNode!= NULL)
 		{
 			m_pSceneMgr->destroySceneNode(m_pBodyNode);
@@ -84,6 +94,22 @@ void OgreShapeBox::setAnimation(const char *aniName)
 	m_pAnimationState = m_pBodyEnt->getAnimationState(aniName);
 	m_pAnimationState->setLoop(true);
 	m_pAnimationState->setEnabled(true);
+}
+
+void OgreShapeBox::setParticle(const char *fileName)
+{
+	if(m_pParticleSystem != NULL)
+	{
+		if(m_pBodyNode)
+			m_pBodyNode->detachObject(m_pParticleSystem);
+
+		m_pSceneMgr->destroyParticleSystem(m_pParticleSystem);
+		m_pParticleSystem = NULL;
+	}
+	char name[64];
+	sprintf(name, "m_pShapeParticle%d", gCurrentID);
+	m_pParticleSystem = m_pSceneMgr->createParticleSystem(name, fileName);
+	m_pBodyNode->attachObject(m_pParticleSystem);
 }
 //*******************************************************
 //********************  CONE  ***************************

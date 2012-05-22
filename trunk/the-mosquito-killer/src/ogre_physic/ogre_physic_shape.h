@@ -10,6 +10,7 @@ namespace Ogre
 	class SceneNode;
 	class Vector3;
 	class AnimationState;
+	class ParticleSystem;
 }
 //*******************************************************
 //********************  BOX  ****************************
@@ -23,6 +24,7 @@ private:
 	Ogre::SceneNode *			m_pBodyNode;
 	Ogre::Entity *				m_pBodyEnt;
 	Ogre::AnimationState *		m_pAnimationState;
+	Ogre::ParticleSystem *		m_pParticleSystem;
 public:
 								OgreShapeBox(Ogre::SceneManager *scene);
 	virtual						~OgreShapeBox(void);
@@ -31,6 +33,7 @@ public:
 	virtual void				update(float timePass, float *position, float *quaternion);
 	virtual void				update(float timePass);
 	virtual void				setAnimation(const char *aniName);
+	virtual void				setParticle(const char *fileName);
 	Ogre::SceneNode *			getNode(void)const							{return m_pBodyNode;}
 protected:
 };

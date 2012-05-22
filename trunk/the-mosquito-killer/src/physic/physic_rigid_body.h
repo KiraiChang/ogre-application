@@ -39,6 +39,7 @@ public:
 	void getPos(float *pos)const;
 	void *getUserPointer()const;
 	void setAnimation(const char * aniName);
+	void setParticle(const char *fileName);
 };
 //*******************************************************
 //********************  END  ****************************

@@ -44,7 +44,7 @@ class BaseApplication : public Ogre::FrameListener, public Ogre::WindowEventList
 public:
     BaseApplication(void);
     virtual ~BaseApplication(void);
-
+	void redirectIOToConsole(void);
     virtual void go(void);
 	virtual const std::string getApplicationName(void)const;
 public:

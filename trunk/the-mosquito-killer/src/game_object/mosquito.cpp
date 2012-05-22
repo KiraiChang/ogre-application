@@ -102,6 +102,12 @@ void MosquitoBase::setAnimation(const char *aniName)
 		m_pBody->setAnimation(aniName);
 }
 
+void MosquitoBase::setParticle(const char *fileName)
+{
+	if(m_pBody != NULL)
+		m_pBody->setParticle(fileName);
+}
+
 void MosquitoBase::getPos(float *pos)
 {
 	if(m_pMove != NULL)

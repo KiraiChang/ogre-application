@@ -153,7 +153,7 @@ void KinectApplication::createUI(void)
 
 void KinectApplication::createLight(void)
 {
-	//Ogre::Light* pLight = NULL;
+	Ogre::Light* pLight = NULL;
 
 	//std::ifstream is("../configure/scene_light.cfg");
 	//if(is.is_open())
@@ -228,20 +228,20 @@ void KinectApplication::createLight(void)
 	//}
 	//else
 	//{
-	//	//create Light
-	//	pLight = mSceneMgr->createLight("directLight");
-	//	pLight->setType(Ogre::Light::LT_DIRECTIONAL);
-	//	pLight->setDirection(0.0, -1.0, 0.0);
-	//	pLight->setDiffuseColour(1.0, 1.0, 1.0);
-	//	pLight->setSpecularColour(0.4, 0.4, 0.0);
-	//	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.0));
+		//create Light
+		//pLight = mSceneMgr->createLight("directLight");
+		//pLight->setType(Ogre::Light::LT_DIRECTIONAL);
+		//pLight->setDirection(0.0, -1.0, 0.0);
+		//pLight->setDiffuseColour(1.0, 1.0, 1.0);
+		//pLight->setSpecularColour(0.4, 0.4, 0.0);
+		//mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.0));
 
-	//	pLight = mSceneMgr->createLight("pointLight");
-	//	pLight->setType(Ogre::Light::LT_POINT);// make this light a point light
-	//	pLight->setDiffuseColour(1.0, .5, 0.0);      //color the light orange 
-	//	pLight->setSpecularColour(1.0, 1.0, 0.0);    //yellow highlights
-	//	pLight->setAttenuation(100, 1.0, 0.045, 0.0075);
-	//	pLight->setPosition(0.0, 10.0, 50.0);
+		//pLight = mSceneMgr->createLight("pointLight");
+		//pLight->setType(Ogre::Light::LT_POINT);// make this light a point light
+		//pLight->setDiffuseColour(1.0, .5, 0.0);      //color the light orange 
+		//pLight->setSpecularColour(1.0, 1.0, 0.0);    //yellow highlights
+		//pLight->setAttenuation(100, 1.0, 0.045, 0.0075);
+		//pLight->setPosition(0.0, 10.0, 50.0);
 
 	//	pLight = mSceneMgr->createLight("spotLight");
 	//	pLight->setType(Ogre::Light::LT_SPOTLIGHT);
