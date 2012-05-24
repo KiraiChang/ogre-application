@@ -108,6 +108,12 @@ void MosquitoBase::setParticle(const char *fileName)
 		m_pBody->setParticle(fileName);
 }
 
+void MosquitoBase::setVisible(bool visible)
+{
+	if(m_pBody != NULL)
+		m_pBody->setVisible(visible);
+}
+
 void MosquitoBase::getPos(float *pos)
 {
 	if(m_pMove != NULL)

@@ -40,6 +40,7 @@ public:
 	void *getUserPointer()const;
 	void setAnimation(const char * aniName);
 	void setParticle(const char *fileName);
+	void setVisible(bool visible);
 };
 //*******************************************************
 //********************  END  ****************************

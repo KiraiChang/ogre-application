@@ -98,9 +98,9 @@ OgreApplication::OgreApplication():
 	mRenderer(NULL),
 	mTerrainGlobals(NULL),
 	mTerrainGroup(NULL),
-	mInfoLabel(NULL),
+	//mInfoLabel(NULL),
 	mTerrainInfo(NULL),
-	mpSheet(NULL),
+	//mpSheet(NULL),
 	mMousePress(MOUSE_PRESS_NONE)
 {
 }
@@ -121,7 +121,7 @@ void OgreApplication::release(void)
 	{
 		CEGUI::OgreRenderer::destroySystem();
 		mRenderer = NULL;
-		mpSheet = NULL;
+		//mpSheet = NULL;
 	}
 	destroyScene();
 }
@@ -400,7 +400,7 @@ void OgreApplication::createFrameListener(void)
 	//Call by BaseApplication::setup so not call again at create scene
 	BaseApplication::createFrameListener();
 
-	mInfoLabel = mTrayMgr->createLabel(OgreBites::TL_TOP, "TInfo", "", 350);
+	//mInfoLabel = mTrayMgr->createLabel(OgreBites::TL_TOP, "TInfo", "", 350);
 }
 
 void OgreApplication::processTerrain(void)
@@ -409,32 +409,32 @@ void OgreApplication::processTerrain(void)
 	{
 		if (mTerrainGroup->isDerivedDataUpdateInProgress())
 		{
-			mTrayMgr->moveWidgetToTray(mInfoLabel, OgreBites::TL_TOP, 0);
-			mInfoLabel->show();
-			if (mTerrainsImported)
-			{
-				mInfoLabel->setCaption("Building terrain, please wait...");
-			}
-			else
-			{
-				mInfoLabel->setCaption("Updating textures, patience...");
-			}
+			//mTrayMgr->moveWidgetToTray(mInfoLabel, OgreBites::TL_TOP, 0);
+			//mInfoLabel->show();
+			//if (mTerrainsImported)
+			//{
+			//	mInfoLabel->setCaption("Building terrain, please wait...");
+			//}
+			//else
+			//{
+			//	mInfoLabel->setCaption("Updating textures, patience...");
+			//}
 		}
 		else
 		{
-			mTrayMgr->removeWidgetFromTray(mInfoLabel);
-			mInfoLabel->hide();
-			if (mTerrainsImported)
-			{
-				//mTerrainGroup->saveAllTerrains(true);
-				mTerrainsImported = false;
-			}
+			//mTrayMgr->removeWidgetFromTray(mInfoLabel);
+			//mInfoLabel->hide();
+			//if (mTerrainsImported)
+			//{
+			//	//mTerrainGroup->saveAllTerrains(true);
+			//	mTerrainsImported = false;
+			//}
 		}
 	}
 	else
 	{
-		mTrayMgr->removeWidgetFromTray(mInfoLabel);
-		mInfoLabel->hide();
+		//mTrayMgr->removeWidgetFromTray(mInfoLabel);
+		//mInfoLabel->hide();
 		if (mTerrainsImported)
 		{
 			//mTerrainGroup->saveAllTerrains(true);

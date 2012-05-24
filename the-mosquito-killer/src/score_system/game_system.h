@@ -27,6 +27,13 @@ namespace Ogre
 	class RenderWindow;
 }
 
+namespace CEGUI
+{
+	class Window;
+}
+
+class KinectDevice;
+
 class GameSystem
 {
 public:
@@ -64,7 +71,6 @@ public:
 	DebugHandAttackState						m_eDebugHandAttackState;
 	float										m_vfHandDebugPos[3];
 	float										m_fTwoHandDistance;
-	bool										m_bUIInit;
 	Ogre::DotSceneLoader						m_dotSceneLoader;
 	bool										m_bIsDebug;
 	float										m_vfCameraPos[3];
@@ -96,11 +102,11 @@ private:
 	float										m_fShootTimePass;
 	float										m_fRightHandZPos;
 	//kinect
-	PhysicKinect *								m_vpPlayer[NUI_SKELETON_COUNT];
+	PhysicKinect *								m_vpPlayer/*[NUI_SKELETON_COUNT]*/;
 	DWORD										m_iCurrentID;
 	int											NumBomb;
 	int											NumBook;
-	
+	CEGUI::Window *								m_pSheet;
 
 public:
 												~GameSystem(void);
@@ -110,7 +116,7 @@ public:
 	void										releaseMosquito(void);
 	void										releaseWeapon(void);
 	void										releaseCharacter(void);
-	void										restart(void);
+	void										restart(unsigned int stageID = 0);
 	float										getTimePass(void)const;
 	HandState									getHandState(void)const;
 	void										setHandState(HandState state);
@@ -129,11 +135,12 @@ public:
 	void										updateMenu(float timePass);//主要menu畫面
 	void										updatePlaying(float timePass);//遊戲中主要的流程
 	void										updateEnd(float timePass);//結算畫面
-	void										updatePlayer(const NUI_SKELETON_FRAME &frame);
+	void										updatePlayer(KinectDevice *device);
 	void										updatePlayerDebug(float timePass);//若是沒有kinect採取的動作
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
-	void										testCollision();
 	float										getFullTime(void)const;
+	void										setAllVisible(bool visible);
+	void										testCollision();
 
 	static bool									MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* body0,btCollisionObject* body1);
 	static bool									MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1);

@@ -241,7 +241,7 @@ bool KinectDevice::getSkeletonFrame(NUI_SKELETON_FRAME &frame)
                 (frame.SkeletonData[i].eTrackingState == NUI_SKELETON_POSITION_ONLY))
             {
                 bFoundSkeleton = true;
-				m_pNuiSensor->NuiSkeletonSetTrackedSkeletons(&frame.SkeletonData[i].dwTrackingID);
+				//m_pNuiSensor->NuiSkeletonSetTrackedSkeletons(&frame.SkeletonData[i].dwTrackingID);
             }
         }
     }
@@ -260,4 +260,9 @@ bool KinectDevice::getSkeletonFrame(NUI_SKELETON_FRAME &frame)
     }
 
 	return bFoundSkeleton;
+}
+
+void KinectDevice::NuiSkeletonSetTrackedSkeletons(DWORD &trackingID)
+{
+	m_pNuiSensor->NuiSkeletonSetTrackedSkeletons(&trackingID);
 }

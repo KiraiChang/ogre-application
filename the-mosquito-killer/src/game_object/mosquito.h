@@ -41,6 +41,7 @@ public:
 	virtual void				setDestory(void)			{m_bDestory = 1;}
 	virtual void				setAnimation(const char *aniName);
 	virtual void				setParticle(const char *fileName);
+	virtual void				setVisible(bool visible);
 	void						getPos(float *pos);
 };
 //*******************************************************

@@ -21,6 +21,7 @@ public:
     HRESULT                 Nui_Init( OLECHAR * instanceName );
     void                    Nui_UnInit(void);
     void                    Nui_Zero(void);
+	void					NuiSkeletonSetTrackedSkeletons(DWORD &trackingID);
 
 	//Controller Camera Angle;
 	void					setCameraElevationAngle(const long &lAngleDegrees);

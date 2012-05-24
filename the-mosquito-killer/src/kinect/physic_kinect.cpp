@@ -294,3 +294,14 @@ DWORD PhysicKinect::getID(void)const
 {
 	return m_iKinectID;
 }
+
+void PhysicKinect::setVisible(bool visible)
+{
+	for(int i =0; i < eKinectBodyPart; i ++)
+	{
+		if(m_pBody[i] != NULL)
+		{
+			m_pBody[i]->setVisible(visible);
+		}
+	}
+}

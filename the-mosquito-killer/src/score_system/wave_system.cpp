@@ -17,7 +17,7 @@ WaveSystem::~WaveSystem(void)
 {
 }
 
-void WaveSystem::init(unsigned int stage)
+void WaveSystem::init(unsigned int stage, std::string &scene, std::string &sceneGroup, std::string &audio)
 {
 	char fileName[128];
 	sprintf(fileName, "../stage/stage%.3d.dat", stage);
@@ -34,7 +34,9 @@ void WaveSystem::init(unsigned int stage)
 		json_spirit::mArray arr;
 		json_spirit::mObject obj;
 		arr = value.get_obj()["mosquito"].get_array();
-
+		scene = value.get_obj()["scene"].get_str();
+		audio = value.get_obj()["audio"].get_str();
+		sceneGroup = value.get_obj()["sceneGroup"].get_str();
 		for(int i = 0; i <arr.size();i++)
 		{
 			obj = arr[i].get_obj();

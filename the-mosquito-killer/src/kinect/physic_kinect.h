@@ -48,6 +48,7 @@ public:
 	void										getPartPos(unsigned int offset, float *pos);
 	float										getScale(unsigned int offset);
 	DWORD										getID(void)const;
+	void										setVisible(bool visible);
 };
 
 #endif //_PHYSIC_KINECT_H_

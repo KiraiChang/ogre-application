@@ -139,11 +139,11 @@ void KinectApplication::createScene(void)
 
 void KinectApplication::createUI(void)
 {
-	CEGUI::WindowManager &windowMgr = CEGUI::WindowManager::getSingleton();
+	//CEGUI::WindowManager &windowMgr = CEGUI::WindowManager::getSingleton();
 
-	mpSheet = windowMgr.loadWindowLayout("kinect_game.layout");
- 
-    CEGUI::System::getSingleton().setGUISheet(mpSheet);
+	//mpSheet = windowMgr.loadWindowLayout("kinect_game.layout");
+ //
+ //   CEGUI::System::getSingleton().setGUISheet(mpSheet);
 
 	//CEGUI::Slider *slider = (CEGUI::Slider *)mpSheet->getChild("Root/Timepass");
 
@@ -263,9 +263,7 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 		float timePass = m_pPhysicSimulation->update();
 		if(NULL != m_pKinectDevice)
 		{
-			NUI_SKELETON_FRAME frame = {0};
-			if(m_pKinectDevice->getSkeletonFrame(frame))
-				GameSystem::getInstance()->updatePlayer(frame);
+			GameSystem::getInstance()->updatePlayer(m_pKinectDevice);
 		}
 		else
 			GameSystem::getInstance()->updatePlayerDebug(timePass);
@@ -275,28 +273,6 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 			m_pRagDoll->update();
 
 		GameSystem::getInstance()->update(timePass);
-		CEGUI::Slider *slider = (CEGUI::Slider *)mpSheet->getChild("Root/Timepass");
-		if(GameSystem::getInstance()->m_bUIInit)
-		{
-			GameSystem::getInstance()->m_bUIInit = FALSE;
-
-			//slider->setCurrentValue(GameSystem::getInstance()->getFullTime());
-			slider->setMaxValue(GameSystem::getInstance()->getFullTime());
-
-			//mViewport->setCamera(GameSystem::getInstance()->m_dotSceneLoader.m_vpCamera.back());
-			//mCameraMan->setCamera(GameSystem::getInstance()->m_dotSceneLoader.m_vpCamera.back());
-		}
-
-		float current = GameSystem::getInstance()->getFullTime() - GameSystem::getInstance()->getTimePass();
-		slider->setCurrentValue(current);
-	}
-
-	{
-		int score = ScoreSystem::getScore();
-		char text[128];
-		sprintf_s(text, "SCORE:%016d", score);
-		CEGUI::Editbox *edit = (CEGUI::Editbox *)mpSheet->getChild("Root/ScoreText");
-		edit->setText(CEGUI::String (text));
 	}
 	return bRet;
 }

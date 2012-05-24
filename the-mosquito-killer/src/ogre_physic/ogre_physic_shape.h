@@ -34,9 +34,11 @@ public:
 	virtual void				update(float timePass);
 	virtual void				setAnimation(const char *aniName);
 	virtual void				setParticle(const char *fileName);
+	virtual void				setVisible(bool visible);
 	Ogre::SceneNode *			getNode(void)const							{return m_pBodyNode;}
 protected:
 };
+/*
 //*******************************************************
 //********************  CONE  ***************************
 //*******************************************************
@@ -101,6 +103,5 @@ protected:
 //*******************************************************
 //********************  END  ****************************
 //*******************************************************
-
-
+*/
 #endif //_OGRE_PHYSIC_SHAPE_

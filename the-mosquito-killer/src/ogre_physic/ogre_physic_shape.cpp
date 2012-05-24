@@ -111,6 +111,16 @@ void OgreShapeBox::setParticle(const char *fileName)
 	m_pParticleSystem = m_pSceneMgr->createParticleSystem(name, fileName);
 	m_pBodyNode->attachObject(m_pParticleSystem);
 }
+
+void OgreShapeBox::setVisible(bool visible)
+{
+	if(m_pBodyNode != NULL)
+	{
+		m_pBodyNode->setVisible(visible);
+	}
+}
+
+/*
 //*******************************************************
 //********************  CONE  ***************************
 //*******************************************************
@@ -310,6 +320,7 @@ void OgreShapeSphere::setAnimation(const char *aniName)
 	m_pAnimationState->setLoop(true);
 	m_pAnimationState->setEnabled(true);
 }
+*/
 //*******************************************************
 //********************  END  ****************************
 //*******************************************************
