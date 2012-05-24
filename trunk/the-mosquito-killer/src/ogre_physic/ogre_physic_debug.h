@@ -32,6 +32,7 @@ public:
 	virtual void draw(const int &part, btRigidBody *body);
 	virtual void endDraw(void);
 	virtual void release(void);
+	virtual void setVisible(bool visible);
 };
 
 #endif //_OGRE_PHYSIC_DEBUG_H_

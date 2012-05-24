@@ -4,7 +4,27 @@
  
 //using namespace std;
 using namespace Ogre;
- 
+
+void DotSceneLoader::setAllVisible(bool visible)
+{
+	{
+		VP_SCENE_NODE::iterator ite;
+		for(ite = m_vpSceneNode.begin();ite != m_vpSceneNode.end();++ite)
+		{
+			(*ite)->setVisible(visible);
+		}
+	}
+	//VP_ENTITY m_vpEntity;
+	{
+		VP_LIGHT::iterator ite;
+		for(ite = m_vpLight.begin();ite != m_vpLight.end();++ite)
+		{
+			(*ite)->setVisible(visible);
+		}
+	}
+	//VP_CAMERA m_vpCamera;
+}
+
 void DotSceneLoader::release()
 {
 	SceneNode *m_pBodyNode = NULL;

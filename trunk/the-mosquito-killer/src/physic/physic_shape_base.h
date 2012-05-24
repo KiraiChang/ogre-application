@@ -33,6 +33,7 @@ public:
 	virtual void				update(float timePass);
 	virtual void				setAnimation(const char *aniName);
 	virtual void				setParticle(const char *fileName);
+	virtual void				setVisible(bool visible);
 protected:
 };
 //*******************************************************
@@ -57,6 +58,7 @@ public:
 	virtual PHYSIC_SHPAE_TYPE	getType(void);
 protected:
 };
+/*
 //*******************************************************
 //********************  CONE  ***************************
 //*******************************************************
@@ -126,6 +128,7 @@ public:
 	virtual PHYSIC_SHPAE_TYPE	getType(void);
 protected:
 };
+*/
 //*******************************************************
 //********************  END  ****************************
 //*******************************************************

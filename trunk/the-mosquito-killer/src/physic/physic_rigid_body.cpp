@@ -83,6 +83,7 @@ void PhysicRigidBody::init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, 
 				m_pShapeData->getData(PhysicShapeBox::SIZE_Z)
 				));
 			break;
+			/*
 		case ePhysicShapeCone:
 			{
 				btVector3 axe(m_pShapeData->getData(PhysicShapeCone::AXE_X),
@@ -119,8 +120,9 @@ void PhysicRigidBody::init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, 
 		case ePhysicShapeSphere:
 			m_pShapes = new btSphereShape(btScalar (m_pShapeData->getData(PhysicShapeSphere::RADIUS)));
 			break;
+			*/
 		default:
-			break;
+			return;
 		}
 		m_pBodies = localCreateRigidBody(mass, trans, m_pShapes, userPoint, collisionflag);
 	}
@@ -310,6 +312,14 @@ void PhysicRigidBody::setParticle(const char *fileName)
 {
 	if(m_pShapeData != NULL)
 		m_pShapeData->setParticle(fileName);
+}
+
+void PhysicRigidBody::setVisible(bool visible)
+{
+	if(m_pShapeData != NULL)
+	{
+		m_pShapeData->setVisible(visible);
+	}
 }
 //*******************************************************
 //********************  END  ****************************

@@ -159,6 +159,14 @@ void OgrePhysicDebug::release(void)
 	}
 }
 
+void OgrePhysicDebug::setVisible(bool visible)
+{
+	if(m_pBodyNode != NULL)
+	{
+		m_pBodyNode->setVisible(visible);
+	}
+}
+
 
 
 

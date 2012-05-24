@@ -8,6 +8,7 @@
 #include "../physic/physic_debug.h"
 #include "audio_system.h"
 #include <Ogre.h>
+#include <CEGUI.h>
 
 #include <random>
 extern Ogre::Log* m_pLog;
@@ -154,7 +155,6 @@ GameSystem::GameSystem(void):
 		//m_fFullTime(0),
 		m_fTimePass(0),
 		//m_bShoot(false),
-		m_bUIInit(TRUE),
 		m_eState(eOnMenu),
 		m_eDebugHandVState(eHandMoveVNothing),
 		m_eDebugHandHState(eHandMoveHNothing),
@@ -164,19 +164,22 @@ GameSystem::GameSystem(void):
 		m_iCurrentID(0),
 		m_fRightHandZPos(0),
 		m_fShootTimePass(0),
+		m_pSheet(NULL),
 		NumBook(0),
 		NumBomb(0)
 {
-	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
-	{
-		m_vpPlayer[i] = NULL;
-	}
+	//for(int i = 0; i < NUI_SKELETON_COUNT; i++)
+	//{
+	//	m_vpPlayer[i] = NULL;
+	//}
+	m_vpPlayer = NULL;
 
-		m_vfHandDebugPos[0] = 0.0;
-		m_vfHandDebugPos[1] = 20.0;
-		m_vfHandDebugPos[2] = 20.0;
+	m_vfHandDebugPos[0] = 0.0;
+	m_vfHandDebugPos[1] = 20.0;
+	m_vfHandDebugPos[2] = 20.0;
 
-		m_fTwoHandDistance = HAND_DEBUG_DISTANCE;
+	m_fTwoHandDistance = HAND_DEBUG_DISTANCE;
+	setAllVisible(false);
 }
 
 GameSystem::~GameSystem(void)
@@ -203,6 +206,17 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 
 	if(m_pWindow == NULL)
 		m_pWindow = pWindow;
+
+	CEGUI::WindowManager &windowMgr = CEGUI::WindowManager::getSingleton();
+
+	m_pSheet = windowMgr.loadWindowLayout("kinect_game.layout");
+
+	CEGUI::System::getSingleton().setGUISheet(m_pSheet);
+
+	CEGUI::Slider *slider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
+
+	slider->setCurrentValue(DEF_MAX_PLAY_TIME);
+	slider->setMaxValue(DEF_MAX_PLAY_TIME);
 }
 
 void GameSystem::release(void)
@@ -214,6 +228,7 @@ void GameSystem::release(void)
 	m_pWorld = NULL;
 	m_pSceneMgr = NULL;
 	AudioSystem::getInstance()->release();
+	m_pSheet = NULL;
 }
 
 void GameSystem::releaseMosquito(void)
@@ -246,46 +261,44 @@ void GameSystem::releaseCharacter()
 {
 	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	{
-		if(m_vpPlayer[i] != NULL)
+		//if(m_vpPlayer[i] != NULL)
+		//{
+		//	delete m_vpPlayer[i];
+		//	m_vpPlayer[i] = NULL;
+		//}
+		if(m_vpPlayer == NULL)
 		{
-			delete m_vpPlayer[i];
-			m_vpPlayer[i] = NULL;
+			delete m_vpPlayer;
+			m_vpPlayer = NULL;
 		}
 	}
 }
 
-void GameSystem::restart(void)
+void GameSystem::restart(unsigned int stageID)
 {
-	//V_RIGID_BODY::iterator rIte;
-	//V_SHAPE::iterator sIte;
-	//PhysicRigidBody *body;
-	//PhysicShapeBase *shape;
 	ScoreSystem::resetScore();
 	m_fTimePass = 0.0f;
-	//for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end(); rIte++)
-	//{
-	//	body = *rIte;
-	//	body->release();
-	//	delete body;
-	//}
-	//m_vRigidBody.clear();
-
-	//for(sIte = m_vShape.begin(); sIte != m_vShape.end(); sIte++)
-	//{
-	//	shape = *sIte;
-	//	shape->release();
-	//	delete shape;
-	//}
-	//m_vShape.clear();
-
 	releaseMosquito();
 	releaseWeapon();
 	m_dotSceneLoader.release();
-	m_dotSceneLoader.parseDotScene("../scene/stage00.scene", "scene", m_pSceneMgr, m_pWindow);
-	m_waveSystem.init(0);
+
+
+	std::string scene;
+	std::string sceneGroup;
+	std::string audio;
+	m_waveSystem.init(stageID, scene, sceneGroup, audio);
+
+	
+	m_dotSceneLoader.parseDotScene(scene, sceneGroup, m_pSceneMgr, m_pWindow);
+
+	m_dotSceneLoader.setAllVisible(true);
+
 	AudioSystem::getInstance()->restart();
-	AudioSystem::getInstance()->play3DBGM("../music/ophelia.mp3", m_vfCameraPos, 50.0f);
-	m_bUIInit = TRUE;
+	AudioSystem::getInstance()->play3DBGM(audio.c_str(), m_vfCameraPos, 50.0f);
+
+	m_pSheet->setVisible(true);
+	CEGUI::Slider *pSlider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
+	pSlider->setMaxValue(m_waveSystem.getFullTime());
 }
 
 float GameSystem::getTimePass(void)const
@@ -423,7 +436,8 @@ void GameSystem::randomShoot(MOSQUITO_TYPE type)
 }
 
 void GameSystem::initScene(void)
-{/*
+{
+	/*
 	float quat[4] = {1.0, 0.0, 0.0, 0.0};
 	float pos[3] = {0.0, 0.0, -50.0};
 	float scale[3] = {1.0, 1.0, 1.0};
@@ -484,19 +498,20 @@ void GameSystem::initScene(void)
 
 void GameSystem::initPlayer(void)
 {
-	for(int i = 0; i < NUI_SKELETON_COUNT; i++)
-	{
-		m_vpPlayer[i] = new PhysicKinect(m_pSceneMgr, m_pWorld);
-	}
-
+	//for(int i = 0; i < NUI_SKELETON_COUNT; i++)
+	//{
+	//	m_vpPlayer[i] = new PhysicKinect(m_pSceneMgr, m_pWorld);
+	//}
+	m_vpPlayer = new PhysicKinect(m_pSceneMgr, m_pWorld);
 }
 
 void GameSystem::initPlayer(unsigned int playerCount)
 {
-	for(int i = 0; i < playerCount; i++)
-	{
-		m_vpPlayer[i]->init(i);
-	}
+	//for(int i = 0; i < playerCount; i++)
+	//{
+	//	m_vpPlayer[i]->init(i);
+	//}
+	m_vpPlayer->init(0);
 }
 
 void GameSystem::update(float timePass)
@@ -608,6 +623,21 @@ void GameSystem::updatePlaying(float timePass)
 	updateMosquito(timePass);
 	updateWeapon(timePass);
 	updateHandState(timePass);
+
+	{
+		CEGUI::Slider *pSlider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
+		float current = m_waveSystem.getFullTime() - m_fTimePass;
+		pSlider->setCurrentValue(current);
+	}
+
+	{
+		int score = ScoreSystem::getScore();
+		char text[128];
+		sprintf_s(text, "SCORE:%016d", score);
+		CEGUI::Editbox *edit = (CEGUI::Editbox *)m_pSheet->getChild("Root/ScoreText");
+		edit->setText(CEGUI::String (text));
+	}
+
 	testCollision();
 }
 
@@ -662,23 +692,44 @@ void GameSystem::updateWeapon(float timePass)
 	}
 }
 
-void GameSystem::updatePlayer(const NUI_SKELETON_FRAME &frame)
+void GameSystem::updatePlayer(KinectDevice *deivce)
 {
-	for(int i = 0; i < NUI_SKELETON_COUNT; i++ )
+	if(m_eState == eOnPlaying)
 	{
-		if(frame.SkeletonData[i].eTrackingState != NUI_SKELETON_NOT_TRACKED)
+		NUI_SKELETON_FRAME frame = {0};
+		deivce->getSkeletonFrame(frame);
+		for(int i = 0; i < NUI_SKELETON_COUNT; i++ )
 		{
-			if(m_vpPlayer[i]->getID() != frame.SkeletonData[i].dwTrackingID)
+			//if(frame.SkeletonData[i].eTrackingState != NUI_SKELETON_NOT_TRACKED)
+			//{
+			//	if(m_vpPlayer[i]->getID() != frame.SkeletonData[i].dwTrackingID)
+			//	{
+			//		m_vpPlayer[i]->release();
+			//		m_vpPlayer[i]->init(frame.SkeletonData[i].dwTrackingID);
+			//	}
+			//	m_iCurrentID = i;
+			//	m_vpPlayer[i]->update(frame.SkeletonData[i]);
+			//}
+			//else
+			//{
+			//	m_vpPlayer[i]->release();
+			//}
+			if(frame.SkeletonData[i].eTrackingState != NUI_SKELETON_NOT_TRACKED)
 			{
-				m_vpPlayer[i]->release();
-				m_vpPlayer[i]->init(frame.SkeletonData[i].dwTrackingID);
+				if(m_iCurrentID == frame.SkeletonData[i].dwTrackingID)
+				{
+					m_vpPlayer->update(frame.SkeletonData[i]);
+				}
+				else
+				{
+					if(m_iCurrentID == 0)
+					{
+						m_iCurrentID = frame.SkeletonData[i].dwTrackingID;
+						m_vpPlayer->init(m_iCurrentID);
+						deivce->NuiSkeletonSetTrackedSkeletons(m_iCurrentID);
+					}
+				}
 			}
-			m_iCurrentID = i;
-			m_vpPlayer[i]->update(frame.SkeletonData[i]);
-		}
-		else
-		{
-			m_vpPlayer[i]->release();
 		}
 	}
 }
@@ -725,7 +776,8 @@ void GameSystem::updatePlayerDebug(float timePass)
 		}
 		break;
 	}
-	m_vpPlayer[0]->updateDebug(m_vfHandDebugPos, m_fTwoHandDistance);
+	//m_vpPlayer[0]->updateDebug(m_vfHandDebugPos, m_fTwoHandDistance);
+	m_vpPlayer->updateDebug(m_vfHandDebugPos, m_fTwoHandDistance);
 }
 
 void GameSystem::updateHandState(float timePass)
@@ -736,14 +788,19 @@ void GameSystem::updateHandState(float timePass)
 	{
 	case eOnHandOpen:
 		{
-			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
-			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 
 			float dist = 0.0;
 			if(!m_bIsDebug)
-				dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
+			{
+				//dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
+				dist = abs(left.x - right.x) * m_vpPlayer->getScale(PhysicKinect::eScaleX);
+			}
 			else
 				dist = left.distance(right);
 			if(dist < HAND_CHECK_CLOSE_DIST)
@@ -763,13 +820,18 @@ void GameSystem::updateHandState(float timePass)
 		break;
 	case eOnHandClose:
 		{
-			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
-			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = 0.0;
 			if(!m_bIsDebug)
-				dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
+			{
+				//dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
+				dist = abs(left.x - right.x) * m_vpPlayer->getScale(PhysicKinect::eScaleX);
+			}
 			else
 				dist = left.distance(right);
 			if(dist > HAND_CHECK_OPEN_DIST)
@@ -785,13 +847,18 @@ void GameSystem::updateHandState(float timePass)
 	case eOnHandWaitAttack:
 		{
 			m_fHandCloseTime += timePass;
-			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
-			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = 0.0;
 			if(!m_bIsDebug)
-				dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
+			{
+				//dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
+				dist = abs(left.x - right.x) * m_vpPlayer->getScale(PhysicKinect::eScaleX);
+			}
 			else
 				dist = left.distance(right);
 			if(dist > HAND_CHECK_OPEN_DIST)
@@ -805,13 +872,18 @@ void GameSystem::updateHandState(float timePass)
 		break;
 	case eOnHandAttacked:
 		{
-			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
-			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = 0.0;
 			if(!m_bIsDebug)
-				dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
+			{
+				//dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
+				dist = abs(left.x - right.x) * m_vpPlayer->getScale(PhysicKinect::eScaleX);
+			}
 			else
 				dist = left.distance(right);
 			if(dist > HAND_CHECK_OPEN_DIST)
@@ -822,8 +894,10 @@ void GameSystem::updateHandState(float timePass)
 		break;
 	case eOnHandWaitShoot:
 		{
-			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
-			m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			m_fShootTimePass += timePass;
 			if(m_fShootTimePass > HAND_CHECK_SHOOT_TIMEPASS)
 			{
@@ -872,6 +946,30 @@ void GameSystem::updateHandState(float timePass)
 float GameSystem::getFullTime(void)const												
 {
 	return  m_waveSystem.getFullTime();
+}
+
+void GameSystem::setAllVisible(bool visible)
+{
+	if(m_vpPlayer != NULL)
+	{
+		//for(int i = 0; i < NUI_SKELETON_COUNT; i++)
+		//{
+		//	m_vpPlayer[i]->setVisible(visible);
+		//}
+		m_vpPlayer->setVisible(visible);
+	}
+
+	{
+		V_MOSQUITO::iterator ite;								
+		for( ite = m_vMosquito.begin();ite != m_vMosquito.end();++ite)
+		{
+			(*ite)->setVisible(visible);
+		}
+	}
+
+	if(m_pSheet != NULL)
+		m_pSheet->setVisible(visible);
+	m_dotSceneLoader.setAllVisible(visible);
 }
 
 void GameSystem::testCollision()

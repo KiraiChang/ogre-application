@@ -37,12 +37,12 @@ enum MOUSE_PRESS_TYPE
     Ogre::TerrainGroup* mTerrainGroup;
 	Ogre::Terrain *mTerrainInfo;
     bool mTerrainsImported;
-	OgreBites::Label* mInfoLabel;
+	//OgreBites::Label* mInfoLabel;
 	//Caelum::CaelumSystem *mCaelumSystem;//Date and Night
  
 	//CEGUI
 	CEGUI::OgreRenderer* mRenderer;
-	CEGUI::Window *mpSheet;
+	//CEGUI::Window *mpSheet;
 
     void defineTerrain(long x, long y);
     void initBlendMaps(Ogre::Terrain* terrain);

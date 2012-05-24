@@ -1,4 +1,7 @@
 {
+	"scene":"../scene/stage00.scene",
+	"sceneGroup":"scene",
+	"audio":"../music/ophelia.mp3",
 	"mosquito":
 	[
 		{
@@ -16,7 +19,7 @@
 		},
 		{
 			"m_eType":"eMosquitoSplit",
-			"m_uiMoveType":"eMoveRandom",
+			"m_uiMoveType":"eMoveStraight",
 			"m_sModelName":"mosquito01.mesh",
 			"m_vfScale[3]":[1.0, 1.0, 1.0],
 			"m_vfPos[3]":[0.0, 20.0, -80.0],
@@ -25,7 +28,7 @@
 			"m_iScore":200,
 			"m_iParaData":1,
 			"m_fTimepass":10.0,
-			"m_iCount":5
+			"m_iCount":1
 		},
 		{
 			"m_eType":"eMosquitoFat",
@@ -55,7 +58,7 @@
 		},
 		{
 			"m_eType":"eMosquitoSplit",
-			"m_uiMoveType":"eMoveRandom",
+			"m_uiMoveType":"eMoveStraight",
 			"m_sModelName":"mosquito01.mesh",
 			"m_vfScale[3]":[1.0, 1.0, 1.0],
 			"m_vfPos[3]":[0.0, 20.0, -80.0],

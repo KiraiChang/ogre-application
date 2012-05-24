@@ -43,11 +43,12 @@ namespace Ogre
 		DotSceneLoader() : m_pSceneMgr(0), m_pWindow(0), m_pCurrentVP(0) {}
 		virtual void release();
 		virtual ~DotSceneLoader() {release();}
+		virtual void setAllVisible(bool visible);
 		
 		void parseDotScene(const String &SceneName, const String &groupName, SceneManager *yourSceneMgr, Ogre::RenderWindow* pWindow, SceneNode *pAttachNode = NULL, const String &sPrependNode = "");
 		String getProperty(const String &ndNm, const String &prop);
 		
- 
+	private:
 		std::vector<NodeProperty> nodeProperties;
 		std::vector<String> staticObjects;
 		std::vector<String> dynamicObjects;

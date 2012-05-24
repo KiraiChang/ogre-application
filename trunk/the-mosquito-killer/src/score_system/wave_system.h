@@ -33,7 +33,7 @@ private:
 public:
 									WaveSystem(void);
 									~WaveSystem(void);
-	void							init(unsigned int stage);
+	void							init(unsigned int stage, std::string &scene, std::string &sceneGroup, std::string &audio);
 	void							release(void);
 	bool							work(float timepass);//回傳值是是否結束
 	float							getFullTime(void)const							{return m_fTotalTime;}
