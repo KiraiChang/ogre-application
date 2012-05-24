@@ -48,7 +48,7 @@ void WaveSystem::init(unsigned int stage, std::string &scene, std::string &scene
 			else
 				data.m_eType = eMosquitoFat;
 
-			data.m_sModelName = obj["m_sModelName"].get_str();
+			data.m_uiMeshID = obj["m_uiMeshID"].get_int();
 
 			for(int i = 0; i < 3; i++)
 			{
@@ -103,7 +103,7 @@ bool WaveSystem::work(float timepass)
 				GameSystem::getInstance()->createMosquito(m_vMosquitoData[m_iCurrentIndex].m_eType,
 					m_vMosquitoData[m_iCurrentIndex].m_uiMoveType,
 					m_vMosquitoData[m_iCurrentIndex].m_fMoveSpeed,
-					m_vMosquitoData[m_iCurrentIndex].m_sModelName.c_str(),
+					m_vMosquitoData[m_iCurrentIndex].m_uiMeshID,
 					1.0,
 					m_vMosquitoData[m_iCurrentIndex].m_vfScale,
 					m_vMosquitoData[m_iCurrentIndex].m_vfPos,

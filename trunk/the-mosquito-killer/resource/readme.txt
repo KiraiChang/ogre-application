@@ -6,3 +6,5 @@ application
 		datafiles "CEGUI resource place here"
 	configure "game configure put here"
 	stage "game mosquito data put here"
+	scene "scene model put here"
+	music "game BGM or sound put here"

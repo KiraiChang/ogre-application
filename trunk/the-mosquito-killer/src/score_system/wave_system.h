@@ -8,7 +8,7 @@ class MosquitoData
 {
 public:
 	MOSQUITO_TYPE					m_eType;
-	std::string						m_sModelName;
+	unsigned int					m_uiMeshID;
 	float							m_vfScale[3];
 	float							m_vfPos[3];
 	float							m_vfQuat[4];

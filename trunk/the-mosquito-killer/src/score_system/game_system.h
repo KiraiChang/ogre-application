@@ -9,6 +9,7 @@
 #include "../kinect/physic_kinect.h"
 #include "wave_system.h"
 #include <list>
+#include <vector>
 
 typedef std::list< PhysicRigidBody * > V_RIGID_BODY;
 typedef std::list<  PhysicShapeBase* > V_SHAPE;
@@ -33,6 +34,19 @@ namespace CEGUI
 }
 
 class KinectDevice;
+
+typedef std::vector< std::string > V_STRING;
+
+class MeshData
+{
+public:
+	std::string m_sMeshName;
+	float		m_fvSize[3];
+	V_STRING m_vAniName;
+};
+
+typedef std::vector< MeshData > V_MESH_DATA;
+
 
 class GameSystem
 {
@@ -75,6 +89,7 @@ public:
 	bool										m_bIsDebug;
 	float										m_vfCameraPos[3];
 	float										m_vfCameraDir[3];
+	V_MESH_DATA									m_vMeshData;
 private:
 												GameSystem(void);
 private:
@@ -112,6 +127,7 @@ public:
 												~GameSystem(void);
 	static GameSystem *							getInstance(void);
 	void										init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow *pWindow);
+	void										initMeshData(void);
 	void										release(void);
 	void										releaseMosquito(void);
 	void										releaseWeapon(void);
@@ -122,9 +138,9 @@ public:
 	void										setHandState(HandState state);
 
 	void										createShape(const char *modelName, float *scale, float *pos, float *quat);
-	void										createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData);
+	void										createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score, int otherData);
 	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug = NULL, void *userPoint = NULL, int flag = 0);
-	void										createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float speed, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData = 0);
+	void										createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float speed, unsigned int meshID, float mass, float *scale, float *pos, float *quat, int score, int otherData = 0);
 	void										randomShoot(MOSQUITO_TYPE type = eMosquitoBase);
 	void										initScene(void);//產生場景
 	void										initPlayer(void);//產生空的玩家類別

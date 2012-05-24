@@ -1,0 +1,10 @@
+{
+	"mesh_data":
+	[
+		{
+			"MeshName":"mosquito01.mesh",
+			"Size":[5.0, 5.0, 5.0],
+			"AniName":["move", "die"],
+		},
+	]
+}

@@ -64,7 +64,7 @@ PhysicRigidBody::~PhysicRigidBody(void)
 {
 }
 
-void PhysicRigidBody::init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, float mass, float *pos, float *quat, void *userPoint, int collisionflag)
+void PhysicRigidBody::init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, float mass, float *pos, float *size, float *quat, void *userPoint, int collisionflag)
 {
 	if(m_pWorld != NULL)
 	{
@@ -78,9 +78,12 @@ void PhysicRigidBody::init(PhysicShapeBase *shapeData, PhysicDebug *debugShape, 
 		{
 		case ePhysicShapeBox:
 			m_pShapes = new btBoxShape(btVector3(
-				m_pShapeData->getData(PhysicShapeBox::SIZE_X),
-				m_pShapeData->getData(PhysicShapeBox::SIZE_Y),
-				m_pShapeData->getData(PhysicShapeBox::SIZE_Z)
+				//m_pShapeData->getData(PhysicShapeBox::SIZE_X),
+				//m_pShapeData->getData(PhysicShapeBox::SIZE_Y),
+				//m_pShapeData->getData(PhysicShapeBox::SIZE_Z)
+				size[0],
+				size[1],
+				size[2]
 				));
 			break;
 			/*

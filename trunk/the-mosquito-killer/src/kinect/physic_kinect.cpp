@@ -39,6 +39,7 @@ void PhysicKinect::init(DWORD id)
 	float scale[3] = {0.01, 0.01, 0.01};
 	float pos[3] = {0.0, 0.0, 25.0};
 	float quat[4] = {1.0, 0.0, 0.0, 0.0};
+	float size[3] = {2.0, 1.0, 5.0};
 
 	std::ifstream is("../configure/kinect_device.cfg");
 	if(is.is_open())
@@ -56,17 +57,32 @@ void PhysicKinect::init(DWORD id)
 		scale[0] = obj["left_hand_ridigi_body"].get_obj()["scale"].get_array()[0].get_real();
 		scale[1] = obj["left_hand_ridigi_body"].get_obj()["scale"].get_array()[1].get_real();
 		scale[2] = obj["left_hand_ridigi_body"].get_obj()["scale"].get_array()[2].get_real();
+
+		if(obj["left_hand_ridigi_body"].get_obj().count("size") > 0)
+		{
+			size[0] = obj["left_hand_ridigi_body"].get_obj()["size"].get_array()[0].get_real();
+			size[1] = obj["left_hand_ridigi_body"].get_obj()["size"].get_array()[1].get_real();
+			size[2] = obj["left_hand_ridigi_body"].get_obj()["size"].get_array()[2].get_real();
+		}
 		PhysicDebug *debug = new OgrePhysicDebug();
 		((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
-		m_pBody[eKinectLeftHand] = createRidigBody(obj["left_hand_ridigi_body"].get_obj()["mesh_name"].get_str().c_str(), 0.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
+		m_pBody[eKinectLeftHand] = createRidigBody(obj["left_hand_ridigi_body"].get_obj()["mesh_name"].get_str().c_str(), 0.0, scale, pos, size, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
 		m_iBodyID[eKinectLeftHand] = NUI_SKELETON_POSITION_HAND_LEFT;
 
 		scale[0] = obj["right_hand_ridigi_body"].get_obj()["scale"].get_array()[0].get_real();
 		scale[1] = obj["right_hand_ridigi_body"].get_obj()["scale"].get_array()[1].get_real();
 		scale[2] = obj["right_hand_ridigi_body"].get_obj()["scale"].get_array()[2].get_real();
+
+		if(obj["right_hand_ridigi_body"].get_obj().count("size") > 0)
+		{
+			size[0] = obj["right_hand_ridigi_body"].get_obj()["size"].get_array()[0].get_real();
+			size[1] = obj["right_hand_ridigi_body"].get_obj()["size"].get_array()[1].get_real();
+			size[2] = obj["right_hand_ridigi_body"].get_obj()["size"].get_array()[2].get_real();
+		}
+
 		debug = new OgrePhysicDebug();
 		((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
-		m_pBody[eKinectRightHand] = createRidigBody(obj["right_hand_ridigi_body"].get_obj()["mesh_name"].get_str().c_str(), 0.0, scale, pos, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
+		m_pBody[eKinectRightHand] = createRidigBody(obj["right_hand_ridigi_body"].get_obj()["mesh_name"].get_str().c_str(), 0.0, scale, pos, size, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
 		m_iBodyID[eKinectRightHand] = NUI_SKELETON_POSITION_HAND_RIGHT;
 
 		if(obj.count("left_hand") > 0)
@@ -74,6 +90,13 @@ void PhysicKinect::init(DWORD id)
 			scale[0] = obj["left_hand"].get_obj()["scale"].get_array()[0].get_real();
 			scale[1] = obj["left_hand"].get_obj()["scale"].get_array()[1].get_real();
 			scale[2] = obj["left_hand"].get_obj()["scale"].get_array()[2].get_real();
+			if(obj["left_hand"].get_obj().count("size") > 0)
+			{
+				size[0] = obj["left_hand"].get_obj()["size"].get_array()[0].get_real();
+				size[1] = obj["left_hand"].get_obj()["size"].get_array()[1].get_real();
+				size[2] = obj["left_hand"].get_obj()["size"].get_array()[2].get_real();
+			}
+
 			m_pShape[eKinectLeftHand] = new OgreShapeBox(m_pSceneMgr);
 			m_pShape[eKinectLeftHand]->init(obj["left_hand"].get_obj()["mesh_name"].get_str().c_str(), scale);
 		}
@@ -83,23 +106,29 @@ void PhysicKinect::init(DWORD id)
 			scale[0] = obj["right_hand"].get_obj()["scale"].get_array()[0].get_real();
 			scale[1] = obj["right_hand"].get_obj()["scale"].get_array()[1].get_real();
 			scale[2] = obj["right_hand"].get_obj()["scale"].get_array()[2].get_real();
+			if(obj["left_hand"].get_obj().count("size") > 0)
+			{
+				size[0] = obj["left_hand"].get_obj()["size"].get_array()[0].get_real();
+				size[1] = obj["left_hand"].get_obj()["size"].get_array()[1].get_real();
+				size[2] = obj["left_hand"].get_obj()["size"].get_array()[2].get_real();
+			}
 			m_pShape[eKinectRightHand] = new OgreShapeBox(m_pSceneMgr);
 			m_pShape[eKinectRightHand]->init(obj["left_hand"].get_obj()["mesh_name"].get_str().c_str(), scale);
 		}
 	}
 	else
 	{
-		m_pBody[eKinectLeftHand] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
+		m_pBody[eKinectLeftHand] = createRidigBody("sphere.mesh", 0.0, scale, pos, size, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
 		m_iBodyID[eKinectLeftHand] = NUI_SKELETON_POSITION_HAND_LEFT;
 
-		m_pBody[eKinectRightHand] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
+		m_pBody[eKinectRightHand] = createRidigBody("sphere.mesh", 0.0, scale, pos, size, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
 		m_iBodyID[eKinectRightHand] = NUI_SKELETON_POSITION_HAND_RIGHT;
 
-		m_pShape[eKinectLeftHand] = new OgreShapeBox(m_pSceneMgr);
-		m_pShape[eKinectLeftHand]->init("sphere.mesh", scale);
+		//m_pShape[eKinectLeftHand] = new OgreShapeBox(m_pSceneMgr);
+		//m_pShape[eKinectLeftHand]->init("sphere.mesh", scale);
 
-		m_pShape[eKinectRightHand] = new OgreShapeBox(m_pSceneMgr);
-		m_pShape[eKinectRightHand]->init("sphere.mesh", scale);
+		//m_pShape[eKinectRightHand] = new OgreShapeBox(m_pSceneMgr);
+		//m_pShape[eKinectRightHand]->init("sphere.mesh", scale);
 		//m_pBody[NUI_SKELETON_POSITION_HIP_CENTER] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 		//m_pBody[NUI_SKELETON_POSITION_SPINE] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 		//m_pBody[NUI_SKELETON_POSITION_SHOULDER_CENTER] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
@@ -146,12 +175,12 @@ void PhysicKinect::release(void)
 	}
 }
 
-PhysicRigidBody *PhysicKinect::createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug, void *userPoint, int flag)
+PhysicRigidBody *PhysicKinect::createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, PhysicDebug *debug, void *userPoint, int flag)
 {
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
 	shape->init(modelName, scale);
 	PhysicRigidBody *body = new PhysicRigidBody(m_pWorld);
-	body->init(shape, debug, mass, pos, quat, userPoint, flag);
+	body->init(shape, debug, mass, pos, size, quat, userPoint, flag);
 	
 	return body;
 }
