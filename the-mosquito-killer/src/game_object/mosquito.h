@@ -27,18 +27,21 @@ private:
 	MoveBase*					m_pMove;
 	ScoreBase*					m_pScore;
 	float						m_fMoveSpeed;
+	unsigned int				m_uiMeshID;
 protected:
 	bool						m_bDestory;
 public:
 								MosquitoBase(void);
 	virtual						~MosquitoBase(void);
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
-	virtual void				create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *quat, int score);
+	virtual void				create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *size, float *quat, int score);
 	virtual void				release(void);
 	virtual void				update(float timepass);
 	virtual MOSQUITO_TYPE		getType(void)				{return eMosquitoBase;}
 	virtual bool				isDestory(void)const		{return m_bDestory;}
 	virtual void				setDestory(void)			{m_bDestory = 1;}
+	virtual void				setMeshID(unsigned int id)	{m_uiMeshID = id;}
+	virtual unsigned int		getMeshID(void)				{return m_uiMeshID;}
 	virtual void				setAnimation(const char *aniName);
 	virtual void				setParticle(const char *fileName);
 	virtual void				setVisible(bool visible);
@@ -55,7 +58,7 @@ public:
 								MosquitoSplit(void);
 	virtual						~MosquitoSplit(void);
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
-	virtual void				create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *quat, int score);
+	virtual void				create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *size, float *quat, int score);
 	virtual void				release(void);
 	virtual void				update(float timepass);
 	void						setSplitNumber(int number)	{m_iSplitNumber = number;}
@@ -73,7 +76,7 @@ public:
 								MosquitoFat(void);
 	virtual						~MosquitoFat(void);
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
-	virtual void				create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *quat, int score);
+	virtual void				create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *size, float *quat, int score);
 	virtual void				release(void);
 	virtual void				update(float timepass);
 	virtual MOSQUITO_TYPE		getType(void)				{return eMosquitoFat;}

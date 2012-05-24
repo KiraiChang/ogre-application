@@ -33,7 +33,7 @@ public:
 								WeaponKnife(void);
 								~WeaponKnife(void);
 	virtual void				init(Ogre::SceneManager *scene, btDynamicsWorld *world);
-	virtual void				create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score);
+	virtual void				create(const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score);
 	virtual void				release(void);
 	virtual void				update(float timePass);
 	virtual WEAPON_TYPE			getType(void)				{return eWeaponKnife;}

@@ -9,6 +9,7 @@
 #include "audio_system.h"
 #include <Ogre.h>
 #include <CEGUI.h>
+#include <json_spirit.h>
 
 #include <random>
 extern Ogre::Log* m_pLog;
@@ -61,6 +62,7 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 		float pos[3];
 		float scale[3] = {1.0, 1.0, 1.0};
 		float quat[4] = {1.0, 0.0, 0.0, 0.0};
+		float size[3] = {50.0, 50.0, 50.0};
 		GameSystem::getInstance()->setHandState(GameSystem::eOnHandClose);
 		if(object1->getParent() != NULL)
 		{
@@ -83,12 +85,12 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 					//create "number" 
 					for(int i = 0; i < number; i++)
 					{
-						pos[2] -= abs(pos[2] / 2);
-						pos[0] += distance;
+						pos[0] -= abs(pos[0] / 2);
+						pos[2] += distance;
 						GameSystem::getInstance()->createMosquito(eMosquitoBase,
 							eMoveStraight,
 							3.0,
-							"mosquito01.mesh",
+							0,
 							1.0,
 							scale,
 							pos,
@@ -207,6 +209,8 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 	if(m_pWindow == NULL)
 		m_pWindow = pWindow;
 
+	initMeshData();
+
 	CEGUI::WindowManager &windowMgr = CEGUI::WindowManager::getSingleton();
 
 	m_pSheet = windowMgr.loadWindowLayout("kinect_game.layout");
@@ -217,6 +221,46 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 
 	slider->setCurrentValue(DEF_MAX_PLAY_TIME);
 	slider->setMaxValue(DEF_MAX_PLAY_TIME);
+}
+
+void GameSystem::initMeshData(void)
+{
+	m_vMeshData.clear();
+	std::fstream file("../config/mesh_data.data");
+	if(file.is_open())
+	{
+		json_spirit::mValue value;
+		json_spirit::read(file, value);
+		json_spirit::mArray arr;
+		json_spirit::mObject obj;
+		arr = value.get_obj()["mesh_data"].get_array();
+		for(int i = 0; i <arr.size();i++)
+		{
+			obj = arr[i].get_obj();
+			MeshData data;
+			data.m_sMeshName = obj["MeshName"].get_str();
+			data.m_fvSize[0] = obj["Size"].get_array()[0].get_real();
+			data.m_fvSize[1] = obj["Size"].get_array()[1].get_real();
+			data.m_fvSize[2] = obj["Size"].get_array()[2].get_real();
+			for(int j = 0; j < obj["AniName"].get_array().size();j++)
+			{
+				data.m_vAniName.push_back(obj["AniName"].get_array()[j].get_str());
+			}
+			m_vMeshData.push_back(data);
+		}
+	}
+	else
+	{
+		{
+			MeshData data;
+			data.m_sMeshName = "mosquito01.mesh";
+			data.m_fvSize[0] = 5;
+			data.m_fvSize[1] = 5;
+			data.m_fvSize[2] = 5;
+			data.m_vAniName.push_back("move");
+			m_vMeshData.push_back(data);
+		}
+	}
 }
 
 void GameSystem::release(void)
@@ -336,8 +380,10 @@ PhysicRigidBody *GameSystem::createRidigBody(const char *modelName, float mass, 
 	return NULL;
 }
 
-void GameSystem::createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float speed, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData)
+void GameSystem::createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float speed, unsigned int meshID, float mass, float *scale, float *pos, float *quat, int score, int otherData)
 {
+	if(meshID > m_vMeshData.size())
+		return;
 	switch(type)
 	{
 	case eMosquitoSplit:
@@ -352,12 +398,13 @@ void GameSystem::createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float
 		m_vMosquito.push_back(new MosquitoBase());
 		break;
 	}
+	m_vMosquito.back()->setMeshID(meshID);
 	m_vMosquito.back()->init(m_pSceneMgr, m_pWorld);
-	m_vMosquito.back()->create(modelName, moveType, speed, mass, scale, pos, quat, score);
-	m_vMosquito.back()->setAnimation("move");
+	m_vMosquito.back()->create(m_vMeshData[meshID].m_sMeshName.c_str(), moveType, speed, mass, scale, pos, m_vMeshData[meshID].m_fvSize, quat, score);
+	m_vMosquito.back()->setAnimation(m_vMeshData[meshID].m_vAniName[0].c_str());
 }
 
-void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *quat, int score, int otherData)
+void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score, int otherData)
 {
 	switch(type)
 	{
@@ -374,7 +421,7 @@ void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mas
 		break;
 	}
 	m_vWeapon.back()->init(m_pSceneMgr, m_pWorld);
-	m_vWeapon.back()->create(modelName, mass, scale, pos, quat, score);
+	m_vWeapon.back()->create(modelName, mass, scale, pos, size, quat, score);
 }
 
 
@@ -914,20 +961,21 @@ void GameSystem::updateHandState(float timePass)
 					float quat[4] = {1.0, 0.0, 0.0, 0.0};
 					float pos[3] = {0.0,40.0,0.0};
 					float scale[3] = {1.0, 1.0, 1.0};
+					float size[3] = {5.0, 5.0, 5.0};
 
 					if(NumBomb > 0)
 					{
-						createWeapon(eWeaponBomb,"bomb.mesh", 1.0, scale, pos, quat, 100,1);
+						createWeapon(eWeaponBomb,"bomb.mesh", 1.0, scale, pos, size, quat, 100,1);
 						NumBomb--;
 					}
 					else if(NumBook > 0)
 					{
-						createWeapon(eWeaponBook,"bomb.mesh", 1.0, scale, pos, quat, 100,1);
+						createWeapon(eWeaponBook,"bomb.mesh", 1.0, scale, pos, size, quat, 100,1);
 						NumBook--;
 					}
 					else
 					{
-						createWeapon(eWeaponKnife,"bomb.mesh", 1.0, scale, pos, quat, 100,1);
+						createWeapon(eWeaponKnife,"bomb.mesh", 1.0, scale, pos, size, quat, 100,1);
 					}
 				}
 				m_fRightHandZPos = rightPos[2];

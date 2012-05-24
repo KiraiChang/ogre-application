@@ -41,7 +41,7 @@ public:
 
 	void										init(DWORD id);
 	void										release(void);
-	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, 
+	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, 
 																	PhysicDebug *debug, void *userPoint, int flag);
 	void										update(const NUI_SKELETON_DATA &data);
 	void										updateDebug(float data[3], float distance);

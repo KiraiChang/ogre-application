@@ -27,7 +27,7 @@ void WeaponKnife::init(Ogre::SceneManager *scene, btDynamicsWorld *world)
 	m_pWorld = world;
 }
 
-void WeaponKnife::create(const char *modelName, float mass, float *scale, float *pos, float *quat, int score)
+void WeaponKnife::create(const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score)
 {
 	//create shape
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
@@ -41,7 +41,7 @@ void WeaponKnife::create(const char *modelName, float mass, float *scale, float 
 	//create physic body
 	m_pBody = new PhysicRigidBody(m_pWorld);
 	PhysicDebug *debug = NULL;
-	m_pBody->init(shape, debug, mass, pos, quat, m_pScore, 8);
+	m_pBody->init(shape, debug, mass, pos, size, quat, m_pScore, 8);
 
 	//create move type
 	m_pMove = new ShootBase(shape->getNode());
