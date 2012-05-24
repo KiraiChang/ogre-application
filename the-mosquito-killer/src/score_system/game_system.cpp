@@ -343,6 +343,7 @@ void GameSystem::restart(unsigned int stageID)
 	m_pSheet->setVisible(true);
 	CEGUI::Slider *pSlider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
 	pSlider->setMaxValue(m_waveSystem.getFullTime());
+	CEGUI::MouseCursor::getSingletonPtr()->setVisible(false);
 }
 
 float GameSystem::getTimePass(void)const
@@ -628,6 +629,7 @@ void GameSystem::updatePlaying(float timePass)
 	{
 		if(m_vMosquito.size() <= 0)
 		{
+			CEGUI::MouseCursor::getSingletonPtr()->setVisible(true);
 			m_eState = eOnEnd;
 		}
 	}
