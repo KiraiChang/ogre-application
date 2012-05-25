@@ -326,7 +326,7 @@ void GameSystem::restart(unsigned int stageID)
 {
 	ScoreSystem::resetScore();
 	m_fTimePass = 0.0f;
-	m_iPlayerBlood = 10;
+	m_iPlayerBlood = 3;
 	releaseMosquito();
 	releaseWeapon();
 	m_dotSceneLoader.release();
