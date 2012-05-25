@@ -121,6 +121,11 @@ private:
 	int											NumBomb;
 	int											NumBook;
 	CEGUI::Window *								m_pSheet;
+	//·Ç¤ß
+	Ogre::RaySceneQuery*						mRaySceneQuery;
+	Ogre::Entity*								EntSight;
+	Ogre::SceneNode*							NodeSight;
+	float										Shoulder[3];
 
 public:
 												~GameSystem(void);
@@ -137,7 +142,7 @@ public:
 	void										setHandState(HandState state);
 
 	void										createShape(const char *modelName, float *scale, float *pos, float *quat);
-	void										createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score, int otherData);
+	void										createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score, int otherData, float *tar);
 	PhysicRigidBody *							createRidigBody(const char *modelName, float mass, float *scale, float *pos, float *quat, PhysicDebug *debug = NULL, void *userPoint = NULL, int flag = 0);
 	void										createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float speed, unsigned int meshID, float mass, float *scale, float *pos, float *quat, int score, int otherData = 0);
 	void										randomShoot(MOSQUITO_TYPE type = eMosquitoBase);
