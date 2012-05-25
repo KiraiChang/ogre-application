@@ -229,11 +229,11 @@ void KinectApplication::createLight(void)
 	//else
 	//{
 		//create Light
-		//pLight = mSceneMgr->createLight("directLight");
-		//pLight->setType(Ogre::Light::LT_DIRECTIONAL);
-		//pLight->setDirection(0.0, -1.0, 0.0);
-		//pLight->setDiffuseColour(1.0, 1.0, 1.0);
-		//pLight->setSpecularColour(0.4, 0.4, 0.0);
+		pLight = mSceneMgr->createLight("directLight");
+		pLight->setType(Ogre::Light::LT_DIRECTIONAL);
+		pLight->setDirection(0.0, -1.0, 0.0);
+		pLight->setDiffuseColour(0.0, 0.0, 0.0);
+		pLight->setSpecularColour(0.0, 0.0, 0.0);
 		//mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.0));
 
 		//pLight = mSceneMgr->createLight("pointLight");

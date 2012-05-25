@@ -44,6 +44,16 @@ material blinn6
 			diffuse 1 1 1 1
 			specular 0.5 0.5 0.5 89.6
 			emissive 0 0 0
+
+			texture_unit
+			{
+				texture mosquito_body.jpg
+				tex_coord_set 0
+				colour_op modulate
+				scale 1 1
+				scroll 0 0
+				rotate 0
+			}
 		}
 	}
 }
@@ -93,9 +103,19 @@ material mouth
 		pass
 		{
 			ambient 0 0 0 1
-			diffuse 0.573 0.0031515 0 1
+			diffuse 1 1 1 1
 			specular 0.5 0.5 0.5 89.6
 			emissive 0 0 0
+
+			texture_unit
+			{
+				texture mosquito_mouth.jpg
+				tex_coord_set 0
+				colour_op modulate
+				scale 1 1
+				scroll 0 0
+				rotate 0
+			}
 		}
 	}
 }

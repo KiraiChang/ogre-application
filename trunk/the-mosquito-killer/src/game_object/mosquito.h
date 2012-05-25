@@ -1,6 +1,6 @@
 #ifndef _MOSQUITO_H_
 #define _MOSQUITO_H_
-
+#include "../kinect/kinect_device.h"
 namespace Ogre
 {
 	class SceneManager;
@@ -12,6 +12,22 @@ class ScoreBase;
 //*******************************************************
 //***************  MOSQUITO_BASE  ***********************
 //*******************************************************
+enum MOSQUITO_ANI_TYPE
+{
+	eMosquitoAniMove = 0,
+	eMosquitoAniHit,
+	eMosquitoAniCut,
+};
+
+enum MOSQUITO_STATE
+{
+	eMosquitoMove = 0,
+	eMosuqitoHit,
+	eMosuqitoCut,
+	eMosquitoBlood,
+	eMosuqitoDead,
+};
+
 enum MOSQUITO_TYPE
 {
 	eMosquitoBase = 0,
@@ -28,6 +44,8 @@ private:
 	ScoreBase*					m_pScore;
 	float						m_fMoveSpeed;
 	unsigned int				m_uiMeshID;
+	float						m_fTimer;
+	MOSQUITO_STATE				m_eState;
 protected:
 	bool						m_bDestory;
 public:
@@ -46,6 +64,7 @@ public:
 	virtual void				setParticle(const char *fileName);
 	virtual void				setVisible(bool visible);
 	void						getPos(float *pos);
+	void						setState(MOSQUITO_STATE state);
 };
 //*******************************************************
 //***************  MOSQUITO_SPLIT  **********************

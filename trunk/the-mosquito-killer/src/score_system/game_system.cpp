@@ -71,7 +71,8 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 			case eMosquitoBase:
 				{
 					((MosquitoBase *)object1->getParent())->getPos(pos);
-					((MosquitoBase *)object1->getParent())->setDestory();
+					((MosquitoBase *)object1->getParent())->setState(eMosuqitoHit);
+					//((MosquitoBase *)object1->getParent())->setDestory();
 					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
 				}
 				break;
@@ -80,7 +81,8 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 					int number = ((MosquitoSplit *)object1->getParent())->getSplitNumber();
 					float distance = 0;
 					((MosquitoSplit *)object1->getParent())->getPos(pos);
-					((MosquitoSplit *)object1->getParent())->setDestory();
+					((MosquitoSplit *)object1->getParent())->setState(eMosuqitoHit);
+					//((MosquitoSplit *)object1->getParent())->setDestory();
 					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
 					//create "number" 
 					for(int i = 0; i < number; i++)
@@ -104,6 +106,7 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 				{
 					((MosquitoFat *)object1->getParent())->getPos(pos);
 					((MosquitoFat *)object1->getParent())->decreaseBlood();
+					((MosquitoFat *)object1->getParent())->setState(eMosuqitoHit);
 					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
 				}
 				break;
@@ -154,6 +157,7 @@ GameSystem::GameSystem(void):
 		m_pSceneMgr(NULL),
 		m_pWindow(NULL),
 		m_bIsDebug(FALSE),
+		m_iPlayerBlood(0),
 		//m_fFullTime(0),
 		m_fTimePass(0),
 		//m_bShoot(false),
@@ -322,6 +326,7 @@ void GameSystem::restart(unsigned int stageID)
 {
 	ScoreSystem::resetScore();
 	m_fTimePass = 0.0f;
+	m_iPlayerBlood = 10;
 	releaseMosquito();
 	releaseWeapon();
 	m_dotSceneLoader.release();
@@ -340,10 +345,13 @@ void GameSystem::restart(unsigned int stageID)
 	AudioSystem::getInstance()->restart();
 	AudioSystem::getInstance()->play3DBGM(audio.c_str(), m_vfCameraPos, 50.0f);
 
-	m_pSheet->setVisible(true);
-	CEGUI::Slider *pSlider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
-	pSlider->setMaxValue(m_waveSystem.getFullTime());
-	CEGUI::MouseCursor::getSingletonPtr()->setVisible(false);
+	if(m_pSheet != NULL)
+	{
+		m_pSheet->setVisible(true);
+		CEGUI::Slider *pSlider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
+		pSlider->setMaxValue(m_waveSystem.getFullTime());
+		CEGUI::MouseCursor::getSingletonPtr()->setVisible(false);
+	}
 }
 
 float GameSystem::getTimePass(void)const
@@ -383,7 +391,7 @@ PhysicRigidBody *GameSystem::createRidigBody(const char *modelName, float mass, 
 
 void GameSystem::createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float speed, unsigned int meshID, float mass, float *scale, float *pos, float *quat, int score, int otherData)
 {
-	if(meshID > m_vMeshData.size())
+	if(meshID >= m_vMeshData.size())
 		return;
 	switch(type)
 	{
@@ -402,7 +410,8 @@ void GameSystem::createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float
 	m_vMosquito.back()->setMeshID(meshID);
 	m_vMosquito.back()->init(m_pSceneMgr, m_pWorld);
 	m_vMosquito.back()->create(m_vMeshData[meshID].m_sMeshName.c_str(), moveType, speed, mass, scale, pos, m_vMeshData[meshID].m_fvSize, quat, score);
-	m_vMosquito.back()->setAnimation(m_vMeshData[meshID].m_vAniName[0].c_str());
+	m_vMosquito.back()->setAnimation(m_vMeshData[meshID].m_vAniName[eMosquitoAniMove].c_str());
+	m_vMosquito.back()->setParticle("Circle");
 }
 
 void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score, int otherData)
@@ -632,6 +641,12 @@ void GameSystem::updatePlaying(float timePass)
 			CEGUI::MouseCursor::getSingletonPtr()->setVisible(true);
 			m_eState = eOnEnd;
 		}
+	}
+
+	if(m_iPlayerBlood <= 0)
+	{
+		CEGUI::MouseCursor::getSingletonPtr()->setVisible(true);
+		m_eState = eOnEnd;
 	}
 
 	//V_RIGID_BODY::iterator rIte;
@@ -1057,4 +1072,9 @@ void GameSystem::testCollision()
 		//	}
 		//}
 	}
+}
+
+void GameSystem::reduceBlood(void)
+{
+		m_iPlayerBlood--;
 }
