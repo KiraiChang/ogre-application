@@ -237,12 +237,12 @@ void OgreApplication::createLight(void)
 
 void OgreApplication::createShadow(void)
 {
-	//mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+	mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
 	////mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
 	////mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED);
-	////mSceneMgr->setAmbientLight(Ogre::ColourValue(0, 0, 0));
-	//mSceneMgr->setShadowColour(Ogre::ColourValue(0.6,0.6,0.6));
-	//mSceneMgr->setShadowTextureSize(1024);
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(0, 0, 0));
+	mSceneMgr->setShadowColour(Ogre::ColourValue(0.6,0.6,0.6));
+	mSceneMgr->setShadowTextureSize(1024);
 }
 
 void OgreApplication::createSkyDome(void)

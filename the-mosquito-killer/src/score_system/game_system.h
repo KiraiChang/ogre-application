@@ -7,6 +7,7 @@
 #include "../physic/physic_shape_base.h"
 #include "../physic/physic_rigid_body.h"
 #include "../kinect/physic_kinect.h"
+#include "../kinect/kinect_device.h"
 #include "wave_system.h"
 #include <list>
 #include <vector>
@@ -32,8 +33,6 @@ namespace CEGUI
 {
 	class Window;
 }
-
-class KinectDevice;
 
 typedef std::vector< std::string > V_STRING;
 
@@ -99,7 +98,7 @@ private:
 		eOnPlaying,//遊戲中畫面
 		eOnEnd,//結算畫面
 	};
-	
+	int											m_iPlayerBlood;
 	static GameSystem *							g_instance;
 	WaveSystem									m_waveSystem;
 	btDynamicsWorld*							m_pWorld;
@@ -156,7 +155,8 @@ public:
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
 	float										getFullTime(void)const;
 	void										setAllVisible(bool visible);
-	void										testCollision();
+	void										testCollision(void);
+	void										reduceBlood(void);
 
 	static bool									MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* body0,btCollisionObject* body1);
 	static bool									MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1);
