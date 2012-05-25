@@ -60,7 +60,7 @@ public:
 	virtual void				setDestory(void)			{m_bDestory = 1;}
 	virtual void				setMeshID(unsigned int id)	{m_uiMeshID = id;}
 	virtual unsigned int		getMeshID(void)				{return m_uiMeshID;}
-	virtual void				setAnimation(const char *aniName);
+	virtual void				setAnimation(const char *aniName, bool loop, bool blend);
 	virtual void				setParticle(const char *fileName);
 	virtual void				setVisible(bool visible);
 	void						getPos(float *pos);

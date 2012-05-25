@@ -305,10 +305,10 @@ void *PhysicRigidBody::getUserPointer()const
 	return m_pBodies->getUserPointer();
 }
 
-void PhysicRigidBody::setAnimation(const char * aniName)
+void PhysicRigidBody::setAnimation(const char * aniName, bool loop, bool blend)
 {
 	if(m_pShapeData != NULL)
-		m_pShapeData->setAnimation(aniName);
+		m_pShapeData->setAnimation(aniName, loop, blend);
 }
 
 void PhysicRigidBody::setParticle(const char *fileName)

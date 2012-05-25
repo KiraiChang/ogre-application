@@ -146,10 +146,10 @@ void MosquitoBase::update(float timePass)
 	}
 }
 
-void MosquitoBase::setAnimation(const char *aniName)
+void MosquitoBase::setAnimation(const char *aniName, bool loop, bool blend)
 {
 	if(m_pBody != NULL)
-		m_pBody->setAnimation(aniName);
+		m_pBody->setAnimation(aniName, loop, blend);
 }
 
 void MosquitoBase::setParticle(const char *fileName)
@@ -177,10 +177,15 @@ void MosquitoBase::getPos(float *pos)
 
 void MosquitoBase::setState(MOSQUITO_STATE state)
 {
+	bool loop = true, blend = false;
+	if(state == eMosuqitoHit)
+	{
+		loop = false;
+	}
 	if(m_uiMeshID < GameSystem::getInstance()->m_vMeshData.size())
 	{
 		if(state < GameSystem::getInstance()->m_vMeshData[m_uiMeshID].m_vAniName.size())
-			setAnimation(GameSystem::getInstance()->m_vMeshData[m_uiMeshID].m_vAniName[state].c_str());
+			setAnimation(GameSystem::getInstance()->m_vMeshData[m_uiMeshID].m_vAniName[state].c_str(), loop, blend);
 	}
 	m_eState = state;
 }

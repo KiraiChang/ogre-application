@@ -32,7 +32,7 @@ public:
 	virtual void				release(void);
 	virtual void				update(float timePass, float *position, float *quaternion);
 	virtual void				update(float timePass);
-	virtual void				setAnimation(const char *aniName);
+	virtual void				setAnimation(const char *aniName, bool loop, bool blend);
 	virtual void				setParticle(const char *fileName);
 	virtual void				setVisible(bool visible);
 	Ogre::SceneNode *			getNode(void)const							{return m_pBodyNode;}

@@ -38,7 +38,7 @@ public:
 	void setEulerZYX (const float &yaw, const float &pitch, const float &roll);
 	void getPos(float *pos)const;
 	void *getUserPointer()const;
-	void setAnimation(const char * aniName);
+	void setAnimation(const char * aniName, bool loop, bool blend);
 	void setParticle(const char *fileName);
 	void setVisible(bool visible);
 };

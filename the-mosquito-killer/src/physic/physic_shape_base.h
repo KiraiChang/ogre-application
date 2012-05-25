@@ -31,7 +31,7 @@ public:
 	virtual PHYSIC_SHPAE_TYPE	getType(void) = 0;
 	virtual void				update(float timePass, float *position, float *quaternion);
 	virtual void				update(float timePass);
-	virtual void				setAnimation(const char *aniName);
+	virtual void				setAnimation(const char *aniName, bool loop, bool blend);
 	virtual void				setParticle(const char *fileName);
 	virtual void				setVisible(bool visible);
 protected:

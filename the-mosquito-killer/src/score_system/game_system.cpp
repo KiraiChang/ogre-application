@@ -230,7 +230,7 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 void GameSystem::initMeshData(void)
 {
 	m_vMeshData.clear();
-	std::fstream file("../config/mesh_data.data");
+	std::fstream file("../configure/mesh_data.dat");
 	if(file.is_open())
 	{
 		json_spirit::mValue value;
@@ -410,7 +410,7 @@ void GameSystem::createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float
 	m_vMosquito.back()->setMeshID(meshID);
 	m_vMosquito.back()->init(m_pSceneMgr, m_pWorld);
 	m_vMosquito.back()->create(m_vMeshData[meshID].m_sMeshName.c_str(), moveType, speed, mass, scale, pos, m_vMeshData[meshID].m_fvSize, quat, score);
-	m_vMosquito.back()->setAnimation(m_vMeshData[meshID].m_vAniName[eMosquitoAniMove].c_str());
+	m_vMosquito.back()->setAnimation(m_vMeshData[meshID].m_vAniName[eMosquitoAniMove].c_str(), true, false);
 	m_vMosquito.back()->setParticle("Circle");
 }
 
