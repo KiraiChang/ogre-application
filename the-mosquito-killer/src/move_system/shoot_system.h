@@ -13,8 +13,10 @@ private:
 	Ogre::Vector3			C1;
 	Ogre::Node*				m_pNode;
 	float					t;
+	Ogre::Vector3			step_move;
+
 public:
-							ShootBase(Ogre::Node *node);
+							ShootBase(Ogre::Node *node,float *tar);
 	virtual					~ShootBase();
 private:
 	virtual void			setRoute(void);

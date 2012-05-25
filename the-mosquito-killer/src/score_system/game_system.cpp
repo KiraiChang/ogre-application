@@ -414,24 +414,22 @@ void GameSystem::createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float
 	m_vMosquito.back()->setParticle("Circle");
 }
 
-void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score, int otherData)
+void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score, int otherData, float *tar)
 {
 	switch(type)
 	{
 	case eWeaponBook:
 		m_vWeapon.push_back(new WeaponBook());
-		//((WeaponBook *)m_vWeapon.back())->setSplitNumber(otherData);
 		break;
 	case eWeaponBomb:
 		m_vWeapon.push_back(new WeaponBomb());
-		//((WeaponBomb *)m_vWeapon.back())->setBloodNumber(otherData);
 		break;
 	default:
 		m_vWeapon.push_back(new WeaponKnife());
 		break;
 	}
 	m_vWeapon.back()->init(m_pSceneMgr, m_pWorld);
-	m_vWeapon.back()->create(modelName, mass, scale, pos, size, quat, score);
+	m_vWeapon.back()->create(modelName, mass, scale, pos, size, quat, score/*, tar*/);
 }
 
 
@@ -560,6 +558,12 @@ void GameSystem::initPlayer(void)
 	//	m_vpPlayer[i] = new PhysicKinect(m_pSceneMgr, m_pWorld);
 	//}
 	m_vpPlayer = new PhysicKinect(m_pSceneMgr, m_pWorld);
+
+	EntSight = m_pSceneMgr->createEntity("Target","bomb.mesh");
+	NodeSight = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	NodeSight->attachObject(EntSight);
+	NodeSight->setPosition(Ogre::Vector3::ZERO);
+	NodeSight->setVisible(false);
 }
 
 void GameSystem::initPlayer(unsigned int playerCount)
@@ -875,7 +879,7 @@ void GameSystem::updateHandState(float timePass)
 			//char msg[64];
 			//sprintf(msg, "rightPos[2] - leftPos[2]:%f\n", rightPos[2] - leftPos[2]);
 			//m_pLog->logMessage(msg);
-			if((rightPos[2] - leftPos[2]) > HAND_CHECK_AIM_POSE_DIST)
+			if((Shoulder[2] - leftPos[2]) > 0.55 /*&& (rightPos[2] - leftPos[2]) > 0.6*/)
 			{
 				m_eHandState = eOnHandWaitShoot;
 			}
@@ -963,36 +967,67 @@ void GameSystem::updateHandState(float timePass)
 			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
 			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			m_fShootTimePass += timePass;
+
+			//left_hand - left_Shoulder = target_direction
+			float TargetDirect[3];
+			TargetDirect[0] = leftPos[0] - Shoulder[0];
+			TargetDirect[1] = leftPos[1] - Shoulder[1];
+			TargetDirect[2] = leftPos[2] - Shoulder[2];
+
+			Ogre::Vector3 vShoulder = Ogre::Vector3(Shoulder[0],Shoulder[1],Shoulder[2]);
+			Ogre::Vector3 vTargetDirect = Ogre::Vector3(TargetDirect[0],TargetDirect[1],TargetDirect[2]);
+
+			Ogre::Ray SightRay(vShoulder, vTargetDirect*500);
+
+			mRaySceneQuery = m_pSceneMgr->createRayQuery(Ogre::Ray());
+			mRaySceneQuery->setRay(SightRay);
+			Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
+			Ogre::RaySceneQueryResult::iterator itr = result.begin();
+			float TargetPos[3];
+
+			if (itr != result.end() && !itr->worldFragment)
+			{
+				Ogre::Vector3 TargetSite = itr->movable->getParentSceneNode()->getPosition();
+				Ogre::Vector3 VRectify = Ogre::Vector3(vTargetDirect.x*50,vTargetDirect.y*65,vTargetDirect.z*-1); // 58 is adjust value
+				Ogre::Vector3 SightSite = TargetSite + VRectify ; //maybe the site is worng 
+
+				NodeSight->setPosition(SightSite);
+				NodeSight->setVisible(true);
+			}
+			else
+				NodeSight->setVisible(false);
+
+
 			if(m_fShootTimePass > HAND_CHECK_SHOOT_TIMEPASS)
 			{
 				float speed = (m_fRightHandZPos - rightPos[2]) / m_fShootTimePass;
 				m_fShootTimePass = 0.0f;
-				//char msg[128];
-				//sprintf(msg, "m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
-				//m_pLog->logMessage(msg);
+				char msg[128];
+				sprintf(msg, "m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
+				m_pLog->logMessage(msg);
 				if(speed > HAND_CHECK_RIGHT_HAND_SPEED)
 				{
-					//sprintf(msg, "shoot, m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
-					//m_pLog->logMessage(msg);
-					
+					sprintf(msg, "shoot, m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
+					m_pLog->logMessage(msg);
+
 					float quat[4] = {1.0, 0.0, 0.0, 0.0};
-					float pos[3] = {0.0,40.0,0.0};
-					float scale[3] = {1.0, 1.0, 1.0};
+					float pos[3] = {0.0,20.0,0.0};
+					float scale[3] = {2.0, 2.0, 2.0};
 					float size[3] = {5.0, 5.0, 5.0};
 
 					if(NumBomb > 0)
 					{
-						createWeapon(eWeaponBomb,"bomb.mesh", 1.0, scale, pos, size, quat, 100,1);
+						createWeapon(eWeaponBomb,"bomb.mesh", 1.0, scale, pos, size,  quat, 100,1,TargetPos);
 						NumBomb--;
 					}
 					else if(NumBook > 0)
 					{
-						createWeapon(eWeaponBook,"bomb.mesh", 1.0, scale, pos, size, quat, 100,1);
+						createWeapon(eWeaponBook,"bomb.mesh", 1.0, scale, pos, size, quat, 100,1,TargetPos);
 						NumBook--;
 					}
 					else
 					{
-						createWeapon(eWeaponKnife,"bomb.mesh", 1.0, scale, pos, size, quat, 100,1);
+						createWeapon(eWeaponKnife,"bomb.mesh", 1.0, scale, rightPos, size, quat, 100,1,TargetDirect);
 					}
 				}
 				m_fRightHandZPos = rightPos[2];
@@ -1006,6 +1041,9 @@ void GameSystem::updateHandState(float timePass)
 	default:
 		break;
 	}
+
+	if(m_eHandState != eOnHandWaitShoot)
+		NodeSight->setVisible(false);
 }
 
 float GameSystem::getFullTime(void)const												

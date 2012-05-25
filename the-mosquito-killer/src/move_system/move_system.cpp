@@ -99,21 +99,21 @@ void MoveRandom::setRoute(void)
 
 	P0 = m_pNode->getPosition();
 	P0.z = 0;
-	float rxMIN = P0.x - 50.0;
-	float ryMIN = P0.y - 50.0;
-	float rxMAX = P0.x + 50.0;
-	float ryMAX = P0.y + 50.0;
+	float rxMIN = P0.x - 25.0;
+	float ryMIN = P0.y - 25.0;
+	float rxMAX = P0.x + 25.0;
+	float ryMAX = P0.y + 25.0;
 
 	if(m_pNode->getPosition().z > -200)
 	{
-		if(rxMIN < -100)
-			rxMIN = -100;
+		if(rxMIN < -50)
+			rxMIN = -50;
 
-		if(rxMAX > 100)
-			rxMAX = 100;
+		if(rxMAX > 50)
+			rxMAX = 50;
 
-		if(ryMAX > 100)
-			ryMIN = 100;
+		if(ryMAX > 35)
+			ryMIN = 35;
 	}
 	if(ryMIN < 0)
 		ryMIN = 10;
