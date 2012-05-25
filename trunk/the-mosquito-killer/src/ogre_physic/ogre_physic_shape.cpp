@@ -89,10 +89,10 @@ void OgreShapeBox::update(float timePass)
 		m_pAnimationState->addTime(timePass);
 }
 
-void OgreShapeBox::setAnimation(const char *aniName)
+void OgreShapeBox::setAnimation(const char *aniName, bool loop, bool blend)
 {
 	m_pAnimationState = m_pBodyEnt->getAnimationState(aniName);
-	m_pAnimationState->setLoop(true);
+	m_pAnimationState->setLoop(loop);
 	m_pAnimationState->setEnabled(true);
 }
 

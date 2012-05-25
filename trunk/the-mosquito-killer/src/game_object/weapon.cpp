@@ -42,9 +42,9 @@ void WeaponKnife::create(const char *modelName, float mass, float *scale, float 
 	m_pBody = new PhysicRigidBody(m_pWorld);
 	PhysicDebug *debug = NULL;
 	m_pBody->init(shape, debug, mass, pos, size, quat, m_pScore, 8);
-
+	float tar[3] = {0.0, 0.0, 0.0};
 	//create move type
-	m_pMove = new ShootBase(shape->getNode());
+	m_pMove = new ShootBase(shape->getNode(), tar);
 }
 
 void WeaponKnife::release(void)

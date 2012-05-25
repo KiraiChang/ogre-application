@@ -1,247 +1,39 @@
 <scene formatVersion="1.0" upAxis="y" unitsPerMeter="100" unitType="centimeters" minOgreVersion="1.7" ogreMaxVersion="2.4.2" author="OgreMax Scene Exporter (www.ogremax.com)" application="Maya">
     <environment>
-        <colourAmbient r="0.329412" g="0.329412" b="0.329412" />
+        <colourAmbient r="0.33" g="0.33" b="0.33" />
         <colourBackground r="0" g="0" b="0" />
         <clipping near="0" far="100000" />
     </environment>
     <nodes>
-        <node name="pCube1">
-            <position x="-4.44089e-016" y="81.2229" z="26.3374" />
-            <scale x="0.432812" y="1" z="0.570045" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="pCube1" castShadows="true" receiveShadows="true" meshFile="pCube1.mesh">
-                <subentities>
-                    <subentity index="0" materialName="lambert1" />
-                    <subentity index="1" materialName="silly" />
-                    <subentity index="2" materialName="lambert8" />
-                    <subentity index="3" materialName="wood_ground" />
-                    <subentity index="4" materialName="wood_Wall" />
-                    <subentity index="5" materialName="wood_Wall2" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="desk">
+        <node name="desk_All">
             <position x="34.5996" y="1.59367" z="5.73075" />
             <scale x="1" y="1" z="1" />
             <rotation qx="0" qy="0" qz="0" qw="1" />
-            <node name="pCube25">
-                <position x="-14.9252" y="3.11889" z="8.36755" />
-                <scale x="0.892138" y="1.05074" z="0.721349" />
-                <rotation qx="0" qy="-0.387559" qz="0" qw="0.921845" />
-                <entity name="pCube25" castShadows="true" receiveShadows="true" meshFile="pCube25.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube24">
-                <position x="-14.8583" y="3.11889" z="2.24078" />
-                <scale x="0.892138" y="1.05074" z="0.721349" />
-                <rotation qx="0" qy="0.926024" qz="0" qw="-0.377464" />
-                <entity name="pCube24" castShadows="true" receiveShadows="true" meshFile="pCube24.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube23">
-                <position x="-8.80694" y="3.11889" z="2.23677" />
-                <scale x="0.892138" y="1.05074" z="0.721349" />
-                <rotation qx="0" qy="0.926274" qz="0" qw="0.376851" />
-                <entity name="pCube23" castShadows="true" receiveShadows="true" meshFile="pCube23.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube22">
-                <position x="-8.7795" y="3.11889" z="8.41145" />
-                <scale x="0.892138" y="1.05074" z="0.721349" />
-                <rotation qx="0" qy="0.380964" qz="0" qw="0.92459" />
-                <entity name="pCube22" castShadows="true" receiveShadows="true" meshFile="pCube22.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCylinder6">
-                <position x="-11.8754" y="7.63886" z="5.3228" />
-                <scale x="1.25291" y="1.25291" z="1.25291" />
+            <node name="desk">
+                <position x="-34.5996" y="-1.59367" z="-5.73075" />
+                <scale x="1" y="1" z="1" />
                 <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCylinder6" castShadows="true" receiveShadows="true" meshFile="pCylinder6.mesh">
+                <entity name="desk" castShadows="true" receiveShadows="true" meshFile="desk.mesh">
                     <subentities>
                         <subentity index="0" materialName="wood" />
                     </subentities>
                 </entity>
             </node>
         </node>
-        <node name="pPlane1">
-            <position x="10.0715" y="0.0822975" z="27.7453" />
-            <scale x="1.29773" y="1.09701" z="1.09701" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="pPlane1" castShadows="true" receiveShadows="true" meshFile="pPlane1.mesh">
-                <subentities>
-                    <subentity index="0" materialName="lambert6" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="pCube31">
-            <position x="-37.9866" y="3.15766" z="0.194496" />
-            <scale x="0.759533" y="0.759533" z="0.759533" />
-            <rotation qx="0" qy="-0.154672" qz="0" qw="0.987966" />
-            <entity name="pCube31" castShadows="true" receiveShadows="true" meshFile="pCube31.mesh">
-                <subentities>
-                    <subentity index="0" materialName="lambert7" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="pCube32">
-            <position x="-33.0565" y="2.7069" z="-10.14" />
-            <scale x="0.863358" y="0.668375" z="0.876473" />
-            <rotation qx="0" qy="0.264711" qz="0" qw="0.964328" />
-            <entity name="pCube32" castShadows="true" receiveShadows="true" meshFile="pCube32.mesh">
-                <subentities>
-                    <subentity index="0" materialName="lambert7" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="pCube35">
-            <position x="-39.1789" y="13.7566" z="54.2394" />
-            <scale x="1.415" y="1.3018" z="1.93209" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="pCube35" castShadows="true" receiveShadows="true" meshFile="pCube35.mesh">
-                <subentities>
-                    <subentity index="0" materialName="wood" />
-                    <subentity index="1" materialName="wood_Wall" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="pCube36">
-            <position x="-48.9484" y="23.5" z="46.5" />
-            <scale x="1" y="1" z="1" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="pCube36" castShadows="true" receiveShadows="true" meshFile="pCube36.mesh">
-                <subentities>
-                    <subentity index="0" materialName="wood1" />
-                    <subentity index="1" materialName="Glass" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="pCube37">
-            <position x="-48.9484" y="23.5" z="35.1389" />
-            <scale x="1" y="1" z="1" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="pCube37" castShadows="true" receiveShadows="true" meshFile="pCube37.mesh">
-                <subentities>
-                    <subentity index="0" materialName="wood1" />
-                    <subentity index="1" materialName="Glass" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="Chair1">
+        <node name="Chair1_All">
             <position x="52.7294" y="0" z="-16.9468" />
             <scale x="1" y="1" z="1" />
             <rotation qx="0" qy="-0.645999" qz="0" qw="0.763338" />
-            <node name="pCube40">
-                <position x="3.23786" y="15.5931" z="34.4774" />
-                <scale x="1.09347" y="1" z="0.780158" />
-                <rotation qx="0" qy="1" qz="0" qw="6.12323e-017" />
-                <entity name="pCube40" castShadows="true" receiveShadows="true" meshFile="pCube40.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube39">
-                <position x="-1.22421" y="5.93094" z="34.4236" />
-                <scale x="1" y="0.0999292" z="1" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube39" castShadows="true" receiveShadows="true" meshFile="pCube39.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="polySurface1">
-                <position x="0" y="0" z="0" />
+            <node name="Chair1">
+                <position x="7.99354" y="0" z="54.8059" />
                 <scale x="1" y="1" z="1" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="polySurface1" castShadows="true" receiveShadows="true" meshFile="polySurface1.mesh">
+                <rotation qx="0" qy="0.645999" qz="0" qw="0.763338" />
+                <entity name="Chair1" castShadows="true" receiveShadows="true" meshFile="Chair1.mesh">
                     <subentities>
                         <subentity index="0" materialName="wood" />
                     </subentities>
                 </entity>
             </node>
-            <node name="pCube38">
-                <position x="-6.79466" y="15.5931" z="34.4774" />
-                <scale x="1.09347" y="1" z="0.780158" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube38" castShadows="true" receiveShadows="true" meshFile="pCube38.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-        </node>
-        <node name="pCube41">
-            <position x="-38.1361" y="31.418" z="5.86616" />
-            <scale x="1.61196" y="1" z="1" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="pCube41" castShadows="true" receiveShadows="true" meshFile="pCube41.mesh">
-                <subentities>
-                    <subentity index="0" materialName="book1" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="pCube42">
-            <position x="-38.1361" y="32.9987" z="1.16928" />
-            <scale x="1.61196" y="1.46508" z="0.515545" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="pCube42" castShadows="true" receiveShadows="true" meshFile="pCube42.mesh">
-                <subentities>
-                    <subentity index="0" materialName="book2" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="pCube43">
-            <position x="-38.1361" y="32.9987" z="-2.23444" />
-            <scale x="1.61196" y="1.46508" z="0.644111" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="pCube43" castShadows="true" receiveShadows="true" meshFile="pCube43.mesh">
-                <subentities>
-                    <subentity index="0" materialName="book3" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="pCube44">
-            <position x="-38.1361" y="31.418" z="-14.8488" />
-            <scale x="1.61196" y="1" z="1" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="pCube44" castShadows="true" receiveShadows="true" meshFile="pCube44.mesh">
-                <subentities>
-                    <subentity index="0" materialName="lambert2" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="pCube45">
-            <position x="-38.1361" y="22.5716" z="-2.23444" />
-            <scale x="1.61196" y="1.46508" z="0.644111" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="pCube45" castShadows="true" receiveShadows="true" meshFile="pCube45.mesh">
-                <subentities>
-                    <subentity index="0" materialName="book1" />
-                </subentities>
-            </entity>
-        </node>
-        <node name="pCube46">
-            <position x="-38.1361" y="21.0611" z="1.91169" />
-            <scale x="1.61196" y="1" z="1" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <entity name="pCube46" castShadows="true" receiveShadows="true" meshFile="pCube46.mesh">
-                <subentities>
-                    <subentity index="0" materialName="book2" />
-                </subentities>
-            </entity>
         </node>
         <node name="light">
             <position x="0" y="-5.28305" z="-4.60827" />
@@ -323,243 +115,98 @@
                 </entity>
             </node>
         </node>
-        <node name="bed">
+        <node name="bed_All">
             <position x="0" y="0" z="0" />
             <scale x="1" y="1" z="1" />
             <rotation qx="0" qy="0" qz="0" qw="1" />
-            <node name="pCube34">
-                <position x="-24.1105" y="11.0414" z="79.2334" />
-                <scale x="1.32493" y="1.40654" z="1.32493" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube34" castShadows="true" receiveShadows="true" meshFile="pCube34.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="pillow" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube33">
-                <position x="-24.1105" y="11.0414" z="66.6544" />
-                <scale x="1.32493" y="1.40654" z="1.32493" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube33" castShadows="true" receiveShadows="true" meshFile="pCube33.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="pillow" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pPlane2">
-                <position x="-22.313" y="10.3185" z="72.6537" />
+            <node name="bed">
+                <position x="0" y="0" z="0" />
                 <scale x="1" y="1" z="1" />
                 <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pPlane2" castShadows="true" receiveShadows="true" meshFile="pPlane2.mesh">
+                <entity name="bed" castShadows="true" receiveShadows="true" meshFile="bed.mesh">
                     <subentities>
-                        <subentity index="0" materialName="lambert2" />
+                        <subentity index="0" materialName="pillow" />
+                        <subentity index="1" materialName="lambert2" />
+                        <subentity index="2" materialName="bed1" />
+                        <subentity index="3" materialName="wood" />
                     </subentities>
                 </entity>
             </node>
-            <node name="pCube12">
-                <position x="-10.6671" y="7.48974" z="72.6427" />
+        </node>
+        <node name="Chair2_All">
+            <position x="-3.99706" y="0" z="49.1257" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0.868766" qz="0" qw="0.495222" />
+            <node name="Chair2">
+                <position x="40.2344" y="0" z="28.4694" />
                 <scale x="1" y="1" z="1" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube12" castShadows="true" receiveShadows="true" meshFile="pCube12.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="rampShader1" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube11">
-                <position x="-31.8957" y="9.20219" z="80.8268" />
-                <scale x="0.880771" y="1.09647" z="0.880771" />
-                <rotation qx="0" qy="0.425198" qz="0" qw="0.905101" />
-                <entity name="pCube11" castShadows="true" receiveShadows="true" meshFile="pCube11.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube10">
-                <position x="-31.8957" y="9.27815" z="75.738" />
-                <scale x="0.880771" y="1.23049" z="0.880771" />
-                <rotation qx="0" qy="0.425198" qz="0" qw="0.905101" />
-                <entity name="pCube10" castShadows="true" receiveShadows="true" meshFile="pCube10.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube9">
-                <position x="-31.8957" y="9.27815" z="70.4973" />
-                <scale x="0.880771" y="1.23049" z="0.880771" />
-                <rotation qx="0" qy="0.425198" qz="0" qw="0.905101" />
-                <entity name="pCube9" castShadows="true" receiveShadows="true" meshFile="pCube9.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube8">
-                <position x="-31.8957" y="9.20219" z="65.1806" />
-                <scale x="0.880771" y="1.09647" z="0.880771" />
-                <rotation qx="0" qy="0.425198" qz="0" qw="0.905101" />
-                <entity name="pCube8" castShadows="true" receiveShadows="true" meshFile="pCube8.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCylinder5">
-                <position x="-32.0238" y="8.48053" z="87.4185" />
-                <scale x="0.545579" y="1.0044" z="0.545579" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCylinder5" castShadows="true" receiveShadows="true" meshFile="pCylinder5.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCylinder4">
-                <position x="-32.0238" y="8.48053" z="58.8026" />
-                <scale x="0.545579" y="1.0044" z="0.545579" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCylinder4" castShadows="true" receiveShadows="true" meshFile="pCylinder4.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube7">
-                <position x="-31.9644" y="14.2838" z="73.0449" />
-                <scale x="5.94711" y="1" z="1" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube7" castShadows="true" receiveShadows="true" meshFile="pCube7.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube6">
-                <position x="-10.2784" y="3.84753" z="73.1936" />
-                <scale x="1.03333" y="1" z="1" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube6" castShadows="true" receiveShadows="true" meshFile="pCube6.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube5">
-                <position x="9.67401" y="9.27815" z="70.4973" />
-                <scale x="0.880771" y="1.23049" z="0.880771" />
-                <rotation qx="0" qy="0.425198" qz="0" qw="0.905101" />
-                <entity name="pCube5" castShadows="true" receiveShadows="true" meshFile="pCube5.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube4">
-                <position x="9.67401" y="9.27815" z="75.738" />
-                <scale x="0.880771" y="1.23049" z="0.880771" />
-                <rotation qx="0" qy="0.425198" qz="0" qw="0.905101" />
-                <entity name="pCube4" castShadows="true" receiveShadows="true" meshFile="pCube4.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube3">
-                <position x="9.67401" y="9.20219" z="65.1806" />
-                <scale x="0.880771" y="1.09647" z="0.880771" />
-                <rotation qx="0" qy="0.425198" qz="0" qw="0.905101" />
-                <entity name="pCube3" castShadows="true" receiveShadows="true" meshFile="pCube3.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube2">
-                <position x="9.67401" y="9.20219" z="80.8268" />
-                <scale x="0.880771" y="1.09647" z="0.880771" />
-                <rotation qx="0" qy="0.425198" qz="0" qw="0.905101" />
-                <entity name="pCube2" castShadows="true" receiveShadows="true" meshFile="pCube2.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCylinder3">
-                <position x="9.71923" y="12.2625" z="73.0589" />
-                <scale x="0.474131" y="0.474131" z="1.42439" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCylinder3" castShadows="true" receiveShadows="true" meshFile="pCylinder3.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCylinder2">
-                <position x="9.5452" y="8.48053" z="87.4185" />
-                <scale x="0.545579" y="1.0044" z="0.545579" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCylinder2" castShadows="true" receiveShadows="true" meshFile="pCylinder2.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCylinder1">
-                <position x="9.5452" y="8.48053" z="58.8026" />
-                <scale x="0.545579" y="1.0044" z="0.545579" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCylinder1" castShadows="true" receiveShadows="true" meshFile="pCylinder1.mesh">
+                <rotation qx="0" qy="0.868766" qz="0" qw="-0.495222" />
+                <entity name="Chair2" castShadows="true" receiveShadows="true" meshFile="Chair2.mesh">
                     <subentities>
                         <subentity index="0" materialName="wood" />
                     </subentities>
                 </entity>
             </node>
         </node>
-        <node name="case2">
-            <position x="0" y="0.220999" z="0" />
+        <node name="Bar1">
+            <position x="0" y="0" z="0" />
             <scale x="1" y="1" z="1" />
             <rotation qx="0" qy="0" qz="0" qw="1" />
-            <node name="pCube14">
-                <position x="-28.9501" y="8.5949" z="39.224" />
-                <scale x="1" y="0.0999292" z="1" />
+            <node name="Bar1_1">
+                <position x="-39.1789" y="13.7566" z="54.2394" />
+                <scale x="1.415" y="1.3018" z="1.93209" />
                 <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube14" castShadows="true" receiveShadows="true" meshFile="pCube14.mesh">
+                <entity name="Bar1_1" castShadows="true" receiveShadows="true" meshFile="Bar1_1.mesh">
                     <subentities>
-                        <subentity index="0" materialName="case1" />
+                        <subentity index="0" materialName="wood" />
+                        <subentity index="1" materialName="wood_Wall" />
                     </subentities>
                 </entity>
             </node>
-            <node name="pSphere4">
-                <position x="-24.2385" y="7.1051" z="37.7385" />
-                <scale x="1" y="1" z="1" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pSphere4" castShadows="true" receiveShadows="true" meshFile="pSphere4.mesh">
+        </node>
+        <node name="Box1">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="Box1_1">
+                <position x="-37.9866" y="3.15766" z="0.194496" />
+                <scale x="0.759533" y="0.759533" z="0.759533" />
+                <rotation qx="0" qy="-0.154672" qz="0" qw="0.987966" />
+                <entity name="Box1_1" castShadows="true" receiveShadows="true" meshFile="Box1_1.mesh">
                     <subentities>
-                        <subentity index="0" materialName="rampShader1" />
+                        <subentity index="0" materialName="lambert7" />
                     </subentities>
                 </entity>
             </node>
-            <node name="pSphere3">
-                <position x="-24.2385" y="7.1051" z="40.6602" />
-                <scale x="1" y="1" z="1" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pSphere3" castShadows="true" receiveShadows="true" meshFile="pSphere3.mesh">
+        </node>
+        <node name="Box2">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="Box2_1">
+                <position x="-33.0565" y="2.7069" z="-10.14" />
+                <scale x="0.863358" y="0.668375" z="0.876473" />
+                <rotation qx="0" qy="0.264711" qz="0" qw="0.964328" />
+                <entity name="Box2_1" castShadows="true" receiveShadows="true" meshFile="Box2_1.mesh">
                     <subentities>
-                        <subentity index="0" materialName="rampShader1" />
+                        <subentity index="0" materialName="lambert7" />
                     </subentities>
                 </entity>
             </node>
-            <node name="pCube13">
-                <position x="-28.9501" y="4.05444" z="39.224" />
+        </node>
+        <node name="case4">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="case4_Outline">
+                <position x="0" y="0" z="0" />
                 <scale x="1" y="1" z="1" />
                 <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube13" castShadows="true" receiveShadows="true" meshFile="pCube13.mesh">
+                <entity name="case4_Outline" castShadows="true" receiveShadows="true" meshFile="case4_Outline.mesh">
                     <subentities>
-                        <subentity index="0" materialName="wood1" />
+                        <subentity index="0" materialName="bed1" />
                         <subentity index="1" materialName="case1" />
+                        <subentity index="2" materialName="wood1" />
                     </subentities>
                 </entity>
             </node>
@@ -568,107 +215,179 @@
             <position x="0" y="0" z="0" />
             <scale x="1" y="1" z="1" />
             <rotation qx="0" qy="0" qz="0" qw="1" />
-            <node name="pCube27">
-                <position x="-41.0243" y="19.616" z="7.77442" />
-                <scale x="1" y="0.392709" z="1" />
-                <rotation qx="0.732949" qy="0" qz="0" qw="0.680284" />
-                <entity name="pCube27" castShadows="true" receiveShadows="true" meshFile="pCube27.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="case1" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube26">
-                <position x="-41.0243" y="7.17102" z="-15.1016" />
-                <scale x="1" y="0.392709" z="1.0471" />
+            <node name="case3_1">
+                <position x="0" y="0" z="0" />
+                <scale x="1" y="1" z="1" />
                 <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube26" castShadows="true" receiveShadows="true" meshFile="pCube26.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="case1" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube29">
-                <position x="-41.0243" y="16.5719" z="-15.1016" />
-                <scale x="1" y="0.392709" z="1.05323" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube29" castShadows="true" receiveShadows="true" meshFile="pCube29.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="case1" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube30">
-                <position x="-41.0243" y="27.2295" z="-15.1016" />
-                <scale x="1" y="0.392709" z="1.1182" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube30" castShadows="true" receiveShadows="true" meshFile="pCube30.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="case1" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube28">
-                <position x="-41.0243" y="19.616" z="-37.5519" />
-                <scale x="1" y="0.392709" z="1" />
-                <rotation qx="-0.732947" qy="0" qz="0" qw="0.680286" />
-                <entity name="pCube28" castShadows="true" receiveShadows="true" meshFile="pCube28.mesh">
+                <entity name="case3_1" castShadows="true" receiveShadows="true" meshFile="case3_1.mesh">
                     <subentities>
                         <subentity index="0" materialName="case1" />
                     </subentities>
                 </entity>
             </node>
         </node>
-        <node name="Chair2">
-            <position x="-3.99706" y="0" z="49.1257" />
+        <node name="book_1">
+            <position x="0" y="0" z="0" />
             <scale x="1" y="1" z="1" />
-            <rotation qx="0" qy="0.868766" qz="0" qw="0.495222" />
-            <node name="pCube40_1">
-                <position x="3.23786" y="15.5931" z="34.4774" />
-                <scale x="1.09347" y="1" z="0.780158" />
-                <rotation qx="0" qy="1" qz="0" qw="-1.60812e-016" />
-                <entity name="pCube40_1" castShadows="true" receiveShadows="true" meshFile="pCube40_1.mesh">
-                    <subentities>
-                        <subentity index="0" materialName="wood" />
-                    </subentities>
-                </entity>
-            </node>
-            <node name="pCube39_1">
-                <position x="-1.22421" y="5.93094" z="34.4236" />
-                <scale x="1" y="0.0999292" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="book_1_1">
+                <position x="-38.1361" y="31.418" z="5.86616" />
+                <scale x="1.61196" y="1" z="1" />
                 <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube39_1" castShadows="true" receiveShadows="true" meshFile="pCube39_1.mesh">
+                <entity name="book_1_1" castShadows="true" receiveShadows="true" meshFile="book_1_1.mesh">
                     <subentities>
-                        <subentity index="0" materialName="wood" />
+                        <subentity index="0" materialName="book1" />
                     </subentities>
                 </entity>
             </node>
-            <node name="polySurface1_1">
-                <position x="-7.10543e-015" y="0" z="0" />
+        </node>
+        <node name="book_2">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="book_2_1">
+                <position x="-38.1361" y="32.9987" z="1.16928" />
+                <scale x="1.61196" y="1.46508" z="0.515545" />
+                <rotation qx="0" qy="0" qz="0" qw="1" />
+                <entity name="book_2_1" castShadows="true" receiveShadows="true" meshFile="book_2_1.mesh">
+                    <subentities>
+                        <subentity index="0" materialName="book2" />
+                    </subentities>
+                </entity>
+            </node>
+        </node>
+        <node name="book_3">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="book_3_1">
+                <position x="-38.1361" y="32.9987" z="-2.23444" />
+                <scale x="1.61196" y="1.46508" z="0.644111" />
+                <rotation qx="0" qy="0" qz="0" qw="1" />
+                <entity name="book_3_1" castShadows="true" receiveShadows="true" meshFile="book_3_1.mesh">
+                    <subentities>
+                        <subentity index="0" materialName="book3" />
+                    </subentities>
+                </entity>
+            </node>
+        </node>
+        <node name="book_4">
+            <position x="0" y="0.332648" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="book_4_1">
+                <position x="-38.1361" y="31.418" z="-14.8488" />
+                <scale x="1.61196" y="1" z="1" />
+                <rotation qx="0" qy="0" qz="0" qw="1" />
+                <entity name="book_4_1" castShadows="true" receiveShadows="true" meshFile="book_4_1.mesh">
+                    <subentities>
+                        <subentity index="0" materialName="lambert2" />
+                    </subentities>
+                </entity>
+            </node>
+        </node>
+        <node name="book_5">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="book_5_1">
+                <position x="-38.1361" y="21.0611" z="1.91169" />
+                <scale x="1.61196" y="1" z="1" />
+                <rotation qx="0" qy="0" qz="0" qw="1" />
+                <entity name="book_5_1" castShadows="true" receiveShadows="true" meshFile="book_5_1.mesh">
+                    <subentities>
+                        <subentity index="0" materialName="book2" />
+                    </subentities>
+                </entity>
+            </node>
+        </node>
+        <node name="book_6">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="book_6_1">
+                <position x="-38.1361" y="22.5716" z="-2.23444" />
+                <scale x="1.61196" y="1.46508" z="0.644111" />
+                <rotation qx="0" qy="0" qz="0" qw="1" />
+                <entity name="book_6_1" castShadows="true" receiveShadows="true" meshFile="book_6_1.mesh">
+                    <subentities>
+                        <subentity index="0" materialName="book1" />
+                    </subentities>
+                </entity>
+            </node>
+        </node>
+        <node name="window_R">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="window_R_1">
+                <position x="-48.9484" y="23.5" z="35.1389" />
                 <scale x="1" y="1" z="1" />
                 <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="polySurface1_1" castShadows="true" receiveShadows="true" meshFile="polySurface1_1.mesh">
+                <entity name="window_R_1" castShadows="true" receiveShadows="true" meshFile="window_R_1.mesh">
                     <subentities>
-                        <subentity index="0" materialName="wood" />
+                        <subentity index="0" materialName="wood1" />
+                        <subentity index="1" materialName="Glass" />
                     </subentities>
                 </entity>
             </node>
-            <node name="pCube38_1">
-                <position x="-6.79466" y="15.5931" z="34.4774" />
-                <scale x="1.09347" y="1" z="0.780158" />
+        </node>
+        <node name="window_L">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="window_L_1">
+                <position x="-48.9484" y="23.5" z="46.5" />
+                <scale x="1" y="1" z="1" />
                 <rotation qx="0" qy="0" qz="0" qw="1" />
-                <entity name="pCube38_1" castShadows="true" receiveShadows="true" meshFile="pCube38_1.mesh">
+                <entity name="window_L_1" castShadows="true" receiveShadows="true" meshFile="window_L_1.mesh">
                     <subentities>
-                        <subentity index="0" materialName="wood" />
+                        <subentity index="0" materialName="wood1" />
+                        <subentity index="1" materialName="Glass" />
+                    </subentities>
+                </entity>
+            </node>
+        </node>
+        <node name="carton">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="carton_1">
+                <position x="10.0715" y="0.0822975" z="27.7453" />
+                <scale x="1.29773" y="1.09701" z="1.09701" />
+                <rotation qx="0" qy="0" qz="0" qw="1" />
+                <entity name="carton_1" castShadows="true" receiveShadows="true" meshFile="carton_1.mesh">
+                    <subentities>
+                        <subentity index="0" materialName="lambert6" />
+                    </subentities>
+                </entity>
+            </node>
+        </node>
+        <node name="room_Box">
+            <position x="0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0" qy="0" qz="0" qw="1" />
+            <node name="room_Box_1">
+                <position x="-4.44089e-016" y="81.2229" z="26.3374" />
+                <scale x="0.432812" y="1" z="0.570045" />
+                <rotation qx="0" qy="0" qz="0" qw="1" />
+                <entity name="room_Box_1" castShadows="true" receiveShadows="true" meshFile="room_Box_1.mesh">
+                    <subentities>
+                        <subentity index="0" materialName="lambert1" />
+                        <subentity index="1" materialName="silly" />
+                        <subentity index="2" materialName="lambert8" />
+                        <subentity index="3" materialName="wood_ground" />
+                        <subentity index="4" materialName="wood_Wall" />
+                        <subentity index="5" materialName="wood_Wall2" />
                     </subentities>
                 </entity>
             </node>
         </node>
         <node name="directionalLight1">
-            <position x="38.05" y="58.7784" z="0" />
+            <position x="76.9499" y="60.7831" z="-14.5728" />
             <scale x="1" y="1" z="1" />
-            <rotation qx="0.132535" qy="-0.843992" qz="-0.243668" qw="-0.459063" />
-            <light name="directionalLight1" visible="true" affectDiffuse="true" affectSpecular="true" ambientOnly="false" type="directional" castShadows="false" power="1">
+            <rotation qx="-0.0537084" qy="0.861971" qz="0.0934564" qw="0.495366" />
+            <light name="directionalLight1" visible="true" affectDiffuse="true" affectSpecular="true" ambientOnly="false" type="directional" castShadows="false" power="0.25">
                 <rotation qx="1" qy="0" qz="0" qw="-4.37114e-008" />
                 <colourDiffuse r="1" g="1" b="1" />
                 <colourSpecular r="0" g="0" b="0" />
@@ -676,10 +395,21 @@
             </light>
         </node>
         <node name="directionalLight2">
-            <position x="-68.6844" y="37.9753" z="56.2859" />
+            <position x="-70.5875" y="51.0827" z="69.5228" />
             <scale x="1" y="1" z="1" />
-            <rotation qx="-0.15578" qy="-0.339261" qz="-0.0570767" qw="0.925947" />
-            <light name="directionalLight2" visible="true" affectDiffuse="true" affectSpecular="true" ambientOnly="false" type="directional" castShadows="false" power="0.359712">
+            <rotation qx="-0.192319" qy="-0.512411" qz="-0.118956" qw="0.828431" />
+            <light name="directionalLight2" visible="true" affectDiffuse="true" affectSpecular="true" ambientOnly="false" type="directional" castShadows="false" power="0.25">
+                <rotation qx="1" qy="0" qz="0" qw="-4.37114e-008" />
+                <colourDiffuse r="1" g="1" b="1" />
+                <colourSpecular r="0" g="0" b="0" />
+                <lightAttenuation range="10000" constant="1" linear="0" quadric="0" />
+            </light>
+        </node>
+        <node name="directionalLight3">
+            <position x="13.3247" y="13.9871" z="122.341" />
+            <scale x="1" y="1" z="1" />
+            <rotation qx="0.0950778" qy="0.143419" qz="-0.0138438" qw="0.984987" />
+            <light name="directionalLight3" visible="true" affectDiffuse="true" affectSpecular="true" ambientOnly="false" type="directional" castShadows="false" power="0.25">
                 <rotation qx="1" qy="0" qz="0" qw="-4.37114e-008" />
                 <colourDiffuse r="1" g="1" b="1" />
                 <colourSpecular r="0" g="0" b="0" />
@@ -687,32 +417,15 @@
             </light>
         </node>
         <node name="pointLight1">
-            <position x="-2.74315" y="35.8445" z="26.9518" />
+            <position x="-2.94809" y="40.8346" z="26.9518" />
             <scale x="1" y="1" z="1" />
-            <rotation qx="-0.683052" qy="0.0613086" qz="0.0577217" qw="0.725499" />
-            <light name="pointLight1" visible="true" affectDiffuse="true" affectSpecular="true" ambientOnly="false" type="point" castShadows="false" power="0.731707">
+            <rotation qx="0.280173" qy="-0.633354" qz="0.264388" qw="0.671167" />
+            <light name="pointLight1" visible="true" affectDiffuse="true" affectSpecular="true" ambientOnly="false" type="point" castShadows="false" power="0.5">
                 <rotation qx="1" qy="0" qz="0" qw="-4.37114e-008" />
                 <colourDiffuse r="1" g="1" b="1" />
                 <colourSpecular r="0" g="0" b="0" />
                 <lightAttenuation range="1" constant="1" linear="0" quadric="0" />
             </light>
-        </node>
-        <node name="camera1_group">
-            <position x="0" y="0" z="0" />
-            <scale x="1" y="1" z="1" />
-            <rotation qx="0" qy="0" qz="0" qw="1" />
-            <node name="camera1">
-                <position x="0.386339" y="22.7365" z="126" />
-                <scale x="1" y="1" z="1" />
-                <rotation qx="0" qy="0" qz="0" qw="1" />
-                <camera name="camera1" fov="0.967183">
-                    <rotation qx="0" qy="0" qz="0" qw="1" />
-                    <clipping near="0.1" far="10000" />
-                </camera>
-                <trackTarget nodeName="camera1_aim">
-                    <localDirection x="0" y="0" z="-1" />
-                </trackTarget>
-            </node>
         </node>
     </nodes>
 </scene>

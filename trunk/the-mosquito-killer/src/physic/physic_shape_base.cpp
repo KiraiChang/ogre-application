@@ -42,7 +42,7 @@ void PhysicShapeBase::update(float timePass)
 {
 }
 
-void PhysicShapeBase::setAnimation(const char *aniName)
+void PhysicShapeBase::setAnimation(const char *aniName, bool loop, bool blend)
 {
 }
 
