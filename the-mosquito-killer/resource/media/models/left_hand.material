@@ -1,4 +1,4 @@
-material lambert2
+material right_hand
 {
 	technique
 	{
