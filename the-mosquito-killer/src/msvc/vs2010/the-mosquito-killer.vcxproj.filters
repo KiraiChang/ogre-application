@@ -76,6 +76,12 @@
     <ClCompile Include="..\..\score_system\audio_system.cpp">
       <Filter>score_system</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\compositer\depth_of_field_effect.cpp">
+      <Filter>compositer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\compositer\lens.cpp">
+      <Filter>compositer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_source\base_application.h">
@@ -156,6 +162,12 @@
     <ClInclude Include="..\..\score_system\audio_system.h">
       <Filter>score_system</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\compositer\depth_of_field_effect.h">
+      <Filter>compositer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\compositer\lens.h">
+      <Filter>compositer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ogre_application">
@@ -184,6 +196,9 @@
     </Filter>
     <Filter Include="score_system">
       <UniqueIdentifier>{6c5a1ea1-c8e2-4dda-8bb2-58ef1849081e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compositer">
+      <UniqueIdentifier>{f3c268b3-0d9c-4388-a860-6888c7deccbd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

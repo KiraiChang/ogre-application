@@ -8,6 +8,7 @@
 #include "../score_system/score_object.h"
 #include "../score_system/game_system.h"
 #include "../score_system/audio_system.h"
+#include "../compositer/depth_of_field_effect.h"
 
 #include <iostream>
 #include <fstream>
@@ -135,6 +136,8 @@ void KinectApplication::createScene(void)
 	//OgrePhysicDebug *debug = new OgrePhysicDebug();
 	//debug->init(mSceneMgr);
 	//m_pRagDoll->setDebug(debug);
+
+	m_pCompositer = new DOFManager(mRoot, mViewport);
 }
 
 void KinectApplication::createUI(void)
