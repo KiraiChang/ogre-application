@@ -9,6 +9,7 @@ class PhysicSimulation;
 class PhysicRigidBody;
 class RagDoll;
 class OgreShapeBox;
+class DOFManager;
 
 class KinectApplication : public OgreApplication
 {
@@ -20,6 +21,8 @@ private:
 	//Kinect
 	KinectDevice *							m_pKinectDevice;
 	bool									m_bHasDevice;
+
+	DOFManager*								m_pCompositer;
 
 public:
 	KinectApplication(void);

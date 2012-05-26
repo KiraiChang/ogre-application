@@ -89,6 +89,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\base_math\base_vector .cpp" />
+    <ClCompile Include="..\..\compositer\depth_of_field_effect.cpp" />
+    <ClCompile Include="..\..\compositer\lens.cpp" />
     <ClCompile Include="..\..\game_object\mosquito.cpp" />
     <ClCompile Include="..\..\game_object\weapon.cpp" />
     <ClCompile Include="..\..\kinect\character_controller.cpp" />
@@ -117,6 +119,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\base_math\base_define.h" />
     <ClInclude Include="..\..\base_math\base_vector.h" />
+    <ClInclude Include="..\..\compositer\depth_of_field_effect.h" />
+    <ClInclude Include="..\..\compositer\lens.h" />
     <ClInclude Include="..\..\game_object\mosquito.h" />
     <ClInclude Include="..\..\game_object\weapon.h" />
     <ClInclude Include="..\..\kinect\character_controller.h" />
