@@ -206,7 +206,7 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 		m_vfSkeleton[i][eScaleX] = data.SkeletonPositions[i].x;
 		m_vfSkeleton[i][eScaleY] = data.SkeletonPositions[i].y;
 		m_vfSkeleton[i][eScaleZ] = data.SkeletonPositions[i].z;
-		if(id <eKinectBodyPart)
+		if(id < eKinectBodyPart)
 		{
 			if(i == m_iBodyID[id])
 			{
