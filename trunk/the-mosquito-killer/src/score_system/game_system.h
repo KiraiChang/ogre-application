@@ -118,19 +118,21 @@ private:
 	//kinect
 	PhysicKinect *								m_vpPlayer/*[NUI_SKELETON_COUNT]*/;
 	DWORD										m_iCurrentID;
-	int											NumBomb;
-	int											NumBook;
 	CEGUI::Window *								m_pSheet;
 	//準心
 	Ogre::RaySceneQuery*						mRaySceneQuery;
 	Ogre::Entity*								EntSight;
 	Ogre::SceneNode*							NodeSight;
 	float										Shoulder[3];
+	WeaponKnife*								ChooesKnife;//當作選取武器的快捷鍵 add
+	WeaponKnife*								ChooesBook;//當作選取武器的快捷鍵 add
+	WeaponKnife*								ChooesBomb; //當作選取武器的快捷鍵 add
 
 public:
 												~GameSystem(void);
 	static GameSystem *							getInstance(void);
 	void										init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow *pWindow);
+	void										initWeapon(void);
 	void										initMeshData(void);
 	void										release(void);
 	void										releaseMosquito(void);
@@ -165,6 +167,10 @@ public:
 
 	static bool									MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* body0,btCollisionObject* body1);
 	static bool									MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1);
+
+	int											NumBomb;
+	int											NumBook;
+	int											CurrentWeapon; //目前選取的武器 add
 };
 
 #endif //_GAME_SYSTEM_H_

@@ -15,7 +15,7 @@
 extern Ogre::Log* m_pLog;
 const float HAND_CHECK_AIM_POSE_DIST = 1.5f;
 const float HAND_CHECK_CLOSE_DIST = 2.5f;
-const float HAND_CHECK_OPEN_DIST = 30.0f;
+const float HAND_CHECK_OPEN_DIST = 10.0f;
 //const float HAND_CHECK_RIGHT_HAND_DIST = 1.5f;
 const float HAND_CHECK_RIGHT_HAND_SPEED = 5.0f;
 const float HAND_CHECK_SHOOT_TIMEPASS = 0.5f;
@@ -120,6 +120,48 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 			default:
 				break;
 			}
+			//random to get book or bomb add
+		 	int getW = Ogre::Math::RangeRandom(1,10);
+			if(getW > 9)
+				GameSystem::getInstance()->NumBomb++;
+			else if(getW >= 8)
+				GameSystem::getInstance()->NumBook++;
+		}
+		//?
+		if(object0->getParent() != NULL)
+		{
+			switch(((WeaponKnife *)object0->getParent())->getType()) //武器功能add
+			{
+				case eWeaponKnife:
+					((WeaponKnife *)object0->getParent())->setDestory();
+					break;
+				case eWeaponBook:
+					if(!(MosquitoBase *)object1)
+					((WeaponBook *)object0->getParent())->setDestory();
+					break;
+				case eWeaponBomb:
+					((WeaponBomb *)object0->getParent())->setDestory();
+					//GameSystem::getInstance()->releaseMosquito();//還要記分數
+					break;
+				default:
+					break;
+			}
+
+			switch(((WeaponKnife *)object0->getParent())->getType()) //改變使用武器add
+			{
+				case eChooseKnife:
+					GameSystem::getInstance()->CurrentWeapon = 0;
+					break;
+				case eChooseBook:
+					GameSystem::getInstance()->CurrentWeapon = 1;
+					break;
+				case eChooseBomb:
+					GameSystem::getInstance()->CurrentWeapon = 2;
+					break;
+				default:
+					break;
+			}
+
 		}
 	}
 }
@@ -179,7 +221,11 @@ GameSystem::GameSystem(void):
 		m_fShootTimePass(0),
 		m_pSheet(NULL),
 		NumBook(0),
-		NumBomb(0)
+		NumBomb(0),
+		CurrentWeapon(0), //add
+		ChooesKnife(NULL),//當作選取武器的快捷鍵 add
+		ChooesBook(NULL),//當作選取武器的快捷鍵 add
+		ChooesBomb(NULL) //當作選取武器的快捷鍵 add //add
 {
 	//for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	//{
@@ -220,6 +266,7 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 	if(m_pWindow == NULL)
 		m_pWindow = pWindow;
 
+	initWeapon();
 	initMeshData();
 
 	CEGUI::WindowManager &windowMgr = CEGUI::WindowManager::getSingleton();
@@ -232,6 +279,29 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 
 	slider->setCurrentValue(DEF_MAX_PLAY_TIME);
 	slider->setMaxValue(DEF_MAX_PLAY_TIME);
+}
+
+void GameSystem::initWeapon(void)
+{
+	ChooesKnife = new WeaponKnife(); //武器快捷add
+	ChooesBook = new WeaponBook();
+	ChooesBomb = new WeaponBomb();
+
+	ChooesKnife->init(m_pSceneMgr, m_pWorld);
+	ChooesBook->init(m_pSceneMgr, m_pWorld);
+	ChooesBomb->init(m_pSceneMgr, m_pWorld);
+
+	float mass = 0;
+	float scale[3] = {10.0,10.0,10.0};
+	float size[3] = {5.0,5.0,5.0};
+	float pos[3] = {10.0,40.0,100.0};
+	float quat[4] = {1.0, 0.0, 0.0, 0.0};
+	float tar[3] = {0,0,0};
+	ChooesKnife->create("bomb.mesh",mass,scale,pos,size,quat,0,tar);
+	pos[1] = 20;
+	ChooesBook->create("bomb.mesh",mass,scale,pos,size,quat,0,tar);
+	pos[1] = 15;
+	ChooesBomb->create("bomb.mesh",mass,scale,pos,size,quat,0,tar);
 }
 
 void GameSystem::initMeshData(void)
@@ -359,6 +429,13 @@ void GameSystem::restart(unsigned int stageID)
 		pSlider->setMaxValue(m_waveSystem.getFullTime());
 		CEGUI::MouseCursor::getSingletonPtr()->setVisible(false);
 	}
+
+	if(ChooesKnife != NULL)
+		ChooesKnife->setVisible(true);
+	if(ChooesBook != NULL)
+		ChooesBook->setVisible(true);
+	if(ChooesBomb != NULL)
+		ChooesBomb->setVisible(true);
 }
 
 float GameSystem::getTimePass(void)const
@@ -436,7 +513,7 @@ void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mas
 		break;
 	}
 	m_vWeapon.back()->init(m_pSceneMgr, m_pWorld);
-	m_vWeapon.back()->create(modelName, mass, scale, pos, size, quat, score/*, tar*/);
+	m_vWeapon.back()->create(modelName, mass, scale, pos, size, quat, score, tar);
 }
 
 
@@ -765,6 +842,12 @@ void GameSystem::updateWeapon(float timePass)
 		else
 			rIte++;
 	}
+	if(ChooesKnife != NULL)
+		ChooesKnife->update(timePass);
+	if(ChooesBook != NULL)
+		ChooesBook->update(timePass);
+	if(ChooesBomb != NULL)
+		ChooesBomb->update(timePass);
 }
 
 void GameSystem::updatePlayer(KinectDevice *deivce)
@@ -794,6 +877,9 @@ void GameSystem::updatePlayer(KinectDevice *deivce)
 				if(m_iCurrentID == frame.SkeletonData[i].dwTrackingID)
 				{
 					m_vpPlayer->update(frame.SkeletonData[i]);
+					Shoulder[0] = frame.SkeletonData[i].SkeletonPositions[4].x; // change to shoulder index (4)
+					Shoulder[1] = frame.SkeletonData[i].SkeletonPositions[4].y;
+					Shoulder[2] = frame.SkeletonData[i].SkeletonPositions[4].z;
 				}
 				else
 				{
@@ -869,7 +955,7 @@ void GameSystem::updateHandState(float timePass)
 			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
-
+			Ogre::Vector3 shoulder(Shoulder);
 			float dist = 0.0;
 			if(!m_bIsDebug)
 			{
@@ -886,11 +972,15 @@ void GameSystem::updateHandState(float timePass)
 			//char msg[64];
 			//sprintf(msg, "rightPos[2] - leftPos[2]:%f\n", rightPos[2] - leftPos[2]);
 			//m_pLog->logMessage(msg);
-			if((Shoulder[2] - leftPos[2]) > 0.55 /*&& (rightPos[2] - leftPos[2]) > 0.6*/)
+			//if((Shoulder[2] - leftPos[2]) > 0.55 /*&& (rightPos[2] - leftPos[2]) > 0.6*/)
+			//{
+			//	m_eHandState = eOnHandWaitShoot;
+			//}
+			float distHand = left.distance(shoulder);
+			if(distHand > 0.55 && dist > 0.6) //add
 			{
 				m_eHandState = eOnHandWaitShoot;
 			}
-			
 		}
 		break;
 	case eOnHandClose:
@@ -1021,15 +1111,16 @@ void GameSystem::updateHandState(float timePass)
 					float pos[3] = {0.0,20.0,0.0};
 					float scale[3] = {2.0, 2.0, 2.0};
 					float size[3] = {5.0, 5.0, 5.0};
+					CurrentWeapon = 0; // use knife add
 
-					if(NumBomb > 0)
+					if(CurrentWeapon == 2 && NumBomb >=1) //add
 					{
-						createWeapon(eWeaponBomb,"bomb.mesh", 1.0, scale, pos, size,  quat, 100,1,TargetPos);
+						createWeapon(eWeaponBomb,"bomb.mesh", 1.0, scale, rightPos, size, quat, 100,1,TargetDirect); //add
 						NumBomb--;
 					}
-					else if(NumBook > 0)
+					else if(CurrentWeapon == 1 && NumBook >=1) //add
 					{
-						createWeapon(eWeaponBook,"bomb.mesh", 1.0, scale, pos, size, quat, 100,1,TargetPos);
+						createWeapon(eWeaponBook,"bomb.mesh", 1.0, scale, rightPos, size, quat, 100,1,TargetDirect); //add
 						NumBook--;
 					}
 					else
@@ -1080,6 +1171,15 @@ void GameSystem::setAllVisible(bool visible)
 	if(m_pSheet != NULL)
 		m_pSheet->setVisible(visible);
 	m_dotSceneLoader.setAllVisible(visible);
+
+	if(ChooesKnife != NULL)
+		ChooesKnife->setVisible(visible);
+
+	if(ChooesBook != NULL)
+		ChooesBook->setVisible(visible);
+
+	if(ChooesBomb != NULL)
+		ChooesBomb->setVisible(visible);
 }
 
 void GameSystem::testCollision()

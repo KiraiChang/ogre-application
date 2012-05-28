@@ -27,7 +27,7 @@ void WeaponKnife::init(Ogre::SceneManager *scene, btDynamicsWorld *world)
 	m_pWorld = world;
 }
 
-void WeaponKnife::create(const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score)
+void WeaponKnife::create(const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score,float *tar)
 {
 	//create shape
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
@@ -42,9 +42,9 @@ void WeaponKnife::create(const char *modelName, float mass, float *scale, float 
 	m_pBody = new PhysicRigidBody(m_pWorld);
 	PhysicDebug *debug = NULL;
 	m_pBody->init(shape, debug, mass, pos, size, quat, m_pScore, 8);
-	float tar[3] = {0.0, 0.0, 0.0};
+	
 	//create move type
-	m_pMove = new ShootBase(shape->getNode(), tar);
+	m_pMove = new ShootBase(shape->getNode(),tar);
 }
 
 void WeaponKnife::release(void)
@@ -83,6 +83,12 @@ void WeaponKnife::update(float timePass)
 	}
 }
 
+void WeaponKnife::setVisible(bool v)
+{
+	if(m_pBody != NULL)
+		m_pBody->setVisible(v);
+}
+
 //*******************************************************
 WeaponBook::WeaponBook(void):
 	WeaponKnife()
@@ -100,6 +106,37 @@ WeaponBomb::WeaponBomb(void):
 }
 
 WeaponBomb::~WeaponBomb(void)
+{
+	release();
+}
+//*******************************************************
+//******************************************************* //下面都是新增的 add
+ChooseKnife::ChooseKnife(void):
+	WeaponKnife()
+{
+}
+
+ChooseKnife::~ChooseKnife(void)
+{
+	release();
+}
+//*******************************************************
+ChooseBook::ChooseBook(void):
+	WeaponKnife()
+{
+}
+
+ChooseBook::~ChooseBook(void)
+{
+	release();
+}
+//*******************************************************
+ChooseBomb::ChooseBomb(void):
+	WeaponKnife()
+{
+}
+
+ChooseBomb::~ChooseBomb(void)
 {
 	release();
 }
