@@ -1,7 +1,9 @@
 material wood
 {
+	// toon shading with outline
 	technique
 	{
+		scheme OUTLINE
 		pass
 		{
 			ambient 0 0 0 1
@@ -12,9 +14,22 @@ material wood
 				texture ASHSEN_2.GIF
 			}
 		}
-
+		
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
-
 }
 
 
@@ -28,7 +43,20 @@ material light_cap
 			ambient 0 0 0 1
 			specular 0.84298 0.84298 0.84298 1 89.6
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -54,7 +82,20 @@ material lightbum
 				alpha_op_ex source1 src_manual src_current 0.81818
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -69,7 +110,6 @@ material paper
 		{
 			ambient 0 0 0 1
 		}
-
 	}
 
 }
@@ -89,7 +129,20 @@ material book4
 				texture X_014.jpg
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -109,7 +162,20 @@ material pillow
 				texture pillow.jpg
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -126,7 +192,20 @@ material lambert2
 			diffuse 0.0565 0.5 0.133743 1
 			emissive 0.0909 0.0909 0.0909 1
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -142,7 +221,20 @@ material bed1
 			ambient 0 0 0 1
 			diffuse 1 0.931226 0.233 1
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -162,7 +254,20 @@ material wood_Wall
 				texture S4-007-2.tif
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -182,7 +287,20 @@ material lambert7
 				texture box.jpg
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -202,7 +320,20 @@ material case1
 				texture S4-005.TIF
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -222,7 +353,20 @@ material wood1
 				texture floor.jpg
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -238,7 +382,20 @@ material book1
 			ambient 0 0 0 1
 			diffuse 0.669 0.0030105 0 1
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -254,7 +411,20 @@ material book2
 			ambient 0 0 0 1
 			diffuse 0.18504 0.210629 0.72 1
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -270,7 +440,20 @@ material book3
 			ambient 0 0 0 1
 			diffuse 0.73836 0.834935 0.84 1
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -296,7 +479,20 @@ material Glass
 				alpha_op_ex source1 src_manual src_current 0.47108
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -317,7 +513,20 @@ material lambert6
 				texture ct.png
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -333,7 +542,20 @@ material lambert1
 			ambient 0 0 0 1
 			diffuse 0 0 0 1
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -353,7 +575,20 @@ material silly
 				texture ct-2.jpg
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -373,7 +608,20 @@ material lambert8
 				texture wall.jpg
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -393,7 +641,20 @@ material wood_ground
 				texture S4-007-4.tif
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }
@@ -413,7 +674,20 @@ material wood_Wall2
 				texture S4-007-3.tif
 			}
 		}
-
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
+		}
 	}
 
 }

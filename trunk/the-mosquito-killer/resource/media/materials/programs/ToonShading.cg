@@ -1,0 +1,170 @@
+uniform float4x4 world;
+uniform float4x4 viewProj;
+uniform float4x4 worldViewProj;
+uniform float4 lightPosition;
+uniform float3 eyePosition;
+uniform float3 shininess;
+uniform sampler2D samplerTex : TEXUNIT0;
+uniform sampler1D samplerLight : TEXUNIT1;
+//uniform float3 globalAmbient;
+
+struct OutlineVP
+{
+	float4 position : POSITION;
+	float3 normal : NORMAL;
+};
+
+struct OutlineFP
+{
+	float4 position : POSITION;
+	float3 normal : TEXCOORD0;
+};
+
+
+struct VertexShaderInput
+{
+	float4 Position : POSITION0;
+
+	float3 Normal : NORMAL0;
+
+	float2 TextureCoordinate : TEXCOORD0;
+	
+};
+
+struct LightingVertexShaderOutput
+{
+	float4 Position : POSITION0;
+
+	float2 TextureCoordinate : TEXCOORD0;
+
+	float LightAmount : TEXCOORD1;
+	
+	float specularAmount : TEXCOORD2;
+	
+	float4 Color : COLOR;
+	
+};
+
+struct LightingPixelShaderInput
+{
+	float4 color : COLOR0;
+
+	float2 TextureCoordinate : TEXCOORD0;
+
+	float LightAmount : TEXCOORD1;
+	
+	float specularAmount : TEXCOORD2;
+	
+	float4 Color : COLOR;
+};
+
+
+struct NormalDepthVertexShaderOutput
+{
+	float4 Position : POSITION0;
+
+	float4 Color : COLOR0;
+
+};
+
+struct NormalDepthPixelShaderInput
+{
+	float4 Color : COLOR0;
+};
+
+OutlineFP Outline_VP (OutlineVP IN)
+{
+	OutlineFP OUT;
+	OUT.position = mul (world, IN.position);
+	float3 normal = mul (world, float4(IN.normal, 1)).xyz;
+	normal = normalize(normal) * 0.55;
+	OUT.position.xyz += normal ;
+	OUT.position = mul (viewProj, OUT.position);
+	
+	return OUT;
+}
+
+float4 Outline_FP () : COLOR
+{
+	return float4(0,0,0,1);
+}
+
+LightingVertexShaderOutput LightingVertexShader(VertexShaderInput input)
+{
+	LightingVertexShaderOutput output;
+
+	output.Position = mul (worldViewProj, input.Position);
+	output.TextureCoordinate = input.TextureCoordinate;
+	
+	float3 lightDirection = normalize(lightPosition.xyz - (input.Position * lightPosition.w));
+	
+	float3 normal = normalize(input.Normal);
+	
+	output.LightAmount = max(dot(lightDirection, normal), 0);
+	
+	float3 V = normalize (eyePosition - input.Position);
+	float3 H = normalize(lightDirection + V);
+	output.specularAmount = pow(max(dot (normal, H), 0), shininess);
+
+	if (output.LightAmount <= 0)
+		output.specularAmount = 0;
+	
+	output.Color.rgb = normal;
+	output.Color.a = input.Position.z;
+	
+	return output;
+
+}
+
+float4 ToonPixelShader(LightingPixelShaderInput input) : COLOR0
+
+{
+	float4 color = tex2D(samplerTex, input.TextureCoordinate); 
+	
+	float light;
+	float specular;
+	
+	light = tex1D(samplerLight, input.LightAmount).x;
+	/*
+	if (input.LightAmount > 0.8)
+
+		light = 1.3;
+	
+	else if (input.LightAmount > 0.4)
+
+		light = 0.9;
+	
+	else
+
+		light = 0.5;
+	*/
+	
+	if (input.specularAmount > 0.8)
+		specular = 1.3;
+		
+	else if (input.specularAmount > 0.4)
+		specular = 0.9;
+		
+	else
+		specular = 0.5;
+
+	color.xyz = (color.xyz * light + color.xyz * specular);
+	return color;
+}
+
+NormalDepthVertexShaderOutput NormalDepthVertexShader (VertexShaderInput IN)
+{
+	NormalDepthVertexShaderOutput OUT;
+	OUT.Position = mul (worldViewProj, IN.Position);
+	float3 normal = (mul (world, float4(IN.Normal, 1))).xyz;
+	OUT.Color.rgb = (normal + 1) / 2;
+	OUT.Color.a = OUT.Position.z / OUT.Position.w;
+	
+	return OUT;
+	
+}
+
+float4 NormalDepthPixelShader (NormalDepthPixelShaderInput IN) : COLOR0
+{
+	return IN.Color;
+}

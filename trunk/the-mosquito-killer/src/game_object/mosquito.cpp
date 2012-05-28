@@ -40,6 +40,7 @@ void MosquitoBase::init(Ogre::SceneManager *scene, btDynamicsWorld *world)
 void MosquitoBase::create(const char *modelName, unsigned int moveType, float speed, float mass, float *scale, float *pos, float *size, float *quat, int score)
 {
 	m_fMoveSpeed = speed;
+	float size_tmp[3];
 	//create shape
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
 	shape->init(modelName, scale);
@@ -49,14 +50,14 @@ void MosquitoBase::create(const char *modelName, unsigned int moveType, float sp
 	m_pScore = ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, score);
 	m_pScore->regParent(this);
 
-	size[0] = size[0] * scale[0];
-	size[1] = size[1] * scale[1];
-	size[2] = size[2] * scale[2];
+	size_tmp[0] = size[0] * scale[0];
+	size_tmp[1] = size[1] * scale[1];
+	size_tmp[2] = size[2] * scale[2];
 	//create physic body
 	m_pBody = new PhysicRigidBody(m_pWorld);
 	PhysicDebug *debug = new OgrePhysicDebug();
 	((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
-	m_pBody->init(shape, debug, mass, pos, size, quat, m_pScore, 8);
+	m_pBody->init(shape, debug, mass, pos, size_tmp, quat, m_pScore, 8);
 
 	//create move type
 	switch(moveType)

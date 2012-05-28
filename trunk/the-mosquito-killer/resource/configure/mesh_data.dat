@@ -3,7 +3,7 @@
 	[
 		{
 			"MeshName":"mosquito01.mesh",
-			"Size":[5.0, 5.0, 5.0],
+			"Size":[6.0, 6.0, 6.0],
 			"AniName":["move", "hit", "cut"],
 		},
 	]

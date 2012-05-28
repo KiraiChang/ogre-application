@@ -37,7 +37,7 @@ void PhysicKinect::init(DWORD id)
 	
 	m_iKinectID = id;
 	float scale[3] = {0.01, 0.01, 0.01};
-	float pos[3] = {0.0, 0.0, 25.0};
+	float pos[3] = {0.0, 0.0, 100.0};
 	float quat[4] = {1.0, 0.0, 0.0, 0.0};
 	float size[3] = {2.0, 1.0, 5.0};
 
@@ -53,6 +53,13 @@ void PhysicKinect::init(DWORD id)
 			m_vfScale[0] = obj["move_scale"].get_array()[0].get_real();
 			m_vfScale[1] = obj["move_scale"].get_array()[1].get_real();
 			m_vfScale[2] = obj["move_scale"].get_array()[2].get_real();
+		}
+
+		if(obj.count("pos") > 0)
+		{
+			pos[0] = obj["pos"].get_array()[0].get_real();
+			pos[1] = obj["pos"].get_array()[1].get_real();
+			pos[2] = obj["pos"].get_array()[2].get_real();
 		}
 		scale[0] = obj["left_hand_ridigi_body"].get_obj()["scale"].get_array()[0].get_real();
 		scale[1] = obj["left_hand_ridigi_body"].get_obj()["scale"].get_array()[1].get_real();

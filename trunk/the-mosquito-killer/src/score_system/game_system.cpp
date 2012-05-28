@@ -60,7 +60,7 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 	{
 		//object1->m_bDestory = true;
 		float pos[3];
-		float scale[3] = {1.0, 1.0, 1.0};
+		float scale[3] = {0.3, 0.3, 0.3};
 		float quat[4] = {1.0, 0.0, 0.0, 0.0};
 		float size[3] = {50.0, 50.0, 50.0};
 		GameSystem::getInstance()->setHandState(GameSystem::eOnHandClose);
@@ -79,19 +79,26 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 			case eMosquitoSplit:
 				{
 					int number = ((MosquitoSplit *)object1->getParent())->getSplitNumber();
-					float distance = 0;
 					((MosquitoSplit *)object1->getParent())->getPos(pos);
 					((MosquitoSplit *)object1->getParent())->setState(eMosuqitoHit);
+					float high = pos[1];
+					float distance = pos[0];
 					//((MosquitoSplit *)object1->getParent())->setDestory();
 					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
 					//create "number" 
 					for(int i = 0; i < number; i++)
 					{
-						pos[0] -= abs(pos[0] / 2);
-						pos[2] += distance;
+						pos[2] -= 40;
+						pos[0] += distance;
+						if(distance >= 20)
+						{
+							distance = -20;
+							high -= 5;
+						}
+						pos[1] = high;
 						GameSystem::getInstance()->createMosquito(eMosquitoBase,
 							eMoveStraight,
-							3.0,
+							1.5,
 							0,
 							1.0,
 							scale,
@@ -182,7 +189,7 @@ GameSystem::GameSystem(void):
 
 	m_vfHandDebugPos[0] = 0.0;
 	m_vfHandDebugPos[1] = 20.0;
-	m_vfHandDebugPos[2] = 20.0;
+	m_vfHandDebugPos[2] = 70.0;
 
 	m_fTwoHandDistance = HAND_DEBUG_DISTANCE;
 	setAllVisible(false);
@@ -326,7 +333,7 @@ void GameSystem::restart(unsigned int stageID)
 {
 	ScoreSystem::resetScore();
 	m_fTimePass = 0.0f;
-	m_iPlayerBlood = 3;
+	m_iPlayerBlood = 10;
 	releaseMosquito();
 	releaseWeapon();
 	m_dotSceneLoader.release();
@@ -411,7 +418,7 @@ void GameSystem::createMosquito(MOSQUITO_TYPE type, unsigned int moveType, float
 	m_vMosquito.back()->init(m_pSceneMgr, m_pWorld);
 	m_vMosquito.back()->create(m_vMeshData[meshID].m_sMeshName.c_str(), moveType, speed, mass, scale, pos, m_vMeshData[meshID].m_fvSize, quat, score);
 	m_vMosquito.back()->setAnimation(m_vMeshData[meshID].m_vAniName[eMosquitoAniMove].c_str(), true, false);
-	m_vMosquito.back()->setParticle("Circle");
+	/*m_vMosquito.back()->setParticle("Circle");*/
 }
 
 void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score, int otherData, float *tar)
