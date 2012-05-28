@@ -214,7 +214,7 @@ DOFManager::DOFManager(Ogre::Root *r, Ogre::Viewport *v):
 
 	mDepthOfFieldEffect = new DepthOfFieldEffect(mViewport);
 	mLens = new Lens(mViewport->getCamera()->getFOVy(), 1.5);
-	mLens->setFocalDistance(108.0);
+	mLens->setFocalDistance(65.0);
 	mRoot->addFrameListener(this);
 }
 

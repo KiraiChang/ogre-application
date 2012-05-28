@@ -20,6 +20,7 @@
 KinectApplication::KinectApplication(void):
 		m_pKinectDevice(NULL), 
 		m_pPhysicSimulation(NULL),
+		m_pCompositer(NULL),
 		m_pRagDoll(NULL),
 		m_bHasDevice(TRUE)
 		
@@ -45,6 +46,12 @@ KinectApplication::~KinectApplication(void)
 
 		delete m_pPhysicSimulation;
 		m_pPhysicSimulation = NULL;
+	}
+
+	if(NULL != m_pCompositer)
+	{
+		delete m_pCompositer;
+		m_pCompositer = NULL;
 	}
 }
 
@@ -138,6 +145,10 @@ void KinectApplication::createScene(void)
 	//m_pRagDoll->setDebug(debug);
 
 	m_pCompositer = new DOFManager(mRoot, mViewport);
+
+	// Set our compositor (based on a sobel filter, in order to detect edges)
+	//Ogre::CompositorInstance* comp = 
+	//	Ogre::CompositorManager::getSingleton().addCompositor(mViewport, "ToonShadingCompositor");
 }
 
 void KinectApplication::createUI(void)

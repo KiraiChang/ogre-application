@@ -1,0 +1,66 @@
+// drawing outline
+vertex_program OutlineShading_VS cg
+{
+	source ToonShading.cg
+	entry_point Outline_VP
+	profiles vs_1_1
+	
+	default_params
+	{
+		param_named_auto world world_matrix
+		param_named_auto viewProj viewproj_matrix
+	}
+}
+
+fragment_program OutlineShading_PS cg
+{
+	source ToonShading.cg
+	entry_point Outline_FP
+	profiles ps_1_1
+
+}
+
+
+// Toon Shading 
+vertex_program Toon_VS cg
+{
+	source ToonShading.cg
+	entry_point LightingVertexShader
+	profiles vs_2_0
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+		param_named_auto lightPosition light_position_object_space 0
+		//param_named_auto globalAmbient ambient_light_colour
+		param_named_auto eyePosition camera_position_object_space
+		param_named shininess float3 20.0 0 0
+	}
+}
+
+fragment_program Toon_PS cg
+{
+	source ToonShading.cg
+	entry_point ToonPixelShader
+	profiles ps_2_0
+	
+}
+
+// Normal Depth
+vertex_program NormalDepth_VS cg
+{
+	source ToonShading.cg
+	entry_point NormalDepthVertexShader
+	profiles vs_2_0
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+		param_named_auto world world_matrix
+	}
+}
+
+fragment_program NormalDepth_PS cg
+{
+	source ToonShading.cg
+	entry_point NormalDepthPixelShader
+	profiles ps_2_0
+}

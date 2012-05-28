@@ -19,6 +19,20 @@ material blinn5
 				rotate 0
 			}
 		}
+		
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+		}
 	}
 }
 material head1
@@ -31,6 +45,20 @@ material head1
 			diffuse 1 0.5985 0 1
 			specular 0.5 0.5 0.5 89.6
 			emissive 0 0 0
+		}
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+			
 		}
 	}
 }
@@ -55,6 +83,19 @@ material blinn6
 				rotate 0
 			}
 		}
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+		}
 	}
 }
 material lambert2
@@ -67,6 +108,19 @@ material lambert2
 			diffuse 0 0 0 1
 			specular 0 0 0 1
 			emissive 0 0 0
+		}
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
 		}
 	}
 }
@@ -94,6 +148,19 @@ material fly
 				rotate 0
 			}
 		}
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
+			}
+		}
 	}
 }
 material mouth
@@ -115,6 +182,19 @@ material mouth
 				scale 1 1
 				scroll 0 0
 				rotate 0
+			}
+		}
+		pass
+		{
+			cull_hardware anticlockwise
+			vertex_program_ref OutlineShading_VS
+			{
+			
+			}
+			
+			fragment_program_ref OutlineShading_PS
+			{
+			
 			}
 		}
 	}
