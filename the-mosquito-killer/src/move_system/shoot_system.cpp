@@ -1,11 +1,55 @@
 #include "shoot_system.h"
+
+
 //*******************************************************
-//*****************  MOVE_BASE  *************************
+//****************  SHOOT_BASE  *************************
+//*******************************************************
+ShootBase::ShootBase(Ogre::Node *node):
+	m_pNode(node)
+{
+}
+
+ShootBase::~ShootBase()
+{
+	release();
+}
+void ShootBase::release()
+{
+	m_pNode = NULL;
+}
+
+Ogre::Vector3 ShootBase::getPosition(void)const
+{
+	return m_pNode->getPosition();
+}
+
+Ogre::Quaternion ShootBase::getOrientation(void)const
+{
+	return m_pNode->getOrientation();
+}
+
+void ShootBase::move(float moveDistance)
+{
+}
+
+void ShootBase::setRoute(void)
+{
+}
+
+void ShootBase::update(bool &destory, float moveDistance)
+{
+	if(m_pNode == NULL)
+		return;
+
+	if(!destory)
+		move(moveDistance);
+}
+//*******************************************************
+//***************  SHOOT_NORMAL  ************************
 //*******************************************************
 const float DEPTH_MOSQUITO_MOVE = 100;
-ShootBase::ShootBase(Ogre::Node *node,float *tar):
-	t(0),
-	m_pNode(node)
+ShootNormal::ShootNormal(Ogre::Node *node,float *tar):
+	ShootBase(node)
 {
 	P0 = m_pNode->getPosition();
 	P2.x = tar[0]*150;
@@ -14,12 +58,12 @@ ShootBase::ShootBase(Ogre::Node *node,float *tar):
 	setRoute();
 }
 
-ShootBase::~ShootBase()
+ShootNormal::~ShootNormal()
 {
 	m_pNode = NULL;
 }
 
-void ShootBase::move(void)
+void ShootNormal::move(float moveDistance)
 {
 	//Ogre::Vector3 nextPos;
 
@@ -47,7 +91,7 @@ void ShootBase::move(void)
 	m_pNode->translate(step_move);
 }
 
-void ShootBase::setRoute(void)
+void ShootNormal::setRoute(void)
 {
 	t = 0;
 
@@ -56,26 +100,6 @@ void ShootBase::setRoute(void)
 	//P2 = P0 + Ogre::Vector3(0,0,-200);
 	//C1 = (P0 + P2)/2 ;
 	step_move = (P2 - P0)*0.02;
-}
-
-Ogre::Vector3 ShootBase::getPosition(void)const
-{
-	return m_pNode->getPosition();
-}
-
-Ogre::Quaternion ShootBase::getOrientation(void)const
-{
-	return m_pNode->getOrientation();
-}
-
-
-void ShootBase::update(bool &destory)
-{
-	if(m_pNode == NULL)
-		return;
-
-	if(!destory)
-		move();
 }
 //*******************************************************
 //*****************  MOVE_BASE  *************************

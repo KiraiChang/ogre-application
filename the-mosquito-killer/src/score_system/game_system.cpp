@@ -127,42 +127,6 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 			else if(getW >= 8)
 				GameSystem::getInstance()->NumBook++;
 		}
-		//?
-		if(object0->getParent() != NULL)
-		{
-			switch(((WeaponKnife *)object0->getParent())->getType()) //武器功能add
-			{
-				case eWeaponKnife:
-					((WeaponKnife *)object0->getParent())->setDestory();
-					break;
-				case eWeaponBook:
-					if(!(MosquitoBase *)object1)
-					((WeaponBook *)object0->getParent())->setDestory();
-					break;
-				case eWeaponBomb:
-					((WeaponBomb *)object0->getParent())->setDestory();
-					//GameSystem::getInstance()->releaseMosquito();//還要記分數
-					break;
-				default:
-					break;
-			}
-
-			switch(((WeaponKnife *)object0->getParent())->getType()) //改變使用武器add
-			{
-				case eChooseKnife:
-					GameSystem::getInstance()->CurrentWeapon = 0;
-					break;
-				case eChooseBook:
-					GameSystem::getInstance()->CurrentWeapon = 1;
-					break;
-				case eChooseBomb:
-					GameSystem::getInstance()->CurrentWeapon = 2;
-					break;
-				default:
-					break;
-			}
-
-		}
 	}
 }
 
@@ -186,14 +150,47 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		}
 		else if(object0->getType() == SCORE_TYPE_WEAPON)
 		{
-			//if(ScoreSystem::calcScore(object0, object1) != 0)
-			//{
-			//	object1->m_bDestory = true;
-			//	GameSystem::getInstance()->setHandState(eOnHandClose);
-			//	//rigidbody1->clearForces();
-			//	//rigidbody1->setGravity(btVector3(0.0, -1.0, 0.0));
-			//}
-			checkDestory(object0, object1);
+			if(object0->getParent() != NULL)
+			{
+				switch(((WeaponKnife *)object0->getParent())->getType()) //武器功能add
+				{
+				case eWeaponKnife:
+					checkDestory(object0, object1);
+					((WeaponKnife *)object0->getParent())->setDestory();
+					break;
+				case eWeaponBook:
+					checkDestory(object0, object1);
+					//((WeaponBook *)object0->getParent())->setDestory();
+					break;
+				case eWeaponBomb://蚊子全死光,要記分數
+					//((WeaponBomb *)object0->getParent())->setDestory();
+					//GameSystem::getInstance()->releaseMosquito();
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		else if(object0->getType() == SCORE_TYPE_ICON)
+		{
+			if(object1->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
+			{
+				WEAPON_TYPE type = ((WeaponKnife *)object0->getParent())->getType();
+				switch(type) //改變使用武器add
+				{
+				case eWeaponKnife:
+					GameSystem::getInstance()->CurrentWeapon = 0;
+					break;
+				case eWeaponBook:
+					GameSystem::getInstance()->CurrentWeapon = 1;
+					break;
+				case eWeaponBomb:
+					GameSystem::getInstance()->CurrentWeapon = 2;
+					break;
+				default:
+					break;
+				}
+			}
 		}
 	}
 	return true;
@@ -235,7 +232,7 @@ GameSystem::GameSystem(void):
 
 	m_vfHandDebugPos[0] = 0.0;
 	m_vfHandDebugPos[1] = 20.0;
-	m_vfHandDebugPos[2] = 70.0;
+	m_vfHandDebugPos[2] = 80.0;
 
 	m_fTwoHandDistance = HAND_DEBUG_DISTANCE;
 	setAllVisible(false);
@@ -266,8 +263,8 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 	if(m_pWindow == NULL)
 		m_pWindow = pWindow;
 
-	initWeapon();
 	initMeshData();
+	initWeapon();
 
 	CEGUI::WindowManager &windowMgr = CEGUI::WindowManager::getSingleton();
 
@@ -291,22 +288,22 @@ void GameSystem::initWeapon(void)
 	ChooesBook->init(m_pSceneMgr, m_pWorld);
 	ChooesBomb->init(m_pSceneMgr, m_pWorld);
 
-	float mass = 0;
-	float scale[3] = {10.0,10.0,10.0};
-	float size[3] = {5.0,5.0,5.0};
-	float pos[3] = {10.0,40.0,100.0};
-	float quat[4] = {1.0, 0.0, 0.0, 0.0};
+	float mass = 1;
+	float scale[3] = {1.0,1.0,1.0};
+	float pos[3] = {5.0,15.0,80.0};
+	float quat[4] = {1.0, 1.0, -0.5, 0.0};
 	float tar[3] = {0,0,0};
-	ChooesKnife->create("bomb.mesh",mass,scale,pos,size,quat,0,tar);
-	pos[1] = 20;
-	ChooesBook->create("bomb.mesh",mass,scale,pos,size,quat,0,tar);
-	pos[1] = 15;
-	ChooesBomb->create("bomb.mesh",mass,scale,pos,size,quat,0,tar);
+	ChooesKnife->create(m_vWeapeanMeshData[0].m_sMeshName.c_str(), 0, mass,scale,pos, m_vWeapeanMeshData[0].m_fvSize,quat,0,tar);
+	pos[0] = 20;
+	ChooesBook->create(m_vWeapeanMeshData[1].m_sMeshName.c_str(), 0, mass,scale,pos, m_vWeapeanMeshData[0].m_fvSize,quat,0,tar);
+	pos[0] = 35;
+	ChooesBomb->create(m_vWeapeanMeshData[2].m_sMeshName.c_str(), 0, mass,scale,pos, m_vWeapeanMeshData[0].m_fvSize,quat,0,tar);
 }
 
 void GameSystem::initMeshData(void)
 {
 	m_vMeshData.clear();
+	m_vWeapeanMeshData.clear();
 	std::fstream file("../configure/mesh_data.dat");
 	if(file.is_open())
 	{
@@ -328,6 +325,22 @@ void GameSystem::initMeshData(void)
 				data.m_vAniName.push_back(obj["AniName"].get_array()[j].get_str());
 			}
 			m_vMeshData.push_back(data);
+		}
+		std::cout<<json_spirit::write(value)<<std::endl;
+		arr = value.get_obj()["weapon_data"].get_array();
+		for(int i = 0; i <arr.size();i++)
+		{
+			obj = arr[i].get_obj();
+			MeshData data;
+			data.m_sMeshName = obj["MeshName"].get_str();
+			data.m_fvSize[0] = obj["Size"].get_array()[0].get_real();
+			data.m_fvSize[1] = obj["Size"].get_array()[1].get_real();
+			data.m_fvSize[2] = obj["Size"].get_array()[2].get_real();
+			for(int j = 0; j < obj["AniName"].get_array().size();j++)
+			{
+				data.m_vAniName.push_back(obj["AniName"].get_array()[j].get_str());
+			}
+			m_vWeapeanMeshData.push_back(data);
 		}
 	}
 	else
@@ -513,7 +526,7 @@ void GameSystem::createWeapon(WEAPON_TYPE type, const char *modelName, float mas
 		break;
 	}
 	m_vWeapon.back()->init(m_pSceneMgr, m_pWorld);
-	m_vWeapon.back()->create(modelName, mass, scale, pos, size, quat, score, tar);
+	m_vWeapon.back()->create(modelName, 1, mass, scale, pos, size, quat, score, tar);
 }
 
 
@@ -1115,17 +1128,17 @@ void GameSystem::updateHandState(float timePass)
 
 					if(CurrentWeapon == 2 && NumBomb >=1) //add
 					{
-						createWeapon(eWeaponBomb,"bomb.mesh", 1.0, scale, rightPos, size, quat, 100,1,TargetDirect); //add
+						createWeapon(eWeaponBomb, m_vWeapeanMeshData[2].m_sMeshName.c_str(), 1.0, scale, rightPos,  m_vWeapeanMeshData[2].m_fvSize, quat, 100,1,TargetDirect); //add
 						NumBomb--;
 					}
 					else if(CurrentWeapon == 1 && NumBook >=1) //add
 					{
-						createWeapon(eWeaponBook,"bomb.mesh", 1.0, scale, rightPos, size, quat, 100,1,TargetDirect); //add
+						createWeapon(eWeaponBook,m_vWeapeanMeshData[1].m_sMeshName.c_str(), 1.0, scale, rightPos, m_vWeapeanMeshData[1].m_fvSize, quat, 100,1,TargetDirect); //add
 						NumBook--;
 					}
 					else
 					{
-						createWeapon(eWeaponKnife,"bomb.mesh", 1.0, scale, rightPos, size, quat, 100,1,TargetDirect);
+						createWeapon(eWeaponKnife,m_vWeapeanMeshData[0].m_sMeshName.c_str(), 1.0, scale, rightPos, m_vWeapeanMeshData[0].m_fvSize, quat, 100,1,TargetDirect);
 					}
 				}
 				m_fRightHandZPos = rightPos[2];

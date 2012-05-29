@@ -3,6 +3,7 @@
 #include "../physic/physic_rigid_body.h"
 #include "../move_system/shoot_system.h"
 #include "../ogre_physic/ogre_physic_shape.h"
+#include "../ogre_physic/ogre_physic_debug.h"
 #include "../score_system/score_system.h"
 #include "../score_system/score_object.h"
 
@@ -27,24 +28,37 @@ void WeaponKnife::init(Ogre::SceneManager *scene, btDynamicsWorld *world)
 	m_pWorld = world;
 }
 
-void WeaponKnife::create(const char *modelName, float mass, float *scale, float *pos, float *size, float *quat, int score,float *tar)
+void WeaponKnife::create(const char *modelName, int moveType, float mass, float *scale, float *pos, float *size, float *quat, int score,float *tar)
 {
 	//create shape
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
 	shape->init(modelName, scale);
 	shape->update(0.0, pos, quat);
 
+	ScoreType stype = SCORE_TYPE_ICON;
+	//create move type
+	switch(moveType)
+	{
+	case eShootBase:
+		m_pMove = new ShootBase(shape->getNode());
+		break;
+	case eShootNormal:
+		m_pMove = new ShootNormal(shape->getNode(),tar);
+		stype = SCORE_TYPE_WEAPON;
+		break;
+	default:
+		break;
+	}
+
 	//create score object
-	m_pScore = ScoreSystem::createScoreObject(SCORE_TYPE_WEAPON, score);
+	m_pScore = ScoreSystem::createScoreObject(stype, score);
 	m_pScore->regParent(this);
 
 	//create physic body
 	m_pBody = new PhysicRigidBody(m_pWorld);
-	PhysicDebug *debug = NULL;
+	PhysicDebug *debug = new OgrePhysicDebug();
+	((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
 	m_pBody->init(shape, debug, mass, pos, size, quat, m_pScore, 8);
-	
-	//create move type
-	m_pMove = new ShootBase(shape->getNode(),tar);
 }
 
 void WeaponKnife::release(void)
@@ -73,7 +87,7 @@ void WeaponKnife::update(float timePass)
 	{
 		if(m_pMove != NULL)
 		{
-			m_pMove->update(m_bDestory);
+			m_pMove->update(m_bDestory, timePass);
 		
 			Ogre::Vector3 pos= m_pMove->getPosition();
 			Ogre::Quaternion q= m_pMove->getOrientation();
@@ -110,33 +124,3 @@ WeaponBomb::~WeaponBomb(void)
 	release();
 }
 //*******************************************************
-//******************************************************* //下面都是新增的 add
-ChooseKnife::ChooseKnife(void):
-	WeaponKnife()
-{
-}
-
-ChooseKnife::~ChooseKnife(void)
-{
-	release();
-}
-//*******************************************************
-ChooseBook::ChooseBook(void):
-	WeaponKnife()
-{
-}
-
-ChooseBook::~ChooseBook(void)
-{
-	release();
-}
-//*******************************************************
-ChooseBomb::ChooseBomb(void):
-	WeaponKnife()
-{
-}
-
-ChooseBomb::~ChooseBomb(void)
-{
-	release();
-}
