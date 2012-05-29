@@ -27,6 +27,7 @@ ScoreBase *ScoreSystem::createScoreObject(unsigned int type, int score)
 	case SCORE_TYPE_BASE:
 	case SCORE_TYPE_HAND:
 	case SCORE_TYPE_BODY:
+	case SCORE_TYPE_ICON:
 		object = new ScoreBase(type);
 		break;
 	case SCORE_TYPE_WEAPON:

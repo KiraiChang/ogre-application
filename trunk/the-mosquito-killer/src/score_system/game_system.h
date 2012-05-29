@@ -89,6 +89,7 @@ public:
 	float										m_vfCameraPos[3];
 	float										m_vfCameraDir[3];
 	V_MESH_DATA									m_vMeshData;
+	V_MESH_DATA									m_vWeapeanMeshData;
 private:
 												GameSystem(void);
 private:
