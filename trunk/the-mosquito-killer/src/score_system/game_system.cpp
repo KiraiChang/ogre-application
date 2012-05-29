@@ -994,6 +994,10 @@ void GameSystem::updateHandState(float timePass)
 			{
 				m_eHandState = eOnHandWaitShoot;
 			}
+			//else
+			{
+				notifyMosquitoAlert();
+			}
 		}
 		break;
 	case eOnHandClose:
@@ -1155,6 +1159,74 @@ void GameSystem::updateHandState(float timePass)
 
 	if(m_eHandState != eOnHandWaitShoot)
 		NodeSight->setVisible(false);
+}
+
+void GameSystem::notifyMosquitoAlert(void)
+{
+
+	Ogre::RaySceneQueryResult::iterator ite;
+	for (ite = m_mosquitoQueryResult.begin();ite != m_mosquitoQueryResult.end();ite++)
+	{
+		if(!ite->worldFragment)
+		{
+			Ogre::Any any = ite->movable->getUserAny();
+			if(!any.isEmpty())
+			{
+				Ogre::SceneNode *node = ite->movable->getParentSceneNode();
+				char name[64];
+				sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
+				try
+				{
+					if(node->getAttachedObject(name) != NULL)
+					{
+						m_pSceneMgr->destroyParticleSystem((Ogre::ParticleSystem *)node->getAttachedObject(name));
+						node->detachObject(name);
+					}
+				}
+				catch(...)
+				{
+
+				}
+			}
+		}
+	}
+
+	float rightPos[3];
+	float leftPos[3];
+	m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+	m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+
+	Ogre::Vector3 right = Ogre::Vector3(rightPos[0],rightPos[1],rightPos[2]);
+	Ogre::Vector3 left = Ogre::Vector3(leftPos[0],leftPos[1],leftPos[2]);
+	Ogre::Ray SightRay(right, left - right);
+
+	mRaySceneQuery = m_pSceneMgr->createRayQuery(Ogre::Ray());
+	mRaySceneQuery->setRay(SightRay);
+	mRaySceneQuery->setQueryMask(MOSQUITO_MASK);
+	m_mosquitoQueryResult = mRaySceneQuery->execute();
+	
+	for (ite = m_mosquitoQueryResult.begin();ite != m_mosquitoQueryResult.end();ite++)
+	{
+		if(!ite->worldFragment)
+		{
+			Ogre::Any any = ite->movable->getUserAny();
+			if(!any.isEmpty())
+			{
+				Ogre::SceneNode *node = ite->movable->getParentSceneNode();
+				char name[64];
+				sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
+				try
+				{
+					node->getAttachedObject(name);
+				}
+				catch(...)
+				{
+					Ogre::ParticleSystem *particle = m_pSceneMgr->createParticleSystem(name, "blood");
+					node->attachObject(particle);
+				}
+			}
+		}
+	}
 }
 
 float GameSystem::getFullTime(void)const												

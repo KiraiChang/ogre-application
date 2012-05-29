@@ -11,6 +11,7 @@
 #include "wave_system.h"
 #include <list>
 #include <vector>
+#include <ogre.h>
 
 typedef std::list< PhysicRigidBody * > V_RIGID_BODY;
 typedef std::list<  PhysicShapeBase* > V_SHAPE;
@@ -116,6 +117,7 @@ private:
 	float										m_fHandCloseTime;
 	float										m_fShootTimePass;
 	float										m_fRightHandZPos;
+	Ogre::RaySceneQueryResult					m_mosquitoQueryResult;
 	//kinect
 	PhysicKinect *								m_vpPlayer/*[NUI_SKELETON_COUNT]*/;
 	DWORD										m_iCurrentID;
@@ -161,6 +163,7 @@ public:
 	void										updatePlayer(KinectDevice *device);
 	void										updatePlayerDebug(float timePass);//若是沒有kinect採取的動作
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
+	void										notifyMosquitoAlert(void);
 	float										getFullTime(void)const;
 	void										setAllVisible(bool visible);
 	void										testCollision(void);

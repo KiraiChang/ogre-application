@@ -120,6 +120,16 @@ void OgreShapeBox::setVisible(bool visible)
 	}
 }
 
+void OgreShapeBox::setQueryMask(int id)
+{
+	m_pBodyEnt->setQueryFlags(id);
+}
+
+void OgreShapeBox::setUserData(void *data)
+{
+	m_pBodyEnt->setUserAny((Ogre::Any)data);
+}
+
 /*
 //*******************************************************
 //********************  CONE  ***************************

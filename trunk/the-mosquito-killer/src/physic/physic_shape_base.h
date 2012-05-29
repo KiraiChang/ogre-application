@@ -34,6 +34,8 @@ public:
 	virtual void				setAnimation(const char *aniName, bool loop, bool blend);
 	virtual void				setParticle(const char *fileName);
 	virtual void				setVisible(bool visible);
+	virtual void				setQueryMask(int id)										{};
+	virtual void				setUserData(void *data)										{};
 protected:
 };
 //*******************************************************

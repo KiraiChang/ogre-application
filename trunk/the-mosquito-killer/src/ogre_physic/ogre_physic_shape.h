@@ -12,6 +12,13 @@ namespace Ogre
 	class AnimationState;
 	class ParticleSystem;
 }
+
+enum QueryFlags
+{
+	NONE_MASK = 1<<0,
+    MOSQUITO_MASK = 1<<1
+};
+
 //*******************************************************
 //********************  BOX  ****************************
 //*******************************************************
@@ -36,6 +43,8 @@ public:
 	virtual void				setParticle(const char *fileName);
 	virtual void				setVisible(bool visible);
 	Ogre::SceneNode *			getNode(void)const							{return m_pBodyNode;}
+	virtual void				setQueryMask(int id);
+	virtual void				setUserData(void *data);
 protected:
 };
 /*

@@ -45,6 +45,8 @@ void MosquitoBase::create(const char *modelName, unsigned int moveType, float sp
 	OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
 	shape->init(modelName, scale);
 	shape->update(0.0, pos, quat);
+	shape->setQueryMask(MOSQUITO_MASK);
+	shape->setUserData(this);
 
 	//create score object
 	m_pScore = ScoreSystem::createScoreObject(SCORE_TYPE_ENEMY, score);
