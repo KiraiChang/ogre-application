@@ -230,7 +230,9 @@ GameSystem::GameSystem(void):
 		CurrentWeapon(0), //add
 		ChooesKnife(NULL),//當作選取武器的快捷鍵 add
 		ChooesBook(NULL),//當作選取武器的快捷鍵 add
-		ChooesBomb(NULL) //當作選取武器的快捷鍵 add //add
+		ChooesBomb(NULL), //當作選取武器的快捷鍵 add
+		m_pHintObject(NULL),
+		m_pHintNode(NULL)
 {
 	//for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	//{
@@ -375,6 +377,7 @@ void GameSystem::release(void)
 	m_pSceneMgr = NULL;
 	AudioSystem::getInstance()->release();
 	m_pSheet = NULL;
+
 }
 
 void GameSystem::releaseMosquito(void)
@@ -450,7 +453,21 @@ void GameSystem::restart(unsigned int stageID)
 		pSlider->setMaxValue(m_waveSystem.getFullTime());
 		CEGUI::MouseCursor::getSingletonPtr()->setVisible(false);
 	}
+	if(m_pHintObject != NULL)
+	{
+		m_pHintObject->clear();
+		if(m_pHintNode)
+			m_pHintNode->detachAllObjects();
 
+		m_pSceneMgr->destroyManualObject(m_pHintObject);
+		m_pHintObject = NULL;
+	}
+
+	if(m_pHintNode!= NULL)
+	{
+		m_pSceneMgr->destroySceneNode(m_pHintNode);
+		m_pHintNode = NULL;
+	}
 	if(ChooesKnife != NULL)
 		ChooesKnife->setVisible(true);
 	if(ChooesBook != NULL)
@@ -1173,67 +1190,136 @@ void GameSystem::updateHandState(float timePass)
 void GameSystem::notifyMosquitoAlert(void)
 {
 
-	Ogre::RaySceneQueryResult::iterator ite;
-	for (ite = m_mosquitoQueryResult.begin();ite != m_mosquitoQueryResult.end();ite++)
-	{
-		if(!ite->worldFragment)
-		{
-			Ogre::Any any = ite->movable->getUserAny();
-			if(!any.isEmpty())
-			{
-				//Ogre::SceneNode *node = ite->movable->getParentSceneNode();
-				//char name[64];
-				//sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
-				//try
-				//{
-				//	if(node->getAttachedObject(name) != NULL)
-				//	{
-				//		m_pSceneMgr->destroyParticleSystem((Ogre::ParticleSystem *)node->getAttachedObject(name));
-				//		node->detachObject(name);
-				//	}
-				//}
-				//catch(...)
-				//{
+	//Ogre::RaySceneQueryResult::iterator ite;
+	//for (ite = m_mosquitoQueryResult.begin();ite != m_mosquitoQueryResult.end();ite++)
+	//{
+	//	if(!ite->worldFragment)
+	//	{
+	//		Ogre::Any any = ite->movable->getUserAny();
+	//		if(!any.isEmpty())
+	//		{
+	//			//Ogre::SceneNode *node = ite->movable->getParentSceneNode();
+	//			//char name[64];
+	//			//sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
+	//			//try
+	//			//{
+	//			//	if(node->getAttachedObject(name) != NULL)
+	//			//	{
+	//			//		m_pSceneMgr->destroyParticleSystem((Ogre::ParticleSystem *)node->getAttachedObject(name));
+	//			//		node->detachObject(name);
+	//			//	}
+	//			//}
+	//			//catch(...)
+	//			//{
 
-				//}
-			}
-		}
-	}
+	//			//}
+	//		}
+	//	}
+	//}
 
+	//float rightPos[3];
+	//float leftPos[3];
+	//m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+	//m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+
+	//Ogre::Vector3 right = Ogre::Vector3(rightPos[0],rightPos[1],rightPos[2]);
+	//Ogre::Vector3 left = Ogre::Vector3(leftPos[0],leftPos[1],leftPos[2]);
+	//Ogre::Ray SightRay(right, left - right);
+
+	//mRaySceneQuery = m_pSceneMgr->createRayQuery(Ogre::Ray());
+	//mRaySceneQuery->setRay(SightRay);
+	//mRaySceneQuery->setQueryMask(MOSQUITO_MASK);
+	//m_mosquitoQueryResult = mRaySceneQuery->execute();
+	//
+	//for (ite = m_mosquitoQueryResult.begin();ite != m_mosquitoQueryResult.end();ite++)
+	//{
+	//	if(!ite->worldFragment)
+	//	{
+	//		Ogre::Any any = ite->movable->getUserAny();
+	//		if(!any.isEmpty())
+	//		{
+	//			//Ogre::SceneNode *node = ite->movable->getParentSceneNode();
+	//			//char name[64];
+	//			//sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
+	//			//try
+	//			//{
+	//			//	node->getAttachedObject(name);
+	//			//}
+	//			//catch(...)
+	//			//{
+	//			//	Ogre::ParticleSystem *particle = m_pSceneMgr->createParticleSystem(name, "blood");
+	//			//	node->attachObject(particle);
+	//			//}
+	//		}
+	//	}
+	//}
+	float dist = 0;
+	float distN = 0;
+	MosquitoBase *data = NULL;
+	float pos[3];
+	V_MOSQUITO::iterator ite;
 	float rightPos[3];
 	float leftPos[3];
 	m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
 	m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
-
-	Ogre::Vector3 right = Ogre::Vector3(rightPos[0],rightPos[1],rightPos[2]);
-	Ogre::Vector3 left = Ogre::Vector3(leftPos[0],leftPos[1],leftPos[2]);
-	Ogre::Ray SightRay(right, left - right);
-
-	mRaySceneQuery = m_pSceneMgr->createRayQuery(Ogre::Ray());
-	mRaySceneQuery->setRay(SightRay);
-	mRaySceneQuery->setQueryMask(MOSQUITO_MASK);
-	m_mosquitoQueryResult = mRaySceneQuery->execute();
-	
-	for (ite = m_mosquitoQueryResult.begin();ite != m_mosquitoQueryResult.end();ite++)
+	rightPos[0] *= m_vpPlayer->getScale(PhysicKinect::eScaleX);
+	rightPos[1] *= m_vpPlayer->getScale(PhysicKinect::eScaleY);
+	rightPos[2] *= m_vpPlayer->getScale(PhysicKinect::eScaleZ);
+	leftPos[0] *= m_vpPlayer->getScale(PhysicKinect::eScaleX);
+	leftPos[1] *= m_vpPlayer->getScale(PhysicKinect::eScaleY);
+	leftPos[2] *= m_vpPlayer->getScale(PhysicKinect::eScaleZ);
+	Ogre::Vector3 right(rightPos);
+	Ogre::Vector3 left(leftPos);
+	Ogre::Vector3 center = right.midPoint(left);
+	for(ite = m_vMosquito.begin(); ite != m_vMosquito.end();++ite)
 	{
-		if(!ite->worldFragment)
+		if((*ite)->getState() == eMosquitoAlert)
 		{
-			Ogre::Any any = ite->movable->getUserAny();
-			if(!any.isEmpty())
+			if(dist == 0)
 			{
-				//Ogre::SceneNode *node = ite->movable->getParentSceneNode();
-				//char name[64];
-				//sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
-				//try
-				//{
-				//	node->getAttachedObject(name);
-				//}
-				//catch(...)
-				//{
-				//	Ogre::ParticleSystem *particle = m_pSceneMgr->createParticleSystem(name, "blood");
-				//	node->attachObject(particle);
-				//}
+				data = *ite;
+				data->getPos(pos);
+				Ogre::Vector3 posM(pos);
+				dist = posM.distance(center);
 			}
+			else
+			{
+				(*ite)->getPos(pos);
+				Ogre::Vector3 posM(pos);
+				distN = posM.distance(center);
+				if(distN <= dist)
+				{
+					dist = distN;
+					data = *ite;
+				}
+			}
+		}
+	}
+	if(data != NULL)
+	{
+		if(m_pHintObject == NULL)
+		{
+			m_pHintObject = m_pSceneMgr->createManualObject("m_pHintObject");
+			m_pHintNode = m_pSceneMgr->getRootSceneNode()->
+				createChildSceneNode("m_pHintNode", Ogre::Vector3(0.0, 0.0, 0.0));
+			m_pHintNode->attachObject(m_pHintObject);
+		}
+		m_pHintObject->clear();
+		m_pHintObject->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_LIST);
+		//for(setIte = ite->second.begin(); setIte != ite->second.end(); ++setIte)
+		//{
+		
+		data->getPos(pos);
+		m_pHintObject->position(center);
+		m_pHintObject->position(Ogre::Vector3(pos));
+		//}
+		m_pHintObject->end();
+	}
+	else
+	{
+		if(m_pHintObject != NULL)
+		{
+			m_pHintObject->clear();
 		}
 	}
 }
@@ -1274,6 +1360,10 @@ void GameSystem::setAllVisible(bool visible)
 
 	if(ChooesBomb != NULL)
 		ChooesBomb->setVisible(visible);
+
+	if(m_pHintObject != NULL)
+		m_pHintObject->setVisible(visible);
+
 }
 
 void GameSystem::testCollision()

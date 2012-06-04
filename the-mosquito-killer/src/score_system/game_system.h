@@ -131,6 +131,8 @@ private:
 	WeaponKnife*								ChooesKnife;//當作選取武器的快捷鍵 add
 	WeaponKnife*								ChooesBook;//當作選取武器的快捷鍵 add
 	WeaponKnife*								ChooesBomb; //當作選取武器的快捷鍵 add
+	Ogre::ManualObject *						m_pHintObject;//用來指引用的
+	Ogre::SceneNode *							m_pHintNode;
 
 public:
 												~GameSystem(void);

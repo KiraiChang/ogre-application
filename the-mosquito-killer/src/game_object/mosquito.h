@@ -66,6 +66,7 @@ public:
 	virtual void				setVisible(bool visible);
 	void						getPos(float *pos);
 	void						setState(MOSQUITO_STATE state);
+	MOSQUITO_STATE				getState(void)				{return m_eState;}
 };
 //*******************************************************
 //***************  MOSQUITO_SPLIT  **********************

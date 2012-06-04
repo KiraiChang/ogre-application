@@ -199,6 +199,11 @@ void MosquitoBase::setState(MOSQUITO_STATE state)
 	if(state == eMosuqitoHit)
 	{
 		loop = false;
+		setParticle("blood");
+	}
+	else if(state == eMosuqitoCut)
+	{
+		setParticle("blood");
 	}
 	if(m_uiMeshID < GameSystem::getInstance()->m_vMeshData.size())
 	{

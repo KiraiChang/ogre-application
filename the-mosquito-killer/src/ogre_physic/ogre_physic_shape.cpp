@@ -102,11 +102,11 @@ void OgreShapeBox::setParticle(const char *fileName)
 {
 	if(m_pParticleSystem != NULL)
 	{
-		//if(m_pBodyNode)
-		//	m_pBodyNode->detachObject(m_pParticleSystem);
+		if(m_pBodyNode)
+			m_pBodyNode->detachObject(m_pParticleSystem);
 
-		//m_pSceneMgr->destroyParticleSystem(m_pParticleSystem);
-		//m_pParticleSystem = NULL;
+		m_pSceneMgr->destroyParticleSystem(m_pParticleSystem);
+		m_pParticleSystem = NULL;
 		return ;
 	}
 	char name[64];
