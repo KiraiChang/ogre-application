@@ -921,20 +921,20 @@ void GameSystem::updatePlayerDebug(float timePass)
 	switch(m_eDebugHandVState)
 	{
 	case eHandMoveUp:
-		m_vfHandDebugPos[1] += timePass * 10;
+		m_vfHandDebugPos[1] += timePass * 20;
 		break;
 	case eHandMoveDown:
-		m_vfHandDebugPos[1] -= timePass * 10;
+		m_vfHandDebugPos[1] -= timePass * 20;
 		break;
 	}
 
 	switch(m_eDebugHandHState)
 	{
 	case eHandMoveRight:
-		m_vfHandDebugPos[0] += timePass * 10;
+		m_vfHandDebugPos[0] += timePass * 1;
 		break;
 	case eHandMoveLeft:
-		m_vfHandDebugPos[0] -= timePass * 10;
+		m_vfHandDebugPos[0] -= timePass * 1;
 		break;
 	}
 
@@ -942,14 +942,14 @@ void GameSystem::updatePlayerDebug(float timePass)
 	{
 	case eHandAttacking:
 		{
-			m_fTwoHandDistance -= timePass * 30;
+			m_fTwoHandDistance -= timePass * 50;
 			if(m_fTwoHandDistance <= 0)
 				m_eDebugHandAttackState = eHandAttacked;
 		}
 		break;
 	case eHandAttacked:
 		{
-			m_fTwoHandDistance += timePass * 30;
+			m_fTwoHandDistance += timePass * 50;
 			if(m_fTwoHandDistance >= HAND_DEBUG_DISTANCE)
 			{
 				m_fTwoHandDistance = HAND_DEBUG_DISTANCE;

@@ -101,7 +101,22 @@ void MosquitoBase::update(float timePass)
 		{
 			switch(m_eState)
 			{
-			case  eMosquitoMove:
+			case eMosquitoMove:
+				{
+					bool bDestory = false;
+					m_pMove->update(bDestory, timePass * m_fMoveSpeed);
+
+					Ogre::Vector3 pos= m_pMove->getPosition();
+					Ogre::Quaternion q= m_pMove->getOrientation();
+					m_pBody->update(timePass, (float *)&pos, (float *)&q);
+					if(pos.z > 60)
+					{
+						m_eState = eMosquitoAlert;
+						setParticle("Circle");
+					}
+					break;
+				}
+			case eMosquitoAlert:
 				{
 					bool bDestory = false;
 					m_pMove->update(bDestory, timePass * m_fMoveSpeed);

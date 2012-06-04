@@ -22,6 +22,7 @@ enum MOSQUITO_ANI_TYPE
 enum MOSQUITO_STATE
 {
 	eMosquitoMove = 0,
+	eMosquitoAlert,
 	eMosuqitoHit,
 	eMosuqitoCut,
 	eMosquitoBlood,
