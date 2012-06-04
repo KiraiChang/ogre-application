@@ -12,6 +12,7 @@ OgreShapeBox::OgreShapeBox(Ogre::SceneManager *scene):
 		m_pBodyNode(NULL),
 		m_pBodyEnt(NULL),
 		m_pParticleSystem(NULL),
+		m_uiID(0),
 		m_pAnimationState(NULL)
 {
 }
@@ -26,6 +27,7 @@ void OgreShapeBox::init(const char *meshName, float *scale)
 	if(m_pBodyNode == NULL)
 	{
 		char name[64];
+		m_uiID = gCurrentID;
 		sprintf(name, "m_pShapeBodyEnt%d", gCurrentID);
 		m_pBodyEnt = m_pSceneMgr->createEntity(name, meshName);
 		m_pBodyEnt->setCastShadows(true);
@@ -108,7 +110,7 @@ void OgreShapeBox::setParticle(const char *fileName)
 		return ;
 	}
 	char name[64];
-	sprintf(name, "m_pShapeParticle_%s_%d", fileName, gCurrentID);
+	sprintf(name, "m_pShapeParticle_%s_%d", fileName, m_uiID);
 	m_pParticleSystem = m_pSceneMgr->createParticleSystem(name, fileName);
 	m_pBodyNode->attachObject(m_pParticleSystem);
 }

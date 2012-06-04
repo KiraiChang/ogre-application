@@ -32,6 +32,7 @@ private:
 	Ogre::Entity *				m_pBodyEnt;
 	Ogre::AnimationState *		m_pAnimationState;
 	Ogre::ParticleSystem *		m_pParticleSystem;
+	unsigned int				m_uiID;
 public:
 								OgreShapeBox(Ogre::SceneManager *scene);
 	virtual						~OgreShapeBox(void);
