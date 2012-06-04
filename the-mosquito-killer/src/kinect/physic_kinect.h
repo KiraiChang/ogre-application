@@ -6,6 +6,7 @@
 #include "../ogre_physic/ogre_physic_shape.h"
 
 //const int BORDY_PART_MAX = 2;//
+const float HAND_DEBUG_DISTANCE = 30.0f;
 
 enum
 {

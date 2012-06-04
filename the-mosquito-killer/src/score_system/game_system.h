@@ -24,6 +24,7 @@ class btCollisionObject;
 
 const float DEF_MAX_PLAY_TIME = 120.0;
 
+
 namespace Ogre
 {
 	class SceneManager;
