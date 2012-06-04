@@ -13,6 +13,7 @@
 const float MAX_WAIT_BLOOD_TIME = 1.0f;
 const float MAX_WAIT_HIT_TIME = 10.0f;
 const float MAX_WAIT_CUT_TIME = 10.0f;
+const float MAX_ALERT_DIST = 40.0f;
 
 MosquitoBase::MosquitoBase(void):
 		m_eState(eMosquitoMove),
@@ -109,7 +110,7 @@ void MosquitoBase::update(float timePass)
 					Ogre::Vector3 pos= m_pMove->getPosition();
 					Ogre::Quaternion q= m_pMove->getOrientation();
 					m_pBody->update(timePass, (float *)&pos, (float *)&q);
-					if(pos.z > 60 && m_eState == eMosquitoMove)
+					if(pos.z > MAX_ALERT_DIST)
 					{
 						m_eState = eMosquitoAlert;
 						setParticle("Circle");
