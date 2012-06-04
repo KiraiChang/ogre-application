@@ -20,7 +20,7 @@ const float HAND_CHECK_OPEN_DIST = 10.0f;
 const float HAND_CHECK_RIGHT_HAND_SPEED = 5.0f;
 const float HAND_CHECK_SHOOT_TIMEPASS = 0.5f;
 const float HAND_WAIT_ATTACK_TIMEOUT = 3.0f;
-const float HAND_DEBUG_DISTANCE = 30.0f;
+
 
 bool GameSystem::MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1)
 {
@@ -140,11 +140,19 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		ScoreBase *object0 = (ScoreBase *)rigidbody0->getUserPointer();
 		ScoreBase *object1 = (ScoreBase *)rigidbody1->getUserPointer();
 		GameSystem::HandState eState = GameSystem::getInstance()->getHandState();
-		if(/*object0->getType() == SCORE_TYPE_BODY ||*/ object0->getType() == SCORE_TYPE_HAND)
+		if(object0->getType() == SCORE_TYPE_HAND && object1->getType() == SCORE_TYPE_ENEMY)
 		{
 			if(eState == eOnHandWaitAttack)
 			{
 				checkDestory(object0, object1);
+				GameSystem::getInstance()->setHandState(eOnHandAttacked);
+			}
+		}
+		else if(object1->getType() == SCORE_TYPE_HAND && object0->getType() == SCORE_TYPE_ENEMY)
+		{
+			if(eState == eOnHandWaitAttack)
+			{
+				checkDestory(object1, object0);
 				GameSystem::getInstance()->setHandState(eOnHandAttacked);
 			}
 		}
@@ -291,7 +299,7 @@ void GameSystem::initWeapon(void)
 	float mass = 1;
 	float scale[3] = {1.0,1.0,1.0};
 	float pos[3] = {5.0,15.0,80.0};
-	float quat[4] = {1.0, 1.0, -0.5, 0.0};
+	float quat[4] = {1.0, 1.0, 0.5, 0.0};
 	float tar[3] = {0,0,0};
 	ChooesKnife->create(m_vWeapeanMeshData[0].m_sMeshName.c_str(), 0, mass,scale,pos, m_vWeapeanMeshData[0].m_fvSize,quat,0,tar);
 	pos[0] = 20;
@@ -952,6 +960,7 @@ void GameSystem::updatePlayerDebug(float timePass)
 	}
 	//m_vpPlayer[0]->updateDebug(m_vfHandDebugPos, m_fTwoHandDistance);
 	m_vpPlayer->updateDebug(m_vfHandDebugPos, m_fTwoHandDistance);
+	m_vpPlayer->getPartPos(4, Shoulder);
 }
 
 void GameSystem::updateHandState(float timePass)
@@ -970,13 +979,13 @@ void GameSystem::updateHandState(float timePass)
 			Ogre::Vector3 left(leftPos);
 			Ogre::Vector3 shoulder(Shoulder);
 			float dist = 0.0;
-			if(!m_bIsDebug)
-			{
+			//if(!m_bIsDebug)
+			//{
 				//dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
 				dist = abs(left.x - right.x) * m_vpPlayer->getScale(PhysicKinect::eScaleX);
-			}
-			else
-				dist = left.distance(right);
+			//}
+			//else
+			//	dist = left.distance(right);
 			if(dist < HAND_CHECK_CLOSE_DIST)
 			{
 				m_eHandState = eOnHandWaitAttack;
@@ -1009,13 +1018,13 @@ void GameSystem::updateHandState(float timePass)
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = 0.0;
-			if(!m_bIsDebug)
-			{
+			//if(!m_bIsDebug)
+			//{
 				//dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
 				dist = abs(left.x - right.x) * m_vpPlayer->getScale(PhysicKinect::eScaleX);
-			}
-			else
-				dist = left.distance(right);
+			//}
+			//else
+			//	dist = left.distance(right);
 			if(dist > HAND_CHECK_OPEN_DIST)
 			{
 				m_eHandState = eOnHandOpen;
@@ -1036,13 +1045,13 @@ void GameSystem::updateHandState(float timePass)
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = 0.0;
-			if(!m_bIsDebug)
-			{
+			//if(!m_bIsDebug)
+			//{
 				//dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
 				dist = abs(left.x - right.x) * m_vpPlayer->getScale(PhysicKinect::eScaleX);
-			}
-			else
-				dist = left.distance(right);
+			//}
+			//else
+			//	dist = left.distance(right);
 			if(dist > HAND_CHECK_OPEN_DIST)
 				m_eHandState = eOnHandOpen;
 			else if(m_fHandCloseTime > HAND_WAIT_ATTACK_TIMEOUT)
@@ -1061,13 +1070,13 @@ void GameSystem::updateHandState(float timePass)
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
 			float dist = 0.0;
-			if(!m_bIsDebug)
-			{
+			//if(!m_bIsDebug)
+			//{
 				//dist = abs(left.x - right.x) * m_vpPlayer[m_iCurrentID]->getScale(PhysicKinect::eScaleX);
 				dist = abs(left.x - right.x) * m_vpPlayer->getScale(PhysicKinect::eScaleX);
-			}
-			else
-				dist = left.distance(right);
+			//}
+			//else
+			//	dist = left.distance(right);
 			if(dist > HAND_CHECK_OPEN_DIST)
 				m_eHandState = eOnHandOpen;
 			else if(dist < HAND_CHECK_CLOSE_DIST)
@@ -1172,21 +1181,21 @@ void GameSystem::notifyMosquitoAlert(void)
 			Ogre::Any any = ite->movable->getUserAny();
 			if(!any.isEmpty())
 			{
-				Ogre::SceneNode *node = ite->movable->getParentSceneNode();
-				char name[64];
-				sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
-				try
-				{
-					if(node->getAttachedObject(name) != NULL)
-					{
-						m_pSceneMgr->destroyParticleSystem((Ogre::ParticleSystem *)node->getAttachedObject(name));
-						node->detachObject(name);
-					}
-				}
-				catch(...)
-				{
+				//Ogre::SceneNode *node = ite->movable->getParentSceneNode();
+				//char name[64];
+				//sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
+				//try
+				//{
+				//	if(node->getAttachedObject(name) != NULL)
+				//	{
+				//		m_pSceneMgr->destroyParticleSystem((Ogre::ParticleSystem *)node->getAttachedObject(name));
+				//		node->detachObject(name);
+				//	}
+				//}
+				//catch(...)
+				//{
 
-				}
+				//}
 			}
 		}
 	}
@@ -1212,18 +1221,18 @@ void GameSystem::notifyMosquitoAlert(void)
 			Ogre::Any any = ite->movable->getUserAny();
 			if(!any.isEmpty())
 			{
-				Ogre::SceneNode *node = ite->movable->getParentSceneNode();
-				char name[64];
-				sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
-				try
-				{
-					node->getAttachedObject(name);
-				}
-				catch(...)
-				{
-					Ogre::ParticleSystem *particle = m_pSceneMgr->createParticleSystem(name, "blood");
-					node->attachObject(particle);
-				}
+				//Ogre::SceneNode *node = ite->movable->getParentSceneNode();
+				//char name[64];
+				//sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
+				//try
+				//{
+				//	node->getAttachedObject(name);
+				//}
+				//catch(...)
+				//{
+				//	Ogre::ParticleSystem *particle = m_pSceneMgr->createParticleSystem(name, "blood");
+				//	node->attachObject(particle);
+				//}
 			}
 		}
 	}
