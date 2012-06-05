@@ -4,7 +4,35 @@
 		{
 			"MeshName":"mosquito01.mesh",
 			"Size":[6.0, 6.0, 6.0],
-			"AniName":["move", "hit", "cut"],
+			"AniName":["move", "hit", "cut"]
 		},
+		{
+			"MeshName":"mosquito02.mesh",
+			"Size":[6.0, 6.0, 6.0],
+			"AniName":["move", "hit", "cut"]
+		},
+		{
+			"MeshName":"mosquito03.mesh",
+			"Size":[6.0, 6.0, 6.0],
+			"AniName":["move", "hit", "cut"]
+		}
+	],
+	"weapon_data":
+	[
+		{
+			"MeshName":"knife.mesh",
+			"Size":[3.0, 3.0, 1.0],
+			"AniName":[]
+		},
+		{
+			"MeshName":"book.mesh",
+			"Size":[3.0, 3.0, 1.0],
+			"AniName":[]
+		},
+		{
+			"MeshName":"incense.mesh",
+			"Size":[3.0, 3.0, 1.0],
+			"AniName":[]
+		}
 	]
 }
