@@ -8,7 +8,7 @@
 #include "../score_system/score_object.h"
 #include "../score_system/game_system.h"
 #include "../score_system/audio_system.h"
-#include "../compositer/depth_of_field_effect.h"
+//#include "../compositer/depth_of_field_effect.h"
 
 #include <iostream>
 #include <fstream>
@@ -20,7 +20,7 @@
 KinectApplication::KinectApplication(void):
 		m_pKinectDevice(NULL), 
 		m_pPhysicSimulation(NULL),
-		m_pCompositer(NULL),
+		//m_pCompositer(NULL),
 		m_pRagDoll(NULL),
 		m_bHasDevice(TRUE)
 		
@@ -48,11 +48,11 @@ KinectApplication::~KinectApplication(void)
 		m_pPhysicSimulation = NULL;
 	}
 
-	if(NULL != m_pCompositer)
-	{
-		delete m_pCompositer;
-		m_pCompositer = NULL;
-	}
+	//if(NULL != m_pCompositer)
+	//{
+	//	delete m_pCompositer;
+	//	m_pCompositer = NULL;
+	//}
 }
 
 const std::string KinectApplication::getApplicationName(void)const
@@ -128,7 +128,7 @@ void KinectApplication::createScene(void)
 	//entGround->setMaterialName("Examples/Rockwall");
 	//entGround->setCastShadows(true);
 
-	GameSystem::getInstance()->init(m_pPhysicSimulation->getDynamicsWorld(), mSceneMgr, mWindow);
+	GameSystem::getInstance()->init(m_pPhysicSimulation->getDynamicsWorld(), mSceneMgr, mWindow, mRoot, mViewport);
 	GameSystem::getInstance()->initPlayer();
 	GameSystem::getInstance()->initScene();
 	if(m_pKinectDevice == NULL)
@@ -144,7 +144,7 @@ void KinectApplication::createScene(void)
 	//debug->init(mSceneMgr);
 	//m_pRagDoll->setDebug(debug);
 
-	m_pCompositer = new DOFManager(mRoot, mViewport);
+	//m_pCompositer = new DOFManager(mRoot, mViewport);
 
 	// Set our compositor (based on a sobel filter, in order to detect edges)
 	//Ogre::CompositorInstance* comp = 

@@ -2,6 +2,7 @@
 #define _OGRE_PHYSIC_SHAPE_
 
 #include "..\physic\physic_shape_base.h"
+#include <OgreCommon.h>
 
 namespace Ogre
 {
@@ -11,6 +12,7 @@ namespace Ogre
 	class Vector3;
 	class AnimationState;
 	class ParticleSystem;
+	class BillboardSet;
 }
 
 enum QueryFlags
@@ -18,6 +20,8 @@ enum QueryFlags
 	NONE_MASK = 1<<0,
     MOSQUITO_MASK = 1<<1
 };
+
+const unsigned int MAX_TEXTURE_COORD = 9;
 
 //*******************************************************
 //********************  BOX  ****************************
@@ -32,6 +36,9 @@ private:
 	Ogre::Entity *				m_pBodyEnt;
 	Ogre::AnimationState *		m_pAnimationState;
 	Ogre::ParticleSystem *		m_pParticleSystem;
+	Ogre::BillboardSet *		m_pBillboardSet;
+	Ogre::FloatRect				m_vTexCoordArray[MAX_TEXTURE_COORD];
+	float						m_fBillboardTime;
 	unsigned int				m_uiID;
 public:
 								OgreShapeBox(Ogre::SceneManager *scene);
@@ -46,6 +53,7 @@ public:
 	Ogre::SceneNode *			getNode(void)const							{return m_pBodyNode;}
 	virtual void				setQueryMask(int id);
 	virtual void				setUserData(void *data);
+	virtual void				setBillboard(const char *name);
 protected:
 };
 /*
