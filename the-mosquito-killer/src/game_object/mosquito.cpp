@@ -218,6 +218,7 @@ void MosquitoBase::setState(MOSQUITO_STATE state)
 	}
 	else if(state == eMosuqitoCut)
 	{
+		loop = false;
 		setBillboard("blood_billboard");
 	}
 	if(m_uiMeshID < GameSystem::getInstance()->m_vMeshData.size())
