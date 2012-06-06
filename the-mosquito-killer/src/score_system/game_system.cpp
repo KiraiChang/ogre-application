@@ -1323,13 +1323,21 @@ void GameSystem::notifyMosquitoAlert(void)
 		}
 		m_pHintObject->clear();
 		data->getPos(pos);
+		m_pHintObject->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_LIST);
+		float color = 0.0;
 		if(pos[2] < center.z)
-			m_pHintObject->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_LIST);
-		else
-			m_pHintObject->begin("ColorRed", Ogre::RenderOperation::OT_LINE_LIST);
-		//for(setIte = ite->second.begin(); setIte != ite->second.end(); ++setIte)
-		//{
+		{
+			color = 1 - center.z / pos[2];
+			m_pHintObject->colour(color, color, color);
+		}
+		else if(pos[2] > center.z)
+		{
+			color =  center.z / pos[2];
+			m_pHintObject->colour(1.0, color, color);
+		}
+
 		
+
 		
 		m_pHintObject->position(center);
 		m_pHintObject->position(Ogre::Vector3(pos));
