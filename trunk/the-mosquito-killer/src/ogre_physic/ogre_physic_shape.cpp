@@ -3,6 +3,7 @@
 
 
 unsigned int gCurrentID = 0;
+const int BILLBOARD_TIMEPASS = 16;
 //*******************************************************
 //********************  BOX  ****************************
 //*******************************************************
@@ -14,6 +15,7 @@ OgreShapeBox::OgreShapeBox(Ogre::SceneManager *scene):
 		m_pParticleSystem(NULL),
 		m_uiID(0),
 		m_pBillboardSet(NULL),
+		m_pBillboard(NULL),
 		m_fBillboardTime(0),
 		m_pAnimationState(NULL)
 {
@@ -53,7 +55,6 @@ void OgreShapeBox::init(const char *meshName, float *scale)
 		setData(SIZE_X, size.x * scale[0]);
 		setData(SIZE_Y, size.y * scale[1]);
 		setData(SIZE_Z, size.z * scale[2]);
-		setBillboard("blood");
 		gCurrentID++;
 	}
 }
@@ -103,6 +104,8 @@ void OgreShapeBox::update(float timePass, float *pos, float *qua)
 	m_pBodyNode->setPosition(*((Ogre::Vector3 *)pos));
 	if(m_pAnimationState != NULL)
 		m_pAnimationState->addTime(timePass);
+
+	updateBillboard(timePass);
 }
 
 
@@ -111,12 +114,27 @@ void OgreShapeBox::update(float timePass)
 	if(m_pAnimationState != NULL)
 		m_pAnimationState->addTime(timePass);
 
-	if(m_pBillboardSet == NULL)
+	updateBillboard(timePass);
+}
+
+void OgreShapeBox::updateBillboard(float timePass)
+{
+	if(m_pBillboardSet != NULL)
 	{
-		m_fBillboardTime += timePass;
-		Ogre::Billboard* bb = m_pBillboardSet->createBillboard(Ogre::Vector3(0, 0, 0));
-		int index = (int)m_fBillboardTime % MAX_TEXTURE_COORD;
-		bb->setTexcoordIndex(index);
+		if(m_pBillboard == NULL)
+			m_pBillboard = m_pBillboardSet->createBillboard(Ogre::Vector3(0, 0, 0));
+		m_fBillboardTime += timePass * BILLBOARD_TIMEPASS;
+		if(m_fBillboardTime < MAX_TEXTURE_COORD + 1)
+		{
+			
+			int index = (int)m_fBillboardTime % MAX_TEXTURE_COORD;
+			m_pBillboard->setTexcoordIndex(index);
+		}
+		else
+		{
+			m_fBillboardTime = 0.0;
+			m_pBillboardSet->setVisible(false);
+		}
 	}
 }
 
@@ -175,6 +193,7 @@ void OgreShapeBox::setBillboard(const char *name)
 	}
 	m_pBillboardSet->setMaterialName(name);
 	m_pBillboardSet->setTextureCoords(m_vTexCoordArray, MAX_TEXTURE_COORD);
+	m_pBillboardSet->setVisible(true);
 }
 
 /*

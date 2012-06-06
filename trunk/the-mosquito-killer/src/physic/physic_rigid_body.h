@@ -41,6 +41,7 @@ public:
 	void setAnimation(const char * aniName, bool loop, bool blend);
 	void setParticle(const char *fileName);
 	void setVisible(bool visible);
+	PhysicShapeBase* getShape(void)								{return m_pShapeData;}
 };
 //*******************************************************
 //********************  END  ****************************
