@@ -13,8 +13,19 @@ OgreShapeBox::OgreShapeBox(Ogre::SceneManager *scene):
 		m_pBodyEnt(NULL),
 		m_pParticleSystem(NULL),
 		m_uiID(0),
+		m_pBillboardSet(NULL),
+		m_fBillboardTime(0),
 		m_pAnimationState(NULL)
 {
+	m_vTexCoordArray[0] = Ogre::FloatRect(0.0, 0.0, 0.33, 0.33);
+	m_vTexCoordArray[1] = Ogre::FloatRect(0.33, 0.00, 0.66, 0.33);
+	m_vTexCoordArray[2] = Ogre::FloatRect(0.66, 0.0, 1.0, 0.33);
+	m_vTexCoordArray[3] = Ogre::FloatRect(0.0, 0.33, 0.33, 0.66);
+	m_vTexCoordArray[4] = Ogre::FloatRect(0.33, 0.33, 0.66, 0.66);
+	m_vTexCoordArray[5] = Ogre::FloatRect(0.66, 0.33, 1.0, 0.66);
+	m_vTexCoordArray[6] = Ogre::FloatRect(0.0, 0.66, 0.33, 1.0);
+	m_vTexCoordArray[7] = Ogre::FloatRect(0.33, 0.66, 0.66, 1.0);
+	m_vTexCoordArray[8] = Ogre::FloatRect(0.66, 0.66, 1.0, 1.0);
 }
 
 OgreShapeBox::~OgreShapeBox(void)
@@ -42,6 +53,7 @@ void OgreShapeBox::init(const char *meshName, float *scale)
 		setData(SIZE_X, size.x * scale[0]);
 		setData(SIZE_Y, size.y * scale[1]);
 		setData(SIZE_Z, size.z * scale[2]);
+		setBillboard("blood");
 		gCurrentID++;
 	}
 }
@@ -50,6 +62,15 @@ void OgreShapeBox::release(void)
 {
 	if(m_pSceneMgr)
 	{
+		if(m_pBillboardSet != NULL)
+		{
+			if(m_pBodyNode)
+				m_pBodyNode->detachObject(m_pBillboardSet);
+
+			m_pSceneMgr->destroyBillboardSet(m_pBillboardSet);
+			m_pBillboardSet = NULL;
+		}
+
 		if(m_pBodyEnt != NULL)
 		{
 			if(m_pBodyNode)
@@ -89,6 +110,14 @@ void OgreShapeBox::update(float timePass)
 {
 	if(m_pAnimationState != NULL)
 		m_pAnimationState->addTime(timePass);
+
+	if(m_pBillboardSet == NULL)
+	{
+		m_fBillboardTime += timePass;
+		Ogre::Billboard* bb = m_pBillboardSet->createBillboard(Ogre::Vector3(0, 0, 0));
+		int index = (int)m_fBillboardTime % MAX_TEXTURE_COORD;
+		bb->setTexcoordIndex(index);
+	}
 }
 
 void OgreShapeBox::setAnimation(const char *aniName, bool loop, bool blend)
@@ -121,6 +150,10 @@ void OgreShapeBox::setVisible(bool visible)
 	{
 		m_pBodyNode->setVisible(visible);
 	}
+	if(m_pParticleSystem != NULL)
+		m_pParticleSystem->setVisible(visible);
+	if(m_pBillboardSet != NULL)
+		m_pBillboardSet->setVisible(visible);
 }
 
 void OgreShapeBox::setQueryMask(int id)
@@ -131,6 +164,17 @@ void OgreShapeBox::setQueryMask(int id)
 void OgreShapeBox::setUserData(void *data)
 {
 	m_pBodyEnt->setUserAny((Ogre::Any)data);
+}
+
+void OgreShapeBox::setBillboard(const char *name)
+{
+	if(m_pBillboardSet == NULL)
+	{
+		m_pBillboardSet = m_pSceneMgr->createBillboardSet();
+		m_pBodyNode->attachObject(m_pBillboardSet);
+	}
+	m_pBillboardSet->setMaterialName(name);
+	m_pBillboardSet->setTextureCoords(m_vTexCoordArray, MAX_TEXTURE_COORD);
 }
 
 /*

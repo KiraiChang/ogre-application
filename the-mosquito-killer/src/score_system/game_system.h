@@ -21,6 +21,7 @@ class PhysicDebug;
 class btDynamicsWorld;
 class btManifoldPoint;
 class btCollisionObject;
+class DOFManager;
 
 const float DEF_MAX_PLAY_TIME = 120.0;
 
@@ -101,6 +102,7 @@ private:
 		eOnPlaying,//遊戲中畫面
 		eOnEnd,//結算畫面
 	};
+	float										m_fCurrentBlood;
 	int											m_iPlayerBlood;
 	static GameSystem *							g_instance;
 	WaveSystem									m_waveSystem;
@@ -133,11 +135,12 @@ private:
 	WeaponKnife*								ChooesBomb; //當作選取武器的快捷鍵 add
 	Ogre::ManualObject *						m_pHintObject;//用來指引用的
 	Ogre::SceneNode *							m_pHintNode;
+	DOFManager*									m_pCompositer;
 
 public:
 												~GameSystem(void);
 	static GameSystem *							getInstance(void);
-	void										init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow *pWindow);
+	void										init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow *pWindow, Ogre::Root *mRoot, Ogre::Viewport *mViewport);
 	void										initWeapon(void);
 	void										initMeshData(void);
 	void										release(void);

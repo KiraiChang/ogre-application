@@ -10,7 +10,7 @@
 #include <Ogre.h>
 #include <CEGUI.h>
 #include <json_spirit.h>
-
+#include "../compositer/depth_of_field_effect.h"
 #include <random>
 extern Ogre::Log* m_pLog;
 const float HAND_CHECK_AIM_POSE_DIST = 1.5f;
@@ -232,7 +232,8 @@ GameSystem::GameSystem(void):
 		ChooesBook(NULL),//當作選取武器的快捷鍵 add
 		ChooesBomb(NULL), //當作選取武器的快捷鍵 add
 		m_pHintObject(NULL),
-		m_pHintNode(NULL)
+		m_pHintNode(NULL),
+		m_pCompositer(NULL)
 {
 	//for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	//{
@@ -262,7 +263,7 @@ GameSystem *GameSystem::getInstance(void)
 	return g_instance;
 }
 
-void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow *pWindow)
+void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre::RenderWindow *pWindow, Ogre::Root *mRoot, Ogre::Viewport *mViewport)
 {
 	if(m_pWorld == NULL)
 		m_pWorld = world;
@@ -286,6 +287,8 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 
 	slider->setCurrentValue(DEF_MAX_PLAY_TIME);
 	slider->setMaxValue(DEF_MAX_PLAY_TIME);
+
+	m_pCompositer = new DOFManager(mRoot, mViewport);
 }
 
 void GameSystem::initWeapon(void)
@@ -373,11 +376,15 @@ void GameSystem::release(void)
 	releaseCharacter();
 	m_waveSystem.release();
 	m_dotSceneLoader.release();
+	if(NULL != m_pCompositer)
+	{
+		delete m_pCompositer;
+		m_pCompositer = NULL;
+	}
 	m_pWorld = NULL;
 	m_pSceneMgr = NULL;
 	AudioSystem::getInstance()->release();
 	m_pSheet = NULL;
-
 }
 
 void GameSystem::releaseMosquito(void)
@@ -428,6 +435,7 @@ void GameSystem::restart(unsigned int stageID)
 	ScoreSystem::resetScore();
 	m_fTimePass = 0.0f;
 	m_iPlayerBlood = 10;
+	m_fCurrentBlood = m_iPlayerBlood;
 	releaseMosquito();
 	releaseWeapon();
 	m_dotSceneLoader.release();
@@ -720,6 +728,8 @@ void GameSystem::update(float timePass)
 void GameSystem::updateMenu(float timePass)
 {
 	restart();
+	if(m_pCompositer != NULL);
+		m_pCompositer->setFocus(m_iPlayerBlood * 10);
 	m_eState = eOnPlaying;
 }
 
@@ -827,7 +837,14 @@ void GameSystem::updatePlaying(float timePass)
 		CEGUI::Editbox *edit = (CEGUI::Editbox *)m_pSheet->getChild("Root/ScoreText");
 		edit->setText(CEGUI::String (text));
 	}
-
+	if(m_pCompositer != NULL);
+	{
+		if(m_fCurrentBlood > m_iPlayerBlood)
+			m_fCurrentBlood -= timePass;
+		else if(m_fCurrentBlood < m_iPlayerBlood)
+			m_fCurrentBlood = m_iPlayerBlood;
+		m_pCompositer->setFocus(m_fCurrentBlood * 10);
+	}
 	testCollision();
 }
 
