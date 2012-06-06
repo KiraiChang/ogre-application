@@ -11,6 +11,7 @@
 #include "wave_system.h"
 #include <list>
 #include <vector>
+#include <map>
 #include <ogre.h>
 
 typedef std::list< PhysicRigidBody * > V_RIGID_BODY;
@@ -38,6 +39,7 @@ namespace CEGUI
 }
 
 typedef std::vector< std::string > V_STRING;
+typedef std::map < std::string , CEGUI::Window *> M_CEGUI_WINDOW;
 
 class MeshData
 {
@@ -124,7 +126,8 @@ private:
 	//kinect
 	PhysicKinect *								m_vpPlayer/*[NUI_SKELETON_COUNT]*/;
 	DWORD										m_iCurrentID;
-	CEGUI::Window *								m_pSheet;
+	//CEGUI::Window *								m_pSheet;
+	M_CEGUI_WINDOW								m_mSheet;
 	//·Ç¤ß
 	Ogre::RaySceneQuery*						mRaySceneQuery;
 	Ogre::Entity*								EntSight;

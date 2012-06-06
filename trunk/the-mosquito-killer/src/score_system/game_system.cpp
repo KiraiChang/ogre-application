@@ -224,7 +224,7 @@ GameSystem::GameSystem(void):
 		m_iCurrentID(0),
 		m_fRightHandZPos(0),
 		m_fShootTimePass(0),
-		m_pSheet(NULL),
+		//m_pSheet(NULL),
 		NumBook(0),
 		NumBomb(0),
 		CurrentWeapon(0), //add
@@ -279,14 +279,8 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 
 	CEGUI::WindowManager &windowMgr = CEGUI::WindowManager::getSingleton();
 
-	m_pSheet = windowMgr.loadWindowLayout("kinect_game.layout");
-
-	CEGUI::System::getSingleton().setGUISheet(m_pSheet);
-
-	CEGUI::Slider *slider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
-
-	slider->setCurrentValue(DEF_MAX_PLAY_TIME);
-	slider->setMaxValue(DEF_MAX_PLAY_TIME);
+	//m_pSheet = windowMgr.loadWindowLayout("kinect_game.layout");
+	m_mSheet["playing"] = windowMgr.loadWindowLayout("kinect_game.layout");
 
 	m_pCompositer = new DOFManager(mRoot, mViewport);
 }
@@ -384,7 +378,8 @@ void GameSystem::release(void)
 	m_pWorld = NULL;
 	m_pSceneMgr = NULL;
 	AudioSystem::getInstance()->release();
-	m_pSheet = NULL;
+	//m_pSheet = NULL;
+	m_mSheet.clear();
 }
 
 void GameSystem::releaseMosquito(void)
@@ -454,10 +449,26 @@ void GameSystem::restart(unsigned int stageID)
 	AudioSystem::getInstance()->restart();
 	AudioSystem::getInstance()->play3DBGM(audio.c_str(), m_vfCameraPos, 50.0f);
 
-	if(m_pSheet != NULL)
+	//if(m_pSheet != NULL)
+	//{
+	//	m_pSheet->setVisible(true);
+	//	CEGUI::Slider *pSlider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
+	//	pSlider->setMaxValue(m_waveSystem.getFullTime());
+	//	CEGUI::MouseCursor::getSingletonPtr()->setVisible(false);
+
+	//	CEGUI::System::getSingleton().setGUISheet(m_pSheet);
+
+	//	CEGUI::Slider *slider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
+
+	//	slider->setCurrentValue(DEF_MAX_PLAY_TIME);
+	//	slider->setMaxValue(DEF_MAX_PLAY_TIME);
+	//}
+	if(m_mSheet.count("playing") > 0)
 	{
-		m_pSheet->setVisible(true);
-		CEGUI::Slider *pSlider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
+		CEGUI::System::getSingleton().setGUISheet(m_mSheet["playing"]);
+		m_mSheet["playing"]->setVisible(true);
+		CEGUI::Slider *pSlider = (CEGUI::Slider *)m_mSheet["playing"]->getChild("Root/Timepass");
+		pSlider->setCurrentValue(m_waveSystem.getFullTime());
 		pSlider->setMaxValue(m_waveSystem.getFullTime());
 		CEGUI::MouseCursor::getSingletonPtr()->setVisible(false);
 	}
@@ -823,19 +834,35 @@ void GameSystem::updatePlaying(float timePass)
 	updateMosquito(timePass);
 	updateWeapon(timePass);
 	updateHandState(timePass);
+	
+	//{
+	//	CEGUI::Slider *pSlider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
+	//	float current = m_waveSystem.getFullTime() - m_fTimePass;
+	//	pSlider->setCurrentValue(current);
+	//}
 
+	//{
+	//	int score = ScoreSystem::getScore();
+	//	char text[128];
+	//	sprintf_s(text, "SCORE:%016d", score);
+	//	CEGUI::Editbox *edit = (CEGUI::Editbox *)m_pSheet->getChild("Root/ScoreText");
+	//	edit->setText(CEGUI::String (text));
+	//}
+	if(m_mSheet.count("playing") > 0)
 	{
-		CEGUI::Slider *pSlider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
-		float current = m_waveSystem.getFullTime() - m_fTimePass;
-		pSlider->setCurrentValue(current);
-	}
+		{
+			CEGUI::Slider *pSlider = (CEGUI::Slider *)m_mSheet["playing"]->getChild("Root/Timepass");
+			float current = m_waveSystem.getFullTime() - m_fTimePass;
+			pSlider->setCurrentValue(current);
+		}
 
-	{
-		int score = ScoreSystem::getScore();
-		char text[128];
-		sprintf_s(text, "SCORE:%016d", score);
-		CEGUI::Editbox *edit = (CEGUI::Editbox *)m_pSheet->getChild("Root/ScoreText");
-		edit->setText(CEGUI::String (text));
+		{
+			int score = ScoreSystem::getScore();
+			char text[128];
+			sprintf_s(text, "SCORE:%016d", score);
+			CEGUI::Editbox *edit = (CEGUI::Editbox *)m_mSheet["playing"]->getChild("Root/ScoreText");
+			edit->setText(CEGUI::String (text));
+		}
 	}
 	if(m_pCompositer != NULL);
 	{
@@ -1377,8 +1404,14 @@ void GameSystem::setAllVisible(bool visible)
 		}
 	}
 
-	if(m_pSheet != NULL)
-		m_pSheet->setVisible(visible);
+	//if(m_pSheet != NULL)
+	//	m_pSheet->setVisible(visible);
+
+	M_CEGUI_WINDOW::iterator ite;
+	for(ite =  m_mSheet.begin(); ite != m_mSheet.end(); ++ite)
+	{
+		ite->second->setVisible(visible);
+	}
 	m_dotSceneLoader.setAllVisible(visible);
 
 	if(ChooesKnife != NULL)
