@@ -281,8 +281,13 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 
 	//m_pSheet = windowMgr.loadWindowLayout("kinect_game.layout");
 	m_mSheet["playing"] = windowMgr.loadWindowLayout("kinect_game.layout");
+	m_mSheet["logo"] = windowMgr.loadWindowLayout("MosquitoLogo.layout");
+	//CEGUI::Imageset &imageset = CEGUI::ImagesetManager::getSingleton().createFromImageFile("Logo", "Mosquito3.png");
 
+	m_mSheet["logo"]->getChild("MainMenu/Logo")->setProperty("Image","set:Mosquito image:Logo");
+	CEGUI::System::getSingleton().setGUISheet(m_mSheet["logo"]);
 	m_pCompositer = new DOFManager(mRoot, mViewport);
+	m_pCompositer->setFocus(0);
 }
 
 void GameSystem::initWeapon(void)
@@ -467,7 +472,7 @@ void GameSystem::restart(unsigned int stageID)
 	{
 		CEGUI::System::getSingleton().setGUISheet(m_mSheet["playing"]);
 		m_mSheet["playing"]->setVisible(true);
-		CEGUI::Slider *pSlider = (CEGUI::Slider *)m_mSheet["playing"]->getChild("Root/Timepass");
+		CEGUI::Slider *pSlider = (CEGUI::Slider *)m_mSheet["playing"]->getChild("Playing/Timepass");
 		pSlider->setCurrentValue(m_waveSystem.getFullTime());
 		pSlider->setMaxValue(m_waveSystem.getFullTime());
 		CEGUI::MouseCursor::getSingletonPtr()->setVisible(false);
@@ -851,7 +856,7 @@ void GameSystem::updatePlaying(float timePass)
 	if(m_mSheet.count("playing") > 0)
 	{
 		{
-			CEGUI::Slider *pSlider = (CEGUI::Slider *)m_mSheet["playing"]->getChild("Root/Timepass");
+			CEGUI::Slider *pSlider = (CEGUI::Slider *)m_mSheet["playing"]->getChild("Playing/Timepass");
 			float current = m_waveSystem.getFullTime() - m_fTimePass;
 			pSlider->setCurrentValue(current);
 		}
@@ -860,7 +865,7 @@ void GameSystem::updatePlaying(float timePass)
 			int score = ScoreSystem::getScore();
 			char text[128];
 			sprintf_s(text, "SCORE:%016d", score);
-			CEGUI::Editbox *edit = (CEGUI::Editbox *)m_mSheet["playing"]->getChild("Root/ScoreText");
+			CEGUI::Editbox *edit = (CEGUI::Editbox *)m_mSheet["playing"]->getChild("Playing/ScoreText");
 			edit->setText(CEGUI::String (text));
 		}
 	}
