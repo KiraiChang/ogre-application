@@ -13,6 +13,7 @@ namespace Ogre
 	class AnimationState;
 	class ParticleSystem;
 	class BillboardSet;
+	class Billboard;
 }
 
 enum QueryFlags
@@ -37,6 +38,7 @@ private:
 	Ogre::AnimationState *		m_pAnimationState;
 	Ogre::ParticleSystem *		m_pParticleSystem;
 	Ogre::BillboardSet *		m_pBillboardSet;
+	Ogre::Billboard*			m_pBillboard;
 	Ogre::FloatRect				m_vTexCoordArray[MAX_TEXTURE_COORD];
 	float						m_fBillboardTime;
 	unsigned int				m_uiID;
@@ -47,6 +49,7 @@ public:
 	virtual void				release(void);
 	virtual void				update(float timePass, float *position, float *quaternion);
 	virtual void				update(float timePass);
+	virtual void				updateBillboard(float timePass);
 	virtual void				setAnimation(const char *aniName, bool loop, bool blend);
 	virtual void				setParticle(const char *fileName);
 	virtual void				setVisible(bool visible);

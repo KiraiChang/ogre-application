@@ -63,6 +63,7 @@ public:
 	virtual unsigned int		getMeshID(void)				{return m_uiMeshID;}
 	virtual void				setAnimation(const char *aniName, bool loop, bool blend);
 	virtual void				setParticle(const char *fileName);
+	virtual void				setBillboard(const char *fileName);
 	virtual void				setVisible(bool visible);
 	void						getPos(float *pos);
 	void						setState(MOSQUITO_STATE state);

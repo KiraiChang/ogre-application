@@ -174,7 +174,21 @@ void MosquitoBase::setAnimation(const char *aniName, bool loop, bool blend)
 void MosquitoBase::setParticle(const char *fileName)
 {
 	if(m_pBody != NULL)
-		m_pBody->setParticle(fileName);
+	{
+		OgreShapeBox *shape = (OgreShapeBox *)m_pBody->getShape();
+		if(shape != NULL)
+			shape->setParticle(fileName);
+	}
+}
+
+void MosquitoBase::setBillboard(const char *fileName)
+{
+	if(m_pBody != NULL)
+	{
+		OgreShapeBox *shape = (OgreShapeBox *)m_pBody->getShape();
+		if(shape != NULL)
+			shape->setBillboard(fileName);
+	}
 }
 
 void MosquitoBase::setVisible(bool visible)
@@ -200,11 +214,11 @@ void MosquitoBase::setState(MOSQUITO_STATE state)
 	if(state == eMosuqitoHit)
 	{
 		loop = false;
-		setParticle("blood");
+		setBillboard("blood_billboard");
 	}
 	else if(state == eMosuqitoCut)
 	{
-		setParticle("blood");
+		setBillboard("blood_billboard");
 	}
 	if(m_uiMeshID < GameSystem::getInstance()->m_vMeshData.size())
 	{
