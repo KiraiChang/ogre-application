@@ -337,11 +337,15 @@ void GameSystem::initWeapon(void)
 	ChooesBomb->create(m_vWeapeanMeshData[2].m_sMeshName.c_str(), 0, mass,scale,pos, m_vWeapeanMeshData[0].m_fvSize,quat,0,tar);
 
 	//OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
-	//shape->init("robot.mesh", scale);
+	//shape->init("Ninja.mesh", scale);
 	//quat[0] = 1.0;
 	//quat[1] = 0.0;
 	//quat[2] = 0.0;
 	//quat[3] = 0.0;
+
+	//pos[0] =  0.0;
+	//pos[1] =  0.0;
+	//pos[2] =  0.0;
 	//shape->update(0.0, pos, quat);
 }
 
