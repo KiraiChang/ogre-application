@@ -14,7 +14,7 @@ const float MAX_WAIT_BLOOD_TIME = 1.0f;
 const float MAX_WAIT_HIT_TIME = 10.0f;
 const float MAX_WAIT_CUT_TIME = 10.0f;
 const float MAX_ALERT_DIST = 40.0f;
-
+extern bool MOSQUITO_DEBUG_MODE;
 MosquitoBase::MosquitoBase(void):
 		m_eState(eMosquitoMove),
 		m_pScore(NULL),
@@ -58,8 +58,12 @@ void MosquitoBase::create(const char *modelName, unsigned int moveType, float sp
 	size_tmp[2] = size[2] * scale[2];
 	//create physic body
 	m_pBody = new PhysicRigidBody(m_pWorld);
-	PhysicDebug *debug = new OgrePhysicDebug();
-	((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
+	PhysicDebug *debug = NULL;
+	if(MOSQUITO_DEBUG_MODE)
+	{
+		debug = new OgrePhysicDebug();
+		((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
+	}
 	m_pBody->init(shape, debug, mass, pos, size_tmp, quat, m_pScore, 8);
 
 	//create move type

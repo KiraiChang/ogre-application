@@ -40,9 +40,6 @@ BaseApplication::BaseApplication(void)
     mMouse(0),
     mKeyboard(0)
 {
-
-	redirectIOToConsole();
-
 }
 
 //-------------------------------------------------------------------------------------

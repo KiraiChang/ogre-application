@@ -6,7 +6,7 @@
 #include "../ogre_physic/ogre_physic_debug.h"
 #include "../score_system/score_system.h"
 #include "../score_system/score_object.h"
-
+extern bool MOSQUITO_DEBUG_MODE;
 WeaponKnife::WeaponKnife(void):
 		m_pScore(NULL),
 		m_pBody(NULL),
@@ -56,8 +56,12 @@ void WeaponKnife::create(const char *modelName, int moveType, float mass, float 
 
 	//create physic body
 	m_pBody = new PhysicRigidBody(m_pWorld);
-	PhysicDebug *debug = new OgrePhysicDebug();
-	((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
+	PhysicDebug *debug = NULL;
+	if(MOSQUITO_DEBUG_MODE)
+	{
+		debug = new OgrePhysicDebug();
+		((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
+	}
 	m_pBody->init(shape, debug, mass, pos, size, quat, m_pScore, 8);
 }
 
