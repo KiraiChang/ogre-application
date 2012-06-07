@@ -334,6 +334,14 @@ void GameSystem::initWeapon(void)
 	ChooesBook->create(m_vWeapeanMeshData[1].m_sMeshName.c_str(), 0, mass,scale,pos, m_vWeapeanMeshData[0].m_fvSize,quat,0,tar);
 	pos[0] = 35;
 	ChooesBomb->create(m_vWeapeanMeshData[2].m_sMeshName.c_str(), 0, mass,scale,pos, m_vWeapeanMeshData[0].m_fvSize,quat,0,tar);
+
+	//OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
+	//shape->init("robot.mesh", scale);
+	//quat[0] = 1.0;
+	//quat[1] = 0.0;
+	//quat[2] = 0.0;
+	//quat[3] = 0.0;
+	//shape->update(0.0, pos, quat);
 }
 
 void GameSystem::initMeshData(void)
@@ -789,6 +797,16 @@ void GameSystem::updateMenu(float timePass, KinectDevice *deivce)
 
 void GameSystem::updatePlaying(float timePass, KinectDevice *deivce)
 {
+	if(m_bIsPause)
+	{
+		if(checkPlayerState(deivce))
+		{
+			m_bIsPause = false;
+			m_vpPlayer->setVisible(true);
+		}
+		else
+			return;
+	}
 	if(deivce != NULL)
 		updatePlayer(deivce);
 	else
@@ -904,6 +922,7 @@ void GameSystem::updatePlayer(KinectDevice *deivce)
 	{
 		NUI_SKELETON_FRAME frame = {0};
 		deivce->getSkeletonFrame(frame);
+		bool isTracking = false;
 		for(int i = 0; i < NUI_SKELETON_COUNT; i++ )
 		{
 			//if(frame.SkeletonData[i].eTrackingState != NUI_SKELETON_NOT_TRACKED)
@@ -924,21 +943,28 @@ void GameSystem::updatePlayer(KinectDevice *deivce)
 			{
 				if(m_iCurrentID == frame.SkeletonData[i].dwTrackingID)
 				{
+					isTracking = true;
 					m_vpPlayer->update(frame.SkeletonData[i]);
 					Shoulder[0] = frame.SkeletonData[i].SkeletonPositions[4].x; // change to shoulder index (4)
 					Shoulder[1] = frame.SkeletonData[i].SkeletonPositions[4].y;
 					Shoulder[2] = frame.SkeletonData[i].SkeletonPositions[4].z;
 				}
-				else
-				{
-					if(m_iCurrentID == 0)
-					{
-						m_iCurrentID = frame.SkeletonData[i].dwTrackingID;
-						m_vpPlayer->init(m_iCurrentID);
-						deivce->NuiSkeletonSetTrackedSkeletons(m_iCurrentID);
-					}
-				}
+				//else
+				//{
+				//	if(m_iCurrentID == 0)
+				//	{
+				//		m_iCurrentID = frame.SkeletonData[i].dwTrackingID;
+				//		m_vpPlayer->init(m_iCurrentID);
+				//		deivce->NuiSkeletonSetTrackedSkeletons(m_iCurrentID);
+				//	}
+				//}
 			}
+		}
+		if(!isTracking)
+		{
+			m_iCurrentID = 0;
+			m_vpPlayer->setVisible(false);
+			m_bIsPause = true;
 		}
 	}
 }
@@ -1285,8 +1311,32 @@ void GameSystem::notifyMosquitoAlert(void)
 bool GameSystem::checkPlayerState(KinectDevice *device)
 {
 	if(device == NULL)
-		return false;
-	return true;
+	{
+		return true;
+	}
+	else
+	{
+		NUI_SKELETON_FRAME frame = {0};
+		device->getSkeletonFrame(frame);
+		for(int i = 0; i < NUI_SKELETON_COUNT; i++ )
+		{
+			if(frame.SkeletonData[i].eTrackingState != NUI_SKELETON_NOT_TRACKED)
+			{
+				float weight = frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_SHOULDER_RIGHT].z + 
+								frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_ELBOW_RIGHT].z + 
+								frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_WRIST_RIGHT].z + 
+								frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].z;
+				if(weight > 0.5)
+				{
+					m_iCurrentID = frame.SkeletonData[i].dwTrackingID;
+					m_vpPlayer->init(m_iCurrentID);
+					device->NuiSkeletonSetTrackedSkeletons(m_iCurrentID);
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 float GameSystem::getFullTime(void)const												
