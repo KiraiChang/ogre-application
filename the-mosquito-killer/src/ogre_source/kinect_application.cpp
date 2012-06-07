@@ -274,19 +274,21 @@ bool KinectApplication::frameEnded(const Ogre::FrameEvent& evt)
 	
 	if(NULL != m_pPhysicSimulation)
 	{
-		float timePass = m_pPhysicSimulation->update();
-		if(NULL != m_pKinectDevice)
-		{
-			GameSystem::getInstance()->updatePlayer(m_pKinectDevice);
-		}
-		else
-			GameSystem::getInstance()->updatePlayerDebug(timePass);
-		
+		float timePass = 0;
+		if(!GameSystem::getInstance()->m_bIsPause)
+			timePass = m_pPhysicSimulation->update();
+		//if(NULL != m_pKinectDevice)
+		//{
+		//	GameSystem::getInstance()->updatePlayer(m_pKinectDevice);
+		//}
+		//else
+		//	GameSystem::getInstance()->updatePlayerDebug(timePass);
+		//
 
-		if(m_pRagDoll != NULL)
-			m_pRagDoll->update();
+		//if(m_pRagDoll != NULL)
+		//	m_pRagDoll->update();
 
-		GameSystem::getInstance()->update(timePass);
+		GameSystem::getInstance()->update(timePass, m_pKinectDevice);
 	}
 	return bRet;
 }
