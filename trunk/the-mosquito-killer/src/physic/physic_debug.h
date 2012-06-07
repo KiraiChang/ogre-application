@@ -12,6 +12,7 @@ public:
 	virtual void draw(const int &part, btRigidBody *body) = 0;
 	virtual void endDraw(void) = 0;
 	virtual void release(void) = 0;
+	virtual void setVisible(bool vi) = 0;
 };
 
 #endif //_PHYSIC_DEBUG_H_

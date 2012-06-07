@@ -323,6 +323,10 @@ void PhysicRigidBody::setVisible(bool visible)
 	{
 		m_pShapeData->setVisible(visible);
 	}
+	if(m_pDebug != NULL)
+	{
+		m_pDebug->setVisible(visible);
+	}
 }
 //*******************************************************
 //********************  END  ****************************

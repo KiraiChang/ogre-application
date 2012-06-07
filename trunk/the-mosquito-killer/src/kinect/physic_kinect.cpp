@@ -160,6 +160,7 @@ void PhysicKinect::init(DWORD id)
 		//m_pBody[NUI_SKELETON_POSITION_FOOT_RIGHT] = createRidigBody("sphere.mesh", 0.0, scale, pos, quat, NULL, ScoreSystem::createScoreObject(SCORE_TYPE_BODY), 2);
 	}
 	is.close();
+	setVisible(false);
 }
 
 void PhysicKinect::release(void)

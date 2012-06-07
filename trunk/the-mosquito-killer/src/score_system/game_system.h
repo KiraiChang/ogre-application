@@ -31,6 +31,7 @@ namespace Ogre
 {
 	class SceneManager;
 	class RenderWindow;
+	class Overlay;
 }
 
 namespace CEGUI
@@ -40,6 +41,7 @@ namespace CEGUI
 
 typedef std::vector< std::string > V_STRING;
 typedef std::map < std::string , CEGUI::Window *> M_CEGUI_WINDOW;
+typedef std::map < std::string , Ogre::Overlay *> M_OGRE_WINDOW;
 
 class MeshData
 {
@@ -91,6 +93,7 @@ public:
 	float										m_fTwoHandDistance;
 	Ogre::DotSceneLoader						m_dotSceneLoader;
 	bool										m_bIsDebug;
+	bool										m_bIsPause;
 	float										m_vfCameraPos[3];
 	float										m_vfCameraDir[3];
 	V_MESH_DATA									m_vMeshData;
@@ -128,6 +131,7 @@ private:
 	DWORD										m_iCurrentID;
 	//CEGUI::Window *								m_pSheet;
 	M_CEGUI_WINDOW								m_mSheet;
+	M_OGRE_WINDOW								m_mOverlay;
 	//準心
 	Ogre::RaySceneQuery*						mRaySceneQuery;
 	Ogre::Entity*								EntSight;
@@ -163,17 +167,19 @@ public:
 	void										initScene(void);//產生場景
 	void										initPlayer(void);//產生空的玩家類別
 	void										initPlayer(unsigned int playerCount);//初始化人數
-	void										update(float timePass);//根據遊戲狀態分配要進入哪個流程
+	void										update(float timePass, KinectDevice *deivce);//根據遊戲狀態分配要進入哪個流程
 	void										updateMosquito(float timePass);//更新蚊子的狀態及位置
 	void										updateWeapon(float timePass);//更新蚊子的狀態及位置
-	void										updateMenu(float timePass);//主要menu畫面
-	void										updatePlaying(float timePass);//遊戲中主要的流程
-	void										updateEnd(float timePass);//結算畫面
+	void										updateMenu(float timePass, KinectDevice *deivce);//主要menu畫面
+	void										updatePlaying(float timePass, KinectDevice *deivce);//遊戲中主要的流程
+	void										updateEnd(float timePass, KinectDevice *deivce);//結算畫面
 	void										updatePlayer(KinectDevice *device);
 	void										updatePlayerDebug(float timePass);//若是沒有kinect採取的動作
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
 	void										notifyMosquitoAlert(void);
+	bool										checkPlayerState(KinectDevice *device);
 	float										getFullTime(void)const;
+	void										setGameState(GameState state);
 	void										setAllVisible(bool visible);
 	void										testCollision(void);
 	void										reduceBlood(void);

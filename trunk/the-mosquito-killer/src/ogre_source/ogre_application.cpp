@@ -196,11 +196,11 @@ void OgreApplication::initCEGUI(void)
 	//CEGUI::ImagesetManager::getSingleton().create("OgreTray.imageset", "Imagesets");
  
     CEGUI::System::getSingleton().setDefaultMouseCursor("TaharezLook", "MouseArrow");
-	CEGUI::Texture &texture = mRenderer->createTexture();
-	texture.loadFromFile("Mosquito3.png","");
-		//create a new imageset with an image that spans the entire texture
-	CEGUI::Imageset &set = CEGUI::ImagesetManager::getSingleton().create((CEGUI::utf8*)"Mosquito",texture);
-	set.defineImage("Logo",CEGUI::Point(0.0f,0.0f),CEGUI::Size(texture.getSize().d_width,texture.getSize().d_height),CEGUI::Point(0.0f,0.0f));
+	//CEGUI::Texture &texture = mRenderer->createTexture();
+	//texture.loadFromFile("Mosquito3.png","");
+	//	//create a new imageset with an image that spans the entire texture
+	//CEGUI::Imageset &set = CEGUI::ImagesetManager::getSingleton().create((CEGUI::utf8*)"Mosquito",texture);
+	//set.defineImage("Logo",CEGUI::Point(0.0f,0.0f),CEGUI::Size(texture.getSize().d_width,texture.getSize().d_height),CEGUI::Point(0.0f,0.0f));
 	//createUI();
 }
 

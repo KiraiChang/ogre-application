@@ -208,6 +208,7 @@ GameSystem *GameSystem::g_instance = NULL;
 
 GameSystem::GameSystem(void):
 		m_pWorld(NULL),
+		m_bIsPause(FALSE),
 		m_pSceneMgr(NULL),
 		m_pWindow(NULL),
 		m_bIsDebug(FALSE),
@@ -246,7 +247,6 @@ GameSystem::GameSystem(void):
 	m_vfHandDebugPos[2] = 80.0;
 
 	m_fTwoHandDistance = HAND_DEBUG_DISTANCE;
-	setAllVisible(false);
 }
 
 GameSystem::~GameSystem(void)
@@ -281,13 +281,37 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 
 	//m_pSheet = windowMgr.loadWindowLayout("kinect_game.layout");
 	m_mSheet["playing"] = windowMgr.loadWindowLayout("kinect_game.layout");
-	m_mSheet["logo"] = windowMgr.loadWindowLayout("MosquitoLogo.layout");
-	//CEGUI::Imageset &imageset = CEGUI::ImagesetManager::getSingleton().createFromImageFile("Logo", "Mosquito3.png");
+	//m_mSheet["logo"] = windowMgr.loadWindowLayout("MosquitoLogo.layout");
+	////CEGUI::Imageset &imageset = CEGUI::ImagesetManager::getSingleton().createFromImageFile("Logo", "Mosquito3.png");
 
-	m_mSheet["logo"]->getChild("MainMenu/Logo")->setProperty("Image","set:Mosquito image:Logo");
-	CEGUI::System::getSingleton().setGUISheet(m_mSheet["logo"]);
+	//m_mSheet["logo"]->getChild("MainMenu/Logo")->setProperty("Image","set:Mosquito image:Logo");
+	//CEGUI::System::getSingleton().setGUISheet(m_mSheet["logo"]);
+
+	//Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+	//// Create an overlay
+	//m_mOverlay["MainMenu"] = overlayManager.create( "MainMenu" );
+
+	//// Create a panel
+	//Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>( overlayManager.createOverlayElement( "Panel", "MosquitoLogo" ) );
+	//panel->setPosition( 0.0, 0.0 );
+	//panel->setDimensions( 0.1, 0.1 );
+	//panel->setMaterialName( "MosquitoLogo" );
+	//// Add the panel to the overlay
+	//m_mOverlay["MainMenu"]->add2D( panel );
+
+	//// Show the overlay
+	//m_mOverlay["MainMenu"]->show();
+
+	Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+	// Create an overlay
+	m_mOverlay["MainMenu"] = overlayManager.getByName( "MainMenu" );
+
+	// Show the overlay
+	m_mOverlay["MainMenu"]->hide();
+
 	m_pCompositer = new DOFManager(mRoot, mViewport);
 	m_pCompositer->setFocus(0);
+	setGameState(eOnMenu);
 }
 
 void GameSystem::initWeapon(void)
@@ -492,6 +516,9 @@ void GameSystem::restart(unsigned int stageID)
 		m_pSceneMgr->destroySceneNode(m_pHintNode);
 		m_pHintNode = NULL;
 	}
+
+	if(m_vpPlayer != NULL)
+		m_vpPlayer->setVisible(true);
 	if(ChooesKnife != NULL)
 		ChooesKnife->setVisible(true);
 	if(ChooesBook != NULL)
@@ -721,18 +748,18 @@ void GameSystem::initPlayer(unsigned int playerCount)
 	m_vpPlayer->init(0);
 }
 
-void GameSystem::update(float timePass)
+void GameSystem::update(float timePass, KinectDevice *device)
 {
 	switch(m_eState)
 	{
 	case eOnMenu:
-		updateMenu(timePass);
+		updateMenu(timePass, device);
 		break;
 	case eOnPlaying:
-		updatePlaying(timePass);
+		updatePlaying(timePass, device);
 		break;
 	case eOnEnd:
-		updateEnd(timePass);
+		updateEnd(timePass, device);
 		break;
 
 	default:
@@ -741,51 +768,33 @@ void GameSystem::update(float timePass)
 	AudioSystem::getInstance()->update(timePass);
 }
 
-void GameSystem::updateMenu(float timePass)
+void GameSystem::updateMenu(float timePass, KinectDevice *deivce)
 {
-	restart();
 	if(m_pCompositer != NULL);
 		m_pCompositer->setFocus(m_iPlayerBlood * 10);
-	m_eState = eOnPlaying;
+
+	if(m_waveSystem.work(timePass))
+	{
+		if(m_vMosquito.size() <= 0)
+		{
+			restart(0);
+		}
+	}
+	updateMosquito(timePass);
+	if(checkPlayerState(deivce))
+	{
+		setGameState(eOnPlaying);
+	}
 }
 
-void GameSystem::updatePlaying(float timePass)
+void GameSystem::updatePlaying(float timePass, KinectDevice *deivce)
 {
-	//bool shoot = (int)(m_fTimePass + timePass)%5 == 0;
-	//if(shoot && !m_bShoot)
-	//{
-	//	if(m_fTimePass >= 30 && m_fTimePass <= 40)  // first attack of many mosquitos
-	//	{
-	//		randomShoot(eMosquitoBase); // we can decide the type of mosquito
-	//		randomShoot(eMosquitoBase);
-	//		randomShoot(eMosquitoBase);
-	//	}
-	//	else if(m_fTimePass >= 60 && m_fTimePass <= 70)  // second attack of many mosquitos
-	//	{
-	//		randomShoot(eMosquitoBase);
-	//		randomShoot(eMosquitoBase);
-	//		randomShoot(eMosquitoBase);
-	//	}
-	//	else if(m_fTimePass >= 90 && m_fTimePass <= 100)  // second attack of many mosquitos
-	//	{
-	//		randomShoot(eMosquitoBase);
-	//		randomShoot(eMosquitoBase);
-	//		randomShoot(eMosquitoBase);
-	//	}
-
-	//	else
-	//	randomShoot(eMosquitoBase);
-	//}
-	//else if(!shoot)
-	//{
-	//	m_bShoot = false;
-	//}
+	if(deivce != NULL)
+		updatePlayer(deivce);
+	else
+		updatePlayerDebug(timePass);
 	m_fTimePass += timePass;
-	//if(m_fTimePass >= m_fFullTime)
-	//{
-	//	restart();
-	//	initScene();
-	//}
+
 	if(m_waveSystem.work(timePass))
 	{
 		if(m_vMosquito.size() <= 0)
@@ -801,58 +810,10 @@ void GameSystem::updatePlaying(float timePass)
 		m_eState = eOnEnd;
 	}
 
-	//V_RIGID_BODY::iterator rIte;
-	//V_RIGID_BODY::iterator eraseIte;
-	//PhysicRigidBody *body;
-	//for(rIte = m_vRigidBody.begin(); rIte != m_vRigidBody.end();)
-	//{
-	//	body = *rIte;
-	//	
-	//	body->update(timePass);
-	//	float pos[3];
-	//	body->getPos(pos);
-	//	if(pos[1] <= 0)
-	//	{
-	//		eraseIte = rIte;
-	//		rIte++;
-	//		m_vRigidBody.erase(eraseIte);
-	//		body->release();
-	//		delete body;
-	//	}
-	//	//else if(body->getUserPointer() != NULL)
-	//	//{
-	//	//	ScoreBase *base = (ScoreBase *)body->getUserPointer();
-	//	//	if(base->m_bDestory)
-	//	//	{
-	//	//		eraseIte = rIte;
-	//	//		rIte++;
-	//	//		m_vRigidBody.erase(eraseIte);
-	//	//		body->release();
-	//	//		delete body;
-	//	//	}
-	//	//	else
-	//	//		rIte++;
-	//	//}
-	//	else
-	//		rIte++;
-	//}
 	updateMosquito(timePass);
 	updateWeapon(timePass);
 	updateHandState(timePass);
 	
-	//{
-	//	CEGUI::Slider *pSlider = (CEGUI::Slider *)m_pSheet->getChild("Root/Timepass");
-	//	float current = m_waveSystem.getFullTime() - m_fTimePass;
-	//	pSlider->setCurrentValue(current);
-	//}
-
-	//{
-	//	int score = ScoreSystem::getScore();
-	//	char text[128];
-	//	sprintf_s(text, "SCORE:%016d", score);
-	//	CEGUI::Editbox *edit = (CEGUI::Editbox *)m_pSheet->getChild("Root/ScoreText");
-	//	edit->setText(CEGUI::String (text));
-	//}
 	if(m_mSheet.count("playing") > 0)
 	{
 		{
@@ -880,7 +841,7 @@ void GameSystem::updatePlaying(float timePass)
 	testCollision();
 }
 
-void GameSystem::updateEnd(float timePass)//結算畫面
+void GameSystem::updateEnd(float timePass, KinectDevice *deivce)//結算畫面
 {
 	m_eState = eOnMenu;
 }
@@ -1238,70 +1199,6 @@ void GameSystem::updateHandState(float timePass)
 
 void GameSystem::notifyMosquitoAlert(void)
 {
-
-	//Ogre::RaySceneQueryResult::iterator ite;
-	//for (ite = m_mosquitoQueryResult.begin();ite != m_mosquitoQueryResult.end();ite++)
-	//{
-	//	if(!ite->worldFragment)
-	//	{
-	//		Ogre::Any any = ite->movable->getUserAny();
-	//		if(!any.isEmpty())
-	//		{
-	//			//Ogre::SceneNode *node = ite->movable->getParentSceneNode();
-	//			//char name[64];
-	//			//sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
-	//			//try
-	//			//{
-	//			//	if(node->getAttachedObject(name) != NULL)
-	//			//	{
-	//			//		m_pSceneMgr->destroyParticleSystem((Ogre::ParticleSystem *)node->getAttachedObject(name));
-	//			//		node->detachObject(name);
-	//			//	}
-	//			//}
-	//			//catch(...)
-	//			//{
-
-	//			//}
-	//		}
-	//	}
-	//}
-
-	//float rightPos[3];
-	//float leftPos[3];
-	//m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
-	//m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
-
-	//Ogre::Vector3 right = Ogre::Vector3(rightPos[0],rightPos[1],rightPos[2]);
-	//Ogre::Vector3 left = Ogre::Vector3(leftPos[0],leftPos[1],leftPos[2]);
-	//Ogre::Ray SightRay(right, left - right);
-
-	//mRaySceneQuery = m_pSceneMgr->createRayQuery(Ogre::Ray());
-	//mRaySceneQuery->setRay(SightRay);
-	//mRaySceneQuery->setQueryMask(MOSQUITO_MASK);
-	//m_mosquitoQueryResult = mRaySceneQuery->execute();
-	//
-	//for (ite = m_mosquitoQueryResult.begin();ite != m_mosquitoQueryResult.end();ite++)
-	//{
-	//	if(!ite->worldFragment)
-	//	{
-	//		Ogre::Any any = ite->movable->getUserAny();
-	//		if(!any.isEmpty())
-	//		{
-	//			//Ogre::SceneNode *node = ite->movable->getParentSceneNode();
-	//			//char name[64];
-	//			//sprintf(name, "m_pShapeParticle%s", node->getName().c_str());
-	//			//try
-	//			//{
-	//			//	node->getAttachedObject(name);
-	//			//}
-	//			//catch(...)
-	//			//{
-	//			//	Ogre::ParticleSystem *particle = m_pSceneMgr->createParticleSystem(name, "blood");
-	//			//	node->attachObject(particle);
-	//			//}
-	//		}
-	//	}
-	//}
 	float dist = 0;
 	float distN = 0;
 	MosquitoBase *data = NULL;
@@ -1385,9 +1282,58 @@ void GameSystem::notifyMosquitoAlert(void)
 	}
 }
 
+bool GameSystem::checkPlayerState(KinectDevice *device)
+{
+	if(device == NULL)
+		return false;
+	return true;
+}
+
 float GameSystem::getFullTime(void)const												
 {
 	return  m_waveSystem.getFullTime();
+}
+
+void GameSystem::setGameState(GameState state)
+{
+	m_eState = state;
+	setAllVisible(false);
+	switch(state)
+	{
+	case eOnMenu://主選單畫面
+		{
+			if(m_mOverlay.count("MainMenu") > 0)
+			{
+				m_mOverlay["MainMenu"]->show();
+			}
+			
+			std::string scene;
+			std::string sceneGroup;
+			std::string audio;
+			m_waveSystem.init(0, scene, sceneGroup, audio);
+
+
+			m_dotSceneLoader.parseDotScene(scene, sceneGroup, m_pSceneMgr, m_pWindow);
+
+			m_dotSceneLoader.setAllVisible(true);
+
+			AudioSystem::getInstance()->restart();
+			AudioSystem::getInstance()->play3DBGM(audio.c_str(), m_vfCameraPos, 50.0f);
+		}
+		break;
+	case eOnPlaying://遊戲中畫面
+		{
+			restart();
+		}
+		break;
+	case eOnEnd://結算畫面
+		{
+
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 void GameSystem::setAllVisible(bool visible)
@@ -1406,6 +1352,17 @@ void GameSystem::setAllVisible(bool visible)
 		for( ite = m_vMosquito.begin();ite != m_vMosquito.end();++ite)
 		{
 			(*ite)->setVisible(visible);
+		}
+	}
+
+	{
+		M_OGRE_WINDOW::iterator ite;								
+		for( ite = m_mOverlay.begin();ite != m_mOverlay.end();++ite)
+		{
+			if(visible)
+				ite->second->show();
+			else
+				ite->second->hide();
 		}
 	}
 
