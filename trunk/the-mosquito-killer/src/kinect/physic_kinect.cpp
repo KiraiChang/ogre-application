@@ -9,7 +9,7 @@
 const float DEF_POWER_RADIN = 10.0f;
 const float MIN_RADIN = 1.5f;
 const float MAX_RADIN = 2.35f;
-
+extern bool MOSQUITO_DEBUG_MODE;
 PhysicKinect::PhysicKinect(Ogre::SceneManager *scene, btDynamicsWorld *world):
 	m_pSceneMgr(scene),
 	m_pWorld(world)
@@ -71,8 +71,12 @@ void PhysicKinect::init(DWORD id)
 			size[1] = obj["left_hand_ridigi_body"].get_obj()["size"].get_array()[1].get_real();
 			size[2] = obj["left_hand_ridigi_body"].get_obj()["size"].get_array()[2].get_real();
 		}
-		PhysicDebug *debug = new OgrePhysicDebug();
-		((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
+		PhysicDebug *debug = NULL;
+		if(MOSQUITO_DEBUG_MODE)
+		{
+			debug = new OgrePhysicDebug();
+			((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
+		}
 		m_pBody[eKinectLeftHand] = createRidigBody(obj["left_hand_ridigi_body"].get_obj()["mesh_name"].get_str().c_str(), 0.0, scale, pos, size, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
 		m_iBodyID[eKinectLeftHand] = NUI_SKELETON_POSITION_HAND_LEFT;
 
@@ -87,8 +91,12 @@ void PhysicKinect::init(DWORD id)
 			size[2] = obj["right_hand_ridigi_body"].get_obj()["size"].get_array()[2].get_real();
 		}
 
-		debug = new OgrePhysicDebug();
-		((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
+		debug = NULL;
+		if(MOSQUITO_DEBUG_MODE)
+		{
+			debug = new OgrePhysicDebug();
+			((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
+		}
 		m_pBody[eKinectRightHand] = createRidigBody(obj["right_hand_ridigi_body"].get_obj()["mesh_name"].get_str().c_str(), 0.0, scale, pos, size, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
 		m_iBodyID[eKinectRightHand] = NUI_SKELETON_POSITION_HAND_RIGHT;
 

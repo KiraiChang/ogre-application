@@ -21,6 +21,7 @@ const float HAND_CHECK_RIGHT_HAND_SPEED = 5.0f;
 const float HAND_CHECK_SHOOT_TIMEPASS = 0.5f;
 const float HAND_WAIT_ATTACK_TIMEOUT = 3.0f;
 
+bool MOSQUITO_DEBUG_MODE = false;
 
 bool GameSystem::MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1)
 {
@@ -236,6 +237,7 @@ GameSystem::GameSystem(void):
 		m_pHintNode(NULL),
 		m_pCompositer(NULL)
 {
+	initMeshData();
 	//for(int i = 0; i < NUI_SKELETON_COUNT; i++)
 	//{
 	//	m_vpPlayer[i] = NULL;
@@ -274,7 +276,6 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 	if(m_pWindow == NULL)
 		m_pWindow = pWindow;
 
-	initMeshData();
 	initWeapon();
 
 	CEGUI::WindowManager &windowMgr = CEGUI::WindowManager::getSingleton();
@@ -355,6 +356,10 @@ void GameSystem::initMeshData(void)
 		json_spirit::read(file, value);
 		json_spirit::mArray arr;
 		json_spirit::mObject obj;
+		if(value.get_obj().count("debug") > 0)
+		{
+			MOSQUITO_DEBUG_MODE = value.get_obj()["debug"].get_bool();
+		}
 		arr = value.get_obj()["mesh_data"].get_array();
 		for(int i = 0; i <arr.size();i++)
 		{
@@ -1312,7 +1317,7 @@ bool GameSystem::checkPlayerState(KinectDevice *device)
 {
 	if(device == NULL)
 	{
-		return true;
+		//return true;
 	}
 	else
 	{
