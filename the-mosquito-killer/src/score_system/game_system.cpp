@@ -235,7 +235,8 @@ GameSystem::GameSystem(void):
 		ChooesBomb(NULL), //當作選取武器的快捷鍵 add
 		m_pHintObject(NULL),
 		m_pHintNode(NULL),
-		m_pCompositer(NULL)
+		m_pCompositer(NULL),
+		m_fTrackingTime(0)
 {
 	initMeshData();
 	//for(int i = 0; i < NUI_SKELETON_COUNT; i++)
@@ -817,9 +818,12 @@ void GameSystem::updatePlaying(float timePass, KinectDevice *deivce)
 			return;
 	}
 	if(deivce != NULL)
-		updatePlayer(deivce);
+		updatePlayer(deivce, timePass);
 	else
 		updatePlayerDebug(timePass);
+	if(m_bIsPause)
+		return;
+	
 	m_fTimePass += timePass;
 
 	if(m_waveSystem.work(timePass))
@@ -925,7 +929,7 @@ void GameSystem::updateWeapon(float timePass)
 		ChooesBomb->update(timePass);
 }
 
-void GameSystem::updatePlayer(KinectDevice *deivce)
+void GameSystem::updatePlayer(KinectDevice *deivce, float timePass)
 {
 	if(m_eState == eOnPlaying)
 	{
@@ -953,6 +957,7 @@ void GameSystem::updatePlayer(KinectDevice *deivce)
 				if(m_iCurrentID == frame.SkeletonData[i].dwTrackingID)
 				{
 					isTracking = true;
+					m_fTrackingTime = 0.0f;
 					m_vpPlayer->update(frame.SkeletonData[i]);
 					Shoulder[0] = frame.SkeletonData[i].SkeletonPositions[4].x; // change to shoulder index (4)
 					Shoulder[1] = frame.SkeletonData[i].SkeletonPositions[4].y;
@@ -971,10 +976,15 @@ void GameSystem::updatePlayer(KinectDevice *deivce)
 		}
 		if(!isTracking)
 		{
-			m_iCurrentID = 0;
-			m_vpPlayer->setVisible(false);
-			m_bIsPause = true;
-			m_pCompositer->setFocus(0);
+			m_fTrackingTime += timePass;
+			if(m_fTrackingTime > 3.0f)
+			{
+				m_iCurrentID = 0;
+				m_vpPlayer->setVisible(false);
+				m_bIsPause = true;
+				m_pCompositer->setFocus(0);
+				m_fTrackingTime = 0.0f;
+			}
 		}
 	}
 }
@@ -1337,19 +1347,20 @@ bool GameSystem::checkPlayerState(KinectDevice *device)
 				//				frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_WRIST_RIGHT].z + 
 				//				frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].z;
 
-				if(frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].y > frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_SHOULDER_RIGHT].y)
+				if(frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_ELBOW_RIGHT].y > frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_SHOULDER_RIGHT].y &&
+					frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_SHOULDER_RIGHT].y > 0)
 				{
-					float weight = 	(frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].y - 
-						frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_SHOULDER_RIGHT].y ) * 
-						frame.SkeletonData[i].Position.z;
-					std::cout<<"weight:"<<weight<<std::endl;
-					if(weight > 1.0)
-					{
+					//float weight = 	(frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].y - 
+					//	frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_SHOULDER_RIGHT].y ) * 
+					//	frame.SkeletonData[i].Position.z;
+					//std::cout<<"weight:"<<weight<<std::endl;
+					//if(weight > 1.0)
+					//{
 						m_iCurrentID = frame.SkeletonData[i].dwTrackingID;
 						m_vpPlayer->init(m_iCurrentID);
 						device->NuiSkeletonSetTrackedSkeletons(m_iCurrentID);
 						return true;
-					}
+					//}
 				}
 			}
 		}
