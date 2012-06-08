@@ -5,6 +5,30 @@
 //using namespace std;
 using namespace Ogre;
 
+void DotSceneLoader::update(float timePass)
+{
+	{
+		VP_DYNAMIC_OBJECT::iterator ite;
+		for( ite = m_vDynamicDatas.begin(); ite != m_vDynamicDatas.end();++ite)
+		{
+			ite->m_fReplayTime -= timePass;
+			if(ite->m_fReplayTime <= 0)
+			{
+				ite->m_fReplayTime = (rand() % ite->m_iMaxTime) + ite->m_iMaxAddTime;
+				ite->m_fDelayReplayTime = rand() % ite->m_iMaxTime;
+				Ogre::AnimationState *state = m_vpEntity[ite->m_uiEntityIndex]->getAnimationState(ite->m_sAniName);
+				state->setLoop(true);
+				state->setEnabled(true);
+			}
+			else if(ite->m_fReplayTime > ite->m_fDelayReplayTime)
+			{
+				Ogre::AnimationState *state =  m_vpEntity[ite->m_uiEntityIndex]->getAnimationState(ite->m_sAniName);
+				state->addTime(timePass);
+			}
+		}
+	}
+}
+
 void DotSceneLoader::setAllVisible(bool visible)
 {
 	{
@@ -112,6 +136,7 @@ void DotSceneLoader::parseDotScene(const String &SceneName, const String &groupN
 	m_pWindow = pWindow;
 	staticObjects.clear();
 	dynamicObjects.clear();
+	m_vDynamicDatas.clear();
  
 	TiXmlDocument   *XMLDoc = 0;
 	TiXmlElement   *XMLRoot;
@@ -694,7 +719,7 @@ void DotSceneLoader::processEntity(TiXmlElement *XMLNode, SceneNode *pParent)
 	String id = getAttrib(XMLNode, "id");
 	String meshFile = getAttrib(XMLNode, "meshFile");
 	String materialFile = getAttrib(XMLNode, "materialFile");
-	bool isStatic = getAttribBool(XMLNode, "static", false);;
+	bool isStatic = getAttribBool(XMLNode, "static", true);
 	bool castShadows = getAttribBool(XMLNode, "castShadows", true);
  
 	// TEMP: Maintain a list of static and dynamic objects
@@ -732,6 +757,17 @@ void DotSceneLoader::processEntity(TiXmlElement *XMLNode, SceneNode *pParent)
 		LogManager::getSingleton().logMessage("[DotSceneLoader] Error loading an entity!");
 	}
 	m_vpEntity.push_back(pEntity);
+	if(!isStatic)
+	{
+		DynamicObjectData data;
+		data.m_fDelayReplayTime = 0.0;
+		data.m_fReplayTime = 0.0;
+		data.m_iMaxAddTime = 3.0;
+		data.m_iMaxTime = 5;
+		data.m_sAniName = "move";
+		data.m_uiEntityIndex = m_vpEntity.size() - 1;
+		m_vDynamicDatas.push_back(data);
+	}
  
 	// Process userDataReference (?)
 	pElement = XMLNode->FirstChildElement("userDataReference");
