@@ -36,7 +36,19 @@ namespace Ogre
 		NodeProperty(const String &node, const String &propertyName, const String &value, const String &type)
 			: nodeName(node), propertyNm(propertyName), valueName(value), typeName(type) {}
 	};
+
+	class DynamicObjectData
+	{
+	public:
+		unsigned int m_uiEntityIndex;
+		float m_fDelayReplayTime;
+		float m_fReplayTime;
+		int	m_iMaxTime;
+		int	m_iMaxAddTime;
+		std::string m_sAniName;
+	};
  
+	typedef std::vector< DynamicObjectData > VP_DYNAMIC_OBJECT;
 	class DotSceneLoader
 	{
 	public:
@@ -44,6 +56,7 @@ namespace Ogre
 		virtual void release();
 		virtual ~DotSceneLoader() {release();}
 		virtual void setAllVisible(bool visible);
+		virtual void update(float timePass);
 		
 		void parseDotScene(const String &SceneName, const String &groupName, SceneManager *yourSceneMgr, Ogre::RenderWindow* pWindow, SceneNode *pAttachNode = NULL, const String &sPrependNode = "");
 		String getProperty(const String &ndNm, const String &prop);
@@ -52,6 +65,7 @@ namespace Ogre
 		std::vector<NodeProperty> nodeProperties;
 		std::vector<String> staticObjects;
 		std::vector<String> dynamicObjects;
+		VP_DYNAMIC_OBJECT m_vDynamicDatas;
 		RenderWindow* m_pWindow;
 		Viewport* m_pCurrentVP;
 		VP_SCENE_NODE m_vpSceneNode;

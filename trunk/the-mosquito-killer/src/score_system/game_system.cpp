@@ -338,11 +338,11 @@ void GameSystem::initWeapon(void)
 	ChooesBomb->create(m_vWeapeanMeshData[2].m_sMeshName.c_str(), 0, mass,scale,pos, m_vWeapeanMeshData[0].m_fvSize,quat,0,tar);
 
 	//OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
-	//shape->init("Ninja.mesh", scale);
+	//shape->init("MapWallAa.mesh", scale);
 	//quat[0] = 1.0;
 	//quat[1] = 0.0;
 	//quat[2] = 0.0;
-	//quat[3] = 0.0;
+	//quat[3] = 1.0;
 
 	//pos[0] =  0.0;
 	//pos[1] =  0.0;
@@ -799,6 +799,7 @@ void GameSystem::updateMenu(float timePass, KinectDevice *deivce)
 		}
 	}
 	updateMosquito(timePass);
+	m_dotSceneLoader.update(timePass);
 	if(checkPlayerState(deivce))
 	{
 		setGameState(eOnPlaying);
@@ -844,6 +845,7 @@ void GameSystem::updatePlaying(float timePass, KinectDevice *deivce)
 	updateMosquito(timePass);
 	updateWeapon(timePass);
 	updateHandState(timePass);
+	m_dotSceneLoader.update(timePass);
 	
 	if(m_mSheet.count("playing") > 0)
 	{
@@ -1332,7 +1334,7 @@ bool GameSystem::checkPlayerState(KinectDevice *device)
 {
 	if(device == NULL)
 	{
-		//return true;
+		return true;
 	}
 	else
 	{
