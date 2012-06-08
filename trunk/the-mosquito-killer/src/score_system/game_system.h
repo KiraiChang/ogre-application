@@ -118,6 +118,7 @@ private:
 	//V_SHAPE										m_vShape;
 	V_WEAPON									m_vWeapon;
 	float										m_fTimePass;
+	float										m_fTrackingTime;
 	GameState									m_eState;
 	//Hand control
 	HandState									m_eHandState;
@@ -172,7 +173,7 @@ public:
 	void										updateMenu(float timePass, KinectDevice *deivce);//主要menu畫面
 	void										updatePlaying(float timePass, KinectDevice *deivce);//遊戲中主要的流程
 	void										updateEnd(float timePass, KinectDevice *deivce);//結算畫面
-	void										updatePlayer(KinectDevice *device);
+	void										updatePlayer(KinectDevice *device, float timePass);
 	void										updatePlayerDebug(float timePass);//若是沒有kinect採取的動作
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
 	void										notifyMosquitoAlert(void);
