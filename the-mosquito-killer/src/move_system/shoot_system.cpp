@@ -88,7 +88,12 @@ void ShootNormal::move(float moveDistance)
 		m_pNode->translate(step_move);
 	}
 	*/
-	m_pNode->translate(step_move);
+	//Ogre::Vector3 P1 = m_pNode->getPosition();
+	//Ogre::Vector3 P3 = P2 - P0;
+	//step_move = P3.normalise();
+	//P1 += (step_move * moveDistance);
+	//m_pNode->setPosition(P1);
+	m_pNode->translate(step_move * moveDistance);
 }
 
 void ShootNormal::setRoute(void)
@@ -99,7 +104,7 @@ void ShootNormal::setRoute(void)
 
 	//P2 = P0 + Ogre::Vector3(0,0,-200);
 	//C1 = (P0 + P2)/2 ;
-	step_move = (P2 - P0)*0.02;
+	step_move = (P2 - P0)*0.05;
 }
 //*******************************************************
 //*****************  MOVE_BASE  *************************

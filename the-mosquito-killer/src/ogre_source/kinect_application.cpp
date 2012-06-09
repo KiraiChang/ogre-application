@@ -129,8 +129,8 @@ void KinectApplication::createScene(void)
 	//entGround->setCastShadows(true);
 
 	GameSystem::getInstance()->init(m_pPhysicSimulation->getDynamicsWorld(), mSceneMgr, mWindow, mRoot, mViewport);
-	if(MOSQUITO_DEBUG_MODE)
-		redirectIOToConsole();
+	//if(MOSQUITO_DEBUG_MODE)
+	//	redirectIOToConsole();
 	GameSystem::getInstance()->initPlayer();
 	GameSystem::getInstance()->initScene();
 	if(m_pKinectDevice == NULL)

@@ -17,8 +17,8 @@ const float HAND_CHECK_AIM_POSE_DIST = 1.5f;
 const float HAND_CHECK_CLOSE_DIST = 2.5f;
 const float HAND_CHECK_OPEN_DIST = 10.0f;
 //const float HAND_CHECK_RIGHT_HAND_DIST = 1.5f;
-const float HAND_CHECK_RIGHT_HAND_SPEED = 5.0f;
-const float HAND_CHECK_SHOOT_TIMEPASS = 0.5f;
+const float HAND_CHECK_RIGHT_HAND_SPEED = 1.0f;
+const float HAND_CHECK_SHOOT_TIMEPASS = 0.1f;
 const float HAND_WAIT_ATTACK_TIMEOUT = 3.0f;
 
 bool MOSQUITO_DEBUG_MODE = false;
@@ -157,7 +157,7 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 				GameSystem::getInstance()->setHandState(eOnHandAttacked);
 			}
 		}
-		else if(object0->getType() == SCORE_TYPE_WEAPON)
+		else if(object0->getType() == SCORE_TYPE_WEAPON && object1->getType() == SCORE_TYPE_ENEMY)
 		{
 			if(object0->getParent() != NULL)
 			{
@@ -169,6 +169,29 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 					break;
 				case eWeaponBook:
 					checkDestory(object0, object1);
+					//((WeaponBook *)object0->getParent())->setDestory();
+					break;
+				case eWeaponBomb://蚊子全死光,要記分數
+					//((WeaponBomb *)object0->getParent())->setDestory();
+					//GameSystem::getInstance()->releaseMosquito();
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		else if(object1->getType() == SCORE_TYPE_WEAPON && object0->getType() == SCORE_TYPE_ENEMY)
+		{
+			if(object1->getParent() != NULL)
+			{
+				switch(((WeaponKnife *)object1->getParent())->getType()) //武器功能add
+				{
+				case eWeaponKnife:
+					checkDestory(object1, object0);
+					((WeaponKnife *)object1->getParent())->setDestory();
+					break;
+				case eWeaponBook:
+					checkDestory(object1, object0);
 					//((WeaponBook *)object0->getParent())->setDestory();
 					break;
 				case eWeaponBomb://蚊子全死光,要記分數
@@ -755,6 +778,14 @@ void GameSystem::initPlayer(void)
 	NodeSight->attachObject(EntSight);
 	NodeSight->setPosition(Ogre::Vector3::ZERO);
 	NodeSight->setVisible(false);
+	NodeSight->setScale(5.0, 5.0, 5.0);
+
+	shouldEnt = m_pSceneMgr->createEntity("shouldEnt","bomb.mesh");
+	shouldNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	shouldNode->attachObject(shouldEnt);
+	shouldNode->setPosition(Ogre::Vector3::ZERO);
+	shouldNode->setScale(5.0, 5.0, 5.0);
+	shouldNode->setVisible(false);
 }
 
 void GameSystem::initPlayer(unsigned int playerCount)
@@ -800,7 +831,8 @@ void GameSystem::updateMenu(float timePass, KinectDevice *deivce)
 	}
 	updateMosquito(timePass);
 	m_dotSceneLoader.update(timePass);
-	if(checkPlayerState(deivce))
+
+	if(checkPlayerState(deivce, timePass, 1))
 	{
 		setGameState(eOnPlaying);
 	}
@@ -810,7 +842,7 @@ void GameSystem::updatePlaying(float timePass, KinectDevice *deivce)
 {
 	if(m_bIsPause)
 	{
-		if(checkPlayerState(deivce))
+		if(checkPlayerState(deivce, timePass))
 		{
 			m_bIsPause = false;
 			m_vpPlayer->setVisible(true);
@@ -876,7 +908,7 @@ void GameSystem::updatePlaying(float timePass, KinectDevice *deivce)
 
 void GameSystem::updateEnd(float timePass, KinectDevice *deivce)//結算畫面
 {
-	m_eState = eOnMenu;
+	setGameState(eOnMenu);
 }
 
 void GameSystem::updateMosquito(float timePass)
@@ -964,6 +996,9 @@ void GameSystem::updatePlayer(KinectDevice *deivce, float timePass)
 					Shoulder[0] = frame.SkeletonData[i].SkeletonPositions[4].x; // change to shoulder index (4)
 					Shoulder[1] = frame.SkeletonData[i].SkeletonPositions[4].y;
 					Shoulder[2] = frame.SkeletonData[i].SkeletonPositions[4].z;
+					float z = m_vpPlayer->getScale(PhysicKinect::eScaleZ);
+					//shouldNode->setPosition(Shoulder[0]*z, Shoulder[1]*z, Shoulder[2]*z);
+					//shouldNode->setVisible(true);
 				}
 				//else
 				//{
@@ -979,13 +1014,14 @@ void GameSystem::updatePlayer(KinectDevice *deivce, float timePass)
 		if(!isTracking)
 		{
 			m_fTrackingTime += timePass;
-			if(m_fTrackingTime > 3.0f)
+			if(m_fTrackingTime > 2.0f)
 			{
 				m_iCurrentID = 0;
 				m_vpPlayer->setVisible(false);
 				m_bIsPause = true;
 				m_pCompositer->setFocus(0);
 				m_fTrackingTime = 0.0f;
+				//shouldNode->setVisible(false);
 			}
 		}
 	}
@@ -1165,15 +1201,18 @@ void GameSystem::updateHandState(float timePass)
 			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
 			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			m_fShootTimePass += timePass;
-
+			float z = m_vpPlayer->getScale(PhysicKinect::eScaleZ);
 			//left_hand - left_Shoulder = target_direction
 			float TargetDirect[3];
-			TargetDirect[0] = leftPos[0] - Shoulder[0];
-			TargetDirect[1] = leftPos[1] - Shoulder[1];
-			TargetDirect[2] = leftPos[2] - Shoulder[2];
+			TargetDirect[0] = (leftPos[0] - Shoulder[0]) * z;
+			TargetDirect[1] = (leftPos[1] - Shoulder[1]) * z;
+			TargetDirect[2] = (leftPos[2] - Shoulder[2]) * z;
 
-			Ogre::Vector3 vShoulder = Ogre::Vector3(Shoulder[0],Shoulder[1],Shoulder[2]);
+			Ogre::Vector3 vShoulder = Ogre::Vector3(Shoulder[0] * z,Shoulder[1] * z,Shoulder[2] * z);
 			Ogre::Vector3 vTargetDirect = Ogre::Vector3(TargetDirect[0],TargetDirect[1],TargetDirect[2]);
+
+			shouldNode->setPosition(vShoulder + (vTargetDirect * 2));
+			shouldNode->setVisible(true);
 
 			Ogre::Ray SightRay(vShoulder, vTargetDirect*500);
 
@@ -1201,32 +1240,32 @@ void GameSystem::updateHandState(float timePass)
 				float speed = (m_fRightHandZPos - rightPos[2]) / m_fShootTimePass;
 				m_fShootTimePass = 0.0f;
 				char msg[128];
-				sprintf(msg, "m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
+				sprintf(msg, "m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, rightPos[2], speed);
 				m_pLog->logMessage(msg);
 				if(speed > HAND_CHECK_RIGHT_HAND_SPEED)
 				{
-					sprintf(msg, "shoot, m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, leftPos[2], speed);
+					sprintf(msg, "shoot, m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, rightPos[2], speed);
 					m_pLog->logMessage(msg);
 
-					float quat[4] = {1.0, 0.0, 0.0, 0.0};
-					float pos[3] = {0.0,20.0,0.0};
-					float scale[3] = {2.0, 2.0, 2.0};
+					float quat[4] = {0.0, 0.0, -1.0, 1.0};
+					float scale[3] = {1.5, 1.5, 1.5};
+					float pos[3] = {rightPos[0] * z, rightPos[1] * z, 140};
 					float size[3] = {5.0, 5.0, 5.0};
 					CurrentWeapon = 0; // use knife add
 
 					if(CurrentWeapon == 2 && NumBomb >=1) //add
 					{
-						createWeapon(eWeaponBomb, m_vWeapeanMeshData[2].m_sMeshName.c_str(), 1.0, scale, rightPos,  m_vWeapeanMeshData[2].m_fvSize, quat, 100,1,TargetDirect); //add
+						createWeapon(eWeaponBomb, m_vWeapeanMeshData[2].m_sMeshName.c_str(), 1.0, scale, pos,  m_vWeapeanMeshData[2].m_fvSize, quat, 100,1,TargetDirect); //add
 						NumBomb--;
 					}
 					else if(CurrentWeapon == 1 && NumBook >=1) //add
 					{
-						createWeapon(eWeaponBook,m_vWeapeanMeshData[1].m_sMeshName.c_str(), 1.0, scale, rightPos, m_vWeapeanMeshData[1].m_fvSize, quat, 100,1,TargetDirect); //add
+						createWeapon(eWeaponBook,m_vWeapeanMeshData[1].m_sMeshName.c_str(), 1.0, scale, pos, m_vWeapeanMeshData[1].m_fvSize, quat, 100,1,TargetDirect); //add
 						NumBook--;
 					}
 					else
 					{
-						createWeapon(eWeaponKnife,m_vWeapeanMeshData[0].m_sMeshName.c_str(), 1.0, scale, rightPos, m_vWeapeanMeshData[0].m_fvSize, quat, 100,1,TargetDirect);
+						createWeapon(eWeaponKnife,m_vWeapeanMeshData[0].m_sMeshName.c_str(), 1.0, scale, pos, m_vWeapeanMeshData[0].m_fvSize, quat, 100,1,TargetDirect);
 					}
 				}
 				m_fRightHandZPos = rightPos[2];
@@ -1330,7 +1369,7 @@ void GameSystem::notifyMosquitoAlert(void)
 	}
 }
 
-bool GameSystem::checkPlayerState(KinectDevice *device)
+bool GameSystem::checkPlayerState(KinectDevice *device, float timePass, float limite)
 {
 	if(device == NULL)
 	{
@@ -1358,10 +1397,16 @@ bool GameSystem::checkPlayerState(KinectDevice *device)
 					//std::cout<<"weight:"<<weight<<std::endl;
 					//if(weight > 1.0)
 					//{
+
+					m_fTrackingTime += timePass;
+					if(m_fTrackingTime >= limite)
+					{
+						m_fTrackingTime = 0.0f;
 						m_iCurrentID = frame.SkeletonData[i].dwTrackingID;
 						m_vpPlayer->init(m_iCurrentID);
 						device->NuiSkeletonSetTrackedSkeletons(m_iCurrentID);
 						return true;
+					}
 					//}
 				}
 			}
@@ -1393,7 +1438,7 @@ void GameSystem::setGameState(GameState state)
 			std::string audio;
 			m_waveSystem.init(0, scene, sceneGroup, audio);
 
-
+			m_dotSceneLoader.release();
 			m_dotSceneLoader.parseDotScene(scene, sceneGroup, m_pSceneMgr, m_pWindow);
 
 			m_dotSceneLoader.setAllVisible(true);
