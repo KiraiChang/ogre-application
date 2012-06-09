@@ -136,6 +136,8 @@ private:
 	Ogre::RaySceneQuery*						mRaySceneQuery;
 	Ogre::Entity*								EntSight;
 	Ogre::SceneNode*							NodeSight;
+	Ogre::Entity*								shouldEnt;
+	Ogre::SceneNode*							shouldNode;
 	float										Shoulder[3];
 	WeaponKnife*								ChooesKnife;//當作選取武器的快捷鍵 add
 	WeaponKnife*								ChooesBook;//當作選取武器的快捷鍵 add
@@ -177,7 +179,7 @@ public:
 	void										updatePlayerDebug(float timePass);//若是沒有kinect採取的動作
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
 	void										notifyMosquitoAlert(void);
-	bool										checkPlayerState(KinectDevice *device);
+	bool										checkPlayerState(KinectDevice *device, float timePass, float limite = 0.0f);
 	float										getFullTime(void)const;
 	void										setGameState(GameState state);
 	void										setAllVisible(bool visible);
