@@ -413,6 +413,13 @@ void GameSystem::initMeshData(void)
 			data.m_fvSize[0] = obj["Size"].get_array()[0].get_real();
 			data.m_fvSize[1] = obj["Size"].get_array()[1].get_real();
 			data.m_fvSize[2] = obj["Size"].get_array()[2].get_real();
+			data.m_fvScale[0] = obj["Scale"].get_array()[0].get_real();
+			data.m_fvScale[1] = obj["Scale"].get_array()[1].get_real();
+			data.m_fvScale[2] = obj["Scale"].get_array()[2].get_real();
+			data.m_fvQuat[0] = obj["Quat"].get_array()[0].get_real();
+			data.m_fvQuat[1] = obj["Quat"].get_array()[1].get_real();
+			data.m_fvQuat[2] = obj["Quat"].get_array()[2].get_real();
+			data.m_fvQuat[3] = obj["Quat"].get_array()[3].get_real();
 			for(int j = 0; j < obj["AniName"].get_array().size();j++)
 			{
 				data.m_vAniName.push_back(obj["AniName"].get_array()[j].get_str());
@@ -1247,25 +1254,22 @@ void GameSystem::updateHandState(float timePass)
 					sprintf(msg, "shoot, m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, rightPos[2], speed);
 					m_pLog->logMessage(msg);
 
-					float quat[4] = {0.0, 0.0, -1.0, 1.0};
-					float scale[3] = {1.5, 1.5, 1.5};
 					float pos[3] = {rightPos[0] * z, rightPos[1] * z, 140};
-					float size[3] = {5.0, 5.0, 5.0};
 					CurrentWeapon = 0; // use knife add
 
 					if(CurrentWeapon == 2 && NumBomb >=1) //add
 					{
-						createWeapon(eWeaponBomb, m_vWeapeanMeshData[2].m_sMeshName.c_str(), 1.0, scale, pos,  m_vWeapeanMeshData[2].m_fvSize, quat, 100,1,TargetDirect); //add
+						createWeapon(eWeaponBomb, m_vWeapeanMeshData[2].m_sMeshName.c_str(), 1.0, m_vWeapeanMeshData[2].m_fvScale, pos,  m_vWeapeanMeshData[2].m_fvSize, m_vWeapeanMeshData[2].m_fvQuat, 100,1,TargetDirect); //add
 						NumBomb--;
 					}
 					else if(CurrentWeapon == 1 && NumBook >=1) //add
 					{
-						createWeapon(eWeaponBook,m_vWeapeanMeshData[1].m_sMeshName.c_str(), 1.0, scale, pos, m_vWeapeanMeshData[1].m_fvSize, quat, 100,1,TargetDirect); //add
+						createWeapon(eWeaponBook,m_vWeapeanMeshData[1].m_sMeshName.c_str(), 1.0, m_vWeapeanMeshData[1].m_fvScale, pos, m_vWeapeanMeshData[1].m_fvSize, m_vWeapeanMeshData[1].m_fvQuat, 100,1,TargetDirect); //add
 						NumBook--;
 					}
 					else
 					{
-						createWeapon(eWeaponKnife,m_vWeapeanMeshData[0].m_sMeshName.c_str(), 1.0, scale, pos, m_vWeapeanMeshData[0].m_fvSize, quat, 100,1,TargetDirect);
+						createWeapon(eWeaponKnife,m_vWeapeanMeshData[0].m_sMeshName.c_str(), 1.0, m_vWeapeanMeshData[0].m_fvScale, pos, m_vWeapeanMeshData[0].m_fvSize, m_vWeapeanMeshData[0].m_fvQuat, 100,1,TargetDirect);
 					}
 				}
 				m_fRightHandZPos = rightPos[2];
