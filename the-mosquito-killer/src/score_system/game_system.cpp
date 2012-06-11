@@ -551,11 +551,12 @@ void GameSystem::restart(unsigned int stageID)
 	}
 	if(m_pHintObject != NULL)
 	{
-		m_pHintObject->clear();
+		//m_pHintObject->clear();
 		if(m_pHintNode)
 			m_pHintNode->detachAllObjects();
 
-		m_pSceneMgr->destroyManualObject(m_pHintObject);
+		//m_pSceneMgr->destroyManualObject(m_pHintObject);
+		m_pSceneMgr->destroyEntity(m_pHintObject);
 		m_pHintObject = NULL;
 	}
 
@@ -1310,7 +1311,7 @@ void GameSystem::notifyMosquitoAlert(void)
 	Ogre::Vector3 center = right.midPoint(left);
 	for(ite = m_vMosquito.begin(); ite != m_vMosquito.end();++ite)
 	{
-		if((*ite)->getState() == eMosquitoAlert)
+		//if((*ite)->getState() == eMosquitoAlert)
 		{
 			if(dist == 0)
 			{
@@ -1332,43 +1333,65 @@ void GameSystem::notifyMosquitoAlert(void)
 			}
 		}
 	}
-	if(data != NULL)
+	if(data != NULL &&  dist > 10)
 	{
+		//if(m_pHintObject == NULL)
+		//{
+		//	m_pHintObject = m_pSceneMgr->createManualObject("m_pHintObject");
+		//	m_pHintNode = m_pSceneMgr->getRootSceneNode()->
+		//		createChildSceneNode("m_pHintNode", Ogre::Vector3(0.0, 0.0, 0.0));
+		//	m_pHintNode->attachObject(m_pHintObject);
+		//}
+		//m_pHintObject->clear();
+		//data->getPos(pos);
+		//m_pHintObject->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_LIST);
+		//float color = 0.0;
+		//if(pos[2] < center.z)
+		//{
+		//	color = 1 - center.z / pos[2];
+		//	m_pHintObject->colour(color, color, color);
+		//}
+		//else if(pos[2] > center.z)
+		//{
+		//	color =  center.z / pos[2];
+		//	m_pHintObject->colour(1.0, color, color);
+		//}
+
+		//
+
+		//
+		//m_pHintObject->position(center);
+		//m_pHintObject->position(Ogre::Vector3(pos));
+		////}
+		//m_pHintObject->end();
+
 		if(m_pHintObject == NULL)
 		{
-			m_pHintObject = m_pSceneMgr->createManualObject("m_pHintObject");
-			m_pHintNode = m_pSceneMgr->getRootSceneNode()->
-				createChildSceneNode("m_pHintNode", Ogre::Vector3(0.0, 0.0, 0.0));
+			m_pHintObject = m_pSceneMgr->createEntity("HintArrow","arrow.mesh");
+			m_pHintNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 			m_pHintNode->attachObject(m_pHintObject);
+			m_pHintNode->setPosition(Ogre::Vector3::ZERO);
+			m_pHintNode->setScale(5, 5, 5);
 		}
-		m_pHintObject->clear();
 		data->getPos(pos);
-		m_pHintObject->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_LIST);
-		float color = 0.0;
-		if(pos[2] < center.z)
-		{
-			color = 1 - center.z / pos[2];
-			m_pHintObject->colour(color, color, color);
-		}
-		else if(pos[2] > center.z)
-		{
-			color =  center.z / pos[2];
-			m_pHintObject->colour(1.0, color, color);
-		}
-
-		
-
-		
-		m_pHintObject->position(center);
-		m_pHintObject->position(Ogre::Vector3(pos));
-		//}
-		m_pHintObject->end();
+		Ogre::Vector3 mPos(pos);
+		m_pHintNode->setPosition(center);
+		Ogre::Vector3 src = m_pHintNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+		//Ogre::Quaternion quat = mPos.getRotationTo(center);
+		Ogre::Quaternion quat = src.getRotationTo(mPos - center);
+		m_pHintNode->rotate(quat);
+		m_pHintNode->setVisible(true);
 	}
 	else
 	{
-		if(m_pHintObject != NULL)
+		//if(m_pHintObject != NULL)
+		//{
+		//	m_pHintObject->clear();
+		//}
+
+		if(m_pHintNode != NULL)
 		{
-			m_pHintObject->clear();
+			m_pHintNode->setVisible(false);
 		}
 	}
 }
