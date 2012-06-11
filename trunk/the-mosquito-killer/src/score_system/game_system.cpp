@@ -922,7 +922,10 @@ void GameSystem::updateMenu(float timePass, KinectDevice *deivce)
 	{
 		if(m_vMosquito.size() <= 0)
 		{
-			restart(0);
+			std::string scene;
+			std::string sceneGroup;
+			std::string audio;
+			m_waveSystem.init(0, scene, sceneGroup, audio);
 		}
 	}
 	updateMosquito(timePass);
