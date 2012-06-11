@@ -1121,8 +1121,9 @@ void GameSystem::updateHandState(float timePass)
 			if(distHand > 0.55 && dist > 0.6) //add
 			{
 				m_eHandState = eOnHandWaitShoot;
+				m_vpPlayer->setVisible(false);
 			}
-			//else
+			else
 			{
 				notifyMosquitoAlert();
 			}
@@ -1278,6 +1279,7 @@ void GameSystem::updateHandState(float timePass)
 			if((rightPos[2] - leftPos[2]) <= HAND_CHECK_AIM_POSE_DIST - 1.0)
 			{
 				m_eHandState = eOnHandOpen;
+				m_vpPlayer->setVisible(true);
 			}
 		}
 		break;
@@ -1311,21 +1313,14 @@ void GameSystem::notifyMosquitoAlert(void)
 	Ogre::Vector3 center = right.midPoint(left);
 	for(ite = m_vMosquito.begin(); ite != m_vMosquito.end();++ite)
 	{
-		//if((*ite)->getState() == eMosquitoAlert)
+		if((*ite)->getState() == eMosquitoMove || (*ite)->getState() == eMosquitoAlert)
 		{
-			if(dist == 0)
+			(*ite)->getPos(pos);
+			Ogre::Vector3 posM(pos);
+			distN = posM.distance(center);
+			if(posM.z + 10 < center.z)
 			{
-				data = *ite;
-				data->getPos(pos);
-				Ogre::Vector3 posM(pos);
-				dist = posM.distance(center);
-			}
-			else
-			{
-				(*ite)->getPos(pos);
-				Ogre::Vector3 posM(pos);
-				distN = posM.distance(center);
-				if(distN <= dist)
+				if(dist == 0 || distN <= dist)
 				{
 					dist = distN;
 					data = *ite;
@@ -1333,7 +1328,7 @@ void GameSystem::notifyMosquitoAlert(void)
 			}
 		}
 	}
-	if(data != NULL &&  dist > 10)
+	if(data != NULL)
 	{
 		//if(m_pHintObject == NULL)
 		//{
@@ -1377,10 +1372,18 @@ void GameSystem::notifyMosquitoAlert(void)
 		Ogre::Vector3 mPos(pos);
 		m_pHintNode->setPosition(center);
 		Ogre::Vector3 src = m_pHintNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
-		//Ogre::Quaternion quat = mPos.getRotationTo(center);
-		Ogre::Quaternion quat = src.getRotationTo(mPos - center);
-		m_pHintNode->rotate(quat);
-		m_pHintNode->setVisible(true);
+		Ogre::Vector3 mDirection = mPos - center;
+		if ((1.0f + src.dotProduct(mDirection)) < 0.01f) 
+		{
+			m_pHintNode->yaw(Ogre::Degree(180));			
+		}
+		else
+		{
+			Ogre::Quaternion quat = src.getRotationTo(mDirection);
+			m_pHintNode->rotate(quat);
+			m_pHintNode->setVisible(true);
+		}
+		
 	}
 	else
 	{
@@ -1476,7 +1479,7 @@ void GameSystem::setGameState(GameState state)
 		break;
 	case eOnPlaying://遊戲中畫面
 		{
-			restart();
+			restart(1);
 		}
 		break;
 	case eOnEnd://結算畫面
