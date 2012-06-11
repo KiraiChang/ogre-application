@@ -909,7 +909,7 @@ void GameSystem::updatePlaying(float timePass, KinectDevice *deivce)
 			m_fCurrentBlood -= timePass;
 		else if(m_fCurrentBlood < m_iPlayerBlood)
 			m_fCurrentBlood = m_iPlayerBlood;
-		m_pCompositer->setFocus(m_fCurrentBlood * 10);
+		m_pCompositer->setFocus((m_fCurrentBlood * 10) + 40);
 	}
 	testCollision();
 }
