@@ -232,6 +232,11 @@ void MosquitoBase::setState(MOSQUITO_STATE state)
 	}
 	m_eState = state;
 }
+
+ScoreBase* MosquitoBase::getScoreBase(void)
+{
+	return m_pScore;
+}
 //*******************************************************
 //***************  MOSQUITO_SPLIT  **********************
 //*******************************************************
