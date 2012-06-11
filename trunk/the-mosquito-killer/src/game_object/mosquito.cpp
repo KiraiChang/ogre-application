@@ -143,17 +143,10 @@ void MosquitoBase::update(float timePass)
 				}
 				break;
 			case eMosuqitoHit:
+			case eMosuqitoCut:
 				m_fTimer += timePass;
 				m_pBody->update(timePass);
 				if(m_fTimer > MAX_WAIT_HIT_TIME)
-				{
-					m_fTimer = 0.0f;
-					m_eState = eMosuqitoDead;
-				}
-				break;
-			case eMosuqitoCut:
-				m_fTimer += timePass;
-				if(m_fTimer > MAX_WAIT_CUT_TIME)
 				{
 					m_fTimer = 0.0f;
 					m_eState = eMosuqitoDead;

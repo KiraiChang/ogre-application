@@ -170,22 +170,25 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		{
 			if(object0->getParent() != NULL)
 			{
-				switch(((WeaponKnife *)object0->getParent())->getType()) //猌竟add
+				if(((MosquitoBase * )object1->getParent())->getState() == eMosquitoMove || ((MosquitoBase * )object1->getParent())->getState() == eMosquitoAlert)
 				{
-				case eWeaponKnife:
-					checkDestory(object0, object1, SCORE_TYPE_WEAPON);
-					((WeaponKnife *)object0->getParent())->setDestory();
-					break;
-				case eWeaponBook:
-					checkDestory(object0, object1, SCORE_TYPE_WEAPON);
-					//((WeaponBook *)object0->getParent())->setDestory();
-					break;
-				case eWeaponBomb://癆,璶癘だ计
-					((WeaponBomb *)object0->getParent())->setDestory();
-					GameSystem::getInstance()->killAllMosquito(object0);
-					break;
-				default:
-					break;
+					switch(((WeaponKnife *)object0->getParent())->getType()) //猌竟add
+					{
+					case eWeaponKnife:
+						checkDestory(object0, object1, SCORE_TYPE_WEAPON);
+						((WeaponKnife *)object0->getParent())->setDestory();
+						break;
+					case eWeaponBook:
+						checkDestory(object0, object1, SCORE_TYPE_WEAPON);
+						//((WeaponBook *)object0->getParent())->setDestory();
+						break;
+					case eWeaponBomb://癆,璶癘だ计
+						((WeaponBomb *)object0->getParent())->setDestory();
+						GameSystem::getInstance()->killAllMosquito(object0);
+						break;
+					default:
+						break;
+					}
 				}
 			}
 		}
@@ -193,67 +196,70 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		{
 			if(object1->getParent() != NULL)
 			{
-				switch(((WeaponKnife *)object1->getParent())->getType()) //猌竟add
+				if(((MosquitoBase * )object0->getParent())->getState() == eMosquitoMove || ((MosquitoBase * )object0->getParent())->getState() == eMosquitoAlert)
 				{
-				case eWeaponKnife:
-					checkDestory(object1, object0, SCORE_TYPE_WEAPON);
-					((WeaponKnife *)object1->getParent())->setDestory();
-					break;
-				case eWeaponBook:
-					checkDestory(object1, object0, SCORE_TYPE_WEAPON);
-					//((WeaponBook *)object0->getParent())->setDestory();
-					break;
-				case eWeaponBomb://癆,璶癘だ计
-					((WeaponBomb *)object1->getParent())->setDestory();
-					GameSystem::getInstance()->killAllMosquito(object1);
-					break;
-				default:
-					break;
+					switch(((WeaponKnife *)object1->getParent())->getType()) //猌竟add
+					{
+					case eWeaponKnife:
+						checkDestory(object1, object0, SCORE_TYPE_WEAPON);
+						((WeaponKnife *)object1->getParent())->setDestory();
+						break;
+					case eWeaponBook:
+						checkDestory(object1, object0, SCORE_TYPE_WEAPON);
+						//((WeaponBook *)object0->getParent())->setDestory();
+						break;
+					case eWeaponBomb://癆,璶癘だ计
+						((WeaponBomb *)object1->getParent())->setDestory();
+						GameSystem::getInstance()->killAllMosquito(object1);
+						break;
+					default:
+						break;
+					}
 				}
 			}
 		}
-		else if(object1->getType() == SCORE_TYPE_WEAPON)
-		{
-			if(object1->getParent() != NULL)
-			{
-				switch(((WeaponKnife *)object1->getParent())->getType()) //猌竟add
-				{
-				case eWeaponKnife:
-					((WeaponKnife *)object1->getParent())->setDestory();
-					break;
-				case eWeaponBook:
-					((WeaponBook *)object1->getParent())->setDestory();
-					break;
-				case eWeaponBomb://癆,璶癘だ计
-					((WeaponBomb *)object1->getParent())->setDestory();
-					GameSystem::getInstance()->killAllMosquito(object1);
-					break;
-				default:
-					break;
-				}
-			}
-		}
-		else if(object0->getType() == SCORE_TYPE_WEAPON)
-		{
-			if(object0->getParent() != NULL)
-			{
-				switch(((WeaponKnife *)object0->getParent())->getType()) //猌竟add
-				{
-				case eWeaponKnife:
-					((WeaponKnife *)object0->getParent())->setDestory();
-					break;
-				case eWeaponBook:
-					((WeaponBook *)object0->getParent())->setDestory();
-					break;
-				case eWeaponBomb://癆,璶癘だ计
-					((WeaponBomb *)object0->getParent())->setDestory();
-					GameSystem::getInstance()->killAllMosquito(object1);
-					break;
-				default:
-					break;
-				}
-			}
-		}
+		//else if(object1->getType() == SCORE_TYPE_WEAPON)
+		//{
+		//	if(object1->getParent() != NULL)
+		//	{
+		//		switch(((WeaponKnife *)object1->getParent())->getType()) //猌竟add
+		//		{
+		//		case eWeaponKnife:
+		//			((WeaponKnife *)object1->getParent())->setDestory();
+		//			break;
+		//		case eWeaponBook:
+		//			((WeaponBook *)object1->getParent())->setDestory();
+		//			break;
+		//		case eWeaponBomb://癆,璶癘だ计
+		//			((WeaponBomb *)object1->getParent())->setDestory();
+		//			GameSystem::getInstance()->killAllMosquito(object1);
+		//			break;
+		//		default:
+		//			break;
+		//		}
+		//	}
+		//}
+		//else if(object0->getType() == SCORE_TYPE_WEAPON)
+		//{
+		//	if(object0->getParent() != NULL)
+		//	{
+		//		switch(((WeaponKnife *)object0->getParent())->getType()) //猌竟add
+		//		{
+		//		case eWeaponKnife:
+		//			((WeaponKnife *)object0->getParent())->setDestory();
+		//			break;
+		//		case eWeaponBook:
+		//			((WeaponBook *)object0->getParent())->setDestory();
+		//			break;
+		//		case eWeaponBomb://癆,璶癘だ计
+		//			((WeaponBomb *)object0->getParent())->setDestory();
+		//			GameSystem::getInstance()->killAllMosquito(object1);
+		//			break;
+		//		default:
+		//			break;
+		//		}
+		//	}
+		//}
 		else if(object0->getType() == SCORE_TYPE_ICON)
 		{
 			if(object1->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
@@ -409,6 +415,16 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 	m_pCompositer = new DOFManager(mRoot, mViewport);
 	m_pCompositer->setFocus(0);
 	setGameState(eOnMenu);
+
+	if(m_pHintObject == NULL)
+	{
+		m_pHintObject = m_pSceneMgr->createEntity("HintArrow","arrow.mesh");
+		m_pHintNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+		m_pHintNode->attachObject(m_pHintObject);
+		m_pHintObject->setVisible(false);
+		m_pHintNode->setPosition(Ogre::Vector3::ZERO);
+		m_pHintNode->setScale(5, 5, 5);
+	}
 }
 
 void GameSystem::initWeapon(void)
@@ -524,6 +540,22 @@ void GameSystem::release(void)
 		delete m_pCompositer;
 		m_pCompositer = NULL;
 	}
+	if(m_pHintObject != NULL)
+	{
+		//m_pHintObject->clear();
+		if(m_pHintNode)
+			m_pHintNode->detachAllObjects();
+
+		//m_pSceneMgr->destroyManualObject(m_pHintObject);
+		m_pSceneMgr->destroyEntity(m_pHintObject);
+		m_pHintObject = NULL;
+	}
+
+	if(m_pHintNode!= NULL)
+	{
+		m_pSceneMgr->destroySceneNode(m_pHintNode);
+		m_pHintNode = NULL;
+	}
 	m_pWorld = NULL;
 	m_pSceneMgr = NULL;
 	AudioSystem::getInstance()->release();
@@ -620,22 +652,6 @@ void GameSystem::restart(unsigned int stageID)
 		pSlider->setCurrentValue(m_waveSystem.getFullTime());
 		pSlider->setMaxValue(m_waveSystem.getFullTime());
 		CEGUI::MouseCursor::getSingletonPtr()->setVisible(false);
-	}
-	if(m_pHintObject != NULL)
-	{
-		//m_pHintObject->clear();
-		if(m_pHintNode)
-			m_pHintNode->detachAllObjects();
-
-		//m_pSceneMgr->destroyManualObject(m_pHintObject);
-		m_pSceneMgr->destroyEntity(m_pHintObject);
-		m_pHintObject = NULL;
-	}
-
-	if(m_pHintNode!= NULL)
-	{
-		m_pSceneMgr->destroySceneNode(m_pHintNode);
-		m_pHintNode = NULL;
 	}
 
 	if(m_vpPlayer != NULL)
@@ -1445,14 +1461,14 @@ void GameSystem::notifyMosquitoAlert(void)
 		////}
 		//m_pHintObject->end();
 
-		if(m_pHintObject == NULL)
-		{
-			m_pHintObject = m_pSceneMgr->createEntity("HintArrow","arrow.mesh");
-			m_pHintNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-			m_pHintNode->attachObject(m_pHintObject);
-			m_pHintNode->setPosition(Ogre::Vector3::ZERO);
-			m_pHintNode->setScale(5, 5, 5);
-		}
+		//if(m_pHintObject == NULL)
+		//{
+		//	m_pHintObject = m_pSceneMgr->createEntity("HintArrow","arrow.mesh");
+		//	m_pHintNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+		//	m_pHintNode->attachObject(m_pHintObject);
+		//	m_pHintNode->setPosition(Ogre::Vector3::ZERO);
+		//	m_pHintNode->setScale(5, 5, 5);
+		//}
 		data->getPos(pos);
 		Ogre::Vector3 mPos(pos);
 		m_pHintNode->setPosition(center);
