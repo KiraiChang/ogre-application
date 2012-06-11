@@ -55,7 +55,7 @@ bool GameSystem::MaterialCombinerCallback(btManifoldPoint& cp,	const btCollision
 	return true;
 }
 
-void checkDestory(ScoreBase *object0, ScoreBase *object1)
+void checkDestory(ScoreBase *object0, ScoreBase *object1, ScoreType type)
 {
 	if(ScoreSystem::calcScore(object0, object1) != 0)
 	{
@@ -72,7 +72,10 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 			case eMosquitoBase:
 				{
 					((MosquitoBase *)object1->getParent())->getPos(pos);
-					((MosquitoBase *)object1->getParent())->setState(eMosuqitoHit);
+					if(type == SCORE_TYPE_HAND)
+						((MosquitoBase *)object1->getParent())->setState(eMosuqitoHit);
+					else if(type == SCORE_TYPE_WEAPON)
+						((MosquitoBase *)object1->getParent())->setState(eMosuqitoCut);
 					//((MosquitoBase *)object1->getParent())->setDestory();
 					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
 				}
@@ -81,7 +84,10 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 				{
 					int number = ((MosquitoSplit *)object1->getParent())->getSplitNumber();
 					((MosquitoSplit *)object1->getParent())->getPos(pos);
-					((MosquitoSplit *)object1->getParent())->setState(eMosuqitoHit);
+					if(type == SCORE_TYPE_HAND)
+						((MosquitoBase *)object1->getParent())->setState(eMosuqitoHit);
+					else if(type == SCORE_TYPE_WEAPON)
+						((MosquitoBase *)object1->getParent())->setState(eMosuqitoCut);
 					float high = pos[1];
 					float distance = pos[0];
 					//((MosquitoSplit *)object1->getParent())->setDestory();
@@ -114,7 +120,10 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1)
 				{
 					((MosquitoFat *)object1->getParent())->getPos(pos);
 					((MosquitoFat *)object1->getParent())->decreaseBlood();
-					((MosquitoFat *)object1->getParent())->setState(eMosuqitoHit);
+					if(type == SCORE_TYPE_HAND)
+						((MosquitoBase *)object1->getParent())->setState(eMosuqitoHit);
+					else if(type == SCORE_TYPE_WEAPON)
+						((MosquitoBase *)object1->getParent())->setState(eMosuqitoCut);
 					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
 				}
 				break;
@@ -145,7 +154,7 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		{
 			if(eState == eOnHandWaitAttack)
 			{
-				checkDestory(object0, object1);
+				checkDestory(object0, object1, SCORE_TYPE_HAND);
 				GameSystem::getInstance()->setHandState(eOnHandAttacked);
 			}
 		}
@@ -153,7 +162,7 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		{
 			if(eState == eOnHandWaitAttack)
 			{
-				checkDestory(object1, object0);
+				checkDestory(object1, object0, SCORE_TYPE_HAND);
 				GameSystem::getInstance()->setHandState(eOnHandAttacked);
 			}
 		}
@@ -164,16 +173,16 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 				switch(((WeaponKnife *)object0->getParent())->getType()) //武器功能add
 				{
 				case eWeaponKnife:
-					checkDestory(object0, object1);
+					checkDestory(object0, object1, SCORE_TYPE_WEAPON);
 					((WeaponKnife *)object0->getParent())->setDestory();
 					break;
 				case eWeaponBook:
-					checkDestory(object0, object1);
+					checkDestory(object0, object1, SCORE_TYPE_WEAPON);
 					//((WeaponBook *)object0->getParent())->setDestory();
 					break;
 				case eWeaponBomb://蚊子全死光,要記分數
-					//((WeaponBomb *)object0->getParent())->setDestory();
-					//GameSystem::getInstance()->releaseMosquito();
+					((WeaponBomb *)object0->getParent())->setDestory();
+					GameSystem::getInstance()->killAllMosquito(object0);
 					break;
 				default:
 					break;
@@ -187,16 +196,58 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 				switch(((WeaponKnife *)object1->getParent())->getType()) //武器功能add
 				{
 				case eWeaponKnife:
-					checkDestory(object1, object0);
+					checkDestory(object1, object0, SCORE_TYPE_WEAPON);
 					((WeaponKnife *)object1->getParent())->setDestory();
 					break;
 				case eWeaponBook:
-					checkDestory(object1, object0);
+					checkDestory(object1, object0, SCORE_TYPE_WEAPON);
 					//((WeaponBook *)object0->getParent())->setDestory();
 					break;
 				case eWeaponBomb://蚊子全死光,要記分數
-					//((WeaponBomb *)object0->getParent())->setDestory();
-					//GameSystem::getInstance()->releaseMosquito();
+					((WeaponBomb *)object1->getParent())->setDestory();
+					GameSystem::getInstance()->killAllMosquito(object1);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		else if(object1->getType() == SCORE_TYPE_WEAPON)
+		{
+			if(object1->getParent() != NULL)
+			{
+				switch(((WeaponKnife *)object1->getParent())->getType()) //武器功能add
+				{
+				case eWeaponKnife:
+					((WeaponKnife *)object1->getParent())->setDestory();
+					break;
+				case eWeaponBook:
+					((WeaponBook *)object1->getParent())->setDestory();
+					break;
+				case eWeaponBomb://蚊子全死光,要記分數
+					((WeaponBomb *)object1->getParent())->setDestory();
+					GameSystem::getInstance()->killAllMosquito(object1);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		else if(object0->getType() == SCORE_TYPE_WEAPON)
+		{
+			if(object0->getParent() != NULL)
+			{
+				switch(((WeaponKnife *)object0->getParent())->getType()) //武器功能add
+				{
+				case eWeaponKnife:
+					((WeaponKnife *)object0->getParent())->setDestory();
+					break;
+				case eWeaponBook:
+					((WeaponBook *)object0->getParent())->setDestory();
+					break;
+				case eWeaponBomb://蚊子全死光,要記分數
+					((WeaponBomb *)object0->getParent())->setDestory();
+					GameSystem::getInstance()->killAllMosquito(object1);
 					break;
 				default:
 					break;
@@ -208,6 +259,27 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 			if(object1->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
 			{
 				WEAPON_TYPE type = ((WeaponKnife *)object0->getParent())->getType();
+				switch(type) //改變使用武器add
+				{
+				case eWeaponKnife:
+					GameSystem::getInstance()->CurrentWeapon = 0;
+					break;
+				case eWeaponBook:
+					GameSystem::getInstance()->CurrentWeapon = 1;
+					break;
+				case eWeaponBomb:
+					GameSystem::getInstance()->CurrentWeapon = 2;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		else if(object1->getType() == SCORE_TYPE_ICON)
+		{
+			if(object0->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
+			{
+				WEAPON_TYPE type = ((WeaponKnife *)object1->getParent())->getType();
 				switch(type) //改變使用武器add
 				{
 				case eWeaponKnife:
@@ -1599,4 +1671,15 @@ void GameSystem::testCollision()
 void GameSystem::reduceBlood(void)
 {
 		m_iPlayerBlood--;
+}
+
+
+void GameSystem::killAllMosquito(ScoreBase *object0)
+{
+	V_MOSQUITO::iterator ite;
+	for(ite = m_vMosquito.begin();ite != m_vMosquito.end();++ite)
+	{
+		ScoreBase *object1 = (*ite)->getScoreBase();
+		checkDestory(object0, object1, SCORE_TYPE_HAND);
+	}
 }

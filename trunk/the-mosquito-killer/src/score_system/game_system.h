@@ -188,6 +188,7 @@ public:
 	void										setAllVisible(bool visible);
 	void										testCollision(void);
 	void										reduceBlood(void);
+	void										killAllMosquito(ScoreBase *object0);
 
 	static bool									MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject* body0,btCollisionObject* body1);
 	static bool									MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1);
