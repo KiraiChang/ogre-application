@@ -1220,44 +1220,57 @@ void GameSystem::updateHandState(float timePass)
 			Ogre::Vector3 vShoulder = Ogre::Vector3(Shoulder[0] * z,Shoulder[1] * z,Shoulder[2] * z);
 			Ogre::Vector3 vTargetDirect = Ogre::Vector3(TargetDirect[0],TargetDirect[1],TargetDirect[2]);
 
-			shouldNode->setPosition(vShoulder + (vTargetDirect * 2));
-			shouldNode->setVisible(true);
+			//shouldNode->setPosition(vShoulder + (vTargetDirect * 2));
+			//shouldNode->setVisible(true);
 
-			Ogre::Ray SightRay(vShoulder, vTargetDirect*500);
+			//Ogre::Ray SightRay(vShoulder, vTargetDirect*500);
 
-			mRaySceneQuery = m_pSceneMgr->createRayQuery(Ogre::Ray());
-			mRaySceneQuery->setRay(SightRay);
-			Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
-			Ogre::RaySceneQueryResult::iterator itr = result.begin();
-			float TargetPos[3];
+			//mRaySceneQuery = m_pSceneMgr->createRayQuery(Ogre::Ray());
+			//mRaySceneQuery->setRay(SightRay);
+			//Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
+			//Ogre::RaySceneQueryResult::iterator itr = result.begin();
+			//float TargetPos[3];
 
-			if (itr != result.end() && !itr->worldFragment)
+			//if (itr != result.end() && !itr->worldFragment)
+			//{
+			//	Ogre::Vector3 TargetSite = itr->movable->getParentSceneNode()->getPosition();
+			//	Ogre::Vector3 VRectify = Ogre::Vector3(vTargetDirect.x*50,vTargetDirect.y*65,vTargetDirect.z*-1); // 58 is adjust value
+			//	Ogre::Vector3 SightSite = TargetSite + VRectify ; //maybe the site is worng 
+
+			//	NodeSight->setPosition(SightSite);
+			//	NodeSight->setVisible(true);
+			//}
+			//else
+			//	NodeSight->setVisible(false);
+
+			m_pHintNode->setPosition(rightPos[0] * z, rightPos[1] * z, rightPos[2] * z );
+			Ogre::Vector3 src = m_pHintNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_Z;
+			if ((1.0f + src.dotProduct(vTargetDirect)) < 0.01f) 
 			{
-				Ogre::Vector3 TargetSite = itr->movable->getParentSceneNode()->getPosition();
-				Ogre::Vector3 VRectify = Ogre::Vector3(vTargetDirect.x*50,vTargetDirect.y*65,vTargetDirect.z*-1); // 58 is adjust value
-				Ogre::Vector3 SightSite = TargetSite + VRectify ; //maybe the site is worng 
-
-				NodeSight->setPosition(SightSite);
-				NodeSight->setVisible(true);
+				m_pHintNode->yaw(Ogre::Degree(180));			
 			}
 			else
-				NodeSight->setVisible(false);
+			{
+				Ogre::Quaternion quat = src.getRotationTo(vTargetDirect);
+				m_pHintNode->rotate(quat);
+				m_pHintNode->setVisible(true);
+			}
 
 
 			if(m_fShootTimePass > HAND_CHECK_SHOOT_TIMEPASS)
 			{
 				float speed = (m_fRightHandZPos - rightPos[2]) / m_fShootTimePass;
 				m_fShootTimePass = 0.0f;
-				char msg[128];
-				sprintf(msg, "m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, rightPos[2], speed);
-				m_pLog->logMessage(msg);
+				//char msg[128];
+				//sprintf(msg, "m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, rightPos[2], speed);
+				//m_pLog->logMessage(msg);
 				if(speed > HAND_CHECK_RIGHT_HAND_SPEED)
 				{
-					sprintf(msg, "shoot, m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, rightPos[2], speed);
-					m_pLog->logMessage(msg);
+					//sprintf(msg, "shoot, m_fRightHandZPos:%f - rightPos[2]:%f, speed:%f\n", m_fRightHandZPos, rightPos[2], speed);
+					//m_pLog->logMessage(msg);
 
 					float pos[3] = {rightPos[0] * z, rightPos[1] * z, 140};
-					CurrentWeapon = 0; // use knife add
+					//CurrentWeapon = 0; // use knife add
 
 					if(CurrentWeapon == 2 && NumBomb >=1) //add
 					{
@@ -1318,7 +1331,7 @@ void GameSystem::notifyMosquitoAlert(void)
 			(*ite)->getPos(pos);
 			Ogre::Vector3 posM(pos);
 			distN = posM.distance(center);
-			if(posM.z + 10 < center.z)
+			if(posM.z + 5 < center.z)
 			{
 				if(dist == 0 || distN <= dist)
 				{
