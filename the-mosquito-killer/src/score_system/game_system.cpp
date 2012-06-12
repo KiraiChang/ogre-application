@@ -408,7 +408,6 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 		m_pSelectWeaponNode->attachObject(m_pSelectWeapon);
 		m_pSelectWeapon->setVisible(false);
 		m_pSelectWeaponNode->setPosition(Ogre::Vector3::ZERO);
-		m_pSelectWeaponNode->setScale(5, 5, 5);
 	}
 }
 
@@ -1721,10 +1720,6 @@ void GameSystem::setSelectWeapon(ScoreBase *weapon)
 		type = eWeaponKnife;
 	switch(type) //改變使用武器add
 	{
-	case eWeaponKnife:
-		CurrentWeapon = 0;
-		ChooesKnife->getPos(pos);
-		break;
 	case eWeaponBook:
 		if(NumBook > 0)
 		{
@@ -1750,6 +1745,8 @@ void GameSystem::setSelectWeapon(ScoreBase *weapon)
 		}
 		break;
 	default:
+		CurrentWeapon = 0;
+		ChooesKnife->getPos(pos);
 		break;
 	}
 	m_pSelectWeaponNode->setPosition(pos[0], pos[1], pos[2]);
