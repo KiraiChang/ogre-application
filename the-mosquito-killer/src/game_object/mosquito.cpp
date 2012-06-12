@@ -10,6 +10,8 @@
 #include "../score_system/score_object.h"
 #include "../score_system/game_system.h"
 
+#include "../score_system/audio_system.h"
+
 const float MAX_WAIT_BLOOD_TIME = 1.0f;
 const float MAX_WAIT_HIT_TIME = 10.0f;
 const float MAX_WAIT_CUT_TIME = 10.0f;
@@ -130,7 +132,7 @@ void MosquitoBase::update(float timePass)
 					Ogre::Quaternion q= m_pMove->getOrientation();
 					m_pBody->update(timePass, (float *)&pos, (float *)&q);
 					if(bDestory)
-						m_eState = eMosquitoBlood;
+						setState(eMosquitoBlood);
 				}
 				break;
 			case  eMosquitoBlood:
@@ -139,7 +141,7 @@ void MosquitoBase::update(float timePass)
 				{
 					m_fTimer = 0.0f;
 					GameSystem::getInstance()->reduceBlood();
-					m_eState = eMosuqitoDead;
+					setState(eMosuqitoDead);
 				}
 				break;
 			case eMosuqitoHit:
@@ -149,7 +151,7 @@ void MosquitoBase::update(float timePass)
 				if(m_fTimer > MAX_WAIT_HIT_TIME)
 				{
 					m_fTimer = 0.0f;
-					m_eState = eMosuqitoDead;
+					setState(eMosuqitoDead);
 				}
 				break;
 			case eMosuqitoDead:
@@ -208,15 +210,23 @@ void MosquitoBase::getPos(float *pos)
 void MosquitoBase::setState(MOSQUITO_STATE state)
 {
 	bool loop = true, blend = false;
+	float pos[3];
+	getPos(pos);
 	if(state == eMosuqitoHit)
 	{
 		loop = false;
 		setBillboard("blood_billboard");
+		AudioSystem::getInstance()->play3D("../music/spring.wav", pos);
 	}
 	else if(state == eMosuqitoCut)
 	{
 		loop = false;
 		setBillboard("blood_billboard");
+		AudioSystem::getInstance()->play3D("../music/pop.wav", pos);
+	}
+	else if(state == eMosquitoBlood)
+	{
+		AudioSystem::getInstance()->play3D("../music/kiss.wav", pos);
 	}
 	if(m_uiMeshID < GameSystem::getInstance()->m_vMeshData.size())
 	{

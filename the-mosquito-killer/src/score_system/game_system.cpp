@@ -77,7 +77,7 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1, ScoreType type)
 					else if(type == SCORE_TYPE_WEAPON)
 						((MosquitoBase *)object1->getParent())->setState(eMosuqitoCut);
 					//((MosquitoBase *)object1->getParent())->setDestory();
-					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
+					//AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
 				}
 				break;
 			case eMosquitoSplit:
@@ -91,7 +91,7 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1, ScoreType type)
 					float high = pos[1];
 					float distance = pos[0];
 					//((MosquitoSplit *)object1->getParent())->setDestory();
-					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
+					//AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
 					//create "number" 
 					for(int i = 0; i < number; i++)
 					{
@@ -124,7 +124,7 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1, ScoreType type)
 						((MosquitoBase *)object1->getParent())->setState(eMosuqitoHit);
 					else if(type == SCORE_TYPE_WEAPON)
 						((MosquitoBase *)object1->getParent())->setState(eMosuqitoCut);
-					AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
+					//AudioSystem::getInstance()->play3D("../music/explosion.wav", pos);
 				}
 				break;
 			default:
