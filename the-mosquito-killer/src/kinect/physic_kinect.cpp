@@ -78,7 +78,6 @@ void PhysicKinect::init(DWORD id)
 			((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
 		}
 		m_pBody[eKinectLeftHand] = createRidigBody(obj["left_hand_ridigi_body"].get_obj()["mesh_name"].get_str().c_str(), 0.0, scale, pos, size, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
-		m_pBody[eKinectLeftHand]->setEulerZYX(0.0, 0.5, 0.0);
 		m_iBodyID[eKinectLeftHand] = NUI_SKELETON_POSITION_HAND_LEFT;
 
 		scale[0] = obj["right_hand_ridigi_body"].get_obj()["scale"].get_array()[0].get_real();
@@ -99,7 +98,6 @@ void PhysicKinect::init(DWORD id)
 			((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
 		}
 		m_pBody[eKinectRightHand] = createRidigBody(obj["right_hand_ridigi_body"].get_obj()["mesh_name"].get_str().c_str(), 0.0, scale, pos, size, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
-		m_pBody[eKinectLeftHand]->setEulerZYX(0.0, 0.5, 0.0);
 		m_iBodyID[eKinectRightHand] = NUI_SKELETON_POSITION_HAND_RIGHT;
 
 		if(obj.count("left_hand") > 0)
@@ -254,21 +252,21 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 			if(radin <= MIN_RADIN)
 			{
 				if(i == eKinectLeftHand)
-					m_pBody[i]->setEulerZYX(0.0, 0.0, -MIN_RADIN);
+					m_pBody[i]->setEulerZYX(0.0, -1.0, -MIN_RADIN);
 				else
-					m_pBody[i]->setEulerZYX(0.0, 0.0, MIN_RADIN);
+					m_pBody[i]->setEulerZYX(0.0, 1.0, MIN_RADIN);
 			}
 			else if(radin >= MAX_RADIN)
 			{
 				if(i == eKinectLeftHand)
-					m_pBody[i]->setEulerZYX(0.0, 0.0, -MAX_RADIN);
+					m_pBody[i]->setEulerZYX(0.0, -1.0, -MAX_RADIN);
 				else
-					m_pBody[i]->setEulerZYX(0.0, 0.0, MAX_RADIN);
+					m_pBody[i]->setEulerZYX(0.0, 1.0, MAX_RADIN);
 			}
 			else if(i == eKinectLeftHand)
-				m_pBody[i]->setEulerZYX(0.0, 0.0, -radin);
+				m_pBody[i]->setEulerZYX(0.0, -1.0, -radin);
 			else
-				m_pBody[i]->setEulerZYX(0.0, 0.0, radin);
+				m_pBody[i]->setEulerZYX(0.0, 1.0, radin);
 		}
 	}
 }
