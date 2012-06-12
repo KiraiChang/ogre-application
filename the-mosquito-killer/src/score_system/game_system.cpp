@@ -264,42 +264,14 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		{
 			if(object1->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
 			{
-				WEAPON_TYPE type = ((WeaponKnife *)object0->getParent())->getType();
-				switch(type) //改變使用武器add
-				{
-				case eWeaponKnife:
-					GameSystem::getInstance()->CurrentWeapon = 0;
-					break;
-				case eWeaponBook:
-					GameSystem::getInstance()->CurrentWeapon = 1;
-					break;
-				case eWeaponBomb:
-					GameSystem::getInstance()->CurrentWeapon = 2;
-					break;
-				default:
-					break;
-				}
+				GameSystem::getInstance()->setSelectWeapon(object0);
 			}
 		}
 		else if(object1->getType() == SCORE_TYPE_ICON)
 		{
 			if(object0->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
 			{
-				WEAPON_TYPE type = ((WeaponKnife *)object1->getParent())->getType();
-				switch(type) //改變使用武器add
-				{
-				case eWeaponKnife:
-					GameSystem::getInstance()->CurrentWeapon = 0;
-					break;
-				case eWeaponBook:
-					GameSystem::getInstance()->CurrentWeapon = 1;
-					break;
-				case eWeaponBomb:
-					GameSystem::getInstance()->CurrentWeapon = 2;
-					break;
-				default:
-					break;
-				}
+				GameSystem::getInstance()->setSelectWeapon(object1);
 			}
 		}
 	}
@@ -336,6 +308,8 @@ GameSystem::GameSystem(void):
 		ChooesBomb(NULL), //當作選取武器的快捷鍵 add
 		m_pHintObject(NULL),
 		m_pHintNode(NULL),
+		m_pSelectWeapon(NULL),
+		m_pSelectWeaponNode(NULL),
 		m_pCompositer(NULL),
 		m_fTrackingTime(0)
 {
@@ -424,6 +398,17 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 		m_pHintObject->setVisible(false);
 		m_pHintNode->setPosition(Ogre::Vector3::ZERO);
 		m_pHintNode->setScale(5, 5, 5);
+	}
+
+	
+	if(m_pSelectWeapon == NULL)
+	{
+		m_pSelectWeapon = m_pSceneMgr->createParticleSystem("SelectWeaponParticle","Circle2");
+		m_pSelectWeaponNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+		m_pSelectWeaponNode->attachObject(m_pSelectWeapon);
+		m_pSelectWeapon->setVisible(false);
+		m_pSelectWeaponNode->setPosition(Ogre::Vector3::ZERO);
+		m_pSelectWeaponNode->setScale(5, 5, 5);
 	}
 }
 
@@ -556,6 +541,23 @@ void GameSystem::release(void)
 		m_pSceneMgr->destroySceneNode(m_pHintNode);
 		m_pHintNode = NULL;
 	}
+
+	if(m_pSelectWeapon != NULL)
+	{
+		//m_pHintObject->clear();
+		if(m_pSelectWeaponNode)
+			m_pSelectWeaponNode->detachAllObjects();
+
+		//m_pSceneMgr->destroyManualObject(m_pHintObject);
+		m_pSceneMgr->destroyParticleSystem(m_pSelectWeapon);
+		m_pSelectWeapon = NULL;
+	}
+
+	if(m_pSelectWeaponNode!= NULL)
+	{
+		m_pSceneMgr->destroySceneNode(m_pSelectWeaponNode);
+		m_pSelectWeaponNode = NULL;
+	}
 	m_pWorld = NULL;
 	m_pSceneMgr = NULL;
 	AudioSystem::getInstance()->release();
@@ -662,6 +664,9 @@ void GameSystem::restart(unsigned int stageID)
 		ChooesBook->setVisible(true);
 	if(ChooesBomb != NULL)
 		ChooesBomb->setVisible(true);
+	m_pSelectWeapon->setVisible(true);
+
+	setSelectWeapon(NULL);
 }
 
 float GameSystem::getTimePass(void)const
@@ -1648,6 +1653,8 @@ void GameSystem::setAllVisible(bool visible)
 	if(m_pHintObject != NULL)
 		m_pHintObject->setVisible(visible);
 
+	if(m_pSelectWeapon != NULL)
+		m_pSelectWeapon->setVisible(visible);
 }
 
 void GameSystem::testCollision()
@@ -1701,4 +1708,49 @@ void GameSystem::killAllMosquito(ScoreBase *object0)
 		ScoreBase *object1 = (*ite)->getScoreBase();
 		checkDestory(object0, object1, SCORE_TYPE_HAND);
 	}
+}
+
+void GameSystem::setSelectWeapon(ScoreBase *weapon)
+{
+	float pos[3] = {0.0, 0.0, 0.0};
+
+	WEAPON_TYPE type;
+	if(weapon != NULL)
+		type = ((WeaponKnife *)weapon->getParent())->getType();
+	else
+		type = eWeaponKnife;
+	switch(type) //改變使用武器add
+	{
+	case eWeaponKnife:
+		CurrentWeapon = 0;
+		ChooesKnife->getPos(pos);
+		break;
+	case eWeaponBook:
+		if(NumBook > 0)
+		{
+			CurrentWeapon = 1;
+			ChooesBook->getPos(pos);
+		}
+		else 
+		{
+			CurrentWeapon = 0;
+			ChooesKnife->getPos(pos);
+		}
+		break;
+	case eWeaponBomb:
+		if(NumBomb > 0)
+		{
+			CurrentWeapon = 2;
+			ChooesBomb->getPos(pos);
+		}
+		else 
+		{
+			CurrentWeapon = 0;
+			ChooesKnife->getPos(pos);
+		}
+		break;
+	default:
+		break;
+	}
+	m_pSelectWeaponNode->setPosition(pos[0], pos[1], pos[2]);
 }

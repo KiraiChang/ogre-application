@@ -107,6 +107,17 @@ void WeaponKnife::setVisible(bool v)
 		m_pBody->setVisible(v);
 }
 
+void WeaponKnife::getPos(float *pos)
+{
+	if(m_pMove != NULL)
+	{
+		Ogre::Vector3 p= m_pMove->getPosition();
+		pos[0] = p.x;
+		pos[1] = p.y;
+		pos[2] = p.z;
+	}
+}
+
 //*******************************************************
 WeaponBook::WeaponBook(void):
 	WeaponKnife()
