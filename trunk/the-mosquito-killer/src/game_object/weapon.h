@@ -39,6 +39,7 @@ public:
 	virtual bool				isDestory(void)const		{return m_bDestory;}
 	virtual void				setDestory(void)			{m_bDestory = 1;}
 	virtual void				setVisible(bool v);
+	virtual void				getPos(float *pos);
 };
 
 class WeaponBook : public WeaponKnife

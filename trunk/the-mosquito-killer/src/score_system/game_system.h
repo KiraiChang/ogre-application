@@ -148,6 +148,8 @@ private:
 	Ogre::Entity*								m_pHintObject;
 	Ogre::SceneNode *							m_pHintNode;
 	DOFManager*									m_pCompositer;
+	Ogre::ParticleSystem *						m_pSelectWeapon;
+	Ogre::SceneNode *							m_pSelectWeaponNode;
 
 public:
 												~GameSystem(void);
@@ -196,6 +198,7 @@ public:
 	int											NumBomb;
 	int											NumBook;
 	int											CurrentWeapon; //目前選取的武器 add
+	void										setSelectWeapon(ScoreBase *weapon);
 };
 
 #endif //_GAME_SYSTEM_H_
