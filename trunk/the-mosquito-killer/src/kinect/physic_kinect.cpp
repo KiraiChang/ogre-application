@@ -78,6 +78,7 @@ void PhysicKinect::init(DWORD id)
 			((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
 		}
 		m_pBody[eKinectLeftHand] = createRidigBody(obj["left_hand_ridigi_body"].get_obj()["mesh_name"].get_str().c_str(), 0.0, scale, pos, size, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
+		m_pBody[eKinectLeftHand]->setEulerZYX(0.0, 0.5, 0.0);
 		m_iBodyID[eKinectLeftHand] = NUI_SKELETON_POSITION_HAND_LEFT;
 
 		scale[0] = obj["right_hand_ridigi_body"].get_obj()["scale"].get_array()[0].get_real();
@@ -98,6 +99,7 @@ void PhysicKinect::init(DWORD id)
 			((OgrePhysicDebug *)debug)->init(m_pSceneMgr);
 		}
 		m_pBody[eKinectRightHand] = createRidigBody(obj["right_hand_ridigi_body"].get_obj()["mesh_name"].get_str().c_str(), 0.0, scale, pos, size, quat, debug, ScoreSystem::createScoreObject(SCORE_TYPE_HAND), 2);
+		m_pBody[eKinectLeftHand]->setEulerZYX(0.0, 0.5, 0.0);
 		m_iBodyID[eKinectRightHand] = NUI_SKELETON_POSITION_HAND_RIGHT;
 
 		if(obj.count("left_hand") > 0)
@@ -204,6 +206,7 @@ PhysicRigidBody *PhysicKinect::createRidigBody(const char *modelName, float mass
 void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 {
 	int id = 0;
+	float dist_x = 0;
 	m_vfOverallPos[eScaleX] = data.Position.x;
 	m_vfOverallPos[eScaleY] = data.Position.y;
 	m_vfOverallPos[eScaleZ] = data.Position.z;
@@ -221,7 +224,14 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 			{
 				if(m_pBody[id] != NULL)
 				{
-					m_pBody[id]->setOrigin(m_vfSkeleton[i][eScaleX] * scaleX,
+					if(id == 0)
+						dist_x = m_vfSkeleton[i][eScaleX] * scaleX;
+					else
+					{
+						if(dist_x > m_vfSkeleton[i][eScaleX] * scaleX)
+							dist_x = m_vfSkeleton[i][eScaleX] * scaleX;
+					}
+					m_pBody[id]->setOrigin(dist_x,
 										m_vfSkeleton[i][eScaleY] * scaleY,
 										m_vfSkeleton[i][eScaleZ] * scaleZ
 					);

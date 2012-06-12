@@ -260,14 +260,14 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		//		}
 		//	}
 		//}
-		else if(object0->getType() == SCORE_TYPE_ICON)
+		else if(object0->getType() == SCORE_TYPE_ICON && GameSystem::getInstance()->m_eHandState == GameSystem::eOnHandWaitShoot)
 		{
 			if(object1->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
 			{
 				GameSystem::getInstance()->setSelectWeapon(object0);
 			}
 		}
-		else if(object1->getType() == SCORE_TYPE_ICON)
+		else if(object1->getType() == SCORE_TYPE_ICON && GameSystem::getInstance()->m_eHandState == GameSystem::eOnHandWaitShoot)
 		{
 			if(object0->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
 			{
