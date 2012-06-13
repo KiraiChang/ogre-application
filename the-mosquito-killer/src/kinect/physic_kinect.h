@@ -48,6 +48,7 @@ public:
 	void										updateDebug(float data[3], float distance);
 	void										getPartPos(unsigned int offset, float *pos);
 	float										getScale(unsigned int offset);
+	float										getMulti(unsigned int offset);
 	DWORD										getID(void)const;
 	void										setVisible(bool visible);
 };

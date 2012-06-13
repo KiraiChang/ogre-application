@@ -43,6 +43,9 @@ void ShootBase::update(bool &destory, float moveDistance)
 
 	if(!destory)
 		move(moveDistance);
+
+	if(m_pNode->getPosition().z < -40)
+		destory = true;
 }
 //*******************************************************
 //***************  SHOOT_NORMAL  ************************
