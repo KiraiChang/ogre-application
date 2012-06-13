@@ -185,6 +185,7 @@ public:
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
 	void										notifyMosquitoAlert(void);
 	bool										checkPlayerState(KinectDevice *device, float timePass, float limite = 0.0f);
+	bool										checkShootPose(void);
 	float										getFullTime(void)const;
 	void										setGameState(GameState state);
 	void										setAllVisible(bool visible);
@@ -199,6 +200,7 @@ public:
 	int											NumBook;
 	int											CurrentWeapon; //目前選取的武器 add
 	void										setSelectWeapon(ScoreBase *weapon);
+	
 };
 
 #endif //_GAME_SYSTEM_H_

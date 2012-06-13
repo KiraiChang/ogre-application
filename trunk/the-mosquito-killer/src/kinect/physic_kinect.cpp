@@ -226,8 +226,10 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 						dist_x = m_vfSkeleton[i][eScaleX] * scaleX;
 					else
 					{
-						if(dist_x > m_vfSkeleton[i][eScaleX] * scaleX)
+						if(dist_x < (m_vfSkeleton[i][eScaleX] + 0.2) * scaleX)
 							dist_x = m_vfSkeleton[i][eScaleX] * scaleX;
+						else
+							dist_x += (0.2 * scaleX);
 					}
 					m_pBody[id]->setOrigin(dist_x,
 										m_vfSkeleton[i][eScaleY] * scaleY,
@@ -350,6 +352,15 @@ float PhysicKinect::getScale(unsigned int offset)
 	if(offset < eScaleCount)
 	{
 		return m_vfScale[offset] * m_vfOverallPos[eScaleZ];
+	}
+	return 0;
+}
+
+float PhysicKinect::getMulti(unsigned int offset)
+{
+	if(offset < eScaleCount)
+	{
+		return m_vfScale[offset];
 	}
 	return 0;
 }

@@ -20,6 +20,7 @@ const float HAND_CHECK_OPEN_DIST = 10.0f;
 const float HAND_CHECK_RIGHT_HAND_SPEED = 1.0f;
 const float HAND_CHECK_SHOOT_TIMEPASS = 0.1f;
 const float HAND_WAIT_ATTACK_TIMEOUT = 3.0f;
+const float SKELETON_NEAR_DISTANCE = 1.8f;
 
 bool MOSQUITO_DEBUG_MODE = false;
 
@@ -663,7 +664,8 @@ void GameSystem::restart(unsigned int stageID)
 		ChooesBook->setVisible(true);
 	if(ChooesBomb != NULL)
 		ChooesBomb->setVisible(true);
-	m_pSelectWeapon->setVisible(true);
+	if(m_pSelectWeapon!= NULL)
+		m_pSelectWeapon->setVisible(true);
 
 	setSelectWeapon(NULL);
 }
@@ -1093,25 +1095,16 @@ void GameSystem::updatePlayer(KinectDevice *deivce, float timePass)
 			{
 				if(m_iCurrentID == frame.SkeletonData[i].dwTrackingID)
 				{
-					isTracking = true;
-					m_fTrackingTime = 0.0f;
-					m_vpPlayer->update(frame.SkeletonData[i]);
-					Shoulder[0] = frame.SkeletonData[i].SkeletonPositions[4].x; // change to shoulder index (4)
-					Shoulder[1] = frame.SkeletonData[i].SkeletonPositions[4].y;
-					Shoulder[2] = frame.SkeletonData[i].SkeletonPositions[4].z;
-					float z = m_vpPlayer->getScale(PhysicKinect::eScaleZ);
-					//shouldNode->setPosition(Shoulder[0]*z, Shoulder[1]*z, Shoulder[2]*z);
-					//shouldNode->setVisible(true);
+					if(frame.SkeletonData[i].Position.z > SKELETON_NEAR_DISTANCE)
+					{
+						isTracking = true;
+						m_fTrackingTime = 0.0f;
+						m_vpPlayer->update(frame.SkeletonData[i]);
+						Shoulder[0] = frame.SkeletonData[i].SkeletonPositions[4].x; // change to shoulder index (4)
+						Shoulder[1] = frame.SkeletonData[i].SkeletonPositions[4].y;
+						Shoulder[2] = frame.SkeletonData[i].SkeletonPositions[4].z;
+					}
 				}
-				//else
-				//{
-				//	if(m_iCurrentID == 0)
-				//	{
-				//		m_iCurrentID = frame.SkeletonData[i].dwTrackingID;
-				//		m_vpPlayer->init(m_iCurrentID);
-				//		deivce->NuiSkeletonSetTrackedSkeletons(m_iCurrentID);
-				//	}
-				//}
 			}
 		}
 		if(!isTracking)
@@ -1203,7 +1196,9 @@ void GameSystem::updateHandState(float timePass)
 			if(dist < HAND_CHECK_CLOSE_DIST)
 			{
 				m_eHandState = eOnHandWaitAttack;
+				return;
 			}
+
 
 			//char msg[64];
 			//sprintf(msg, "rightPos[2] - leftPos[2]:%f\n", rightPos[2] - leftPos[2]);
@@ -1212,8 +1207,9 @@ void GameSystem::updateHandState(float timePass)
 			//{
 			//	m_eHandState = eOnHandWaitShoot;
 			//}
-			float distHand = left.distance(shoulder);
-			if(distHand > 0.55 && dist > 0.6) //add
+			//float distHand = left.distance(shoulder);
+			//if(distHand > 0.55 && dist > 0.6) //add
+			if(checkShootPose())
 			{
 				m_eHandState = eOnHandWaitShoot;
 				m_vpPlayer->setVisible(false);
@@ -1384,7 +1380,13 @@ void GameSystem::updateHandState(float timePass)
 				}
 				m_fRightHandZPos = rightPos[2];
 			}
-			if((rightPos[2] - leftPos[2]) <= HAND_CHECK_AIM_POSE_DIST - 1.0)
+			//if((rightPos[2] - leftPos[2]) <= HAND_CHECK_AIM_POSE_DIST - 1.0)
+			//{
+			//	m_eHandState = eOnHandOpen;
+			//	m_vpPlayer->setVisible(true);
+			//}
+
+			if(!checkShootPose())
 			{
 				m_eHandState = eOnHandOpen;
 				m_vpPlayer->setVisible(true);
@@ -1527,7 +1529,8 @@ bool GameSystem::checkPlayerState(KinectDevice *device, float timePass, float li
 				//				frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].z;
 
 				if(frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_ELBOW_RIGHT].y > frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_SHOULDER_RIGHT].y &&
-					frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_SHOULDER_RIGHT].y > 0)
+					frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_SHOULDER_RIGHT].y > 0 &&
+					frame.SkeletonData[i].Position.z > SKELETON_NEAR_DISTANCE)
 				{
 					//float weight = 	(frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_HAND_RIGHT].y - 
 					//	frame.SkeletonData[i].SkeletonPositions[NUI_SKELETON_POSITION_SHOULDER_RIGHT].y ) * 
@@ -1549,6 +1552,35 @@ bool GameSystem::checkPlayerState(KinectDevice *device, float timePass, float li
 				}
 			}
 		}
+	}
+	return false;
+}
+
+bool GameSystem::checkShootPose(void)
+{
+	float rightPos[3];
+	float leftPos[3];
+	float elbowPos[3];
+	float wristPos[3];
+	float shoulderPos[3];
+	m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_ELBOW_LEFT, elbowPos);
+	m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_WRIST_LEFT, wristPos);
+	m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_SHOULDER_LEFT, wristPos);
+	Ogre::Vector3 elbow(elbowPos);
+	Ogre::Vector3 wrist(wristPos);
+	Ogre::Vector3 shoulder(shoulderPos);
+	Ogre::Vector3 distDirect = ((elbow - shoulder).normalisedCopy() + (wrist - elbow).normalisedCopy()) * 0.5;
+		
+	m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
+	m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+	Ogre::Vector3 right(rightPos);
+	Ogre::Vector3 left(leftPos);
+	float dist = left.distance(right);
+
+	float distHand = Ogre::Vector3::UNIT_Z.distance(distDirect);
+	if(distHand < 0.6 && dist > 0.5)
+	{
+		return true;
 	}
 	return false;
 }
@@ -1724,30 +1756,36 @@ void GameSystem::setSelectWeapon(ScoreBase *weapon)
 		if(NumBook > 0)
 		{
 			CurrentWeapon = 1;
-			ChooesBook->getPos(pos);
+			if(ChooesBook != NULL)
+				ChooesBook->getPos(pos);
 		}
 		else 
 		{
 			CurrentWeapon = 0;
-			ChooesKnife->getPos(pos);
+			if(ChooesKnife != NULL)
+				ChooesKnife->getPos(pos);
 		}
 		break;
 	case eWeaponBomb:
 		if(NumBomb > 0)
 		{
 			CurrentWeapon = 2;
-			ChooesBomb->getPos(pos);
+			if(ChooesBomb != NULL)
+				ChooesBomb->getPos(pos);
 		}
 		else 
 		{
 			CurrentWeapon = 0;
-			ChooesKnife->getPos(pos);
+			if(ChooesKnife != NULL)
+				ChooesKnife->getPos(pos);
 		}
 		break;
 	default:
 		CurrentWeapon = 0;
-		ChooesKnife->getPos(pos);
+		if(ChooesKnife != NULL)
+			ChooesKnife->getPos(pos);
 		break;
 	}
-	m_pSelectWeaponNode->setPosition(pos[0], pos[1], pos[2]);
+	if(m_pSelectWeaponNode != NULL)
+		m_pSelectWeaponNode->setPosition(pos[0], pos[1], pos[2]);
 }
