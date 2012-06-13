@@ -1578,10 +1578,13 @@ bool GameSystem::checkShootPose(void)
 	float dist = left.distance(right);
 
 	float distHand = Ogre::Vector3::UNIT_Z.distance(distDirect);
-	if(distHand < 0.6 && dist > 0.5)
+	//std::cout<<"dist:"<<dist<<"distHand:"<<distHand<<std::endl;
+	//if(distHand < 0.6 && dist > 0.5)
+	if(distHand < 0.9 && dist > 0.7)
 	{
 		return true;
 	}
+	
 	return false;
 }
 
