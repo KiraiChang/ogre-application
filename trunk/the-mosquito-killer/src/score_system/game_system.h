@@ -150,6 +150,10 @@ private:
 	DOFManager*									m_pCompositer;
 	Ogre::ParticleSystem *						m_pSelectWeapon;
 	Ogre::SceneNode *							m_pSelectWeaponNode;
+	Ogre::BillboardSet *						m_pBillboardSet;
+	Ogre::Billboard*							m_pBillboard[3];
+	Ogre::SceneNode *							m_pBillboardNode;
+	float										m_fBillboardTime;
 
 public:
 												~GameSystem(void);
@@ -183,6 +187,7 @@ public:
 	void										updatePlayer(KinectDevice *device, float timePass);
 	void										updatePlayerDebug(float timePass);//若是沒有kinect採取的動作
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
+	void										updateSmoke(float timePass);
 	void										notifyMosquitoAlert(void);
 	bool										checkPlayerState(KinectDevice *device, float timePass, float limite = 0.0f);
 	bool										checkShootPose(void);

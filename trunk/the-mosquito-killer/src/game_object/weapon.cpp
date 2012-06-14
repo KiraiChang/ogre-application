@@ -118,6 +118,10 @@ void WeaponKnife::getPos(float *pos)
 	}
 }
 
+ScoreBase* WeaponKnife::getScoreBase(void)
+{
+	return m_pScore;
+}
 //*******************************************************
 WeaponBook::WeaponBook(void):
 	WeaponKnife()

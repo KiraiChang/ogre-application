@@ -23,7 +23,7 @@ const float HAND_WAIT_ATTACK_TIMEOUT = 3.0f;
 const float SKELETON_NEAR_DISTANCE = 1.8f;
 
 bool MOSQUITO_DEBUG_MODE = false;
-
+const int BILLBOARD_TIMEPASS = 8;
 bool GameSystem::MaterialCombinerCallback(btManifoldPoint& cp,	const btCollisionObject* colObj0,int partId0,int index0,const btCollisionObject* colObj1,int partId1,int index1)
 {
 
@@ -183,10 +183,10 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 						checkDestory(object0, object1, SCORE_TYPE_WEAPON);
 						//((WeaponBook *)object0->getParent())->setDestory();
 						break;
-					case eWeaponBomb://癆,璶癘だ计
-						((WeaponBomb *)object0->getParent())->setDestory();
-						GameSystem::getInstance()->killAllMosquito(object0);
-						break;
+					//case eWeaponBomb://癆,璶癘だ计
+					//	((WeaponBomb *)object0->getParent())->setDestory();
+					//	GameSystem::getInstance()->killAllMosquito(object0);
+					//	break;
 					default:
 						break;
 					}
@@ -209,58 +209,16 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 						checkDestory(object1, object0, SCORE_TYPE_WEAPON);
 						//((WeaponBook *)object0->getParent())->setDestory();
 						break;
-					case eWeaponBomb://癆,璶癘だ计
-						((WeaponBomb *)object1->getParent())->setDestory();
-						GameSystem::getInstance()->killAllMosquito(object1);
-						break;
+					//case eWeaponBomb://癆,璶癘だ计
+					//	((WeaponBomb *)object1->getParent())->setDestory();
+					//	GameSystem::getInstance()->killAllMosquito(object1);
+					//	break;
 					default:
 						break;
 					}
 				}
 			}
 		}
-		//else if(object1->getType() == SCORE_TYPE_WEAPON)
-		//{
-		//	if(object1->getParent() != NULL)
-		//	{
-		//		switch(((WeaponKnife *)object1->getParent())->getType()) //猌竟add
-		//		{
-		//		case eWeaponKnife:
-		//			((WeaponKnife *)object1->getParent())->setDestory();
-		//			break;
-		//		case eWeaponBook:
-		//			((WeaponBook *)object1->getParent())->setDestory();
-		//			break;
-		//		case eWeaponBomb://癆,璶癘だ计
-		//			((WeaponBomb *)object1->getParent())->setDestory();
-		//			GameSystem::getInstance()->killAllMosquito(object1);
-		//			break;
-		//		default:
-		//			break;
-		//		}
-		//	}
-		//}
-		//else if(object0->getType() == SCORE_TYPE_WEAPON)
-		//{
-		//	if(object0->getParent() != NULL)
-		//	{
-		//		switch(((WeaponKnife *)object0->getParent())->getType()) //猌竟add
-		//		{
-		//		case eWeaponKnife:
-		//			((WeaponKnife *)object0->getParent())->setDestory();
-		//			break;
-		//		case eWeaponBook:
-		//			((WeaponBook *)object0->getParent())->setDestory();
-		//			break;
-		//		case eWeaponBomb://癆,璶癘だ计
-		//			((WeaponBomb *)object0->getParent())->setDestory();
-		//			GameSystem::getInstance()->killAllMosquito(object1);
-		//			break;
-		//		default:
-		//			break;
-		//		}
-		//	}
-		//}
 		else if(object0->getType() == SCORE_TYPE_ICON && GameSystem::getInstance()->m_eHandState == GameSystem::eOnHandWaitShoot)
 		{
 			if(object1->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
@@ -312,6 +270,9 @@ GameSystem::GameSystem(void):
 		m_pSelectWeapon(NULL),
 		m_pSelectWeaponNode(NULL),
 		m_pCompositer(NULL),
+		m_pBillboardNode(NULL),
+		m_pBillboardSet(NULL),
+		m_fBillboardTime(0),
 		m_fTrackingTime(0)
 {
 	initMeshData();
@@ -326,6 +287,7 @@ GameSystem::GameSystem(void):
 	m_vfHandDebugPos[2] = 80.0;
 
 	m_fTwoHandDistance = HAND_DEBUG_DISTANCE;
+
 }
 
 GameSystem::~GameSystem(void)
@@ -409,6 +371,20 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 		m_pSelectWeaponNode->attachObject(m_pSelectWeapon);
 		m_pSelectWeapon->setVisible(false);
 		m_pSelectWeaponNode->setPosition(Ogre::Vector3::ZERO);
+	}
+
+	if(m_pBillboardSet == NULL)
+	{
+		m_pBillboardSet = m_pSceneMgr->createBillboardSet();
+		m_pBillboardNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+		m_pBillboardNode->attachObject(m_pBillboardSet);
+		m_pBillboardSet->setMaterialName("smoke_billboard");
+		m_pBillboardSet->setTextureCoords(OgreShapeBox::m_vTexCoordArray, MAX_TEXTURE_COORD);
+		m_pBillboardNode->setPosition(Ogre::Vector3(0, 35.0, 120.0));
+		m_pBillboardSet->setVisible(false);
+		m_pBillboard[0] = m_pBillboardSet->createBillboard(Ogre::Vector3(0, 0, 0));
+		m_pBillboard[1] = m_pBillboardSet->createBillboard(Ogre::Vector3(0, 0, -40));
+		m_pBillboard[2] = m_pBillboardSet->createBillboard(Ogre::Vector3(0, 0, -80));
 	}
 }
 
@@ -525,6 +501,20 @@ void GameSystem::release(void)
 		delete m_pCompositer;
 		m_pCompositer = NULL;
 	}
+	if(m_pBillboardSet != NULL)
+	{
+		if(m_pBillboardNode)
+			m_pBillboardNode->detachObject(m_pBillboardSet);
+
+		m_pSceneMgr->destroyBillboardSet(m_pBillboardSet);
+		m_pBillboardSet = NULL;
+	}
+	if(m_pBillboardNode!= NULL)
+	{
+		m_pSceneMgr->destroySceneNode(m_pBillboardNode);
+		m_pBillboardNode = NULL;
+	}
+
 	if(m_pHintObject != NULL)
 	{
 		//m_pHintObject->clear();
@@ -983,6 +973,7 @@ void GameSystem::updatePlaying(float timePass, KinectDevice *deivce)
 	updateWeapon(timePass);
 	updateHandState(timePass);
 	m_dotSceneLoader.update(timePass);
+	updateSmoke(timePass);
 	
 	if(m_mSheet.count("playing") > 0)
 	{
@@ -1361,12 +1352,14 @@ void GameSystem::updateHandState(float timePass)
 					//m_pLog->logMessage(msg);
 
 					float pos[3] = {rightPos[0] * z, rightPos[1] * z, 140};
-					//CurrentWeapon = 0; // use knife add
+					CurrentWeapon = 2; // use knife add
 
 					if(CurrentWeapon == 2 && NumBomb >=1) //add
 					{
 						createWeapon(eWeaponBomb, m_vWeapeanMeshData[2].m_sMeshName.c_str(), 1.0, m_vWeapeanMeshData[2].m_fvScale, pos,  m_vWeapeanMeshData[2].m_fvSize, m_vWeapeanMeshData[2].m_fvQuat, 100,1,TargetDirect); //add
 						NumBomb--;
+						m_fBillboardTime = 0.0;
+						killAllMosquito(m_vWeapon.back()->getScoreBase());
 					}
 					else if(CurrentWeapon == 1 && NumBook >=1) //add
 					{
@@ -1400,6 +1393,31 @@ void GameSystem::updateHandState(float timePass)
 	if(m_eHandState != eOnHandWaitShoot)
 		NodeSight->setVisible(false);
 }
+
+void GameSystem::updateSmoke(float timePass)
+{
+	if(m_pBillboardSet != NULL)
+	{
+		m_fBillboardTime += timePass * BILLBOARD_TIMEPASS;
+		if(m_fBillboardTime < MAX_TEXTURE_COORD + 1)
+		{
+			
+			int index = (int)m_fBillboardTime % MAX_TEXTURE_COORD;
+			m_pBillboard[0]->setTexcoordIndex(index);
+			index = (int)(m_fBillboardTime-1) % MAX_TEXTURE_COORD;
+			m_pBillboard[1]->setTexcoordIndex(index);
+			index = (int)(m_fBillboardTime-2) % MAX_TEXTURE_COORD;
+			m_pBillboard[2]->setTexcoordIndex(index);
+			m_pBillboardSet->setVisible(true);
+		}
+		else
+		{
+			//m_fBillboardTime = 0.0;
+			m_pBillboardSet->setVisible(false);
+		}
+	}
+}
+
 
 void GameSystem::notifyMosquitoAlert(void)
 {
@@ -1664,7 +1682,8 @@ void GameSystem::setAllVisible(bool visible)
 				ite->second->hide();
 		}
 	}
-
+	if(m_pBillboardSet != NULL)
+		m_pBillboardSet->setVisible(visible);
 	//if(m_pSheet != NULL)
 	//	m_pSheet->setVisible(visible);
 

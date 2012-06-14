@@ -24,13 +24,14 @@ enum QueryFlags
 
 const unsigned int MAX_TEXTURE_COORD = 9;
 
+
 //*******************************************************
 //********************  BOX  ****************************
 //*******************************************************
 class OgreShapeBox : public PhysicShapeBox
 {
 public:
-
+	static Ogre::FloatRect		m_vTexCoordArray[MAX_TEXTURE_COORD];
 private:
 	Ogre::SceneManager *		m_pSceneMgr;
 	Ogre::SceneNode *			m_pBodyNode;
@@ -39,7 +40,6 @@ private:
 	Ogre::ParticleSystem *		m_pParticleSystem;
 	Ogre::BillboardSet *		m_pBillboardSet;
 	Ogre::Billboard*			m_pBillboard;
-	Ogre::FloatRect				m_vTexCoordArray[MAX_TEXTURE_COORD];
 	float						m_fBillboardTime;
 	unsigned int				m_uiID;
 public:

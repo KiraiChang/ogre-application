@@ -40,6 +40,7 @@ public:
 	virtual void				setDestory(void)			{m_bDestory = 1;}
 	virtual void				setVisible(bool v);
 	virtual void				getPos(float *pos);
+	ScoreBase*					getScoreBase(void);
 };
 
 class WeaponBook : public WeaponKnife

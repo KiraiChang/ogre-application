@@ -1,9 +1,19 @@
 #include "ogre_physic_shape.h"
 #include <Ogre.h>
 
-
-unsigned int gCurrentID = 0;
+Ogre::FloatRect	OgreShapeBox::m_vTexCoordArray[MAX_TEXTURE_COORD] = {
+	Ogre::FloatRect(0.0, 0.0, 0.33, 0.33),
+	Ogre::FloatRect(0.33, 0.00, 0.66, 0.33),
+	Ogre::FloatRect(0.66, 0.0, 1.0, 0.33),
+	Ogre::FloatRect(0.0, 0.33, 0.33, 0.66),
+	Ogre::FloatRect(0.33, 0.33, 0.66, 0.66),
+	Ogre::FloatRect(0.66, 0.33, 1.0, 0.66),
+	Ogre::FloatRect(0.0, 0.66, 0.33, 1.0),
+	Ogre::FloatRect(0.33, 0.66, 0.66, 1.0),
+	Ogre::FloatRect(0.66, 0.66, 1.0, 1.0)
+};
 const int BILLBOARD_TIMEPASS = 16;
+unsigned int gCurrentID = 0;
 //*******************************************************
 //********************  BOX  ****************************
 //*******************************************************
@@ -19,15 +29,15 @@ OgreShapeBox::OgreShapeBox(Ogre::SceneManager *scene):
 		m_fBillboardTime(0),
 		m_pAnimationState(NULL)
 {
-	m_vTexCoordArray[0] = Ogre::FloatRect(0.0, 0.0, 0.33, 0.33);
-	m_vTexCoordArray[1] = Ogre::FloatRect(0.33, 0.00, 0.66, 0.33);
-	m_vTexCoordArray[2] = Ogre::FloatRect(0.66, 0.0, 1.0, 0.33);
-	m_vTexCoordArray[3] = Ogre::FloatRect(0.0, 0.33, 0.33, 0.66);
-	m_vTexCoordArray[4] = Ogre::FloatRect(0.33, 0.33, 0.66, 0.66);
-	m_vTexCoordArray[5] = Ogre::FloatRect(0.66, 0.33, 1.0, 0.66);
-	m_vTexCoordArray[6] = Ogre::FloatRect(0.0, 0.66, 0.33, 1.0);
-	m_vTexCoordArray[7] = Ogre::FloatRect(0.33, 0.66, 0.66, 1.0);
-	m_vTexCoordArray[8] = Ogre::FloatRect(0.66, 0.66, 1.0, 1.0);
+	//m_vTexCoordArray[0] = Ogre::FloatRect(0.0, 0.0, 0.33, 0.33);
+	//m_vTexCoordArray[1] = Ogre::FloatRect(0.33, 0.00, 0.66, 0.33);
+	//m_vTexCoordArray[2] = Ogre::FloatRect(0.66, 0.0, 1.0, 0.33);
+	//m_vTexCoordArray[3] = Ogre::FloatRect(0.0, 0.33, 0.33, 0.66);
+	//m_vTexCoordArray[4] = Ogre::FloatRect(0.33, 0.33, 0.66, 0.66);
+	//m_vTexCoordArray[5] = Ogre::FloatRect(0.66, 0.33, 1.0, 0.66);
+	//m_vTexCoordArray[6] = Ogre::FloatRect(0.0, 0.66, 0.33, 1.0);
+	//m_vTexCoordArray[7] = Ogre::FloatRect(0.33, 0.66, 0.66, 1.0);
+	//m_vTexCoordArray[8] = Ogre::FloatRect(0.66, 0.66, 1.0, 1.0);
 }
 
 OgreShapeBox::~OgreShapeBox(void)
