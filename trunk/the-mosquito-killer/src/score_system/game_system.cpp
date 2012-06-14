@@ -249,7 +249,7 @@ GameSystem::GameSystem(void):
 		//m_fFullTime(0),
 		m_fTimePass(0),
 		//m_bShoot(false),
-		m_eState(eOnMenu),
+		m_eState(eOnEnd),
 		m_eDebugHandVState(eHandMoveVNothing),
 		m_eDebugHandHState(eHandMoveHNothing),
 		m_eDebugHandAttackState(eHandAttackWait),
@@ -343,11 +343,19 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 	//m_mOverlay["MainMenu"]->show();
 
 	Ogre::OverlayManager& overlayManager = Ogre::OverlayManager::getSingleton();
+	std::string name = "MainMenu";
 	// Create an overlay
-	m_mOverlay["MainMenu"] = overlayManager.getByName( "MainMenu" );
+	m_mOverlay[name] = overlayManager.getByName( name );
 
 	// Show the overlay
-	m_mOverlay["MainMenu"]->hide();
+	m_mOverlay[name]->hide();
+
+	name = "GameOver";
+	// Create an overlay
+	m_mOverlay[name] = overlayManager.getByName( name );
+
+	// Show the overlay
+	m_mOverlay[name]->hide();
 
 	m_pCompositer = new DOFManager(mRoot, mViewport);
 	m_pCompositer->setFocus(0);
@@ -1004,7 +1012,16 @@ void GameSystem::updatePlaying(float timePass, KinectDevice *deivce)
 
 void GameSystem::updateEnd(float timePass, KinectDevice *deivce)//結算畫面
 {
-	setGameState(eOnMenu);
+
+	if(checkPlayerState(deivce, timePass, 1))
+	{
+		setGameState(eOnPlaying);
+		return;
+	}
+
+	m_fTimePass += timePass;
+	if(m_fTimePass > 30)
+		setGameState(eOnMenu);
 }
 
 void GameSystem::updateMosquito(float timePass)
@@ -1352,13 +1369,14 @@ void GameSystem::updateHandState(float timePass)
 					//m_pLog->logMessage(msg);
 
 					float pos[3] = {rightPos[0] * z, rightPos[1] * z, 140};
-					CurrentWeapon = 2; // use knife add
+					//CurrentWeapon = 2; // use knife add
 
 					if(CurrentWeapon == 2 && NumBomb >=1) //add
 					{
 						createWeapon(eWeaponBomb, m_vWeapeanMeshData[2].m_sMeshName.c_str(), 1.0, m_vWeapeanMeshData[2].m_fvScale, pos,  m_vWeapeanMeshData[2].m_fvSize, m_vWeapeanMeshData[2].m_fvQuat, 100,1,TargetDirect); //add
 						NumBomb--;
 						m_fBillboardTime = 0.0;
+						m_pBillboardSet->setVisible(true);
 						killAllMosquito(m_vWeapon.back()->getScoreBase());
 					}
 					else if(CurrentWeapon == 1 && NumBook >=1) //add
@@ -1408,7 +1426,6 @@ void GameSystem::updateSmoke(float timePass)
 			m_pBillboard[1]->setTexcoordIndex(index);
 			index = (int)(m_fBillboardTime-2) % MAX_TEXTURE_COORD;
 			m_pBillboard[2]->setTexcoordIndex(index);
-			m_pBillboardSet->setVisible(true);
 		}
 		else
 		{
@@ -1645,7 +1662,11 @@ void GameSystem::setGameState(GameState state)
 		break;
 	case eOnEnd://結算畫面
 		{
-
+			if(m_mOverlay.count("GameOver") > 0)
+			{
+				m_mOverlay["GameOver"]->show();
+			}
+			m_fTimePass = 0.0;
 		}
 		break;
 	default:
