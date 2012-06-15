@@ -88,6 +88,12 @@ public:
 		eOnHandAttacked,
 		eOnHandWaitShoot,
 	};
+	enum GameState
+	{
+		eOnMenu = 0,//主選單畫面
+		eOnPlaying,//遊戲中畫面
+		eOnEnd,//結算畫面
+	};
 	DebugHandVState								m_eDebugHandVState;
 	DebugHandHState								m_eDebugHandHState;
 	DebugHandAttackState						m_eDebugHandAttackState;
@@ -103,12 +109,7 @@ public:
 private:
 												GameSystem(void);
 private:
-	enum GameState
-	{
-		eOnMenu = 0,//主選單畫面
-		eOnPlaying,//遊戲中畫面
-		eOnEnd,//結算畫面
-	};
+
 	float										m_fCurrentBlood;
 	int											m_iPlayerBlood;
 	static GameSystem *							g_instance;
