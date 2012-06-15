@@ -48,6 +48,7 @@ public:
 	std::string m_sMeshName;
 	float		m_fvSize[3];
 	float		m_fvScale[3];
+	float		m_fvPos[3];
 	float		m_fvQuat[4];
 	V_STRING m_vAniName;
 };
