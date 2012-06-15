@@ -147,7 +147,7 @@ void OgreApplication::createScene(void)
 {
 	initCamera();
 	initCEGUI();
-	//createCompositor();
+	createCompositor();
 	createLight();
 	createShadow();
 	createSkyDome();

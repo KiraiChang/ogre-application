@@ -245,11 +245,11 @@ void KinectApplication::createLight(void)
 	//else
 	//{
 		//create Light
-		pLight = mSceneMgr->createLight("directLight");
-		pLight->setType(Ogre::Light::LT_DIRECTIONAL);
-		pLight->setDirection(0.0, -1.0, 0.0);
-		pLight->setDiffuseColour(0.0, 0.0, 0.0);
-		pLight->setSpecularColour(0.0, 0.0, 0.0);
+		//pLight = mSceneMgr->createLight("directLight");
+		//pLight->setType(Ogre::Light::LT_DIRECTIONAL);
+		//pLight->setDirection(0.0, -1.0, 0.0);
+		//pLight->setDiffuseColour(0.0, 0.0, 0.0);
+		//pLight->setSpecularColour(0.0, 0.0, 0.0);
 		//mSceneMgr->setAmbientLight(Ogre::ColourValue(0.2, 0.2, 0.0));
 
 		//pLight = mSceneMgr->createLight("pointLight");
@@ -326,6 +326,10 @@ bool KinectApplication::keyPressed( const OIS::KeyEvent &arg )
 			{
 				GameSystem::getInstance()->m_eDebugHandAttackState = GameSystem::eHandAttacking;
 			}
+		}
+		else if(arg.key == OIS::KC_R)
+		{
+			GameSystem::getInstance()->setGameState(GameSystem::eOnPlaying);
 		}
 	}
 	else
