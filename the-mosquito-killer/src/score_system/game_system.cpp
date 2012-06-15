@@ -407,15 +407,15 @@ void GameSystem::initWeapon(void)
 	ChooesBomb->init(m_pSceneMgr, m_pWorld);
 
 	float mass = 1;
-	float scale[3] = {1.0,1.0,1.0};
-	float pos[3] = {5.0,15.0,80.0};
-	float quat[4] = {1.0, 1.0, 0.5, 0.0};
+	//float scale[3] = {1.0,1.0,1.0};
+	//float pos[3] = {5.0,15.0,80.0};
+	//float quat[4] = {1.0, 1.0, 0.5, 0.0};
 	float tar[3] = {0,0,0};
-	ChooesKnife->create(m_vWeapeanMeshData[0].m_sMeshName.c_str(), 0, mass,scale,pos, m_vWeapeanMeshData[0].m_fvSize,quat,0,tar);
-	pos[0] = 20;
-	ChooesBook->create(m_vWeapeanMeshData[1].m_sMeshName.c_str(), 0, mass,scale,pos, m_vWeapeanMeshData[0].m_fvSize,quat,0,tar);
-	pos[0] = 35;
-	ChooesBomb->create(m_vWeapeanMeshData[2].m_sMeshName.c_str(), 0, mass,scale,pos, m_vWeapeanMeshData[0].m_fvSize,quat,0,tar);
+	ChooesKnife->create(m_vWeapeanMeshData[3].m_sMeshName.c_str(), 0, mass,m_vWeapeanMeshData[3].m_fvScale, m_vWeapeanMeshData[3].m_fvPos, m_vWeapeanMeshData[3].m_fvSize, m_vWeapeanMeshData[3].m_fvQuat,0,tar);
+	//pos[0] = 20;
+	ChooesBook->create(m_vWeapeanMeshData[4].m_sMeshName.c_str(), 0, mass,m_vWeapeanMeshData[4].m_fvScale, m_vWeapeanMeshData[4].m_fvPos, m_vWeapeanMeshData[4].m_fvSize, m_vWeapeanMeshData[4].m_fvQuat,0,tar);
+	//pos[0] = 35;
+	ChooesBomb->create(m_vWeapeanMeshData[5].m_sMeshName.c_str(), 0, mass,m_vWeapeanMeshData[5].m_fvScale, m_vWeapeanMeshData[5].m_fvPos, m_vWeapeanMeshData[5].m_fvSize, m_vWeapeanMeshData[5].m_fvQuat,0,tar);
 
 	//OgreShapeBox *shape  = new OgreShapeBox(m_pSceneMgr);
 	//shape->init("MapWallAa.mesh", scale);
@@ -473,6 +473,9 @@ void GameSystem::initMeshData(void)
 			data.m_fvScale[0] = obj["Scale"].get_array()[0].get_real();
 			data.m_fvScale[1] = obj["Scale"].get_array()[1].get_real();
 			data.m_fvScale[2] = obj["Scale"].get_array()[2].get_real();
+			data.m_fvPos[0] = obj["Pos"].get_array()[0].get_real();
+			data.m_fvPos[1] = obj["Pos"].get_array()[1].get_real();
+			data.m_fvPos[2] = obj["Pos"].get_array()[2].get_real();
 			data.m_fvQuat[0] = obj["Quat"].get_array()[0].get_real();
 			data.m_fvQuat[1] = obj["Quat"].get_array()[1].get_real();
 			data.m_fvQuat[2] = obj["Quat"].get_array()[2].get_real();
