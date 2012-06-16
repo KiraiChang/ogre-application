@@ -13,9 +13,9 @@
 #include "../score_system/audio_system.h"
 
 const float MAX_WAIT_BLOOD_TIME = 1.0f;
-const float MAX_WAIT_HIT_TIME = 10.0f;
-const float MAX_WAIT_CUT_TIME = 10.0f;
+const float MAX_WAIT_DEAD_TIME = 5.0f;
 const float MAX_ALERT_DIST = 40.0f;
+const float MAX_CUT_HIT_TIME = 0.719;
 extern bool MOSQUITO_DEBUG_MODE;
 MosquitoBase::MosquitoBase(void):
 		m_eState(eMosquitoMove),
@@ -139,7 +139,6 @@ void MosquitoBase::update(float timePass)
 				m_fTimer += timePass;
 				if(m_fTimer > MAX_WAIT_BLOOD_TIME)
 				{
-					m_fTimer = 0.0f;
 					GameSystem::getInstance()->reduceBlood();
 					setState(eMosuqitoDead);
 				}
@@ -148,9 +147,8 @@ void MosquitoBase::update(float timePass)
 			case eMosuqitoCut:
 				m_fTimer += timePass;
 				m_pBody->update(timePass);
-				if(m_fTimer > MAX_WAIT_HIT_TIME)
+				if(m_fTimer > MAX_WAIT_DEAD_TIME)
 				{
-					m_fTimer = 0.0f;
 					setState(eMosuqitoDead);
 				}
 				break;
@@ -234,6 +232,7 @@ void MosquitoBase::setState(MOSQUITO_STATE state)
 			setAnimation(GameSystem::getInstance()->m_vMeshData[m_uiMeshID].m_vAniName[state].c_str(), loop, blend);
 	}
 	m_eState = state;
+	m_fTimer = 0.0f;
 }
 
 ScoreBase* MosquitoBase::getScoreBase(void)
@@ -304,9 +303,30 @@ void MosquitoFat::release(void)
 	MosquitoBase::release();
 }
 
-void MosquitoFat::update(float timepass)
+void MosquitoFat::update(float timePass)
 {
-	MosquitoBase::update(timepass);
+
+	if(m_eState == eMosuqitoHit || m_eState == eMosuqitoCut)
+	{
+		if(m_iBloodNumber  > 0)
+		{
+			m_fTimer += timePass;
+			if(m_fTimer > MAX_CUT_HIT_TIME)
+			{
+				setState(eMosquitoMove);
+			}
+			else
+			{
+				bool bDestory = false;
+				m_pMove->update(bDestory, timePass * m_fMoveSpeed);
+				Ogre::Vector3 pos= m_pMove->getPosition();
+				Ogre::Quaternion q= m_pMove->getOrientation();
+				m_pBody->update(timePass, (float *)&pos, (float *)&q);
+				return;
+			}
+		}
+	}
+	MosquitoBase::update(timePass);
 }
 //*******************************************************
 //********************  END  ****************************

@@ -72,7 +72,7 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1, ScoreType type)
 			{	
 			case eMosquitoBase:
 				{
-					((MosquitoBase *)object1->getParent())->getPos(pos);
+					//((MosquitoBase *)object1->getParent())->getPos(pos);
 					if(type == SCORE_TYPE_HAND)
 						((MosquitoBase *)object1->getParent())->setState(eMosuqitoHit);
 					else if(type == SCORE_TYPE_WEAPON)
@@ -119,7 +119,7 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1, ScoreType type)
 				break;
 			case eMosquitoFat:
 				{
-					((MosquitoFat *)object1->getParent())->getPos(pos);
+					//((MosquitoFat *)object1->getParent())->getPos(pos);
 					((MosquitoFat *)object1->getParent())->decreaseBlood();
 					if(type == SCORE_TYPE_HAND)
 						((MosquitoBase *)object1->getParent())->setState(eMosuqitoHit);
@@ -155,16 +155,22 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 		{
 			if(eState == eOnHandWaitAttack)
 			{
-				checkDestory(object0, object1, SCORE_TYPE_HAND);
-				GameSystem::getInstance()->setHandState(eOnHandAttacked);
+				if(((MosquitoBase * )object1->getParent())->getState() == eMosquitoMove || ((MosquitoBase * )object1->getParent())->getState() == eMosquitoAlert)
+				{
+					checkDestory(object0, object1, SCORE_TYPE_HAND);
+					GameSystem::getInstance()->setHandState(eOnHandAttacked);
+				}
 			}
 		}
 		else if(object1->getType() == SCORE_TYPE_HAND && object0->getType() == SCORE_TYPE_ENEMY)
 		{
 			if(eState == eOnHandWaitAttack)
 			{
-				checkDestory(object1, object0, SCORE_TYPE_HAND);
-				GameSystem::getInstance()->setHandState(eOnHandAttacked);
+				if(((MosquitoBase * )object0->getParent())->getState() == eMosquitoMove || ((MosquitoBase * )object0->getParent())->getState() == eMosquitoAlert)
+				{
+					checkDestory(object1, object0, SCORE_TYPE_HAND);
+					GameSystem::getInstance()->setHandState(eOnHandAttacked);
+				}
 			}
 		}
 		else if(object0->getType() == SCORE_TYPE_WEAPON && object1->getType() == SCORE_TYPE_ENEMY)
@@ -219,14 +225,14 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 				}
 			}
 		}
-		else if(object0->getType() == SCORE_TYPE_ICON && GameSystem::getInstance()->m_eHandState == GameSystem::eOnHandWaitShoot)
+		else if(object0->getType() == SCORE_TYPE_ICON /*&& GameSystem::getInstance()->m_eHandState == GameSystem::eOnHandWaitShoot*/)
 		{
 			if(object1->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
 			{
 				GameSystem::getInstance()->setSelectWeapon(object0);
 			}
 		}
-		else if(object1->getType() == SCORE_TYPE_ICON && GameSystem::getInstance()->m_eHandState == GameSystem::eOnHandWaitShoot)
+		else if(object1->getType() == SCORE_TYPE_ICON /*&& GameSystem::getInstance()->m_eHandState == GameSystem::eOnHandWaitShoot*/)
 		{
 			if(object0->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
 			{
@@ -259,8 +265,8 @@ GameSystem::GameSystem(void):
 		m_fRightHandZPos(0),
 		m_fShootTimePass(0),
 		//m_pSheet(NULL),
-		NumBook(0),
-		NumBomb(0),
+		NumBook(10),
+		NumBomb(5),
 		CurrentWeapon(0), //add
 		ChooesKnife(NULL),//當作選取武器的快捷鍵 add
 		ChooesBook(NULL),//當作選取武器的快捷鍵 add
@@ -970,14 +976,14 @@ void GameSystem::updatePlaying(float timePass, KinectDevice *deivce)
 		if(m_vMosquito.size() <= 0)
 		{
 			CEGUI::MouseCursor::getSingletonPtr()->setVisible(true);
-			m_eState = eOnEnd;
+			setGameState(eOnEnd);
 		}
 	}
 
 	if(m_iPlayerBlood <= 0)
 	{
 		CEGUI::MouseCursor::getSingletonPtr()->setVisible(true);
-		m_eState = eOnEnd;
+		setGameState(eOnEnd);
 	}
 
 	updateMosquito(timePass);
@@ -1390,6 +1396,7 @@ void GameSystem::updateHandState(float timePass)
 					else
 					{
 						createWeapon(eWeaponKnife,m_vWeapeanMeshData[0].m_sMeshName.c_str(), 1.0, m_vWeapeanMeshData[0].m_fvScale, pos, m_vWeapeanMeshData[0].m_fvSize, m_vWeapeanMeshData[0].m_fvQuat, 100,1,TargetDirect);
+						setSelectWeapon(NULL);
 					}
 				}
 				m_fRightHandZPos = rightPos[2];
