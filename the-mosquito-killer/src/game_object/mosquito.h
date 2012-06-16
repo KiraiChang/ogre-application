@@ -40,14 +40,14 @@ class MosquitoBase
 private:
 	Ogre::SceneManager *		m_pSceneMgr;
 	btDynamicsWorld *			m_pWorld;
+	unsigned int				m_uiMeshID;
+protected:
 	PhysicRigidBody*			m_pBody;
 	MoveBase*					m_pMove;
 	ScoreBase*					m_pScore;
 	float						m_fMoveSpeed;
-	unsigned int				m_uiMeshID;
 	float						m_fTimer;
 	MOSQUITO_STATE				m_eState;
-protected:
 	bool						m_bDestory;
 public:
 								MosquitoBase(void);

@@ -150,9 +150,22 @@ void OgreShapeBox::updateBillboard(float timePass)
 
 void OgreShapeBox::setAnimation(const char *aniName, bool loop, bool blend)
 {
+	if(m_pAnimationState != NULL)
+	{
+		if(!blend)
+		{
+			m_pAnimationState->setWeight(0.0);
+			m_pAnimationState->setEnabled(false);
+		}
+	}
 	m_pAnimationState = m_pBodyEnt->getAnimationState(aniName);
 	m_pAnimationState->setLoop(loop);
 	m_pAnimationState->setEnabled(true);
+	if(!blend)
+	{
+		m_pAnimationState->setTimePosition(0.0);
+		m_pAnimationState->setWeight(1.0);
+	}
 }
 
 void OgreShapeBox::setParticle(const char *fileName)
