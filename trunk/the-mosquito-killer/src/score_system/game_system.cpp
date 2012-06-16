@@ -225,14 +225,14 @@ bool GameSystem::MaterialProcessedCallback(btManifoldPoint& cp,btCollisionObject
 				}
 			}
 		}
-		else if(object0->getType() == SCORE_TYPE_ICON /*&& GameSystem::getInstance()->m_eHandState == GameSystem::eOnHandWaitShoot*/)
+		if(object0->getType() == SCORE_TYPE_ICON && GameSystem::getInstance()->m_eHandState != GameSystem::eOnHandWaitShoot)
 		{
 			if(object1->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
 			{
 				GameSystem::getInstance()->setSelectWeapon(object0);
 			}
 		}
-		else if(object1->getType() == SCORE_TYPE_ICON /*&& GameSystem::getInstance()->m_eHandState == GameSystem::eOnHandWaitShoot*/)
+		else if(object1->getType() == SCORE_TYPE_ICON && GameSystem::getInstance()->m_eHandState != GameSystem::eOnHandWaitShoot)
 		{
 			if(object0->getType() == SCORE_TYPE_HAND /*&& eState == eOnHandWaitShoot*/)
 			{
@@ -1029,7 +1029,7 @@ void GameSystem::updateEnd(float timePass, KinectDevice *deivce)//µ²ºâµe­±
 	}
 
 	m_fTimePass += timePass;
-	if(m_fTimePass > 30)
+	if(m_fTimePass > 10)
 		setGameState(eOnMenu);
 }
 
@@ -1620,12 +1620,13 @@ bool GameSystem::checkShootPose(void)
 	m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 	Ogre::Vector3 right(rightPos);
 	Ogre::Vector3 left(leftPos);
-	float dist = left.distance(right);
+	/*float dist = left.distance(right);*/
+	float zDist = abs(left.z - right.z);
 
 	float distHand = Ogre::Vector3::UNIT_Z.distance(distDirect);
 	//std::cout<<"dist:"<<dist<<"distHand:"<<distHand<<std::endl;
 	//if(distHand < 0.6 && dist > 0.5)
-	if(distHand < 0.9 && dist > 0.7)
+	if(distHand < 0.9 && /*dist > 0.7 &&*/ zDist > 0.3)
 	{
 		return true;
 	}
@@ -1650,7 +1651,8 @@ void GameSystem::setGameState(GameState state)
 			{
 				m_mOverlay["MainMenu"]->show();
 			}
-			
+			releaseMosquito();
+			releaseWeapon();
 			std::string scene;
 			std::string sceneGroup;
 			std::string audio;
@@ -1676,7 +1678,15 @@ void GameSystem::setGameState(GameState state)
 			{
 				m_mOverlay["GameOver"]->show();
 			}
+			m_dotSceneLoader.setAllVisible(true);
 			m_fTimePass = 0.0;
+			{
+				V_MOSQUITO::iterator ite;								
+				for( ite = m_vMosquito.begin();ite != m_vMosquito.end();++ite)
+				{
+					(*ite)->setVisible(true);
+				}
+			}
 		}
 		break;
 	default:
@@ -1698,6 +1708,14 @@ void GameSystem::setAllVisible(bool visible)
 	{
 		V_MOSQUITO::iterator ite;								
 		for( ite = m_vMosquito.begin();ite != m_vMosquito.end();++ite)
+		{
+			(*ite)->setVisible(visible);
+		}
+	}
+
+	{
+		V_WEAPON::iterator ite;								
+		for( ite = m_vWeapon.begin();ite != m_vWeapon.end();++ite)
 		{
 			(*ite)->setVisible(visible);
 		}
@@ -1812,12 +1830,8 @@ void GameSystem::setSelectWeapon(ScoreBase *weapon)
 			if(ChooesBook != NULL)
 				ChooesBook->getPos(pos);
 		}
-		else 
-		{
-			CurrentWeapon = 0;
-			if(ChooesKnife != NULL)
-				ChooesKnife->getPos(pos);
-		}
+		else
+			return;
 		break;
 	case eWeaponBomb:
 		if(NumBomb > 0)
@@ -1826,12 +1840,8 @@ void GameSystem::setSelectWeapon(ScoreBase *weapon)
 			if(ChooesBomb != NULL)
 				ChooesBomb->getPos(pos);
 		}
-		else 
-		{
-			CurrentWeapon = 0;
-			if(ChooesKnife != NULL)
-				ChooesKnife->getPos(pos);
-		}
+		else
+			return;
 		break;
 	default:
 		CurrentWeapon = 0;
