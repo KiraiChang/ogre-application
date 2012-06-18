@@ -137,12 +137,12 @@ private:
 	M_CEGUI_WINDOW								m_mSheet;
 	M_OGRE_WINDOW								m_mOverlay;
 	//準心
-	Ogre::RaySceneQuery*						mRaySceneQuery;
-	Ogre::Entity*								EntSight;
-	Ogre::SceneNode*							NodeSight;
-	Ogre::Entity*								shouldEnt;
-	Ogre::SceneNode*							shouldNode;
-	float										Shoulder[3];
+	//Ogre::RaySceneQuery*						mRaySceneQuery;
+	//Ogre::Entity*								EntSight;
+	//Ogre::SceneNode*							NodeSight;
+	//Ogre::Entity*								shouldEnt;
+	//Ogre::SceneNode*							shouldNode;
+	//float										Shoulder[3];
 	WeaponKnife*								ChooesKnife;//當作選取武器的快捷鍵 add
 	WeaponKnife*								ChooesBook;//當作選取武器的快捷鍵 add
 	WeaponKnife*								ChooesBomb; //當作選取武器的快捷鍵 add
