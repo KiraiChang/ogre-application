@@ -326,10 +326,6 @@ void MosquitoFat::update(float timePass)
 				return;
 			}
 		}
-		else
-		{
-			int i = 1;
-		}
 	}
 	MosquitoBase::update(timePass);
 }
