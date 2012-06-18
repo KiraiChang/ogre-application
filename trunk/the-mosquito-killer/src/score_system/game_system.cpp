@@ -96,7 +96,6 @@ void checkDestory(ScoreBase *object0, ScoreBase *object1, ScoreType type)
 					//create "number" 
 					for(int i = 0; i < number; i++)
 					{
-						pos[2] -= 40;
 						pos[0] += distance;
 						if(distance >= 20)
 						{
@@ -279,6 +278,9 @@ GameSystem::GameSystem(void):
 		m_pBillboardNode(NULL),
 		m_pBillboardSet(NULL),
 		m_fBillboardTime(0),
+		m_pDrinkBillboardSet(NULL),
+		m_pDrinkBillboardNode(NULL),
+		m_fDrinkBillboardTime(0),
 		m_fTrackingTime(0)
 {
 	initMeshData();
@@ -399,6 +401,21 @@ void GameSystem::init(btDynamicsWorld* world, Ogre::SceneManager *sceneMgr, Ogre
 		m_pBillboard[0] = m_pBillboardSet->createBillboard(Ogre::Vector3(0, 0, 0));
 		m_pBillboard[1] = m_pBillboardSet->createBillboard(Ogre::Vector3(0, 0, -40));
 		m_pBillboard[2] = m_pBillboardSet->createBillboard(Ogre::Vector3(0, 0, -80));
+	}
+
+
+	if(m_pDrinkBillboardSet == NULL)
+	{
+		m_pDrinkBillboardSet = m_pSceneMgr->createBillboardSet();
+		m_pDrinkBillboardNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+		m_pDrinkBillboardNode->attachObject(m_pDrinkBillboardSet);
+		m_pDrinkBillboardSet->setMaterialName("drink_billboard");
+		m_pDrinkBillboardSet->setTextureCoords(OgreShapeBox::m_vTexCoordArray, MAX_TEXTURE_COORD);
+		m_pDrinkBillboardNode->setPosition(Ogre::Vector3(0, 28.0, 100.0));
+		m_pDrinkBillboardNode->setScale(0.6, 0.5, 1.0);
+		m_pDrinkBillboardSet->setVisible(false);
+
+		m_pDrinkBillboard = m_pDrinkBillboardSet->createBillboard(Ogre::Vector3(0, 0, 0));
 	}
 }
 
@@ -530,6 +547,19 @@ void GameSystem::release(void)
 	{
 		m_pSceneMgr->destroySceneNode(m_pBillboardNode);
 		m_pBillboardNode = NULL;
+	}
+	if(m_pDrinkBillboardSet != NULL)
+	{
+		if(m_pDrinkBillboardNode)
+			m_pDrinkBillboardNode->detachObject(m_pDrinkBillboardSet);
+
+		m_pSceneMgr->destroyBillboardSet(m_pDrinkBillboardSet);
+		m_pDrinkBillboardSet = NULL;
+	}
+	if(m_pDrinkBillboardNode!= NULL)
+	{
+		m_pSceneMgr->destroySceneNode(m_pDrinkBillboardNode);
+		m_pDrinkBillboardNode = NULL;
 	}
 
 	if(m_pHintObject != NULL)
@@ -991,6 +1021,7 @@ void GameSystem::updatePlaying(float timePass, KinectDevice *deivce)
 	updateHandState(timePass);
 	m_dotSceneLoader.update(timePass);
 	updateSmoke(timePass);
+	updateDrink(timePass);
 	
 	if(m_mSheet.count("playing") > 0)
 	{
@@ -1155,10 +1186,10 @@ void GameSystem::updatePlayerDebug(float timePass)
 	switch(m_eDebugHandHState)
 	{
 	case eHandMoveRight:
-		m_vfHandDebugPos[0] += timePass * 1;
+		m_vfHandDebugPos[0] += timePass * 20;
 		break;
 	case eHandMoveLeft:
-		m_vfHandDebugPos[0] -= timePass * 1;
+		m_vfHandDebugPos[0] -= timePass * 20;
 		break;
 	}
 
@@ -1447,6 +1478,26 @@ void GameSystem::updateSmoke(float timePass)
 	}
 }
 
+void GameSystem::updateDrink(float timePass)
+{
+	if(m_pDrinkBillboardSet != NULL)
+	{
+		m_fDrinkBillboardTime += timePass * BILLBOARD_TIMEPASS * 2;
+		if(m_fDrinkBillboardTime < MAX_TEXTURE_COORD + 1)
+		{
+			
+			int index = (int)m_fDrinkBillboardTime % MAX_TEXTURE_COORD;
+			m_pDrinkBillboard->setTexcoordIndex(index);
+		}
+		else
+		{
+			//m_fDrinkBillboardTime = 0.0;
+			//m_pDrinkBillboardSet->setVisible(true);
+			m_pDrinkBillboardSet->setVisible(false);
+		}
+	}
+}
+
 
 void GameSystem::notifyMosquitoAlert(void)
 {
@@ -1696,6 +1747,12 @@ void GameSystem::setGameState(GameState state)
 	}
 }
 
+void GameSystem::setDrinkTime(void)
+{
+	m_fDrinkBillboardTime = 0.0;
+	m_pDrinkBillboardSet->setVisible(true);
+}
+
 void GameSystem::setAllVisible(bool visible)
 {
 	if(m_vpPlayer != NULL)
@@ -1735,6 +1792,9 @@ void GameSystem::setAllVisible(bool visible)
 	}
 	if(m_pBillboardSet != NULL)
 		m_pBillboardSet->setVisible(visible);
+	
+	if(m_pDrinkBillboardSet != NULL)
+		m_pDrinkBillboardSet->setVisible(visible);
 	//if(m_pSheet != NULL)
 	//	m_pSheet->setVisible(visible);
 

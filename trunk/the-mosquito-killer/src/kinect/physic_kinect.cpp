@@ -240,8 +240,8 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 											m_vfSkeleton[i][eScaleY] * scaleY, 
 											m_vfSkeleton[i][eScaleZ] * scaleZ);
 						float dist = pos.distance(otherPos);
-						if(dist < 5.0 || pos.x > otherPos.x)
-							pos.x += 5.0;
+						if(dist < 1.0 || pos.x > otherPos.x)
+							pos.x += 1.0;
 						else
 							pos = otherPos;
 					}
@@ -268,21 +268,21 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 			if(radin <= MIN_RADIN)
 			{
 				if(i == eKinectLeftHand)
-					m_pBody[i]->setEulerZYX(0.0, -1.0, -MIN_RADIN);
-				else
 					m_pBody[i]->setEulerZYX(0.0, 1.0, MIN_RADIN);
+				else
+					m_pBody[i]->setEulerZYX(0.0, -1.0, -MIN_RADIN);
 			}
 			else if(radin >= MAX_RADIN)
 			{
 				if(i == eKinectLeftHand)
-					m_pBody[i]->setEulerZYX(0.0, -1.0, -MAX_RADIN);
-				else
 					m_pBody[i]->setEulerZYX(0.0, 1.0, MAX_RADIN);
+				else
+					m_pBody[i]->setEulerZYX(0.0, -1.0, -MAX_RADIN);
 			}
 			else if(i == eKinectLeftHand)
-				m_pBody[i]->setEulerZYX(0.0, -1.0, -radin);
-			else
 				m_pBody[i]->setEulerZYX(0.0, 1.0, radin);
+			else
+				m_pBody[i]->setEulerZYX(0.0, -1.0, -radin);
 		}
 	}
 }
@@ -298,11 +298,11 @@ void PhysicKinect::updateDebug(float data[3], float distance)
 		{
 			float x;
 			if(i == eKinectLeftHand)
-				x = data[0] + distance / m_vfScale[eScaleX];
+				x = (data[0] - distance) / m_vfScale[eScaleX];
 			else
 			{
 				skeletonid = NUI_SKELETON_POSITION_HAND_RIGHT;
-				x = data[0] - distance / m_vfScale[eScaleX];
+				x = (data[0] + distance) / m_vfScale[eScaleX];
 			}
 			float y = data[1] / m_vfScale[eScaleY];
 			float z = data[2] / m_vfScale[eScaleZ];;
