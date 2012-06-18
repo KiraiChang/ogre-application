@@ -318,13 +318,17 @@ void MosquitoFat::update(float timePass)
 			}
 			else
 			{
-				bool bDestory = false;
-				m_pMove->update(bDestory, timePass * m_fMoveSpeed);
+				//bool bDestory = false;
+				//m_pMove->update(bDestory, timePass * m_fMoveSpeed);
 				Ogre::Vector3 pos= m_pMove->getPosition();
 				Ogre::Quaternion q= m_pMove->getOrientation();
 				m_pBody->update(timePass, (float *)&pos, (float *)&q);
 				return;
 			}
+		}
+		else
+		{
+			int i = 1;
 		}
 	}
 	MosquitoBase::update(timePass);

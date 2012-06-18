@@ -104,7 +104,7 @@ bool WaveSystem::work(float timepass)
 					m_vMosquitoData[m_iCurrentIndex].m_uiMoveType,
 					m_vMosquitoData[m_iCurrentIndex].m_fMoveSpeed,
 					m_vMosquitoData[m_iCurrentIndex].m_uiMeshID,
-					1.0,
+					0.2,
 					m_vMosquitoData[m_iCurrentIndex].m_vfScale,
 					m_vMosquitoData[m_iCurrentIndex].m_vfPos,
 					m_vMosquitoData[m_iCurrentIndex].m_vfQuat,

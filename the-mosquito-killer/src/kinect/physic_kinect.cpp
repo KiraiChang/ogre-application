@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <json_spirit.h>
+#include <Ogre.h>
 
 const float DEF_POWER_RADIN = 10.0f;
 const float MIN_RADIN = 1.5f;
@@ -205,6 +206,7 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 {
 	int id = 0;
 	float dist_x = 0;
+	Ogre::Vector3 pos;
 	m_vfOverallPos[eScaleX] = data.Position.x;
 	m_vfOverallPos[eScaleY] = data.Position.y;
 	m_vfOverallPos[eScaleZ] = data.Position.z;
@@ -223,17 +225,29 @@ void PhysicKinect::update(const NUI_SKELETON_DATA &data)
 				if(m_pBody[id] != NULL)
 				{
 					if(id == 0)
-						dist_x = m_vfSkeleton[i][eScaleX] * scaleX;
+					{
+						pos = Ogre::Vector3(m_vfSkeleton[i][eScaleX] * scaleX, 
+											m_vfSkeleton[i][eScaleY] * scaleY, 
+											m_vfSkeleton[i][eScaleZ] * scaleZ);
+					}
 					else
 					{
-						if(dist_x < (m_vfSkeleton[i][eScaleX] + 0.2) * scaleX)
-							dist_x = m_vfSkeleton[i][eScaleX] * scaleX;
+						//if(dist_x < (m_vfSkeleton[i][eScaleX] + 0.2) * scaleX)
+						//	dist_x = m_vfSkeleton[i][eScaleX] * scaleX;
+						//else
+						//	dist_x += (0.2 * scaleX);
+						Ogre::Vector3 otherPos(m_vfSkeleton[i][eScaleX] * scaleX, 
+											m_vfSkeleton[i][eScaleY] * scaleY, 
+											m_vfSkeleton[i][eScaleZ] * scaleZ);
+						float dist = pos.distance(otherPos);
+						if(dist < 5.0 || pos.x > otherPos.x)
+							pos.x += 5.0;
 						else
-							dist_x += (0.2 * scaleX);
+							pos = otherPos;
 					}
-					m_pBody[id]->setOrigin(dist_x,
-										m_vfSkeleton[i][eScaleY] * scaleY,
-										m_vfSkeleton[i][eScaleZ] * scaleZ
+					m_pBody[id]->setOrigin(pos.x,
+										pos.y,
+										pos.z
 					);
 					m_pBody[id]->update(0.0);
 					id++;

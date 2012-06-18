@@ -31,7 +31,7 @@ btRigidBody* PhysicRigidBody::localCreateRigidBody (float mass, const btTransfor
 
 	if (isDynamic)
 	{
-		body->setRestitution(10);
+		body->setRestitution(0.01);
 		body->setFriction(0.6);
 	}
 	//body->setCcdMotionThreshold(1.);

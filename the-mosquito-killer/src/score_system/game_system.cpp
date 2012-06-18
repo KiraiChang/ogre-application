@@ -882,19 +882,19 @@ void GameSystem::initPlayer(void)
 	//}
 	m_vpPlayer = new PhysicKinect(m_pSceneMgr, m_pWorld);
 
-	EntSight = m_pSceneMgr->createEntity("Target","bomb.mesh");
-	NodeSight = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	NodeSight->attachObject(EntSight);
-	NodeSight->setPosition(Ogre::Vector3::ZERO);
-	NodeSight->setVisible(false);
-	NodeSight->setScale(5.0, 5.0, 5.0);
+	//EntSight = m_pSceneMgr->createEntity("Target","bomb.mesh");
+	//NodeSight = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//NodeSight->attachObject(EntSight);
+	//NodeSight->setPosition(Ogre::Vector3::ZERO);
+	//NodeSight->setVisible(false);
+	//NodeSight->setScale(5.0, 5.0, 5.0);
 
-	shouldEnt = m_pSceneMgr->createEntity("shouldEnt","bomb.mesh");
-	shouldNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	shouldNode->attachObject(shouldEnt);
-	shouldNode->setPosition(Ogre::Vector3::ZERO);
-	shouldNode->setScale(5.0, 5.0, 5.0);
-	shouldNode->setVisible(false);
+	//shouldEnt = m_pSceneMgr->createEntity("shouldEnt","bomb.mesh");
+	//shouldNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//shouldNode->attachObject(shouldEnt);
+	//shouldNode->setPosition(Ogre::Vector3::ZERO);
+	//shouldNode->setScale(5.0, 5.0, 5.0);
+	//shouldNode->setVisible(false);
 }
 
 void GameSystem::initPlayer(unsigned int playerCount)
@@ -1117,9 +1117,9 @@ void GameSystem::updatePlayer(KinectDevice *deivce, float timePass)
 						isTracking = true;
 						m_fTrackingTime = 0.0f;
 						m_vpPlayer->update(frame.SkeletonData[i]);
-						Shoulder[0] = frame.SkeletonData[i].SkeletonPositions[4].x; // change to shoulder index (4)
-						Shoulder[1] = frame.SkeletonData[i].SkeletonPositions[4].y;
-						Shoulder[2] = frame.SkeletonData[i].SkeletonPositions[4].z;
+						//Shoulder[0] = frame.SkeletonData[i].SkeletonPositions[4].x; // change to shoulder index (4)
+						//Shoulder[1] = frame.SkeletonData[i].SkeletonPositions[4].y;
+						//Shoulder[2] = frame.SkeletonData[i].SkeletonPositions[4].z;
 					}
 				}
 			}
@@ -1184,7 +1184,7 @@ void GameSystem::updatePlayerDebug(float timePass)
 	}
 	//m_vpPlayer[0]->updateDebug(m_vfHandDebugPos, m_fTwoHandDistance);
 	m_vpPlayer->updateDebug(m_vfHandDebugPos, m_fTwoHandDistance);
-	m_vpPlayer->getPartPos(4, Shoulder);
+	//m_vpPlayer->getPartPos(4, Shoulder);
 }
 
 void GameSystem::updateHandState(float timePass)
@@ -1201,7 +1201,7 @@ void GameSystem::updateHandState(float timePass)
 			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
 			Ogre::Vector3 right(rightPos);
 			Ogre::Vector3 left(leftPos);
-			Ogre::Vector3 shoulder(Shoulder);
+			//Ogre::Vector3 shoulder(Shoulder);
 			float dist = 0.0;
 			//if(!m_bIsDebug)
 			//{
@@ -1315,17 +1315,19 @@ void GameSystem::updateHandState(float timePass)
 		{
 			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
 			//m_vpPlayer[m_iCurrentID]->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			float shoulder[3] = {0.0, 0.0, 0.0};
 			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_RIGHT, rightPos);
 			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_HAND_LEFT, leftPos);
+			m_vpPlayer->getPartPos(NUI_SKELETON_POSITION_SHOULDER_LEFT, shoulder);
 			m_fShootTimePass += timePass;
 			float z = m_vpPlayer->getScale(PhysicKinect::eScaleZ);
 			//left_hand - left_Shoulder = target_direction
 			float TargetDirect[3];
-			TargetDirect[0] = (leftPos[0] - Shoulder[0]) * z;
-			TargetDirect[1] = (leftPos[1] - Shoulder[1]) * z;
-			TargetDirect[2] = (leftPos[2] - Shoulder[2]) * z;
+			TargetDirect[0] = (leftPos[0] - shoulder[0]) * z;
+			TargetDirect[1] = (leftPos[1] - shoulder[1]) * z;
+			TargetDirect[2] = (leftPos[2] - shoulder[2]) * z;
 
-			Ogre::Vector3 vShoulder = Ogre::Vector3(Shoulder[0] * z,Shoulder[1] * z,Shoulder[2] * z);
+			Ogre::Vector3 vShoulder = Ogre::Vector3(shoulder[0] * z,shoulder[1] * z,shoulder[2] * z);
 			Ogre::Vector3 vTargetDirect = Ogre::Vector3(TargetDirect[0],TargetDirect[1],TargetDirect[2]);
 
 			//shouldNode->setPosition(vShoulder + (vTargetDirect * 2));
@@ -1418,8 +1420,8 @@ void GameSystem::updateHandState(float timePass)
 		break;
 	}
 
-	if(m_eHandState != eOnHandWaitShoot)
-		NodeSight->setVisible(false);
+	//if(m_eHandState != eOnHandWaitShoot)
+	//	NodeSight->setVisible(false);
 }
 
 void GameSystem::updateSmoke(float timePass)
