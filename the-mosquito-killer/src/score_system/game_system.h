@@ -156,6 +156,10 @@ private:
 	Ogre::Billboard*							m_pBillboard[3];
 	Ogre::SceneNode *							m_pBillboardNode;
 	float										m_fBillboardTime;
+	Ogre::BillboardSet *						m_pDrinkBillboardSet;
+	Ogre::Billboard*							m_pDrinkBillboard;
+	Ogre::SceneNode *							m_pDrinkBillboardNode;
+	float										m_fDrinkBillboardTime;
 
 public:
 												~GameSystem(void);
@@ -190,11 +194,13 @@ public:
 	void										updatePlayerDebug(float timePass);//若是沒有kinect採取的動作
 	void										updateHandState(float timePass);//依據雙手位置判斷遊戲動作狀態
 	void										updateSmoke(float timePass);
+	void										updateDrink(float timePass);
 	void										notifyMosquitoAlert(void);
 	bool										checkPlayerState(KinectDevice *device, float timePass, float limite = 0.0f);
 	bool										checkShootPose(void);
 	float										getFullTime(void)const;
 	void										setGameState(GameState state);
+	void										setDrinkTime(void);
 	void										setAllVisible(bool visible);
 	void										testCollision(void);
 	void										reduceBlood(void);

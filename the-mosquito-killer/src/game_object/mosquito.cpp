@@ -225,6 +225,7 @@ void MosquitoBase::setState(MOSQUITO_STATE state)
 	}
 	else if(state == eMosquitoBlood)
 	{
+		GameSystem::getInstance()->setDrinkTime();
 		AudioSystem::getInstance()->play3D("../music/kiss.wav", pos);
 	}
 	if(m_uiMeshID < GameSystem::getInstance()->m_vMeshData.size())
