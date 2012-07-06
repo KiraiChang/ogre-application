@@ -22,6 +22,7 @@ KinectApplication::KinectApplication(void):
 		m_pPhysicSimulation(NULL),
 		//m_pCompositer(NULL),
 		m_pRagDoll(NULL),
+		m_fCameraAngle(10),
 		m_bHasDevice(TRUE)
 		
 {
@@ -88,6 +89,10 @@ void KinectApplication::createCamera(void)
 		//mCamera->setNearClipDistance(5);
 		mCamera->setNearClipDistance(obj["near_clip"].get_real());
 		mCamera->setFarClipDistance(obj["far_clip"].get_real()); 
+		if(value.get_obj().count("CameraAngle") > 0)
+		{
+			m_fCameraAngle = value.get_obj()["CameraAngle"].get_real();
+		}
 	}
 	else
 	{
@@ -139,7 +144,7 @@ void KinectApplication::createScene(void)
 		GameSystem::getInstance()->m_bIsDebug = true;
 	}
 	else
-		m_pKinectDevice->setCameraElevationAngle(10);
+		m_pKinectDevice->setCameraElevationAngle(m_fCameraAngle);
 	//m_pRagDoll = new RagDoll(m_pPhysicSimulation->getDynamicsWorld());
 	//m_pRagDoll->init(0, 0.0, 0);
 	//OgrePhysicDebug *debug = new OgrePhysicDebug();

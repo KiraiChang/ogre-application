@@ -21,6 +21,7 @@ private:
 	//Kinect
 	KinectDevice *							m_pKinectDevice;
 	bool									m_bHasDevice;
+	float									m_fCameraAngle;
 
 	//DOFManager*								m_pCompositer;
 
