@@ -9,7 +9,10 @@ namespace Ogre
 	class ParticleSystem;
 	class ParticleEmitter;
 	class Camera;
+	class Entity;
 }
+
+class WaterInterface;
 
 class WaterSimulation
 {
@@ -22,25 +25,25 @@ private:
 	Ogre::ParticleSystem*						m_pParticleSystem ;
 	Ogre::ParticleEmitter*						m_pParticleEmitter ;
 
-	//WaterMesh*								m_pWaterMesh;
-	//Ogre::Entity*								m_pWaterEntity ;
+	WaterInterface*								m_pWaterInterface;
+	Ogre::Entity*								m_pWaterEntity ;
 
 	float										m_fTimeoutDelay ;
 	float										m_fHeadDepth ;
-	//typedef vector<WaterCircle*>::type WaterCircles ;
-	//WaterCircles circles ;
+	//typedef vector<WaterCircle*>::type		WaterCircles ;
+	//WaterCircles								circles ;
 public:
-										WaterSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam);
-										~WaterSimulation(void);
-	void								init(void);
-	void								release(void);
-	void								update(float timePass);
+												WaterSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam);
+												~WaterSimulation(void);
+	void										init(void);
+	void										release(void);
+	void										update(float timePass);
 public:
 	/** Head animation */
-	void animateHead(float timeSinceLastFrame);
-	void prepareCircleMaterial();
-	void processCircles(float timeSinceLastFrame);
-	void processParticles();
+	void										animateHead(float timeSinceLastFrame);
+	void										prepareCircleMaterial();
+	void										processCircles(float timeSinceLastFrame);
+	void										processParticles();
 };
 
 
