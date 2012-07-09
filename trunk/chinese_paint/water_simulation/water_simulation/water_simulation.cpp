@@ -2,6 +2,7 @@
 #include "OgreBillboardParticleRenderer.h"
 #include <Ogre.h>
 #include <SdkSample.h>
+#include "water_mesh.h"
 
 #define MESH_NAME "WaterMesh"
 #define ENTITY_NAME "WaterEntity"
@@ -17,7 +18,7 @@
 WaterSimulation::WaterSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam):m_pSceneMgr(sceneMgr),
 																m_pCamera(cam),
 																m_fTimeoutDelay(0.0f),
-																m_fHeadDepth(0.0f)
+																m_fHeadDepth(2.0f)
 																
 {
 
@@ -41,17 +42,17 @@ void WaterSimulation::init(void)
 	//  other objects, but I don't
 	l->setPosition(200,300,100);
 
-	// Create water mesh and entity
-	//waterMesh = new WaterMesh(MESH_NAME, PLANE_SIZE, COMPLEXITY);
-	//waterEntity = mSceneMgr->createEntity(ENTITY_NAME,
-	//	MESH_NAME);
+	//// Create water mesh and entity
+	m_pWaterInterface = new WaterMesh(MESH_NAME, PLANE_SIZE, COMPLEXITY);
+	m_pWaterEntity = m_pSceneMgr->createEntity(ENTITY_NAME,
+		MESH_NAME);
 	//~ waterEntity->setMaterialName(MATERIAL_NAME);
-	//Ogre::SceneNode *waterNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-	//waterNode->attachObject(waterEntity);
+	Ogre::SceneNode *waterNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	waterNode->attachObject(m_pWaterEntity);
 
 	// Add a head, give it it's own node
-	//m_pHeadNode = waterNode->createChildSceneNode();
-	m_pHeadNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	m_pHeadNode = waterNode->createChildSceneNode();
+	//m_pHeadNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	Ogre::Entity *ent = m_pSceneMgr->createEntity("head", "ogrehead.mesh");
 	m_pHeadNode->attachObject(ent);
 
@@ -127,6 +128,8 @@ void WaterSimulation::update(float timePass)
 	m_fTimeoutDelay-=timePass ;
 	if (m_fTimeoutDelay<=0)
 		m_fTimeoutDelay = 0;
+
+	m_pWaterInterface->updateMesh(timePass);
 }
 
 /** Head animation */
@@ -141,7 +144,7 @@ void WaterSimulation::animateHead(Ogre::Real timeSinceLastFrame)
 	}
 	Ogre::Real tx = ((sin(sines[0]) + sin(sines[1])) / 4 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
 	Ogre::Real ty = ((sin(sines[2]) + sin(sines[3])) / 4 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	//waterMesh->push(tx,ty, -headDepth);
+	((WaterMesh *)m_pWaterInterface)->push(tx,ty, -m_fHeadDepth);
 	Ogre::Real step = PLANE_SIZE / COMPLEXITY ;
 	m_pHeadNode->resetToInitialState();
 	m_pHeadNode->scale(3,3,3);
@@ -239,7 +242,7 @@ void WaterSimulation::processParticles()
 			if (x>COMPLEXITY-1) x=COMPLEXITY-1;
 			if (y<1) y=1 ;
 			if (y>COMPLEXITY-1) y=COMPLEXITY-1;
-			//waterMesh->push(x,y,-h) ;
+			((WaterMesh *)m_pWaterInterface)->push(x,y,-h) ;
 			//WaterCircle *circle = new WaterCircle(
 			//	"Circle#"+StringConverter::toString(pindex++),
 			//	x, y);
