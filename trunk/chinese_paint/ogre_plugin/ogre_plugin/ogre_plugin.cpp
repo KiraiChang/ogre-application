@@ -63,7 +63,7 @@ void OgreSample::sliderMoved(OgreBites::Slider* slider)
 {
 	if (slider->getName() == "HeadDepthSlider")
 	{
-		//headDepth = slider->getValue();
+		m_pSim->setHeadDepth( slider->getValue());
 	}
 	else if (slider->getName() == "RippleSpeedSlider")
 	{
@@ -106,7 +106,7 @@ void OgreSample::itemSelected(OgreBites::SelectMenu* menu)
 			"Material "+materialName+"doesn't exist!",
 			"WaterListener::updateMaterial");
 	}
-	//waterEntity->setMaterialName(materialName);
+	m_pSim->setWaterMaterialName(materialName);
 }
 
 bool OgreSample::frameRenderingQueued(const Ogre::FrameEvent& evt)

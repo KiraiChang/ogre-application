@@ -1,6 +1,6 @@
 #ifndef _WATER_SIMULATION_H_
 #define _WATER_SIMULATION_H_
-
+#include <iostream>
 namespace Ogre
 {
 	class SceneManager;
@@ -21,9 +21,9 @@ private:
 	Ogre::Camera*								m_pCamera;
 
 	Ogre::SceneNode*							m_pHeadNode ;
-	Ogre::AnimationState*						m_pAnimState;
-	Ogre::ParticleSystem*						m_pParticleSystem ;
-	Ogre::ParticleEmitter*						m_pParticleEmitter ;
+	//Ogre::AnimationState*						m_pAnimState;
+	//Ogre::ParticleSystem*						m_pParticleSystem ;
+	//Ogre::ParticleEmitter*						m_pParticleEmitter ;
 
 	WaterInterface*								m_pWaterInterface;
 	Ogre::Entity*								m_pWaterEntity ;
@@ -38,12 +38,14 @@ public:
 	void										init(void);
 	void										release(void);
 	void										update(float timePass);
+	void										setHeadDepth(const float &depth) {m_fHeadDepth = depth;}
 public:
 	/** Head animation */
 	void										animateHead(float timeSinceLastFrame);
 	void										prepareCircleMaterial();
 	void										processCircles(float timeSinceLastFrame);
 	void										processParticles();
+	void										setWaterMaterialName(const std::string &name);
 };
 
 

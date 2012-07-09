@@ -46,7 +46,7 @@ void WaterSimulation::init(void)
 	m_pWaterInterface = new WaterMesh(MESH_NAME, PLANE_SIZE, COMPLEXITY);
 	m_pWaterEntity = m_pSceneMgr->createEntity(ENTITY_NAME,
 		MESH_NAME);
-	//~ waterEntity->setMaterialName(MATERIAL_NAME);
+	m_pWaterEntity->setMaterialName(MATERIAL_NAME);
 	Ogre::SceneNode *waterNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	waterNode->attachObject(m_pWaterEntity);
 
@@ -87,24 +87,24 @@ void WaterSimulation::init(void)
 	}
 	key = track->createNodeKeyFrame(20);
 
-	// Create a new animation state to track this
-	m_pAnimState = m_pSceneMgr->createAnimationState("WaterLight");
-	m_pAnimState->setEnabled(true);
+	//// Create a new animation state to track this
+	//m_pAnimState = m_pSceneMgr->createAnimationState("WaterLight");
+	//m_pAnimState->setEnabled(true);
 
-	//Put in a bit of fog for the hell of it
-	//m_pSceneMgr->setFog(Ogre::FOG_EXP, Ogre::ColourValue::White, 0.0002);
+	////Put in a bit of fog for the hell of it
+	////m_pSceneMgr->setFog(Ogre::FOG_EXP, Ogre::ColourValue::White, 0.0002);
 
-	// Let there be rain
-	m_pParticleSystem = m_pSceneMgr->createParticleSystem("rain",
-		"Examples/Water/Rain");
-	m_pParticleEmitter = m_pParticleSystem->getEmitter(0);
-	Ogre::SceneNode* rNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	rNode->translate(PLANE_SIZE/2.0f, 3000, PLANE_SIZE/2.0f);
-	rNode->attachObject(m_pParticleSystem);
-	// Fast-forward the rain so it looks more natural
-	m_pParticleSystem->fastForward(20);
-	// It can't be set in .particle file, and we need it ;)
-	static_cast<Ogre::BillboardParticleRenderer*>(m_pParticleSystem->getRenderer())->setBillboardOrigin(Ogre::BillboardOrigin::BBO_BOTTOM_CENTER);
+	//// Let there be rain
+	//m_pParticleSystem = m_pSceneMgr->createParticleSystem("rain",
+	//	"Examples/Water/Rain");
+	//m_pParticleEmitter = m_pParticleSystem->getEmitter(0);
+	//Ogre::SceneNode* rNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//rNode->translate(PLANE_SIZE/2.0f, 3000, PLANE_SIZE/2.0f);
+	//rNode->attachObject(m_pParticleSystem);
+	//// Fast-forward the rain so it looks more natural
+	//m_pParticleSystem->fastForward(20);
+	//// It can't be set in .particle file, and we need it ;)
+	//static_cast<Ogre::BillboardParticleRenderer*>(m_pParticleSystem->getRenderer())->setBillboardOrigin(Ogre::BillboardOrigin::BBO_BOTTOM_CENTER);
 
 	prepareCircleMaterial();
 }
@@ -226,27 +226,32 @@ void WaterSimulation::processCircles(Ogre::Real timeSinceLastFrame)
 
 void WaterSimulation::processParticles()
 {
-	static int pindex = 0 ;
-	Ogre::ParticleIterator pit = m_pParticleSystem->_getIterator() ;
-	while(!pit.end()) {
-		Ogre::Particle *particle = pit.getNext();
-		Ogre::Vector3 ppos = particle->position;
-		if (ppos.y<=0 && particle->timeToLive>0) { // hits the water!
-			// delete particle
-			particle->timeToLive = 0.0f;
-			// push the water
-			float x = ppos.x / PLANE_SIZE * COMPLEXITY ;
-			float y = ppos.z / PLANE_SIZE * COMPLEXITY ;
-			float h = rand() % RAIN_HEIGHT_RANDOM + RAIN_HEIGHT_CONSTANT ;
-			if (x<1) x=1 ;
-			if (x>COMPLEXITY-1) x=COMPLEXITY-1;
-			if (y<1) y=1 ;
-			if (y>COMPLEXITY-1) y=COMPLEXITY-1;
-			((WaterMesh *)m_pWaterInterface)->push(x,y,-h) ;
-			//WaterCircle *circle = new WaterCircle(
-			//	"Circle#"+StringConverter::toString(pindex++),
-			//	x, y);
-			//circles.push_back(circle);
-		}
-	}
+	//static int pindex = 0 ;
+	//Ogre::ParticleIterator pit = m_pParticleSystem->_getIterator() ;
+	//while(!pit.end()) {
+	//	Ogre::Particle *particle = pit.getNext();
+	//	Ogre::Vector3 ppos = particle->position;
+	//	if (ppos.y<=0 && particle->timeToLive>0) { // hits the water!
+	//		// delete particle
+	//		particle->timeToLive = 0.0f;
+	//		// push the water
+	//		float x = ppos.x / PLANE_SIZE * COMPLEXITY ;
+	//		float y = ppos.z / PLANE_SIZE * COMPLEXITY ;
+	//		float h = rand() % RAIN_HEIGHT_RANDOM + RAIN_HEIGHT_CONSTANT ;
+	//		if (x<1) x=1 ;
+	//		if (x>COMPLEXITY-1) x=COMPLEXITY-1;
+	//		if (y<1) y=1 ;
+	//		if (y>COMPLEXITY-1) y=COMPLEXITY-1;
+	//		((WaterMesh *)m_pWaterInterface)->push(x,y,-h) ;
+	//		//WaterCircle *circle = new WaterCircle(
+	//		//	"Circle#"+StringConverter::toString(pindex++),
+	//		//	x, y);
+	//		//circles.push_back(circle);
+	//	}
+	//}
+}
+
+void WaterSimulation::setWaterMaterialName(const std::string &name)
+{
+	m_pWaterEntity->setMaterialName(name);
 }
