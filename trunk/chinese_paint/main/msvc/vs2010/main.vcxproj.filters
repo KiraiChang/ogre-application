@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="main">
+      <UniqueIdentifier>{799623b5-439f-4334-9461-80883b19f142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ogre_app">
+      <UniqueIdentifier>{47b65516-fa91-451d-a084-7984e5c9d51a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\main\main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ogre_app\ogre_app.cpp">
+      <Filter>ogre_app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ogre_app\FileSystemLayerImpl_WIN32.cpp">
+      <Filter>ogre_app</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\ogre_app\ogre_app.h">
+      <Filter>ogre_app</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
