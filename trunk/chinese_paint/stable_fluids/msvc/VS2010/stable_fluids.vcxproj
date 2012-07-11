@@ -11,16 +11,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\water_simulation\water_mesh.cpp" />
-    <ClCompile Include="..\..\water_simulation\water_simulation.cpp" />
+    <ClInclude Include="..\..\stable_fluids\stable_fluids.h" />
+    <ClInclude Include="..\..\stable_fluids\stable_fluids_grid.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\water_simulation\water_interface.h" />
-    <ClInclude Include="..\..\water_simulation\water_mesh.h" />
-    <ClInclude Include="..\..\water_simulation\water_simulation.h" />
+    <ClCompile Include="..\..\stable_fluids\solver.cpp" />
+    <ClCompile Include="..\..\stable_fluids\stable_fluids.cpp" />
+    <ClCompile Include="..\..\stable_fluids\stable_fluids_grid.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{44A16D2E-5E0A-40B4-AB8B-E52742D97152}</ProjectGuid>
+    <ProjectGuid>{5E327894-6368-4662-A351-60320582ED6E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>water_simulation</RootNamespace>
   </PropertyGroup>
