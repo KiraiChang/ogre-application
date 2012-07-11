@@ -12,6 +12,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "main", "..\..\main\msvc\vs2
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "water_simulation", "..\..\water_simulation\msvc\VS2010\water_simulation.vcxproj", "{44A16D2E-5E0A-40B4-AB8B-E52742D97152}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stable_fluids", "..\..\stable_fluids\msvc\VS2010\stable_fluids.vcxproj", "{5E327894-6368-4662-A351-60320582ED6E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -30,6 +32,10 @@ Global
 		{44A16D2E-5E0A-40B4-AB8B-E52742D97152}.Debug|Win32.Build.0 = Debug|Win32
 		{44A16D2E-5E0A-40B4-AB8B-E52742D97152}.Release|Win32.ActiveCfg = Release|Win32
 		{44A16D2E-5E0A-40B4-AB8B-E52742D97152}.Release|Win32.Build.0 = Release|Win32
+		{5E327894-6368-4662-A351-60320582ED6E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5E327894-6368-4662-A351-60320582ED6E}.Debug|Win32.Build.0 = Debug|Win32
+		{5E327894-6368-4662-A351-60320582ED6E}.Release|Win32.ActiveCfg = Release|Win32
+		{5E327894-6368-4662-A351-60320582ED6E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
