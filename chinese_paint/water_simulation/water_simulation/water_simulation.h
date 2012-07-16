@@ -30,6 +30,7 @@ private:
 
 	float										m_fTimeoutDelay ;
 	float										m_fHeadDepth ;
+	float										m_fMoveSpeed;
 	//typedef vector<WaterCircle*>::type		WaterCircles ;
 	//WaterCircles								circles ;
 public:
@@ -46,6 +47,7 @@ public:
 	void										processCircles(float timeSinceLastFrame);
 	void										processParticles();
 	void										setWaterMaterialName(const std::string &name);
+	void										setMoveSpeed(const float &speed);
 };
 
 

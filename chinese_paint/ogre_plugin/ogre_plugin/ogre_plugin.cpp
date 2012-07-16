@@ -46,6 +46,7 @@ void OgreSample::setupControls()
 	mTrayMgr->createThickSlider(OgreBites::TL_TOPRIGHT, "DistanceSlider", "Distance", PANEL_WIDTH, 80, 0.1, 5.0, 50)->setValue(0.4, false);
 	mTrayMgr->createThickSlider(OgreBites::TL_TOPRIGHT, "ViscositySlider", "Viscosity", PANEL_WIDTH, 80, 0, 1, 50)->setValue(0.05, false);
 	mTrayMgr->createThickSlider(OgreBites::TL_TOPRIGHT, "FrameTimeSlider", "FrameTime", PANEL_WIDTH, 80, 0, 1, 61)->setValue(0.13, false);
+	mTrayMgr->createThickSlider(OgreBites::TL_TOPRIGHT, "MoveSpeedSlider", "MoveSpeed", PANEL_WIDTH, 80, 0, 1, 72)->setValue(1.0, false);
 
 	mTrayMgr->showCursor();
 }
@@ -80,6 +81,10 @@ void OgreSample::sliderMoved(OgreBites::Slider* slider)
 	else if (slider->getName() == "FrameTimeSlider")
 	{
 		//waterMesh->PARAM_T = slider->getValue();
+	}
+	else if (slider->getName() == "MoveSpeedSlider")
+	{
+		m_pSim->setMoveSpeed( slider->getValue());
 	}
 }
 

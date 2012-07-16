@@ -8,7 +8,8 @@
 #define ENTITY_NAME "WaterEntity"
 #define MATERIAL_NAME "Examples/Water0"
 #define COMPLEXITY 64 		// watch out - number of polys is 2*ACCURACY*ACCURACY !
-#define PLANE_SIZE 3000.0f
+//#define PLANE_SIZE 3000.0f
+#define PLANE_SIZE 6000.0f
 #define CIRCLES_MATERIAL "Examples/Water/Circles"
 
 #define PANEL_WIDTH 200
@@ -18,7 +19,8 @@
 WaterSimulation::WaterSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam):m_pSceneMgr(sceneMgr),
 																m_pCamera(cam),
 																m_fTimeoutDelay(0.0f),
-																m_fHeadDepth(2.0f)
+																m_fHeadDepth(2.0f),
+																m_fMoveSpeed(1.0f)
 																
 {
 
@@ -61,8 +63,9 @@ void WaterSimulation::init(void)
 
 	// Create the camera node, set its position & attach camera
 	Ogre::SceneNode* camNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	camNode->translate(0, 500, PLANE_SIZE);
-	camNode->yaw(Ogre::Degree(-45));
+	camNode->translate(3000, 7500, 3000);
+	//camNode->yaw(Ogre::Degree(-45));
+	camNode->pitch(Ogre::Degree(-90));
 	camNode->attachObject(m_pCamera);
 
 	// Create light node
@@ -119,17 +122,21 @@ void WaterSimulation::release(void)
 
 void WaterSimulation::update(float timePass)
 {
-	processCircles(timePass);
-	
-	processParticles();
+	if(m_fMoveSpeed > 0)
+	{
+		float t = timePass * m_fMoveSpeed;
+		processCircles(t);
 
-	animateHead(timePass);
+		processParticles();
 
-	m_fTimeoutDelay-=timePass ;
-	if (m_fTimeoutDelay<=0)
-		m_fTimeoutDelay = 0;
+		animateHead(t);
 
-	m_pWaterInterface->updateMesh(timePass);
+		m_fTimeoutDelay-=t ;
+		if (m_fTimeoutDelay<=0)
+			m_fTimeoutDelay = 0;
+
+		m_pWaterInterface->updateMesh(t);
+	}
 }
 
 /** Head animation */
@@ -138,7 +145,6 @@ void WaterSimulation::animateHead(Ogre::Real timeSinceLastFrame)
 	// sine track? :)
 	static double sines[4] = {0,100,200,300};
 	static const double adds[4] = {0.3,-1.6,1.1,0.5};
-	static Ogre::Vector3 oldPos = Ogre::Vector3::UNIT_Z;
 	for(int i=0;i<4;i++) {
 		sines[i]+=adds[i]*timeSinceLastFrame;
 	}
@@ -149,6 +155,7 @@ void WaterSimulation::animateHead(Ogre::Real timeSinceLastFrame)
 	m_pHeadNode->resetToInitialState();
 	m_pHeadNode->scale(3,3,3);
 	Ogre::Vector3 newPos = Ogre::Vector3(step*tx, m_fHeadDepth, step*ty);
+	static Ogre::Vector3 oldPos = Ogre::Vector3::UNIT_Z;
 	Ogre::Vector3 diffPos = newPos - oldPos ;
 	Ogre::Quaternion headRotation = Ogre::Vector3::UNIT_Z.getRotationTo(diffPos);
 	oldPos = newPos ;
@@ -254,4 +261,9 @@ void WaterSimulation::processParticles()
 void WaterSimulation::setWaterMaterialName(const std::string &name)
 {
 	m_pWaterEntity->setMaterialName(name);
+}
+
+void WaterSimulation::setMoveSpeed(const float &speed)
+{
+	m_fMoveSpeed = speed;
 }
