@@ -274,10 +274,10 @@ void WaterMesh::updateMesh(float timeSinceLastFrame)
 		float *buf1 = vertexBuffers[(currentBuffNumber+2)%3] + 1 ;
 		float *buf2 = vertexBuffers[(currentBuffNumber+1)%3] + 1;
 
-		/* we use an algorithm from
-		 * http://collective.valve-erc.com/index.php?go=water_simulation
-		 * The params could be dynamically changed every frame ofcourse
-		 */
+		///* we use an algorithm from
+		// * http://collective.valve-erc.com/index.php?go=water_simulation
+		// * The params could be dynamically changed every frame ofcourse
+		// */
 		double C = PARAM_C; // ripple speed
 		double D = PARAM_D; // distance
 		double U = PARAM_U; // viscosity

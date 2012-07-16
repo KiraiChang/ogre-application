@@ -40,6 +40,7 @@ public:
 	*	@note 
 	*		This should be replaced by push with 'radius' parameter to simulate
 	*  		big objects falling into water
+	*		x和y不可以大於complexity
 	*/
 	void push(float x, float y, float depth, bool absolute=false) ;
 
