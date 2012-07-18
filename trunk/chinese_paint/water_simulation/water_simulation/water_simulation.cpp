@@ -154,30 +154,22 @@ void WaterSimulation::animateHead(Ogre::Real timeSinceLastFrame)
 	static double sine = 0;
 	static const double MOVE = 0.5;
 	sine += MOVE * timeSinceLastFrame;
-	Ogre::Real tx = (sin(sine) / 4 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	Ogre::Real dx1 = (sin(sine-0.1) / 4 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	Ogre::Real dx2 = (sin(sine-0.2) / 4 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	Ogre::Real dx3 = (sin(sine-0.3) / 4 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+
+	//Fish Head
+	Ogre::Real tx = (sin(sine / 2) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
 	Ogre::Real ty = 32;//(sin(sine) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+	((WaterMesh *)m_pWaterInterface)->push(tx,ty, -m_fHeadDepth);
+
+	//Fish Body
+	Ogre::Real dx1 = (sin((sine / 2)-0.1) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+	Ogre::Real dx2 = (sin((sine / 2)-0.2) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+	Ogre::Real dx3 = (sin((sine / 2)-0.3) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
 	Ogre::Real dy1 = (sin(sine * 2) / 32 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
 	Ogre::Real dy2 = (sin(sine * 3) / 32 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
 	Ogre::Real dy3 = (sin(sine * 4) / 32 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	((WaterMesh *)m_pWaterInterface)->push(tx,ty, -m_fHeadDepth);
 	((WaterMesh *)m_pWaterInterface)->push(dx1,dy1, -m_fHeadDepth);
 	((WaterMesh *)m_pWaterInterface)->push(dx2,dy2, -m_fHeadDepth);
 	((WaterMesh *)m_pWaterInterface)->push(dx3,dy3, -m_fHeadDepth);
-	//static double timePass = 0;
-	//timePass +=  timeSinceLastFrame;
-	//if(timePass < 1)
-	//{
-	//	((WaterMesh *)m_pWaterInterface)->push(dx,ty + sin(sine), -m_fHeadDepth);
-	//}
-	//else if(timePass < 2)
-	//{
-	//	((WaterMesh *)m_pWaterInterface)->push(dx,ty - sin(sine), -m_fHeadDepth);
-	//}
-	//else
-	//	timePass = 0.0f;
 
 	Ogre::Real step = PLANE_SIZE / COMPLEXITY ;
 	m_pHeadNode->resetToInitialState();
