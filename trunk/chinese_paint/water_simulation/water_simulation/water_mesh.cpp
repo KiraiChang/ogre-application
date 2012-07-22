@@ -268,33 +268,54 @@ void WaterMesh::updateMesh(float timeSinceLastFrame)
 	// do rendering to get ANIMATIONS_PER_SECOND
 	while(lastAnimationTimeStamp <= lastTimeStamp) {
 
+		//// switch buffer numbers
+		//currentBuffNumber = (currentBuffNumber + 1) % 3 ;
+		//float *buf = vertexBuffers[currentBuffNumber] + 1 ; // +1 for Y coordinate
+		//float *buf1 = vertexBuffers[(currentBuffNumber+2)%3] + 1 ;
+		//float *buf2 = vertexBuffers[(currentBuffNumber+1)%3] + 1;
+
+		/////* we use an algorithm from
+		//// * http://collective.valve-erc.com/index.php?go=water_simulation
+		//// * The params could be dynamically changed every frame ofcourse
+		//// */
+		//double C = PARAM_C; // ripple speed
+		//double D = PARAM_D; // distance
+		//double U = PARAM_U; // viscosity
+		//double T = PARAM_T; // time
+		//float TERM1 = ( 4.0f - 8.0f*C*C*T*T/(D*D) ) / (U*T+2) ;
+		//float TERM2 = ( U*T-2.0f ) / (U*T+2.0f) ;
+		//float TERM3 = ( 2.0f * C*C*T*T/(D*D) ) / (U*T+2) ;
+		//for(y=1;y<complexity;y++) { // don't do anything with border values
+		//	float *row = buf + 3*y*(complexity+1) ;
+		//	float *row1 = buf1 + 3*y*(complexity+1) ;
+		//	float *row1up = buf1 + 3*(y-1)*(complexity+1) ;
+		//	float *row1down = buf1 + 3*(y+1)*(complexity+1) ;
+		//	float *row2 = buf2 + 3*y*(complexity+1) ;
+		//	for(x=1;x<complexity;x++) {
+		//		row[3*x] = TERM1 * row1[3*x]
+		//			+ TERM2 * row2[3*x]
+		//			+ TERM3 * ( row1[3*x-3] + row1[3*x+3] + row1up[3*x]+row1down[3*x] ) ;
+		//	}
+		//}
+
 		// switch buffer numbers
 		currentBuffNumber = (currentBuffNumber + 1) % 3 ;
 		float *buf = vertexBuffers[currentBuffNumber] + 1 ; // +1 for Y coordinate
 		float *buf1 = vertexBuffers[(currentBuffNumber+2)%3] + 1 ;
 		float *buf2 = vertexBuffers[(currentBuffNumber+1)%3] + 1;
-
-		///* we use an algorithm from
-		// * http://collective.valve-erc.com/index.php?go=water_simulation
-		// * The params could be dynamically changed every frame ofcourse
-		// */
-		double C = PARAM_C; // ripple speed
-		double D = PARAM_D; // distance
-		double U = PARAM_U; // viscosity
-		double T = PARAM_T; // time
-		float TERM1 = ( 4.0f - 8.0f*C*C*T*T/(D*D) ) / (U*T+2) ;
-		float TERM2 = ( U*T-2.0f ) / (U*T+2.0f) ;
-		float TERM3 = ( 2.0f * C*C*T*T/(D*D) ) / (U*T+2) ;
-		for(y=1;y<complexity;y++) { // don't do anything with border values
+		float dt = timeSinceLastFrame * timeSinceLastFrame;
+		for(y=1;y<complexity;y++) // don't do anything with border values
+		{ 
 			float *row = buf + 3*y*(complexity+1) ;
 			float *row1 = buf1 + 3*y*(complexity+1) ;
 			float *row1up = buf1 + 3*(y-1)*(complexity+1) ;
 			float *row1down = buf1 + 3*(y+1)*(complexity+1) ;
 			float *row2 = buf2 + 3*y*(complexity+1) ;
-			for(x=1;x<complexity;x++) {
-				row[3*x] = TERM1 * row1[3*x]
-					+ TERM2 * row2[3*x]
-					+ TERM3 * ( row1[3*x-3] + row1[3*x+3] + row1up[3*x]+row1down[3*x] ) ;
+			for(x=1;x<complexity;x++) 
+			{
+				float force = 10 * (row1[3*x-3] + row1[3*x+3] + row1up[3*x]+row1down[3*x] - (4 * row[3*x]));
+				float newHight =  (1.99 * row1[3*x]) - (0.99 * row2[3*x]) + (0.5 * force * dt);
+				row[3*x] = newHight;
 			}
 		}
 

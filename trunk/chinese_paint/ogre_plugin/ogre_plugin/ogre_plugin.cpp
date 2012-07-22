@@ -1,6 +1,7 @@
 #include "ogre_plugin.h"
 #include "OgreBillboardParticleRenderer.h"
 #include "../../water_simulation/water_simulation/water_simulation.h"
+#include "../../water_simulation/water_simulation/water_mesh.h"
 
 #define MATERIAL_PREFIX "Examples/Water"
 #define PANEL_WIDTH 200
@@ -68,19 +69,23 @@ void OgreSample::sliderMoved(OgreBites::Slider* slider)
 	}
 	else if (slider->getName() == "RippleSpeedSlider")
 	{
-		//waterMesh->PARAM_C = slider->getValue();
+		WaterMesh *mesh = (WaterMesh *)m_pSim->getWater();
+		mesh->PARAM_C = slider->getValue();
 	}
 	else if (slider->getName() == "DistanceSlider")
 	{
-		//waterMesh->PARAM_D = slider->getValue();
+		WaterMesh *mesh = (WaterMesh *)m_pSim->getWater();
+		mesh->PARAM_D = slider->getValue();
 	}
 	else if (slider->getName() == "ViscositySlider")
 	{
-		//waterMesh->PARAM_U = slider->getValue();
+		WaterMesh *mesh = (WaterMesh *)m_pSim->getWater();
+		mesh->PARAM_U = slider->getValue();
 	}
 	else if (slider->getName() == "FrameTimeSlider")
 	{
-		//waterMesh->PARAM_T = slider->getValue();
+		WaterMesh *mesh = (WaterMesh *)m_pSim->getWater();
+		mesh->PARAM_T = slider->getValue();
 	}
 	else if (slider->getName() == "MoveSpeedSlider")
 	{
