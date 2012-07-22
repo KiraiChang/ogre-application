@@ -63,7 +63,7 @@ void WaterSimulation::init(void)
 
 	// Create the camera node, set its position & attach camera
 	Ogre::SceneNode* camNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	camNode->translate(3000, 7500, 3000);
+	camNode->translate(3000, 5500, 3000);
 	//camNode->yaw(Ogre::Degree(-45));
 	camNode->pitch(Ogre::Degree(-90));
 	camNode->attachObject(m_pCamera);
@@ -157,19 +157,19 @@ void WaterSimulation::animateHead(Ogre::Real timeSinceLastFrame)
 
 	//Fish Head
 	Ogre::Real tx = (sin(sine / 2) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	Ogre::Real ty = 32;//(sin(sine) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+	Ogre::Real ty = (sin(sine * 3) / 32 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
 	((WaterMesh *)m_pWaterInterface)->push(tx,ty, -m_fHeadDepth);
 
-	//Fish Body
-	Ogre::Real dx1 = (sin((sine / 2)-0.1) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	Ogre::Real dx2 = (sin((sine / 2)-0.2) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	Ogre::Real dx3 = (sin((sine / 2)-0.3) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	Ogre::Real dy1 = (sin(sine * 2) / 32 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	Ogre::Real dy2 = (sin(sine * 3) / 32 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	Ogre::Real dy3 = (sin(sine * 4) / 32 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
-	((WaterMesh *)m_pWaterInterface)->push(dx1,dy1, -m_fHeadDepth);
-	((WaterMesh *)m_pWaterInterface)->push(dx2,dy2, -m_fHeadDepth);
-	((WaterMesh *)m_pWaterInterface)->push(dx3,dy3, -m_fHeadDepth);
+	////Fish Body
+	//Ogre::Real dx1 = (sin((sine / 2)-0.01) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+	//Ogre::Real dx2 = (sin((sine / 2)-0.02) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+	//Ogre::Real dx3 = (sin((sine / 2)-0.03) / 2 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+	//Ogre::Real dy1 = (sin(sine * 2) / 32 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+	//Ogre::Real dy2 = (sin(sine * 3) / 32 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+	//Ogre::Real dy3 = (sin(sine * 4) / 32 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+	//((WaterMesh *)m_pWaterInterface)->push(dx1,dy1, -m_fHeadDepth);
+	//((WaterMesh *)m_pWaterInterface)->push(dx2,dy2, -m_fHeadDepth);
+	//((WaterMesh *)m_pWaterInterface)->push(dx3,dy3, -m_fHeadDepth);
 
 	Ogre::Real step = PLANE_SIZE / COMPLEXITY ;
 	m_pHeadNode->resetToInitialState();

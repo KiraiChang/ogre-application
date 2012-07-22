@@ -48,6 +48,7 @@ public:
 	void										processParticles();
 	void										setWaterMaterialName(const std::string &name);
 	void										setMoveSpeed(const float &speed);
+	WaterInterface*								getWater()	{return m_pWaterInterface;}
 };
 
 
