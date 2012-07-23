@@ -5,6 +5,11 @@
 #include <iostream>
 #include <ogre.h>
 
+enum SIMULATION_MODE
+{
+	eOGREMode=0,
+	eVTFWMode
+};
 class WaterMesh : public WaterInterface
 {
 private:
@@ -29,6 +34,9 @@ private:
 	
 	void calculateFakeNormals();
 	void calculateNormals();
+
+	void ogreSimulation(float timepass);
+	void vtfwSimulation(float timepass);
 public:
 	WaterMesh(const std::string& meshName, float planeSize, int complexity) ;
     
@@ -55,6 +63,7 @@ public:
 	float PARAM_U ; // viscosity
 	float PARAM_T ; // time
 	bool useFakeNormals ;
+	SIMULATION_MODE m_eSimulationMode;
 };
 
 #endif //_WATER_MESH_H_
