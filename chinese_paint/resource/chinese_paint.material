@@ -1,0 +1,46 @@
+vertex_program ChinesePaint/Water/WaterWaveVS cg
+{
+	source chinese_paint.cg
+	entry_point WaterWaveVS
+	profiles vp40 vs_2_x
+}
+
+fragment_program ChinesePaint/Water/WaterWavePS cg
+{
+	source chinese_paint.cg
+	entry_point WaterWavePS
+	profiles arbfp1 fp40
+}
+
+
+material ChinesePaint/Water
+{
+	technique
+	{
+		pass WaterWave
+		{
+			vertex_program_ref ChinesePaint/Water/WaterWaveVS
+			{
+			
+			}
+			
+			fragment_program_ref ChinesePaint/Water/WaterWavePS
+			{
+			
+			}
+			
+			texture_unit previousHeightSampler
+			{
+			}
+ 
+			texture_unit heightSampler
+			{
+			}
+			
+			texture_unit dampeningSampler
+			{
+				texture dampening.tga
+			}
+		}
+	}
+}

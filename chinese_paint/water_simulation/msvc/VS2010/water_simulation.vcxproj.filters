@@ -12,6 +12,9 @@
     <ClCompile Include="..\..\water_simulation\water_mesh.cpp">
       <Filter>water_simulation</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\water_simulation\vtfw_mesh.cpp">
+      <Filter>water_simulation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\water_simulation\water_simulation.h">
@@ -21,6 +24,9 @@
       <Filter>water_simulation</Filter>
     </ClInclude>
     <ClInclude Include="..\..\water_simulation\water_mesh.h">
+      <Filter>water_simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\water_simulation\vtfw_mesh.h">
       <Filter>water_simulation</Filter>
     </ClInclude>
   </ItemGroup>

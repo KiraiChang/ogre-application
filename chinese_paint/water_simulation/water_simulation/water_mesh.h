@@ -15,6 +15,7 @@ class WaterMesh : public WaterInterface
 private:
 	Ogre::MeshPtr mesh ;
 	Ogre::SubMesh *subMesh ; 
+	Ogre::Image image;
 	float *vertexBuffers[3] ; // we need 3 vertex buffers
 	int currentBuffNumber ;
 	int complexity ;
