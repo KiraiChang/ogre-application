@@ -5,6 +5,7 @@
 WaterMesh::WaterMesh(const std::string& inMeshName, float planeSize, int inComplexity):m_eSimulationMode(eVTFWMode)
 {
 	int x,y,b; // I prefer to initialize for() variables inside it, but VC doesn't like it ;(
+	image.load("dampening.tga", "Popular");
 
 	this->meshName = inMeshName ;
 	this->complexity = inComplexity ;
@@ -296,6 +297,7 @@ void WaterMesh::vtfwSimulation(float timepass)
 {
 	// switch buffer numbers
 	int x, y;
+	Ogre::ColourValue color;
 	currentBuffNumber = (currentBuffNumber + 1) % 3 ;
 	float *buf = vertexBuffers[currentBuffNumber] + 1 ; // +1 for Y coordinate
 	float *buf1 = vertexBuffers[(currentBuffNumber+2)%3] + 1 ;
@@ -310,7 +312,8 @@ void WaterMesh::vtfwSimulation(float timepass)
 		float *row2 = buf2 + 3*y*(complexity+1) ;
 		for(x=1;x<complexity;x++) 
 		{
-			float force = 10 * (row1[3*x-3] + row1[3*x+3] + row1up[3*x]+row1down[3*x] - (4 * row[3*x]));
+			color = image.getColourAt(x, y, 0);
+			float force = 5 * color.r *  (row1[3*x-3] + row1[3*x+3] + row1up[3*x]+row1down[3*x] - (4 * row[3*x]));
 			float newHight =  (1.99 * row1[3*x]) - (0.99 * row2[3*x]) + (0.5 * force * dt);
 			row[3*x] = newHight;
 		}

@@ -11,10 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\water_simulation\vtfw_mesh.cpp" />
     <ClCompile Include="..\..\water_simulation\water_mesh.cpp" />
     <ClCompile Include="..\..\water_simulation\water_simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\water_simulation\vtfw_mesh.h" />
     <ClInclude Include="..\..\water_simulation\water_interface.h" />
     <ClInclude Include="..\..\water_simulation\water_mesh.h" />
     <ClInclude Include="..\..\water_simulation\water_simulation.h" />
