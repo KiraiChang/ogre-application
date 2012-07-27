@@ -19,7 +19,7 @@
 WaterSimulation::WaterSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam):m_pSceneMgr(sceneMgr),
 																m_pCamera(cam),
 																m_fTimeoutDelay(0.0f),
-																m_fHeadDepth(2.0f),
+																m_fHeadDepth(1.0f),
 																m_fMoveSpeed(1.0f)
 																
 {
