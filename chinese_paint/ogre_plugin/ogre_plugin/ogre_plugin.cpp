@@ -1,7 +1,7 @@
 #include "ogre_plugin.h"
 #include "OgreBillboardParticleRenderer.h"
-#include "../../water_simulation/water_simulation/water_simulation.h"
-#include "../../water_simulation/water_simulation/water_mesh.h"
+#include "../water_simulation/water_simulation.h"
+#include "../water_simulation/water_mesh.h"
 
 #define MATERIAL_PREFIX "Examples/Water"
 #define PANEL_WIDTH 200
