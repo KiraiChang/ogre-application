@@ -4,6 +4,9 @@
     <Filter Include="ogre_plugin">
       <UniqueIdentifier>{799623b5-439f-4334-9461-80883b19f142}</UniqueIdentifier>
     </Filter>
+    <Filter Include="water_simulation">
+      <UniqueIdentifier>{9eb03db7-aa7e-4e76-b125-5e8aa033e492}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ogre_plugin\ogre_plugin.cpp">
@@ -12,10 +15,25 @@
     <ClCompile Include="..\..\ogre_plugin\sample_generator.cpp">
       <Filter>ogre_plugin</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\water_simulation\water_mesh.cpp">
+      <Filter>water_simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\water_simulation\water_simulation.cpp">
+      <Filter>water_simulation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_plugin\ogre_plugin.h">
       <Filter>ogre_plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\water_simulation\water_interface.h">
+      <Filter>water_simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\water_simulation\water_mesh.h">
+      <Filter>water_simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\water_simulation\water_simulation.h">
+      <Filter>water_simulation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

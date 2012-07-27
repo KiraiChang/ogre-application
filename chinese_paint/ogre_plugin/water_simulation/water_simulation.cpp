@@ -146,7 +146,7 @@ void WaterSimulation::animateHead(Ogre::Real timeSinceLastFrame)
 	static double sines[4] = {0,100,200,300};
 	static const double adds[4] = {0.3,-1.6,1.1,0.5};
 	for(int i=0;i<4;i++) {
-		sines[i]+=adds[i]*timeSinceLastFrame;
+		sines[i]+=adds[i]*timeSinceLastFrame*0.3;
 	}
 	Ogre::Real tx = ((sin(sines[0]) + sin(sines[1])) / 4 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
 	Ogre::Real ty = ((sin(sines[2]) + sin(sines[3])) / 4 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
@@ -156,7 +156,7 @@ void WaterSimulation::animateHead(Ogre::Real timeSinceLastFrame)
 	//sine += MOVE * timeSinceLastFrame;
 
 	////Fish Head
-	//Ogre::Real tx = (sin(sine / 2) / 4 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
+	//Ogre::Real tx = (sin(sine / 2) / 3 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
 	//Ogre::Real ty = (sin(sine * 3) / 32 + 0.5 ) * (float)(COMPLEXITY-2) + 1 ;
 	((WaterMesh *)m_pWaterInterface)->push(tx,ty, -m_fHeadDepth);
 
