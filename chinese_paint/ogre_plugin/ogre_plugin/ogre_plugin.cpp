@@ -33,7 +33,7 @@ void OgreSample::setupControls()
 	mTrayMgr->createLabel(OgreBites::TL_TOPLEFT, "GeneralLabel", "General", PANEL_WIDTH);
 	mTrayMgr->createCheckBox(OgreBites::TL_TOPLEFT, "FakeNormalsCB", "Fake normals", PANEL_WIDTH);
 	mTrayMgr->createCheckBox(OgreBites::TL_TOPLEFT, "SkyboxCB", "Skybox", PANEL_WIDTH);
-	mTrayMgr->createThickSlider(OgreBites::TL_TOPLEFT, "HeadDepthSlider", "Head Depth", PANEL_WIDTH, 80, 1, 3, 50)->setValue(2.0f);
+	mTrayMgr->createThickSlider(OgreBites::TL_TOPLEFT, "HeadDepthSlider", "Head Depth", PANEL_WIDTH, 80, 1, 3, 50)->setValue(1.0f);
 	OgreBites::SelectMenu* waterMaterial = mTrayMgr->createThickSelectMenu(OgreBites::TL_TOPLEFT, "WaterMaterialMenu", "Water material", PANEL_WIDTH, 9);
 	for (size_t i = 0; i < 9; i++)
 	{
