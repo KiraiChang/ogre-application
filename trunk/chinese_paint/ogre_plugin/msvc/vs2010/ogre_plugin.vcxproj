@@ -13,9 +13,14 @@
   <ItemGroup>
     <ClCompile Include="..\..\ogre_plugin\ogre_plugin.cpp" />
     <ClCompile Include="..\..\ogre_plugin\sample_generator.cpp" />
+    <ClCompile Include="..\..\water_simulation\water_mesh.cpp" />
+    <ClCompile Include="..\..\water_simulation\water_simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_plugin\ogre_plugin.h" />
+    <ClInclude Include="..\..\water_simulation\water_interface.h" />
+    <ClInclude Include="..\..\water_simulation\water_mesh.h" />
+    <ClInclude Include="..\..\water_simulation\water_simulation.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EA456969-0720-4731-8022-8964E2E8E2E2}</ProjectGuid>
@@ -74,8 +79,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\..\..\..\..\SDK\VS2010\CEGUI_SDK_076\lib;..\..\..\..\..\SDK\VS2010\ogre_src_v1-7-4\lib\debug;..\..\..\..\..\SDK\VS2010\boost_1_48_0\lib;..\..\..\..\..\SDK\VS2010\bullet-2.79\lib;..\..\..\..\..\application\SDK;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>water_simulation_d.lib;OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;BulletDynamics_d.lib;BulletCollision_d.lib;LinearMath_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\..\..\SDK\VS2010\CEGUI_SDK_076\lib;..\..\..\..\..\SDK\VS2010\ogre_src_v1-7-4\lib\debug;..\..\..\..\..\SDK\VS2010\boost_1_48_0\lib;..\..\..\..\..\SDK\VS2010\bullet-2.79\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;BulletDynamics_d.lib;BulletCollision_d.lib;LinearMath_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

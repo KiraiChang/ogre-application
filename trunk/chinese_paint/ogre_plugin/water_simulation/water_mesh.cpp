@@ -1,13 +1,21 @@
 #include "water_mesh.h"
 
 #define ANIMATIONS_PER_SECOND 100.0f
-#define DAMPEN_SIZE 128
+
 
 WaterMesh::WaterMesh(const std::string& inMeshName, float planeSize, int inComplexity):m_eSimulationMode(eVTFWMode)
 {
 	int x,y,b; // I prefer to initialize for() variables inside it, but VC doesn't like it ;(
+	Ogre::ColourValue color;
 	image.load("dampening.tga", "Popular");
-
+	for(int y = 0;y <DAMPEN_SIZE;y++)
+	{
+		for(int x = 0;x <DAMPEN_SIZE;x++)
+		{
+			color = image.getColourAt(x, y, 0);
+			m_vfDampening[x][y] = color.r;
+		}
+	}
 	this->meshName = inMeshName ;
 	this->complexity = inComplexity ;
 	numFaces = 2 * complexity * complexity;
@@ -313,8 +321,7 @@ void WaterMesh::vtfwSimulation(float timepass)
 		float *row2 = buf2 + 3*y*(complexity+1) ;
 		for(x=1;x<complexity;x++) 
 		{
-			color = image.getColourAt(x, y, 0);
-			float force = 10 * color.r *  (row1[3*x-3] + row1[3*x+3] + row1up[3*x]+row1down[3*x] - (4 * row[3*x]));
+			float force = 2 * m_vfDampening[x][y] *  (row1[3*x-3] + row1[3*x+3] + row1up[3*x]+row1down[3*x] - (4 * row[3*x]));
 			float newHight =  (1.99 * row1[3*x]) - (0.99 * row2[3*x]) + (0.5 * force * dt);
 			row[3*x] = newHight;
 		}

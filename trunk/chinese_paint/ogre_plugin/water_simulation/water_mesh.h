@@ -10,6 +10,9 @@ enum SIMULATION_MODE
 	eOGREMode=0,
 	eVTFWMode
 };
+
+static const int  DAMPEN_SIZE = 128;
+
 class WaterMesh : public WaterInterface
 {
 private:
@@ -17,6 +20,7 @@ private:
 	Ogre::SubMesh *subMesh ; 
 	Ogre::Image image;
 	float *vertexBuffers[3] ; // we need 3 vertex buffers
+	float m_vfDampening[DAMPEN_SIZE][DAMPEN_SIZE];
 	int currentBuffNumber ;
 	int complexity ;
 	std::string meshName ;
