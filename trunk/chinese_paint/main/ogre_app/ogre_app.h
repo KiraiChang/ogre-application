@@ -5,6 +5,10 @@
 
 class OgreApp : public OgreBites::SampleBrowser
 {
+private:
+	void redirectIOToConsole(void);
+public:
+	OgreApp(void);
 };
 
 

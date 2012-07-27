@@ -1,6 +1,7 @@
 #include "water_mesh.h"
 
 #define ANIMATIONS_PER_SECOND 100.0f
+#define DAMPEN_SIZE 128
 
 WaterMesh::WaterMesh(const std::string& inMeshName, float planeSize, int inComplexity):m_eSimulationMode(eVTFWMode)
 {
@@ -313,7 +314,7 @@ void WaterMesh::vtfwSimulation(float timepass)
 		for(x=1;x<complexity;x++) 
 		{
 			color = image.getColourAt(x, y, 0);
-			float force = 5 * color.r *  (row1[3*x-3] + row1[3*x+3] + row1up[3*x]+row1down[3*x] - (4 * row[3*x]));
+			float force = 10 * color.r *  (row1[3*x-3] + row1[3*x+3] + row1up[3*x]+row1down[3*x] - (4 * row[3*x]));
 			float newHight =  (1.99 * row1[3*x]) - (0.99 * row2[3*x]) + (0.5 * force * dt);
 			row[3*x] = newHight;
 		}
