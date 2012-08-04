@@ -7,6 +7,12 @@
     <Filter Include="water_simulation">
       <UniqueIdentifier>{9eb03db7-aa7e-4e76-b125-5e8aa033e492}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vtfw_simulation">
+      <UniqueIdentifier>{5a446f96-c623-4edf-86f7-8cf2c8f905f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simulation_interface">
+      <UniqueIdentifier>{82308e28-9a49-45bd-8171-51b90a4d362b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ogre_plugin\ogre_plugin.cpp">
@@ -21,19 +27,34 @@
     <ClCompile Include="..\..\water_simulation\water_simulation.cpp">
       <Filter>water_simulation</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\vftw_simulation\vtfw_mesh.cpp">
+      <Filter>vtfw_simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\vftw_simulation\vtfw_simluation.cpp">
+      <Filter>vtfw_simulation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_plugin\ogre_plugin.h">
       <Filter>ogre_plugin</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\water_simulation\water_interface.h">
-      <Filter>water_simulation</Filter>
     </ClInclude>
     <ClInclude Include="..\..\water_simulation\water_mesh.h">
       <Filter>water_simulation</Filter>
     </ClInclude>
     <ClInclude Include="..\..\water_simulation\water_simulation.h">
       <Filter>water_simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vftw_simulation\vtfw_mesh.h">
+      <Filter>vtfw_simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vftw_simulation\vtfw_simulation.h">
+      <Filter>vtfw_simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\simulation_interface\simulation_interface.h">
+      <Filter>simulation_interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\simulation_interface\water_interface.h">
+      <Filter>simulation_interface</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

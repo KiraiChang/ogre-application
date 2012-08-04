@@ -5,24 +5,24 @@
 #include "SamplePlugin.h"
 
 
-class WaterSimulation;
+class SimulationInterface;
 
 class _OgreSampleClassExport OgreSample : public OgreBites::SdkSample
 {
 public:
-    OgreSample();
-    bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+														OgreSample();
+    bool												frameRenderingQueued(const Ogre::FrameEvent& evt);
     
 protected:
-	WaterSimulation*							m_pSim;
+	SimulationInterface*								m_pSim;
 
 protected:
 	// Just override the mandatory create scene method
-    virtual void setupContent(void);
-	virtual void setupControls();
-	virtual void cleanupContent();
-	virtual void sliderMoved(OgreBites::Slider* slider);
-	virtual void checkBoxToggled(OgreBites::CheckBox* checkBox);
-	virtual void itemSelected(OgreBites::SelectMenu* menu);
+    virtual void										setupContent(void);
+	virtual void										setupControls();
+	virtual void										cleanupContent();
+	virtual void										sliderMoved(OgreBites::Slider* slider);
+	virtual void										checkBoxToggled(OgreBites::CheckBox* checkBox);
+	virtual void										itemSelected(OgreBites::SelectMenu* menu);
 };
 #endif
