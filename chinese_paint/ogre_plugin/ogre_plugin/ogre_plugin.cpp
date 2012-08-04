@@ -3,7 +3,6 @@
 #include "../water_simulation/water_simulation.h"
 #include "../water_simulation/water_mesh.h"
 
-#define MATERIAL_PREFIX "Examples/Water"
 #define PANEL_WIDTH 200
 
 
@@ -30,32 +29,17 @@ void OgreSample::setupContent(void)
 
 void OgreSample::setupControls()
 {
-	mTrayMgr->createLabel(OgreBites::TL_TOPLEFT, "GeneralLabel", "General", PANEL_WIDTH);
-	mTrayMgr->createCheckBox(OgreBites::TL_TOPLEFT, "FakeNormalsCB", "Fake normals", PANEL_WIDTH);
-	mTrayMgr->createCheckBox(OgreBites::TL_TOPLEFT, "SkyboxCB", "Skybox", PANEL_WIDTH);
-	mTrayMgr->createThickSlider(OgreBites::TL_TOPLEFT, "HeadDepthSlider", "Head Depth", PANEL_WIDTH, 80, 1, 3, 50)->setValue(1.0f);
-	OgreBites::SelectMenu* waterMaterial = mTrayMgr->createThickSelectMenu(OgreBites::TL_TOPLEFT, "WaterMaterialMenu", "Water material", PANEL_WIDTH, 9);
-	for (size_t i = 0; i < 9; i++)
+	if(m_pSim != NULL)
 	{
-		waterMaterial->addItem(MATERIAL_PREFIX + Ogre::StringConverter::toString(i));
+		m_pSim->setupControls(mTrayMgr);
 	}
-	waterMaterial->selectItem(8);
-	mTrayMgr->createLabel(OgreBites::TL_TOPLEFT, "RainLabel", "Rain : [Space]", PANEL_WIDTH);
-
-	mTrayMgr->createLabel(OgreBites::TL_TOPRIGHT, "AdvancedLabel", "Advanced", PANEL_WIDTH);
-	mTrayMgr->createThickSlider(OgreBites::TL_TOPRIGHT, "RippleSpeedSlider", "Ripple Speed", PANEL_WIDTH, 80, 0, 2, 50)->setValue(0.3, false);
-	mTrayMgr->createThickSlider(OgreBites::TL_TOPRIGHT, "DistanceSlider", "Distance", PANEL_WIDTH, 80, 0.1, 5.0, 50)->setValue(0.4, false);
-	mTrayMgr->createThickSlider(OgreBites::TL_TOPRIGHT, "ViscositySlider", "Viscosity", PANEL_WIDTH, 80, 0, 1, 50)->setValue(0.05, false);
-	mTrayMgr->createThickSlider(OgreBites::TL_TOPRIGHT, "FrameTimeSlider", "FrameTime", PANEL_WIDTH, 80, 0, 1, 61)->setValue(0.13, false);
-	mTrayMgr->createThickSlider(OgreBites::TL_TOPRIGHT, "MoveSpeedSlider", "MoveSpeed", PANEL_WIDTH, 80, 0, 1, 72)->setValue(1.0, false);
-
-	mTrayMgr->showCursor();
 }
 
 void OgreSample::cleanupContent()
 {
 	if(m_pSim != NULL)
 	{
+		m_pSim->release();
 		delete m_pSim;
 		m_pSim = NULL;
 	}
@@ -63,60 +47,26 @@ void OgreSample::cleanupContent()
 
 void OgreSample::sliderMoved(OgreBites::Slider* slider)
 {
-	if (slider->getName() == "HeadDepthSlider")
+	if(m_pSim != NULL)
 	{
-		m_pSim->setHeadDepth( slider->getValue());
-	}
-	else if (slider->getName() == "RippleSpeedSlider")
-	{
-		WaterMesh *mesh = (WaterMesh *)m_pSim->getWater();
-		mesh->PARAM_C = slider->getValue();
-	}
-	else if (slider->getName() == "DistanceSlider")
-	{
-		WaterMesh *mesh = (WaterMesh *)m_pSim->getWater();
-		mesh->PARAM_D = slider->getValue();
-	}
-	else if (slider->getName() == "ViscositySlider")
-	{
-		WaterMesh *mesh = (WaterMesh *)m_pSim->getWater();
-		mesh->PARAM_U = slider->getValue();
-	}
-	else if (slider->getName() == "FrameTimeSlider")
-	{
-		WaterMesh *mesh = (WaterMesh *)m_pSim->getWater();
-		mesh->PARAM_T = slider->getValue();
-	}
-	else if (slider->getName() == "MoveSpeedSlider")
-	{
-		m_pSim->setMoveSpeed( slider->getValue());
+		m_pSim->sliderMoved(slider);
 	}
 }
 
 void OgreSample::checkBoxToggled(OgreBites::CheckBox* checkBox)
 {
-	if (checkBox->getName() == "FakeNormalsCB")
+	if(m_pSim != NULL)
 	{
-		//waterMesh->useFakeNormals = checkBox->isChecked();
-	}
-	else if (checkBox->getName() == "SkyboxCB")
-	{
-		//sceneMgr->setSkyBox(checkBox->isChecked(), "Examples/SceneSkyBox2");
+		m_pSim->checkBoxToggled(checkBox);
 	}
 }
 
 void OgreSample::itemSelected(OgreBites::SelectMenu* menu)
 {
-	//Only one menu in this demo
-	const Ogre::String& materialName = menu->getSelectedItem();
-	Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName(materialName);
-	if (material.isNull())
+	if(m_pSim != NULL)
 	{
-		OGRE_EXCEPT(Ogre::Exception::ERR_INTERNAL_ERROR,
-			"Material "+materialName+"doesn't exist!",
-			"WaterListener::updateMaterial");
+		m_pSim->itemSelected(menu);
 	}
-	m_pSim->setWaterMaterialName(materialName);
 }
 
 bool OgreSample::frameRenderingQueued(const Ogre::FrameEvent& evt)

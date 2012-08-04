@@ -1,7 +1,7 @@
 #ifndef _WATER_MESH_H_
 #define _WATER_MESH_H_
 
-#include "water_interface.h"
+#include "../simulation_interface/water_interface.h"
 #include <iostream>
 #include <ogre.h>
 
