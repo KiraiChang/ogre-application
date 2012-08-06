@@ -1,7 +1,15 @@
-sampler previousHeightSampler               : register(s0);
-sampler heightSampler                       : register(s1);
-sampler dampeningSampler                    : register(s2);
+sampler2D previousHeightSampler               : register(s0);
+sampler2D heightSampler                       : register(s1);
+sampler2D dampeningSampler                    : register(s2);
 
+uniform float2 psSimulationTexCoordDelta_x0y1;
+uniform float2 psSimulationTexCoordDelta_x2y1;
+uniform float2 psSimulationTexCoordDelta_x1y0;
+uniform float2 psSimulationTexCoordDelta_x1y2;
+uniform float psSimulationWaveSpeedSquared;
+uniform float2 psSimulationPositionWeighting;
+uniform float psSimulationOneHalfTimesDeltaTimeSquared;
+uniform float3 psSimulationGridSize;
 
 struct Interpolants
 {
