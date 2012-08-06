@@ -27,10 +27,10 @@
     <ClCompile Include="..\..\water_simulation\water_simulation.cpp">
       <Filter>water_simulation</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\vftw_simulation\vtfw_mesh.cpp">
+    <ClCompile Include="..\..\vtfw_simulation\vtfw_mesh.cpp">
       <Filter>vtfw_simulation</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\vftw_simulation\vtfw_simluation.cpp">
+    <ClCompile Include="..\..\vtfw_simulation\vtfw_simluation.cpp">
       <Filter>vtfw_simulation</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,17 +44,17 @@
     <ClInclude Include="..\..\water_simulation\water_simulation.h">
       <Filter>water_simulation</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\vftw_simulation\vtfw_mesh.h">
-      <Filter>vtfw_simulation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\vftw_simulation\vtfw_simulation.h">
-      <Filter>vtfw_simulation</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\simulation_interface\simulation_interface.h">
       <Filter>simulation_interface</Filter>
     </ClInclude>
     <ClInclude Include="..\..\simulation_interface\water_interface.h">
       <Filter>simulation_interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vtfw_simulation\vtfw_mesh.h">
+      <Filter>vtfw_simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\vtfw_simulation\vtfw_simulation.h">
+      <Filter>vtfw_simulation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
