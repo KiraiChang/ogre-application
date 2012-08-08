@@ -23,6 +23,7 @@ private:
 	Ogre::HardwareVertexBufferSharedPtr normVertexBuffer ;
 	Ogre::HardwareVertexBufferSharedPtr texcoordsVertexBuffer ;
 	Ogre::HardwareIndexBufferSharedPtr indexBuffer ;
+	Ogre::PixelBox*											m_pPixelBox;
 
 	float													lastTimeStamp ;
 	float													lastAnimationTimeStamp;

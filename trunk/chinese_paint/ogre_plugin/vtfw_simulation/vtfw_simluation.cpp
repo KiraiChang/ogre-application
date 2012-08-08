@@ -41,9 +41,9 @@ void VTFWSimulation::init(void)
 	Ogre::SceneNode *waterNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	waterNode->attachObject(m_pWaterEntity);
 
-	m_pHeadNode = waterNode->createChildSceneNode();
-	Ogre::Entity *ent = m_pSceneMgr->createEntity("head", "ogrehead.mesh");
-	m_pHeadNode->attachObject(ent);
+	//m_pHeadNode = waterNode->createChildSceneNode();
+	//Ogre::Entity *ent = m_pSceneMgr->createEntity("head", "ogrehead.mesh");
+	//m_pHeadNode->attachObject(ent);
 
 	Ogre::SceneNode* camNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	camNode->translate(1500, 3000, 1500);
