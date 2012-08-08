@@ -10,8 +10,11 @@ VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplex
 	mHeightBuf = texHight->getBuffer();  // save off the texture buffer
 
 	Ogre::uint8* data = new Ogre::uint8[inComplexity * inComplexity * 3];
+	memset(data, 0xff, inComplexity * inComplexity * 3 * sizeof(Ogre::uint8));
 	m_pPixelBox = new Ogre::PixelBox(mHeightBuf->getWidth(), mHeightBuf->getHeight(), 1, Ogre::PF_R8G8B8A8, data);
 	mHeightBuf->blitFromMemory(*m_pPixelBox);
+
+
 
 	// create previous texture
 	Ogre::TexturePtr texPrevious = Ogre::TextureManager::getSingleton().createManual("previousHeightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
