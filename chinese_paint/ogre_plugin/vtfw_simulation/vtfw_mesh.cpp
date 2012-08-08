@@ -9,21 +9,16 @@ VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplex
 
 	mHeightBuf = texHight->getBuffer();  // save off the texture buffer
 
-	// initialise the texture to have full luminance
-	mHeightBuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-	memset(mHeightBuf->getCurrentLock().data, 0xff, mHeightBuf->getSizeInBytes());
-	mHeightBuf->unlock();
+	Ogre::uint8* data = new Ogre::uint8[inComplexity * inComplexity * 3];
+	m_pPixelBox = new Ogre::PixelBox(mHeightBuf->getWidth(), mHeightBuf->getHeight(), 1, Ogre::PF_R8G8B8A8, data);
+	mHeightBuf->blitFromMemory(*m_pPixelBox);
 
 	// create previous texture
 	Ogre::TexturePtr texPrevious = Ogre::TextureManager::getSingleton().createManual("previousHeightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		Ogre::TEX_TYPE_2D, inComplexity, inComplexity, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET);
 
 	mPreviousHeightBuf = texPrevious->getBuffer();  // save off the texture buffer
-
-	// initialise the texture to have full luminance
-	mPreviousHeightBuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-	memset(mPreviousHeightBuf->getCurrentLock().data, 0xff, mPreviousHeightBuf->getSizeInBytes());
-	mPreviousHeightBuf->unlock();
+	mPreviousHeightBuf->blitFromMemory(*m_pPixelBox);
 
 	int x,y,b; // I prefer to initialize for() variables inside it, but VC doesn't like it ;(
 	this->meshName = inMeshName ;
@@ -161,6 +156,10 @@ VTFWMesh::~VTFWMesh ()
 
 	delete[] vNormals;
 
+	delete[] m_pPixelBox->data;
+	delete m_pPixelBox;
+	m_pPixelBox = NULL;
+
 	Ogre::MeshManager::getSingleton().remove(meshName);
 }
 /* ========================================================================= */
@@ -175,11 +174,10 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 	lastFrameTime = timeSinceLastFrame ;
 	lastTimeStamp += timeSinceLastFrame ;
 
-	// do rendering to get ANIMATIONS_PER_SECOND
-	mHeightBuf->lock(Ogre::HardwareBuffer::HBL_NORMAL);
+	mHeightBuf->blitToMemory(*m_pPixelBox);
 
-	// get access to raw texel data
-	Ogre::uint8* data = (Ogre::uint8*)mHeightBuf->getCurrentLock().data;
+	Ogre::uint8* data = (Ogre::uint8*)m_pPixelBox->data;
+
 	while(lastAnimationTimeStamp <= lastTimeStamp) 
 	{
 			// switch buffer numbers
@@ -188,10 +186,10 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 		for(y=1;y<complexity;y++) // don't do anything with border values
 		{ 
 			float *row = buf + 3*y*(complexity+1) ;
+			Ogre::uint8 *pixelRow = data + 3 * y * (complexity+1) ;
 			for(x=1;x<complexity;x++) 
 			{
-				Ogre::uint8 newHigh = *data;
-				data++;
+				Ogre::uint8 newHigh = pixelRow[3*x];
 				row[3*x] = newHigh;
 			}
 		}
@@ -202,5 +200,4 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 		posVertexBuffer->getSizeInBytes(), // size
 		vertexBuffers[currentBuffNumber], // source
 		true); // discard?
-	mHeightBuf->unlock();
 }
