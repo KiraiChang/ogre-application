@@ -1,7 +1,7 @@
 #define ANIMATIONS_PER_SECOND 100.0f
 #include "vtfw_mesh.h"
 
-VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplexity)
+VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplexity, Ogre::RenderWindow *win):m_pWindow(win)
 {
 	// create height texture
 	Ogre::TexturePtr texHight = Ogre::TextureManager::getSingleton().createManual("heightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -14,7 +14,11 @@ VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplex
 	m_pPixelBox = new Ogre::PixelBox(mHeightBuf->getWidth(), mHeightBuf->getHeight(), 1, Ogre::PF_R8G8B8A8, data);
 	mHeightBuf->blitFromMemory(*m_pPixelBox);
 
-
+	////copy the actual pixels over to the texture
+	//mHeightBuf->lock(Ogre::HardwareBuffer::LockOptions::HBL_DISCARD);
+	//Ogre::PixelBox pixelBox = mHeightBuf->getCurrentLock();
+	//memset(pixelBox.data, 0x0f, mHeightBuf->getSizeInBytes());
+	//mHeightBuf->unlock();
 
 	// create previous texture
 	Ogre::TexturePtr texPrevious = Ogre::TextureManager::getSingleton().createManual("previousHeightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -176,10 +180,10 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 {
 	lastFrameTime = timeSinceLastFrame ;
 	lastTimeStamp += timeSinceLastFrame ;
+	calcWaveToTexture();
+	//mHeightBuf->blitToMemory(*m_pPixelBox);
 
-	mHeightBuf->blitToMemory(*m_pPixelBox);
-
-	Ogre::uint8* data = (Ogre::uint8*)m_pPixelBox->data;
+	//Ogre::uint8* data = (Ogre::uint8*)m_pPixelBox->data;
 
 	while(lastAnimationTimeStamp <= lastTimeStamp) 
 	{
@@ -189,11 +193,11 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 		for(y=1;y<complexity;y++) // don't do anything with border values
 		{ 
 			float *row = buf + 3*y*(complexity+1) ;
-			Ogre::uint8 *pixelRow = data + 3 * y * (complexity+1) ;
+			//Ogre::uint8 *pixelRow = data + 3 * y * (complexity+1) ;
 			for(x=1;x<complexity;x++) 
 			{
-				Ogre::uint8 newHigh = pixelRow[3*x];
-				row[3*x] = newHigh;
+				//Ogre::uint8 newHigh = pixelRow[3*x];
+				//row[3*x] = newHigh;
 			}
 		}
 		lastAnimationTimeStamp += (1.0f / ANIMATIONS_PER_SECOND);
@@ -203,4 +207,14 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 		posVertexBuffer->getSizeInBytes(), // size
 		vertexBuffers[currentBuffNumber], // source
 		true); // discard?
+}
+
+void VTFWMesh::calcWaveToTexture()
+{
+	Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName("ChinesePaint/Water");
+	Ogre::Root::getSingleton().getRenderSystem()->_setRenderTarget(mHeightBuf->getRenderTarget());
+	Ogre::Root::getSingleton().getRenderSystem()->bindGpuProgram(mat.getPointer()->getTechnique(0)->getPass(0)->getVertexProgram().getPointer());
+	Ogre::Root::getSingleton().getRenderSystem()->bindGpuProgram(mat.getPointer()->getTechnique(0)->getPass(0)->getFragmentProgram().getPointer());
+	mHeightBuf->getRenderTarget()->writeContentsToFile("height.png");
+	Ogre::Root::getSingleton().getRenderSystem()->_setRenderTarget(m_pWindow);
 }

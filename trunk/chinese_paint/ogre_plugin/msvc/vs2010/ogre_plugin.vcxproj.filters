@@ -13,6 +13,9 @@
     <Filter Include="simulation_interface">
       <UniqueIdentifier>{82308e28-9a49-45bd-8171-51b90a4d362b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{1377e979-277b-41c6-9330-2d5f5f37d5f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ogre_plugin\ogre_plugin.cpp">
@@ -32,6 +35,9 @@
     </ClCompile>
     <ClCompile Include="..\..\vtfw_simulation\vtfw_simluation.cpp">
       <Filter>vtfw_simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\test\test.cpp">
+      <Filter>test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="..\..\vtfw_simulation\vtfw_simulation.h">
       <Filter>vtfw_simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\test\test.h">
+      <Filter>test</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
