@@ -1,14 +1,23 @@
-vertex_program ChinesePaint/Water/WaterWaveVS cg
+ertex_program ChinesePaint/Water/WaterWaveVS cg
 {
-	source chinese_paint.cg
-	entry_point WaterWaveVS
-	profiles vs_1_1 arbvp1 
+	//source chinese_paint.cg
+	source test.cg
+	//entry_point WaterWaveVS
+	entry_point StdQuad_vp 
+	profiles vs_1_1 arbvp1
+	
+	default_params
+	{
+		param_named_auto worldViewProj worldviewproj_matrix
+	}
 }
 
 fragment_program ChinesePaint/Water/WaterWavePS cg
 {
-	source chinese_paint.cg
-	entry_point WaterWavePS
+	//source chinese_paint.cg
+	source test.cg
+	//entry_point WaterWavePS
+	entry_point test
 	profiles ps_2_0 arbfp1
 }
 
@@ -19,6 +28,8 @@ material ChinesePaint/Water
 	{
 		pass WaterWave
 		{
+			//ambient 1.0 0.0 0.0
+			//vertex_program_ref ChinesePaint/Water/WaterWaveVS
 			vertex_program_ref ChinesePaint/Water/WaterWaveVS
 			{
 			
@@ -28,20 +39,72 @@ material ChinesePaint/Water
 			{
 			
 			}
+					
+			texture_unit heightSampler
+			{
+				
+			}
 			
 			texture_unit previousHeightSampler
 			{
 				texture previousHeightSampler
 			}
- 
-			texture_unit heightSampler
-			{
-				texture heightSampler
-			}
 			
 			texture_unit dampeningSampler
 			{
 				texture dampening.tga
+			}
+			
+		}
+	}
+}
+
+material ChinesePaint/Texture
+{
+	technique
+	{
+		pass 
+		{				
+			texture_unit heightSampler
+			{
+				texture heightSampler
+			}
+		}
+	}
+}
+
+vertex_program ChinesePaint/Water/WaterWaveHLSLVS hlsl
+{
+    source chinese_paint.hlsl
+    target vs_1_1
+    entry_point vertexShader
+}
+fragment_program ChinesePaint/Water/WaterWaveHLSLPS hlsl
+{
+    source chinese_paint.hlsl
+    target ps_2_0
+    entry_point pixelShader
+}
+
+material ChinesePaint/WaterHLSL
+{
+	technique
+	{
+		pass 
+		{		
+			vertex_program_ref ChinesePaint/Water/WaterWaveHLSLVS
+			{
+			
+			}
+			
+			fragment_program_ref ChinesePaint/Water/WaterWaveHLSLPS
+			{
+			
+			}
+			
+			texture_unit heightSampler
+			{
+				texture heightSampler
 			}
 		}
 	}
