@@ -212,9 +212,10 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 void VTFWMesh::calcWaveToTexture()
 {
 	Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName("ChinesePaint/Water");
+	mat->load();
 	Ogre::Root::getSingleton().getRenderSystem()->_setRenderTarget(mHeightBuf->getRenderTarget());
-	Ogre::Root::getSingleton().getRenderSystem()->bindGpuProgram(mat.getPointer()->getTechnique(0)->getPass(0)->getVertexProgram().getPointer());
-	Ogre::Root::getSingleton().getRenderSystem()->bindGpuProgram(mat.getPointer()->getTechnique(0)->getPass(0)->getFragmentProgram().getPointer());
+	Ogre::Root::getSingleton().getRenderSystem()->bindGpuProgram(mat.getPointer()->getTechnique(0)->getPass(0)->getVertexProgram()->_getBindingDelegate());
+	Ogre::Root::getSingleton().getRenderSystem()->bindGpuProgram(mat.getPointer()->getTechnique(0)->getPass(0)->getFragmentProgram()->_getBindingDelegate());
 	mHeightBuf->getRenderTarget()->writeContentsToFile("height.png");
 	Ogre::Root::getSingleton().getRenderSystem()->_setRenderTarget(m_pWindow);
 }
