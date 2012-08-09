@@ -14,8 +14,9 @@
 #define RAIN_HEIGHT_RANDOM 5
 #define RAIN_HEIGHT_CONSTANT 5
 
-VTFWSimulation::VTFWSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam):m_pSceneMgr(sceneMgr),
+VTFWSimulation::VTFWSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam, Ogre::RenderWindow *win):m_pSceneMgr(sceneMgr),
  						m_pCamera(cam),
+						m_pWindow(win),
  						m_fTimeoutDelay(0.0f),
  						m_fHeadDepth(1.0f),
  						m_fMoveSpeed(1.0f)
@@ -35,9 +36,9 @@ void VTFWSimulation::init(void)
 	Ogre::Light* l = m_pSceneMgr->createLight("MainLight");
 	l->setPosition(200,300,100);
 
-	m_pWaterInterface = new VTFWMesh(MESH_NAME, PLANE_SIZE, COMPLEXITY);
+	m_pWaterInterface = new VTFWMesh(MESH_NAME, PLANE_SIZE, COMPLEXITY, m_pWindow);
 	m_pWaterEntity = m_pSceneMgr->createEntity(ENTITY_NAME, MESH_NAME);
-	m_pWaterEntity->setMaterialName(MATERIAL_NAME);
+	m_pWaterEntity->setMaterialName("ChinesePaint/Texture");
 	Ogre::SceneNode *waterNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	waterNode->attachObject(m_pWaterEntity);
 

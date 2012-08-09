@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\ogre_plugin\ogre_plugin.cpp" />
     <ClCompile Include="..\..\ogre_plugin\sample_generator.cpp" />
+    <ClCompile Include="..\..\test\test.cpp" />
     <ClCompile Include="..\..\vtfw_simulation\vtfw_mesh.cpp" />
     <ClCompile Include="..\..\vtfw_simulation\vtfw_simluation.cpp" />
     <ClCompile Include="..\..\water_simulation\water_mesh.cpp" />
@@ -22,6 +23,7 @@
     <ClInclude Include="..\..\ogre_plugin\ogre_plugin.h" />
     <ClInclude Include="..\..\simulation_interface\simulation_interface.h" />
     <ClInclude Include="..\..\simulation_interface\water_interface.h" />
+    <ClInclude Include="..\..\test\test.h" />
     <ClInclude Include="..\..\vtfw_simulation\vtfw_mesh.h" />
     <ClInclude Include="..\..\vtfw_simulation\vtfw_simulation.h" />
     <ClInclude Include="..\..\water_simulation\water_mesh.h" />

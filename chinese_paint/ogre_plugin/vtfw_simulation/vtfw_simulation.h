@@ -11,6 +11,7 @@ namespace Ogre
 	class ParticleEmitter;
 	class Camera;
 	class Entity;
+	class RenderWindow;
 }
 
 class WaterInterface;
@@ -20,6 +21,7 @@ class VTFWSimulation : public SimulationInterface
 private:
 	Ogre::SceneManager*							m_pSceneMgr;
 	Ogre::Camera*								m_pCamera;
+	Ogre::RenderWindow*							m_pWindow;
 
 	Ogre::SceneNode*							m_pHeadNode ;
 
@@ -30,7 +32,7 @@ private:
 	float										m_fHeadDepth ;
 	float										m_fMoveSpeed;
 public:
-												VTFWSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam);
+												VTFWSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam, Ogre::RenderWindow *win);
 												~VTFWSimulation(void);
 	void										init(void);
 	void										release(void);

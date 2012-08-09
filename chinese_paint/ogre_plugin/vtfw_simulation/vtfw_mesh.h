@@ -24,16 +24,18 @@ private:
 	Ogre::HardwareVertexBufferSharedPtr texcoordsVertexBuffer ;
 	Ogre::HardwareIndexBufferSharedPtr indexBuffer ;
 	Ogre::PixelBox*											m_pPixelBox;
+	Ogre::RenderWindow*										m_pWindow;
 
 	float													lastTimeStamp ;
 	float													lastAnimationTimeStamp;
 	float													lastFrameTime ;
 public:
-															VTFWMesh(const std::string& meshName, float planeSize, int complexity) ;
+															VTFWMesh(const std::string& meshName, float planeSize, int complexity, Ogre::RenderWindow *win) ;
     virtual													~VTFWMesh ();
 	virtual void											updateMesh(float timeSinceLastFrame);
 	virtual void											push(float x, float y, float depth, bool absolute=false);
 	std::string												getType(void) {return "VTFW_MESH";}
+	void													calcWaveToTexture();
 };
 
 #endif //_VTFW_MESH_H_
