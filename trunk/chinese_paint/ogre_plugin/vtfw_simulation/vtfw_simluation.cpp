@@ -2,7 +2,7 @@
 #include <Ogre.h>
 #include <SdkSample.h>
 #include "vtfw_mesh.h"
-
+#include "vtfw_render_listener.h"
 
 #define MESH_NAME "WaterMesh"
 #define ENTITY_NAME "WaterEntity"
@@ -35,6 +35,10 @@ void VTFWSimulation::init(void)
 
 	Ogre::Light* l = m_pSceneMgr->createLight("MainLight");
 	l->setPosition(200,300,100);
+
+	m_pRenderListener = new VTFWRenderListener("heightSampler", m_pCamera, COMPLEXITY);
+	m_pSceneMgr->addRenderQueueListener(m_pRenderListener);
+	//m_pSceneMgr->addSpecialCaseRenderQueue(m_pRenderListener->getQueueID());
 
 	m_pWaterInterface = new VTFWMesh(MESH_NAME, PLANE_SIZE, COMPLEXITY, m_pWindow);
 	m_pWaterEntity = m_pSceneMgr->createEntity(ENTITY_NAME, MESH_NAME);

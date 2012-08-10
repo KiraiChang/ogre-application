@@ -3,29 +3,9 @@
 
 VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplexity, Ogre::RenderWindow *win):m_pWindow(win)
 {
-	// create height texture
-	Ogre::TexturePtr texHight = Ogre::TextureManager::getSingleton().createManual("heightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, inComplexity, inComplexity, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET);
-
-	mHeightBuf = texHight->getBuffer();  // save off the texture buffer
-
-	Ogre::uint8* data = new Ogre::uint8[inComplexity * inComplexity * 3];
-	memset(data, 0xff, inComplexity * inComplexity * 3 * sizeof(Ogre::uint8));
-	m_pPixelBox = new Ogre::PixelBox(mHeightBuf->getWidth(), mHeightBuf->getHeight(), 1, Ogre::PF_R8G8B8A8, data);
-	mHeightBuf->blitFromMemory(*m_pPixelBox);
-
-	////copy the actual pixels over to the texture
-	//mHeightBuf->lock(Ogre::HardwareBuffer::LockOptions::HBL_DISCARD);
-	//Ogre::PixelBox pixelBox = mHeightBuf->getCurrentLock();
-	//memset(pixelBox.data, 0x0f, mHeightBuf->getSizeInBytes());
-	//mHeightBuf->unlock();
-
 	// create previous texture
 	Ogre::TexturePtr texPrevious = Ogre::TextureManager::getSingleton().createManual("previousHeightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		Ogre::TEX_TYPE_2D, inComplexity, inComplexity, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET);
-
-	mPreviousHeightBuf = texPrevious->getBuffer();  // save off the texture buffer
-	mPreviousHeightBuf->blitFromMemory(*m_pPixelBox);
 
 	int x,y,b; // I prefer to initialize for() variables inside it, but VC doesn't like it ;(
 	this->meshName = inMeshName ;
@@ -180,7 +160,7 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 {
 	lastFrameTime = timeSinceLastFrame ;
 	lastTimeStamp += timeSinceLastFrame ;
-	calcWaveToTexture();
+
 	//mHeightBuf->blitToMemory(*m_pPixelBox);
 
 	//Ogre::uint8* data = (Ogre::uint8*)m_pPixelBox->data;
@@ -207,15 +187,4 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 		posVertexBuffer->getSizeInBytes(), // size
 		vertexBuffers[currentBuffNumber], // source
 		true); // discard?
-}
-
-void VTFWMesh::calcWaveToTexture()
-{
-	Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().getByName("ChinesePaint/Water");
-	mat->load();
-	Ogre::Root::getSingleton().getRenderSystem()->_setRenderTarget(mHeightBuf->getRenderTarget());
-	Ogre::Root::getSingleton().getRenderSystem()->bindGpuProgram(mat.getPointer()->getTechnique(0)->getPass(0)->getVertexProgram()->_getBindingDelegate());
-	Ogre::Root::getSingleton().getRenderSystem()->bindGpuProgram(mat.getPointer()->getTechnique(0)->getPass(0)->getFragmentProgram()->_getBindingDelegate());
-	mHeightBuf->getRenderTarget()->writeContentsToFile("height.png");
-	Ogre::Root::getSingleton().getRenderSystem()->_setRenderTarget(m_pWindow);
 }
