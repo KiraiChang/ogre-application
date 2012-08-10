@@ -15,10 +15,12 @@ namespace Ogre
 }
 
 class WaterInterface;
+class VTFWRenderListener;
 
 class VTFWSimulation : public SimulationInterface
 {
 private:
+	VTFWRenderListener*							m_pRenderListener;
 	Ogre::SceneManager*							m_pSceneMgr;
 	Ogre::Camera*								m_pCamera;
 	Ogre::RenderWindow*							m_pWindow;
