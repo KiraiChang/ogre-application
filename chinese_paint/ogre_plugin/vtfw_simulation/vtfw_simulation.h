@@ -12,6 +12,7 @@ namespace Ogre
 	class Camera;
 	class Entity;
 	class RenderWindow;
+	class Viewport;
 }
 
 class WaterInterface;
@@ -24,6 +25,7 @@ private:
 	Ogre::SceneManager*							m_pSceneMgr;
 	Ogre::Camera*								m_pCamera;
 	Ogre::RenderWindow*							m_pWindow;
+	Ogre::Viewport *							m_pViewport;
 
 	Ogre::SceneNode*							m_pHeadNode ;
 
@@ -34,7 +36,7 @@ private:
 	float										m_fHeadDepth ;
 	float										m_fMoveSpeed;
 public:
-												VTFWSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam, Ogre::RenderWindow *win);
+												VTFWSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam, Ogre::RenderWindow *win, Ogre::Viewport *v);
 												~VTFWSimulation(void);
 	void										init(void);
 	void										release(void);

@@ -14,9 +14,10 @@
 #define RAIN_HEIGHT_RANDOM 5
 #define RAIN_HEIGHT_CONSTANT 5
 
-VTFWSimulation::VTFWSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam, Ogre::RenderWindow *win):m_pSceneMgr(sceneMgr),
+VTFWSimulation::VTFWSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam, Ogre::RenderWindow *win, Ogre::Viewport *v):m_pSceneMgr(sceneMgr),
  						m_pCamera(cam),
 						m_pWindow(win),
+						m_pViewport(v),
  						m_fTimeoutDelay(0.0f),
  						m_fHeadDepth(1.0f),
  						m_fMoveSpeed(1.0f)
@@ -36,13 +37,13 @@ void VTFWSimulation::init(void)
 	Ogre::Light* l = m_pSceneMgr->createLight("MainLight");
 	l->setPosition(200,300,100);
 
-	m_pRenderListener = new VTFWRenderListener("heightSampler", m_pCamera, COMPLEXITY);
-	m_pSceneMgr->addRenderQueueListener(m_pRenderListener);
+	//m_pRenderListener = new VTFWRenderListener("heightSampler", m_pCamera, COMPLEXITY);
+	//m_pSceneMgr->addRenderQueueListener(m_pRenderListener);
 	//m_pSceneMgr->addSpecialCaseRenderQueue(m_pRenderListener->getQueueID());
 
 	m_pWaterInterface = new VTFWMesh(MESH_NAME, PLANE_SIZE, COMPLEXITY, m_pWindow);
 	m_pWaterEntity = m_pSceneMgr->createEntity(ENTITY_NAME, MESH_NAME);
-	m_pWaterEntity->setMaterialName("ChinesePaint/Texture");
+	m_pWaterEntity->setMaterialName("ChinesePaint/Water");
 	Ogre::SceneNode *waterNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	waterNode->attachObject(m_pWaterEntity);
 
@@ -69,6 +70,8 @@ void VTFWSimulation::release(void)
 
 void VTFWSimulation::setupControls(OgreBites::SdkTrayManager* sdkTray)
 {
+	Ogre::CompositorManager::getSingleton().addCompositor(m_pViewport, "ChinesePaint");
+	Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_pViewport, "ChinesePaint", true);
 }
 
 void VTFWSimulation::sliderMoved(OgreBites::Slider* slider)
@@ -87,6 +90,8 @@ void VTFWSimulation::update(float timePass)
 {
 	if(m_fMoveSpeed > 0)
 	{
+		Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pCamera->getViewport())->getCompositor("ChinesePaint");
+		ins->getTextureInstance("heightSampler", 0)->copyToTexture(((VTFWMesh *)m_pWaterInterface)->getTexture("heightSampler"));
 		float t = timePass * m_fMoveSpeed;
 
 		m_fTimeoutDelay-=t ;
