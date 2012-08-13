@@ -11,6 +11,9 @@ VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplex
 	mTexture["heightSampler"] = Ogre::TextureManager::getSingleton().createManual("previousHeightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		Ogre::TEX_TYPE_2D, inComplexity, inComplexity, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET);
 	
+	Ogre::uint8 *data = new Ogre::uint8[128*128*3];
+	m_pPixelBox = new Ogre::PixelBox(128, 128, 1, Ogre::PF_A8R8G8B8, data);
+
 	int x,y,b; // I prefer to initialize for() variables inside it, but VC doesn't like it ;(
 	this->meshName = inMeshName ;
 	this->complexity = inComplexity ;
@@ -165,14 +168,13 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 	lastFrameTime = timeSinceLastFrame ;
 	lastTimeStamp += timeSinceLastFrame ;
 
-	//mHeightBuf->blitToMemory(*m_pPixelBox);
+	Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
+	Ogre::Image::Box box(0.0, 0.0, 128.0, 128.0);
+	ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitToMemory(box, *m_pPixelBox);
+	mHeightBuf->blitFromMemory(*m_pPixelBox, box);
 
-	//Ogre::uint8* data = (Ogre::uint8*)m_pPixelBox->data;
-	//Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
-	//Ogre::PixelBox pixel;
-	//ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitToMemory(pixel);
-	//mHeightBuf->blitFromMemory(pixel);
-	
+
+	Ogre::uint8 *pData = (Ogre::uint8 *)m_pPixelBox->data;
 	while(lastAnimationTimeStamp <= lastTimeStamp) 
 	{
 			// switch buffer numbers
@@ -181,11 +183,11 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 		for(y=1;y<complexity;y++) // don't do anything with border values
 		{ 
 			float *row = buf + 3*y*(complexity+1) ;
-			//Ogre::uint8 *pixelRow = data + 3 * y * (complexity+1) ;
+			Ogre::uint8 *pixelRow = pData + 3 * y * (complexity+1) ;
 			for(x=1;x<complexity;x++) 
 			{
-				//Ogre::uint8 newHigh = pixelRow[3*x];
-				//row[3*x] = newHigh;
+				Ogre::uint8 newHigh = pixelRow[3*x];
+				row[3*x] = newHigh;
 			}
 		}
 		lastAnimationTimeStamp += (1.0f / ANIMATIONS_PER_SECOND);

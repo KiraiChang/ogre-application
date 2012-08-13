@@ -32,10 +32,10 @@ material ChinesePaint/Water
 			{
 			}
 					
-			// texture_unit heightsampler
-			// {
-				// texture heightsampler
-			// }
+			texture_unit source
+			{
+				tex_address_mode clamp
+			}
 			
 			// texture_unit previousheightsampler
 			// {
@@ -59,7 +59,7 @@ material ChinesePaint/Texture
 		{				
 			texture_unit heightSampler
 			{
-				texture heightsampler
+				texture heightSampler
 			}
 		}
 	}
@@ -73,7 +73,7 @@ material ChinesePaint/Output
 		{				
 			texture_unit scene
 			{
-				texture scene
+				tex_address_mode clamp
 			}
 		}
 	}

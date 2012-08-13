@@ -39,7 +39,7 @@ compositor "ChinesePaint"
   {
       // Temporary textures
       texture scene 0 0 PF_A8R8G8B8
-      texture heightSampler target_width_scaled 0.5 target_height_scaled 0.5 PF_A8R8G8B8
+      texture heightSampler 128 128 PF_A8R8G8B8
 	  //texture blur target_width target_height PF_A8R8G8B8
 
       
