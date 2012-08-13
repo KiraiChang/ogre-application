@@ -76,7 +76,7 @@ float4 WaterWavePS(Interpolants i) : COLOR
 
   // // Combine the height and normal
   // result = float4(newHeight, normal);
-  result = float4(1.0, 0.0, 0.0, 1.0);
+  result = float4(i.texCoord, 0.0, 1.0);
 
   return(result);
 }

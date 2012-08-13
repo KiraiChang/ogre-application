@@ -43,7 +43,7 @@ void VTFWSimulation::init(void)
 
 	m_pWaterInterface = new VTFWMesh(MESH_NAME, PLANE_SIZE, COMPLEXITY, m_pWindow);
 	m_pWaterEntity = m_pSceneMgr->createEntity(ENTITY_NAME, MESH_NAME);
-	m_pWaterEntity->setMaterialName("ChinesePaint/Water");
+	m_pWaterEntity->setMaterialName("ChinesePaint/Texture");
 	Ogre::SceneNode *waterNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	waterNode->attachObject(m_pWaterEntity);
 
@@ -90,8 +90,6 @@ void VTFWSimulation::update(float timePass)
 {
 	if(m_fMoveSpeed > 0)
 	{
-		Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pCamera->getViewport())->getCompositor("ChinesePaint");
-		ins->getTextureInstance("heightSampler", 0)->copyToTexture(((VTFWMesh *)m_pWaterInterface)->getTexture("heightSampler"));
 		float t = timePass * m_fMoveSpeed;
 
 		m_fTimeoutDelay-=t ;
