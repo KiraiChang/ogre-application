@@ -4,9 +4,13 @@
 VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplexity, Ogre::RenderWindow *win):m_pWindow(win)
 {
 	// create previous texture
-	Ogre::TexturePtr texPrevious = Ogre::TextureManager::getSingleton().createManual("previousHeightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	mTexture["heightSampler"] = Ogre::TextureManager::getSingleton().createManual("heightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		Ogre::TEX_TYPE_2D, inComplexity, inComplexity, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET);
-
+	mHeightBuf = mTexture["heightSampler"]->getBuffer();
+	// create previous texture
+	mTexture["heightSampler"] = Ogre::TextureManager::getSingleton().createManual("previousHeightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		Ogre::TEX_TYPE_2D, inComplexity, inComplexity, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET);
+	
 	int x,y,b; // I prefer to initialize for() variables inside it, but VC doesn't like it ;(
 	this->meshName = inMeshName ;
 	this->complexity = inComplexity ;
@@ -164,7 +168,11 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 	//mHeightBuf->blitToMemory(*m_pPixelBox);
 
 	//Ogre::uint8* data = (Ogre::uint8*)m_pPixelBox->data;
-
+	//Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
+	//Ogre::PixelBox pixel;
+	//ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitToMemory(pixel);
+	//mHeightBuf->blitFromMemory(pixel);
+	
 	while(lastAnimationTimeStamp <= lastTimeStamp) 
 	{
 			// switch buffer numbers
@@ -187,4 +195,9 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 		posVertexBuffer->getSizeInBytes(), // size
 		vertexBuffers[currentBuffNumber], // source
 		true); // discard?
+}
+
+Ogre::TexturePtr VTFWMesh::getTexture(const std::string &name)
+{
+	return mTexture[name];
 }

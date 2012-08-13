@@ -1,9 +1,7 @@
-ertex_program ChinesePaint/Water/WaterWaveVS cg
+vertex_program ChinesePaint/Water/WaterWaveVS cg
 {
-	//source chinese_paint.cg
-	source test.cg
-	//entry_point WaterWaveVS
-	entry_point StdQuad_vp 
+	source chinese_paint.cg
+	entry_point WaterWaveVS
 	profiles vs_1_1 arbvp1
 	
 	default_params
@@ -14,10 +12,8 @@ ertex_program ChinesePaint/Water/WaterWaveVS cg
 
 fragment_program ChinesePaint/Water/WaterWavePS cg
 {
-	//source chinese_paint.cg
-	source test.cg
-	//entry_point WaterWavePS
-	entry_point test
+	source chinese_paint.cg
+	entry_point WaterWavePS
 	profiles ps_2_0 arbfp1
 }
 
@@ -28,29 +24,25 @@ material ChinesePaint/Water
 	{
 		pass WaterWave
 		{
-			//ambient 1.0 0.0 0.0
-			//vertex_program_ref ChinesePaint/Water/WaterWaveVS
 			vertex_program_ref ChinesePaint/Water/WaterWaveVS
 			{
-			
 			}
 			
 			fragment_program_ref ChinesePaint/Water/WaterWavePS
 			{
-			
 			}
 					
-			texture_unit heightSampler
-			{
-				
-			}
+			// texture_unit heightsampler
+			// {
+				// texture heightsampler
+			// }
 			
-			texture_unit previousHeightSampler
-			{
-				texture previousHeightSampler
-			}
+			// texture_unit previousheightsampler
+			// {
+				// texture previousheightsampler
+			// }
 			
-			texture_unit dampeningSampler
+			texture_unit dampeningsampler
 			{
 				texture dampening.tga
 			}
@@ -67,7 +59,21 @@ material ChinesePaint/Texture
 		{				
 			texture_unit heightSampler
 			{
-				texture heightSampler
+				texture heightsampler
+			}
+		}
+	}
+}
+
+material ChinesePaint/Output
+{
+	technique
+	{
+		pass 
+		{				
+			texture_unit scene
+			{
+				texture scene
 			}
 		}
 	}

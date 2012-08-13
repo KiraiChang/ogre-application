@@ -3,12 +3,15 @@
 #include "../simulation_interface/water_interface.h"
 #include <iostream>
 #include <ogre.h>
-
+#include <map>
+typedef std::map< std::string, Ogre::TexturePtr> MAP_OGRE_TEXTURE;
 class VTFWMesh : public WaterInterface
 {
 private:
 	Ogre::MeshPtr											mesh ;
 	Ogre::SubMesh *											subMesh ; 
+	MAP_OGRE_TEXTURE										mTexture;
+	Ogre::HardwarePixelBufferSharedPtr						mHeightBuf;
 	Ogre::HardwarePixelBufferSharedPtr						mPreviousHeightBuf;
 	float *													vertexBuffers[3] ; // we need 3 vertex buffers
 	int														currentBuffNumber ;
@@ -34,6 +37,7 @@ public:
 	virtual void											updateMesh(float timeSinceLastFrame);
 	virtual void											push(float x, float y, float depth, bool absolute=false);
 	std::string												getType(void) {return "VTFW_MESH";}
+	Ogre::TexturePtr										getTexture(const std::string &name);
 };
 
 #endif //_VTFW_MESH_H_
