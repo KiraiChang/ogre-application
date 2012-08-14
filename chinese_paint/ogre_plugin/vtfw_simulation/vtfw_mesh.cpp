@@ -11,7 +11,7 @@ VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplex
 	mTexture["heightSampler"] = Ogre::TextureManager::getSingleton().createManual("previousHeightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		Ogre::TEX_TYPE_2D, inComplexity, inComplexity, 0, Ogre::PF_R8G8B8A8, Ogre::TU_RENDERTARGET);
 	
-	Ogre::uint8 *data = new Ogre::uint8[128*128*3];
+	Ogre::uint8 *data = new Ogre::uint8[128*128*4];
 	m_pPixelBox = new Ogre::PixelBox(128, 128, 1, Ogre::PF_A8R8G8B8, data);
 
 	int x,y,b; // I prefer to initialize for() variables inside it, but VC doesn't like it ;(
@@ -183,10 +183,12 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 		for(y=1;y<complexity;y++) // don't do anything with border values
 		{ 
 			float *row = buf + 3*y*(complexity+1) ;
-			Ogre::uint8 *pixelRow = pData + 3 * y * (complexity+1) ;
+			Ogre::uint8 *pixelRow = pData + 4 * y * (complexity) ;
 			for(x=1;x<complexity;x++) 
 			{
-				Ogre::uint8 newHigh = pixelRow[3*x];
+				//BGRA
+				//0123
+				Ogre::uint8 newHigh = pixelRow[(4*x)+2];
 				row[3*x] = newHigh;
 			}
 		}
