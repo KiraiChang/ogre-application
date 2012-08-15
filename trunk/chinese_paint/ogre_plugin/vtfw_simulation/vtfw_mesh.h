@@ -37,7 +37,7 @@ public:
 	virtual void											updateMesh(float timeSinceLastFrame);
 	virtual void											push(float x, float y, float depth, bool absolute=false);
 	std::string												getType(void) {return "VTFW_MESH";}
-	Ogre::TexturePtr										getTexture(const std::string &name);
+	//Ogre::TexturePtr										getTexture(const std::string &name);
 };
 
 #endif //_VTFW_MESH_H_

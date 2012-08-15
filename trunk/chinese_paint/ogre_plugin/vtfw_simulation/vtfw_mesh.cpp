@@ -13,7 +13,7 @@ VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplex
 	mPreviousHeightBuf = mTexture["previousHeightSampler"]->getBuffer();
 
 	float *data = new float[128*128*4];
-	memset(data, 0, 128*128*4);
+	memset(data, 0, 128*128*4*sizeof(float));
 	m_pPixelBox = new Ogre::PixelBox(128, 128, 1, Ogre::PF_FLOAT32_RGBA, data);
 	Ogre::Image::Box box(0.0, 0.0, 128.0, 128.0);
 	mHeightBuf->blitFromMemory(*m_pPixelBox, box);
@@ -221,16 +221,16 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 	//float2[1] = 0.99;
 	//ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("psSimulationPositionWeighting", float2, 2);
 	//ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("psSimulationWaveSpeedSquared", 10);
-	//ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("psSimulationOnefloatTimesDeltaTimeSquared", timeSinceLastFrame*timeSinceLastFrame);
+	//ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("psSimulationOnefloatTimesDeltaTimeSquared", 15*timeSinceLastFrame*timeSinceLastFrame);
 	//float float3[3] = {23.4375, 0.0, 23.4375};
 	//ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("psSimulationGridSize", float3, 3);
 	mHeightBuf->blitToMemory(box, *m_pPixelBox);
 	mPreviousHeightBuf->blitFromMemory(*m_pPixelBox, box);
-	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitToMemory(box, *m_pPixelBox);
-	ins->getTextureInstance("previousHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
-
 	ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitToMemory(box, *m_pPixelBox);
-	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
+	ins->getTextureInstance("previousHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
+	
+	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitToMemory(box, *m_pPixelBox);
+	ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
 	mHeightBuf->blitFromMemory(*m_pPixelBox, box);
 
 
@@ -246,9 +246,9 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 			float *pixelRow = pData + 4 * y * (complexity) ;
 			for(x=0;x<complexity;x++) 
 			{
-				//float newHigh = pixelRow[(4*x)];
-				//row[3*x] = newHigh;
-				row[3*x] = 0;
+				float newHigh = pixelRow[(4*x)];
+				row[3*x] = newHigh;
+				//row[3*x] = 0;
 			}
 		}
 		lastAnimationTimeStamp += (1.0f / ANIMATIONS_PER_SECOND);
@@ -260,7 +260,7 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 		true); // discard?
 }
 
-Ogre::TexturePtr VTFWMesh::getTexture(const std::string &name)
-{
-	return mTexture[name];
-}
+//Ogre::TexturePtr VTFWMesh::getTexture(const std::string &name)
+//{
+//	return mTexture[name];
+//}
