@@ -30,6 +30,16 @@ material ChinesePaint/Water
 			
 			fragment_program_ref ChinesePaint/Water/WaterWavePS
 			{
+				// -1/m_waveSimulationWidth, 0.0/m_waveSimulationHeight
+				param_named psSimulationTexCoordDelta_x0y1 float2 -0.0078125 0.0
+				param_named psSimulationTexCoordDelta_x2y1 float2 0.0078125 0.0
+				param_named psSimulationTexCoordDelta_x1y0 float2 0.0 -0.0078125
+				param_named psSimulationTexCoordDelta_x1y2 float2 0.0 0.0078125
+				param_named psSimulationPositionWeighting float2 1.99 0.99
+				param_named psSimulationWaveSpeedSquared float 10.0
+				param_named psSimulationOnefloatTimesDeltaTimeSquared float 0.1
+				//m_landScale/ m_waveSimulationWidth
+				param_named psSimulationGridSize float3 23.4375 0.0 23.4375
 			}
 					
 			texture_unit source

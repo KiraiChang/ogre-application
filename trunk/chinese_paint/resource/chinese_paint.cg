@@ -8,7 +8,7 @@ uniform float2 psSimulationTexCoordDelta_x1y0;
 uniform float2 psSimulationTexCoordDelta_x1y2;
 uniform float psSimulationWaveSpeedSquared;
 uniform float2 psSimulationPositionWeighting;
-uniform float psSimulationOneHalfTimesDeltaTimeSquared;
+uniform float psSimulationOnefloatTimesDeltaTimeSquared;
 uniform float3 psSimulationGridSize;
 
 struct Interpolants
@@ -49,34 +49,34 @@ float4 WaterWavePS(Interpolants i) : COLOR
   float3 dydx, dydz;
   float4 result;
 
-  // // Look up all the neighbor heights
-  // height_x1y1 = tex2D(heightSampler, i.texCoord);
-  // height_x0y1 = tex2D(heightSampler, i.texCoord + psSimulationTexCoordDelta_x0y1);
-  // height_x2y1 = tex2D(heightSampler, i.texCoord + psSimulationTexCoordDelta_x2y1);
-  // height_x1y0 = tex2D(heightSampler, i.texCoord + psSimulationTexCoordDelta_x1y0);
-  // height_x1y2 = tex2D(heightSampler, i.texCoord + psSimulationTexCoordDelta_x1y2);
-  // previousHeight = tex2D(previousHeightSampler, i.texCoord);
-  // dampening = tex2D(dampeningSampler, i.texCoord);
+  // Look up all the neighbor heights
+  height_x1y1 = tex2D(heightSampler, i.texCoord).x;
+  height_x0y1 = tex2D(heightSampler, i.texCoord + psSimulationTexCoordDelta_x0y1).x;
+  height_x2y1 = tex2D(heightSampler, i.texCoord + psSimulationTexCoordDelta_x2y1).x;
+  height_x1y0 = tex2D(heightSampler, i.texCoord + psSimulationTexCoordDelta_x1y0).x;
+  height_x1y2 = tex2D(heightSampler, i.texCoord + psSimulationTexCoordDelta_x1y2).x;
+  previousHeight = tex2D(previousHeightSampler, i.texCoord).x;
+  dampening = tex2D(dampeningSampler, i.texCoord).x;
 
 
-  // // Compute the acceleration of the point based upon its neighbors
-  // acceleration = dampening * psSimulationWaveSpeedSquared * (height_x0y1 + height_x2y1 + height_x1y0 + height_x1y2 - 4.0 * height_x1y1);
+  // Compute the acceleration of the point based upon its neighbors
+  acceleration = dampening * psSimulationWaveSpeedSquared * (height_x0y1 + height_x2y1 + height_x1y0 + height_x1y2 - 4.0 * height_x1y1);
 
-  // // Do Verlet integration
-  // newHeight = psSimulationPositionWeighting.x * height_x1y1 - 
-              // psSimulationPositionWeighting.y * previousHeight + 
-              // psSimulationOnefloatTimesDeltaTimeSquared * acceleration;
+  // Do Verlet integration
+  newHeight = psSimulationPositionWeighting.x * height_x1y1 - 
+              psSimulationPositionWeighting.y * previousHeight + 
+              psSimulationOnefloatTimesDeltaTimeSquared * acceleration;
  
-  // // Calculate the normal
-  // dydx = float3(psSimulationGridSize.x, height_x2y1 - height_x1y1, 0.0);
-  // dydz = float3(0.0, height_x1y2 - height_x1y1, -psSimulationGridSize.z);
-  // normal = cross(dydx, dydz);
-  // normal = normalize(normal);
+  // Calculate the normal
+  dydx = float3(psSimulationGridSize.x, height_x2y1 - height_x1y1, 0.0);
+  dydz = float3(0.0, height_x1y2 - height_x1y1, -psSimulationGridSize.z);
+  normal = cross(dydx, dydz);
+  normal = normalize(normal);
 
 
-  // // Combine the height and normal
-  // result = float4(newHeight, normal);
-  result = float4(i.texCoord, 0.0, 1.0);
+  // Combine the height and normal
+  result = float4(newHeight, normal);
+  //result = float4(i.texCoord, 0.0, 1.0);
 
   return(result);
 }
