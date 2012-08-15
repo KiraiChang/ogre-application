@@ -70,8 +70,6 @@ void VTFWSimulation::release(void)
 
 void VTFWSimulation::setupControls(OgreBites::SdkTrayManager* sdkTray)
 {
-	Ogre::CompositorManager::getSingleton().addCompositor(m_pViewport, "ChinesePaint");
-	Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_pViewport, "ChinesePaint", true);
 }
 
 void VTFWSimulation::sliderMoved(OgreBites::Slider* slider)
@@ -91,7 +89,7 @@ void VTFWSimulation::update(float timePass)
 	if(m_fMoveSpeed > 0)
 	{
 		float t = timePass * m_fMoveSpeed;
-
+		//((VTFWMesh *)m_pWaterInterface)->push(16, 16, 1, true);
 		m_fTimeoutDelay-=t ;
 		if (m_fTimeoutDelay<=0)
 			m_fTimeoutDelay = 0;

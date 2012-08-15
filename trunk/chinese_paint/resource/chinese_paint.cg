@@ -1,15 +1,4 @@
-sampler2D previousHeightSampler               : register(s0);
-sampler2D heightSampler                       : register(s1);
-sampler2D dampeningSampler                    : register(s2);
 
-uniform float2 psSimulationTexCoordDelta_x0y1;
-uniform float2 psSimulationTexCoordDelta_x2y1;
-uniform float2 psSimulationTexCoordDelta_x1y0;
-uniform float2 psSimulationTexCoordDelta_x1y2;
-uniform float psSimulationWaveSpeedSquared;
-uniform float2 psSimulationPositionWeighting;
-uniform float psSimulationOnefloatTimesDeltaTimeSquared;
-uniform float3 psSimulationGridSize;
 
 struct Interpolants
 {
@@ -36,7 +25,19 @@ Interpolants WaterWaveVS(float4 position : POSITION,
 
 
 
-float4 WaterWavePS(Interpolants i) : COLOR
+float4 WaterWavePS(Interpolants i,
+sampler2D previousHeightSampler               : register(s0),
+sampler2D heightSampler                       : register(s1),
+sampler2D dampeningSampler                    : register(s2),
+uniform float2 psSimulationPositionWeighting,
+uniform float2 psSimulationTexCoordDelta_x0y1,
+uniform float2 psSimulationTexCoordDelta_x2y1,
+uniform float2 psSimulationTexCoordDelta_x1y0,
+uniform float2 psSimulationTexCoordDelta_x1y2,
+uniform float psSimulationWaveSpeedSquared,
+uniform float psSimulationOnefloatTimesDeltaTimeSquared,
+uniform float3 psSimulationGridSize
+) : COLOR
 {
   float  acceleration;
   float  height_x1y1;
@@ -75,8 +76,12 @@ float4 WaterWavePS(Interpolants i) : COLOR
 
 
   // Combine the height and normal
-  result = float4(newHeight, normal);
-  //result = float4(i.texCoord, 0.0, 1.0);
+  //result = float4(newHeight, normal);
+  //result = float4(1.0, 0.0, 0.0, 1.0);
+  result = float4(newHeight, 0.0, 0.0, 1.0);
+  //result = float4(1.0, 0.0, 0.0, 1.0);
+  //result = float4(acceleration, 0.0, 0.0, 1.0);
+  //result = float4(psSimulationWaveSpeedSquared, 0.0, 0.0, 1.0);
 
   return(result);
 }
