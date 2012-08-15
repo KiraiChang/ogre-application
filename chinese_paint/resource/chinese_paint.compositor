@@ -39,7 +39,9 @@ compositor "ChinesePaint"
   {
       // Temporary textures
       texture scene 0 0 PF_A8R8G8B8
-      texture heightSampler 128 128 PF_A8R8G8B8
+      texture heightSampler 128 128 PF_FLOAT32_RGBA
+	  texture curHeightSampler 128 128 PF_FLOAT32_RGBA
+	  texture previousHeightSampler 128 128 PF_FLOAT32_RGBA
 	  //texture blur target_width target_height PF_A8R8G8B8
 
       
@@ -55,7 +57,8 @@ compositor "ChinesePaint"
         pass render_quad
         {
           material ChinesePaint/Water
-          input 0 scene
+		  input 0 previousHeightSampler
+		  input 1 curHeightSampler
           identifier 0
         }
       }
