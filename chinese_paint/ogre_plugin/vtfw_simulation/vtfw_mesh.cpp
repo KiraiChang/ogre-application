@@ -170,6 +170,7 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 
 	Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
 	Ogre::Image::Box box(0.0, 0.0, 128.0, 128.0);
+	//ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("ABC",123);
 	ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitToMemory(box, *m_pPixelBox);
 	mHeightBuf->blitFromMemory(*m_pPixelBox, box);
 
@@ -180,11 +181,11 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 			// switch buffer numbers
 		int x, y;
 		float *buf = vertexBuffers[currentBuffNumber] + 1 ; // +1 for Y coordinate
-		for(y=1;y<complexity;y++) // don't do anything with border values
+		for(y=0;y<complexity;y++) // don't do anything with border values
 		{ 
-			float *row = buf + 3*y*(complexity+1) ;
+			float *row = buf + 3*y*(complexity) ;
 			Ogre::uint8 *pixelRow = pData + 4 * y * (complexity) ;
-			for(x=1;x<complexity;x++) 
+			for(x=0;x<complexity;x++) 
 			{
 				//BGRA
 				//0123
