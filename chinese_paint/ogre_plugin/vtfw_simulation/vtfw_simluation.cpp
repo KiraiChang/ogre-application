@@ -89,7 +89,12 @@ void VTFWSimulation::update(float timePass)
 	if(m_fMoveSpeed > 0)
 	{
 		float t = timePass * m_fMoveSpeed;
-		//((VTFWMesh *)m_pWaterInterface)->push(16, 16, 1, true);
+		static int i = 0;
+		if(i == 100)
+		{
+			((VTFWMesh *)m_pWaterInterface)->push(64, 64, -0.01);
+		}
+		i++;
 		m_fTimeoutDelay-=t ;
 		if (m_fTimeoutDelay<=0)
 			m_fTimeoutDelay = 0;

@@ -51,14 +51,14 @@ compositor "ChinesePaint"
         input previous
       }
       
-      target heightSampler
+      target curHeightSampler
       {
         input none
         pass render_quad
         {
           material ChinesePaint/Water
 		  input 0 previousHeightSampler
-		  input 1 curHeightSampler
+		  input 1 heightSampler
           identifier 0
         }
       }

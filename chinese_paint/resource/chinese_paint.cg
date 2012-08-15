@@ -76,12 +76,12 @@ uniform float3 psSimulationGridSize
 
 
   // Combine the height and normal
-  //result = float4(newHeight, normal);
+  result = float4(newHeight, normal);
   //result = float4(1.0, 0.0, 0.0, 1.0);
-  result = float4(newHeight, 0.0, 0.0, 1.0);
+  //result = float4(newHeight, 0.0, 0.0, 1.0);
   //result = float4(1.0, 0.0, 0.0, 1.0);
   //result = float4(acceleration, 0.0, 0.0, 1.0);
   //result = float4(psSimulationWaveSpeedSquared, 0.0, 0.0, 1.0);
-
+	//result = float4(previousHeight, 0.0, 0.0, 1.0);
   return(result);
 }
