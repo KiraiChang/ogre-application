@@ -21,10 +21,10 @@ VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplex
 
 	Ogre::CompositorManager::getSingleton().addCompositor(m_pWindow->getViewport(0), "ChinesePaint");
 	Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_pWindow->getViewport(0), "ChinesePaint", true);
-	Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
-	ins->getTextureInstance("previousHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
-	ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
-	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
+	//Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
+	//ins->getTextureInstance("previousHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
+	//ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
+	//ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
 
 	int x,y,b; // I prefer to initialize for() variables inside it, but VC doesn't like it ;(
 	this->meshName = inMeshName ;
@@ -173,7 +173,8 @@ void VTFWMesh::push(float x, float y, float depth, bool absolute)
 {
 	Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
 	Ogre::Image::Box box(0.0, 0.0, 128.0, 128.0);
-	ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitToMemory(box, *m_pPixelBox);
+	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitToMemory(box, *m_pPixelBox);
+	//mHeightBuf->blitToMemory(box, *m_pPixelBox);
 	float *buf = (float *)m_pPixelBox->data;
 	// scale pressure according to time passed
 	depth = depth * lastFrameTime;// * ANIMATIONS_PER_SECOND ;
@@ -195,7 +196,8 @@ void VTFWMesh::push(float x, float y, float depth, bool absolute)
 	_PREP(1,0);
 	_PREP(1,1);
 #undef _PREP
-	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
+	//ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
+	mHeightBuf->blitFromMemory(*m_pPixelBox, box);
 }
 
 /* ========================================================================= */
@@ -226,11 +228,11 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 	//ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("psSimulationGridSize", float3, 3);
 	mHeightBuf->blitToMemory(box, *m_pPixelBox);
 	mPreviousHeightBuf->blitFromMemory(*m_pPixelBox, box);
-	ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitToMemory(box, *m_pPixelBox);
-	ins->getTextureInstance("previousHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
+	//ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitToMemory(box, *m_pPixelBox);
+	//ins->getTextureInstance("previousHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
 	
 	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitToMemory(box, *m_pPixelBox);
-	ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
+	//ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
 	mHeightBuf->blitFromMemory(*m_pPixelBox, box);
 
 

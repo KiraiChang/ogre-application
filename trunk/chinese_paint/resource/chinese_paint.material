@@ -45,11 +45,13 @@ material ChinesePaint/Water
 			texture_unit previousHeightSampler
 			{
 				tex_address_mode clamp
+				texture previousHeightSampler
 			}
 			
 			texture_unit heightSampler
 			{
 				tex_address_mode clamp
+				texture heightSampler
 			}
 			
 			texture_unit dampeningsampler
