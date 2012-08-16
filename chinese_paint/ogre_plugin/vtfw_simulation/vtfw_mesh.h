@@ -26,6 +26,7 @@ private:
 	Ogre::HardwareVertexBufferSharedPtr						texcoordsVertexBuffer ;
 	Ogre::HardwareIndexBufferSharedPtr						indexBuffer ;
 	Ogre::PixelBox*											m_pPixelBox;
+	Ogre::Image::Box										m_imageBox;
 	Ogre::RenderWindow*										m_pWindow;
 
 	float													lastTimeStamp ;

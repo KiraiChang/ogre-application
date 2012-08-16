@@ -10,9 +10,9 @@
 #define COMPLEXITY 128 		// watch out - number of polys is 2*ACCURACY*ACCURACY !
 #define PLANE_SIZE 3000.0f
 
-#define PANEL_WIDTH 200
-#define RAIN_HEIGHT_RANDOM 5
-#define RAIN_HEIGHT_CONSTANT 5
+//#define PANEL_WIDTH 200
+//#define RAIN_HEIGHT_RANDOM 5
+//#define RAIN_HEIGHT_CONSTANT 5
 
 VTFWSimulation::VTFWSimulation(Ogre::SceneManager *sceneMgr, Ogre::Camera* cam, Ogre::RenderWindow *win, Ogre::Viewport *v):m_pSceneMgr(sceneMgr),
  						m_pCamera(cam),
