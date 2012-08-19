@@ -8,7 +8,7 @@
 #define ENTITY_NAME "WaterEntity"
 #define MATERIAL_NAME "ChinesePaint/Water"
 #define COMPLEXITY 128 		// watch out - number of polys is 2*ACCURACY*ACCURACY !
-#define PLANE_SIZE 3000.0f
+#define PLANE_SIZE 256.0f
 
 //#define PANEL_WIDTH 200
 //#define RAIN_HEIGHT_RANDOM 5
@@ -52,7 +52,7 @@ void VTFWSimulation::init(void)
 	//m_pHeadNode->attachObject(ent);
 
 	Ogre::SceneNode* camNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	camNode->translate(1500, 3000, 1500);
+	camNode->translate(128, 256, 128);
 	camNode->pitch(Ogre::Degree(-90));
 	camNode->attachObject(m_pCamera);
 
