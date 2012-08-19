@@ -29,6 +29,7 @@ private:
 	Ogre::HardwareVertexBufferSharedPtr						texcoordsVertexBuffer ;
 	Ogre::HardwareIndexBufferSharedPtr						indexBuffer ;
 	Ogre::PixelBox*											m_pPixelBox;
+	//Ogre::PixelBox*											m_pPrePixelBox;
 	Ogre::Image::Box										m_imageBox;
 	Ogre::RenderWindow*										m_pWindow;
 
