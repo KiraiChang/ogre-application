@@ -5,13 +5,13 @@ VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplex
 	m_imageBox(0.0, 0.0, 128.0, 128.0)
 {
 	// create previous texture
-	mTexture["heightSampler"] = Ogre::TextureManager::getSingleton().createManual("heightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	Ogre::TexturePtr texutre = Ogre::TextureManager::getSingleton().createManual("heightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		Ogre::TEX_TYPE_2D, inComplexity, inComplexity, 0, Ogre::PF_FLOAT32_RGBA, Ogre::TU_RENDERTARGET);
-	mHeightBuf = mTexture["heightSampler"]->getBuffer();
+	mHeightBuf = texutre->getBuffer();
 	// create previous texture
-	mTexture["previousHeightSampler"] = Ogre::TextureManager::getSingleton().createManual("previousHeightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	texutre = Ogre::TextureManager::getSingleton().createManual("previousHeightSampler", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		Ogre::TEX_TYPE_2D, inComplexity, inComplexity, 0, Ogre::PF_FLOAT32_RGBA, Ogre::TU_RENDERTARGET);
-	mPreviousHeightBuf = mTexture["previousHeightSampler"]->getBuffer();
+	mPreviousHeightBuf = texutre->getBuffer();
 
 	float *data = new float[128*128*4];
 	memset(data, 0, 128*128*4*sizeof(float));
@@ -19,13 +19,15 @@ VTFWMesh::VTFWMesh(const std::string& inMeshName, float planeSize, int inComplex
 	//Ogre::Image::Box box(0.0, 0.0, 128.0, 128.0);
 	mHeightBuf->blitFromMemory(*m_pPixelBox, m_imageBox);
 	mPreviousHeightBuf->blitFromMemory(*m_pPixelBox, m_imageBox);
+	Ogre::MaterialManager::getSingleton().getByName("ChinesePaint/Water")->load();
+
 
 	Ogre::CompositorManager::getSingleton().addCompositor(m_pWindow->getViewport(0), "ChinesePaint");
 	Ogre::CompositorManager::getSingleton().setCompositorEnabled(m_pWindow->getViewport(0), "ChinesePaint", true);
-	//Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
+	Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
 	//ins->getTextureInstance("previousHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
 	//ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
-	//ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
+	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->getRenderTarget()->addListener(this);
 
 	int x,y,b; // I prefer to initialize for() variables inside it, but VC doesn't like it ;(
 	this->meshName = inMeshName ;
@@ -166,8 +168,10 @@ VTFWMesh::~VTFWMesh ()
 	delete[] m_pPixelBox->data;
 	delete m_pPixelBox;
 	m_pPixelBox = NULL;
-
+	Ogre::MaterialManager::getSingleton().getByName("ChinesePaint/Water")->unload();
 	Ogre::MeshManager::getSingleton().remove(meshName);
+	//Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
+	//ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->getRenderTarget()->removeAllListeners();
 }
 /* ========================================================================= */
 void VTFWMesh::push(float x, float y, float depth, bool absolute)
@@ -207,8 +211,7 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 	lastFrameTime = timeSinceLastFrame ;
 	lastTimeStamp += timeSinceLastFrame ;
 
-	Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
-	//Ogre::Image::Box box(0.0, 0.0, 128.0, 128.0);
+	//Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
 	//float float2[2] = {-0.0078125, 0.0};
 	//ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("psSimulationTexCoordDelta_x0y1", float2, 2);
 	//float2[0] = 0.0078125;
@@ -227,43 +230,141 @@ void VTFWMesh::updateMesh(float timeSinceLastFrame)
 	//ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("psSimulationOnefloatTimesDeltaTimeSquared", 15*timeSinceLastFrame*timeSinceLastFrame);
 	//float float3[3] = {23.4375, 0.0, 23.4375};
 	//ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("psSimulationGridSize", float3, 3);
-	mHeightBuf->blitToMemory(m_imageBox, *m_pPixelBox);
-	mPreviousHeightBuf->blitFromMemory(*m_pPixelBox, m_imageBox);
-	//ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitToMemory(box, *m_pPixelBox);
-	//ins->getTextureInstance("previousHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
-	
-	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitToMemory(m_imageBox, *m_pPixelBox);
-	//ins->getTextureInstance("heightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
-	mHeightBuf->blitFromMemory(*m_pPixelBox, m_imageBox);
+	//mHeightBuf->blitToMemory(m_imageBox, *m_pPixelBox);
+	//mPreviousHeightBuf->blitFromMemory(*m_pPixelBox, m_imageBox);
+	//
+	//ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitToMemory(m_imageBox, *m_pPixelBox);
+	//mHeightBuf->blitFromMemory(*m_pPixelBox, m_imageBox);
 
 
-	float *pData = (float *)m_pPixelBox->data;
-	while(lastAnimationTimeStamp <= lastTimeStamp) 
-	{
-			// switch buffer numbers
-		int x, y;
-		float *buf = vertexBuffers[currentBuffNumber] + 1 ; // +1 for Y coordinate
-		for(y=0;y<complexity;y++) // don't do anything with border values
-		{ 
-			float *row = buf + 3*y*(complexity) ;
-			float *pixelRow = pData + 4 * y * (complexity) ;
-			for(x=0;x<complexity;x++) 
-			{
-				float newHigh = pixelRow[(4*x)];
-				row[3*x] = newHigh;
-				//row[3*x] = 0;
-			}
-		}
-		lastAnimationTimeStamp += (1.0f / ANIMATIONS_PER_SECOND);
-	}
-	// set vertex buffer
-	posVertexBuffer->writeData(0,
-		posVertexBuffer->getSizeInBytes(), // size
-		vertexBuffers[currentBuffNumber], // source
-		true); // discard?
+	//float *pData = (float *)m_pPixelBox->data;
+	//while(lastAnimationTimeStamp <= lastTimeStamp) 
+	//{
+	//		// switch buffer numbers
+	//	int x, y;
+	//	float *buf = vertexBuffers[currentBuffNumber] + 1 ; // +1 for Y coordinate
+	//	for(y=0;y<complexity;y++) // don't do anything with border values
+	//	{ 
+	//		float *row = buf + 3*y*(complexity) ;
+	//		float *pixelRow = pData + 4 * y * (complexity) ;
+	//		for(x=0;x<complexity;x++) 
+	//		{
+	//			float newHigh = pixelRow[(4*x)];
+	//			row[3*x] = newHigh;
+	//			//row[3*x] = 0;
+	//		}
+	//	}
+	//	lastAnimationTimeStamp += (1.0f / ANIMATIONS_PER_SECOND);
+	//}
+	//// set vertex buffer
+	//posVertexBuffer->writeData(0,
+	//	posVertexBuffer->getSizeInBytes(), // size
+	//	vertexBuffers[currentBuffNumber], // source
+	//	true); // discard?
 }
 
 //Ogre::TexturePtr VTFWMesh::getTexture(const std::string &name)
 //{
 //	return mTexture[name];
 //}
+
+//void VTFWMesh::preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
+//{
+//	Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
+//	ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("psSimulationOnefloatTimesDeltaTimeSquared", 15*lastTimeStamp*lastTimeStamp);
+//	lastTimeStamp = 0.0;
+//}
+//
+//void VTFWMesh::postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt)
+//{
+//	Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
+//	mHeightBuf->blitToMemory(m_imageBox, *m_pPixelBox);
+//	mPreviousHeightBuf->blitFromMemory(*m_pPixelBox, m_imageBox);
+//	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitToMemory(m_imageBox, *m_pPixelBox);
+//	mHeightBuf->blitFromMemory(*m_pPixelBox, m_imageBox);
+//
+//
+//	float *pData = (float *)m_pPixelBox->data;
+//	while(lastAnimationTimeStamp <= lastTimeStamp) 
+//	{
+//		// switch buffer numbers
+//		int x, y;
+//		float *buf = vertexBuffers[currentBuffNumber] + 1 ; // +1 for Y coordinate
+//		for(y=0;y<complexity;y++) // don't do anything with border values
+//		{ 
+//			float *row = buf + 3*y*(complexity) ;
+//			float *pixelRow = pData + 4 * y * (complexity) ;
+//			for(x=0;x<complexity;x++) 
+//			{
+//				float newHigh = pixelRow[(4*x)];
+//				row[3*x] = newHigh;
+//				//row[3*x] = 0;
+//			}
+//		}
+//		lastAnimationTimeStamp += (1.0f / ANIMATIONS_PER_SECOND);
+//	}
+//	// set vertex buffer
+//	posVertexBuffer->writeData(0,
+//		posVertexBuffer->getSizeInBytes(), // size
+//		vertexBuffers[currentBuffNumber], // source
+//		true); // discard?
+//}
+
+// Implementation of Ogre::CompositorInstance::Listener
+void VTFWMesh::notifyMaterialSetup(Ogre::uint32 passId, Ogre::MaterialPtr& material)
+{
+}
+
+// Implementation of Ogre::RenderTargetListener
+void VTFWMesh::preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt)
+{
+	Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
+	ins->getTechnique()->getTargetPass(1)->getPass(0)->getMaterial()->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant("psSimulationOnefloatTimesDeltaTimeSquared", 15*lastTimeStamp*lastTimeStamp);
+	lastTimeStamp = 0.0;
+
+	Ogre::RenderQueue* queue = evt.source->getCamera()->getSceneManager()->getRenderQueue();
+	queue->setRenderableListener(this);
+}
+
+void VTFWMesh::postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt)
+{
+	Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
+	mHeightBuf->blitToMemory(m_imageBox, *m_pPixelBox);
+	mPreviousHeightBuf->blitFromMemory(*m_pPixelBox, m_imageBox);
+	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitToMemory(m_imageBox, *m_pPixelBox);
+	mHeightBuf->blitFromMemory(*m_pPixelBox, m_imageBox);
+
+
+	float *pData = (float *)m_pPixelBox->data;
+	// switch buffer numbers
+	int x, y;
+	float *buf = vertexBuffers[currentBuffNumber] + 1 ; // +1 for Y coordinate
+	for(y=1;y<complexity;y++) // don't do anything with border values
+	{ 
+		float *row = buf + 3*y*(complexity+1) ;
+		float *pixelRow = pData + 4 * y * (complexity) ;
+		for(x=1;x<complexity;x++) 
+		{
+			float newHigh = pixelRow[(4*x)];
+			row[3*x] = newHigh;
+			//row[3*x] = 0;
+		}
+	}
+
+	// set vertex buffer
+	posVertexBuffer->writeData(0,
+		posVertexBuffer->getSizeInBytes(), // size
+		vertexBuffers[currentBuffNumber], // source
+		true); // discard?
+	Ogre::RenderQueue* queue = evt.source->getCamera()->getSceneManager()->getRenderQueue();
+	queue->setRenderableListener(0);
+}
+
+
+// Implementation of Ogre::RenderQueue::RenderableListener
+bool VTFWMesh::renderableQueued(Ogre::Renderable* rend, Ogre::uint8 groupID, 
+	Ogre::ushort priority, Ogre::Technique** ppTech, Ogre::RenderQueue* pQueue)
+{
+	//*ppTech = mDepthTechnique;
+	return true;
+}
