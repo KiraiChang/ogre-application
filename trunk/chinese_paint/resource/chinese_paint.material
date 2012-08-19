@@ -39,7 +39,7 @@ material ChinesePaint/Water
 				param_named psSimulationWaveSpeedSquared float 5.0
 				param_named psSimulationOnefloatTimesDeltaTimeSquared float 0.1
 				//m_landScale/ m_waveSimulationWidth
-				param_named psSimulationGridSize float3 23.4375 0.0 23.4375
+				param_named psSimulationGridSize float3 2 0.0 2
 			}
 			
 			texture_unit previousHeightSampler
