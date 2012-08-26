@@ -45,13 +45,13 @@ material ChinesePaint/Water
 			texture_unit previousHeightSampler
 			{
 				tex_address_mode clamp
-				texture previousHeightSampler
+				texture previousHeightSampler 
 			}
 			
 			texture_unit heightSampler
 			{
 				tex_address_mode clamp
-				texture heightSampler
+				texture heightSampler 
 			}
 			
 			texture_unit dampeningsampler
@@ -145,6 +145,17 @@ material ChinesePaint/WaterHLSL
 			{
 				texture dampening.tga
 			}
+		}
+	}
+}
+
+material ChinesePaint/Debug
+{
+	technique
+	{
+		pass 
+		{	
+			diffuse 1.0 1.0 1.0 1.0
 		}
 	}
 }

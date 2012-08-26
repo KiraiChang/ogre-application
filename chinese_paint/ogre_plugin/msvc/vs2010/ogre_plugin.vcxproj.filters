@@ -13,6 +13,9 @@
     <Filter Include="simulation_interface">
       <UniqueIdentifier>{82308e28-9a49-45bd-8171-51b90a4d362b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="stable_fluids">
+      <UniqueIdentifier>{8581df22-f8c6-4caf-ba7d-dd6cfba04abf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ogre_plugin\ogre_plugin.cpp">
@@ -35,6 +38,15 @@
     </ClCompile>
     <ClCompile Include="..\..\vtfw_simulation\vtfw_render_listener.cpp">
       <Filter>vtfw_simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stable_fluids\solver.cpp">
+      <Filter>stable_fluids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stable_fluids\stable_fluids_grid.cpp">
+      <Filter>stable_fluids</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stable_fluids\stable_fluids.cpp">
+      <Filter>stable_fluids</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +73,12 @@
     </ClInclude>
     <ClInclude Include="..\..\vtfw_simulation\vtfw_render_listener.h">
       <Filter>vtfw_simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stable_fluids\stable_fluids_grid.h">
+      <Filter>stable_fluids</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stable_fluids\stable_fluids.h">
+      <Filter>stable_fluids</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

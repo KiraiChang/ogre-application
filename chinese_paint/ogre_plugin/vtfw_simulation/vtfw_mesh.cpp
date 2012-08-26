@@ -187,7 +187,7 @@ VTFWMesh::~VTFWMesh ()
 	Ogre::CompositorInstance *ins = Ogre::CompositorManager::getSingleton().getCompositorChain(m_pWindow->getViewport(0))->getCompositor("ChinesePaint");
 	ins->setEnabled(false);
 	ins->removeListener(this);
-	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->getRenderTarget()->removeAllListeners();
+	ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->getRenderTarget()->removeListener(this);
 }
 /* ========================================================================= */
 void VTFWMesh::push(float x, float y, float depth, bool absolute)
@@ -199,24 +199,26 @@ void VTFWMesh::push(float x, float y, float depth, bool absolute)
 	float *buf = (float *)m_pPixelBox->data;
 	// scale pressure according to time passed
 	depth = depth * lastFrameTime;// * ANIMATIONS_PER_SECOND ;
-#define _PREP(addx,addy) { \
-	float *vertex=buf+4*((int)(y+addy)*(complexity)+(int)(x+addx)) ; \
-	float diffy = y - floor(y+addy); \
-	float diffx = x - floor(x+addx); \
-	float dist=sqrt(diffy*diffy + diffx*diffx) ; \
-	float power = 1 - dist ; \
-	if (power<0)  \
-	power = 0; \
-	if (absolute) \
-	*vertex = depth*power ;  \
-	else \
-	*vertex += depth*power ;  \
-	} /* #define */
-	_PREP(0,0);
-	_PREP(0,1);
-	_PREP(1,0);
-	_PREP(1,1);
-#undef _PREP
+//#define _PREP(addx,addy) { \
+//	float *vertex=buf+4*((int)(y+addy)*(complexity)+(int)(x+addx)) ; \
+//	float diffy = y - floor(y+addy); \
+//	float diffx = x - floor(x+addx); \
+//	float dist=sqrt(diffy*diffy + diffx*diffx) ; \
+//	float power = 1 - dist ; \
+//	if (power<0)  \
+//	power = 0; \
+//	if (absolute) \
+//	*vertex = depth*power ;  \
+//	else \
+//	*vertex += depth*power ;  \
+//	} /* #define */
+//	_PREP(0,0);
+//	_PREP(0,1);
+//	_PREP(1,0);
+//	_PREP(1,1);
+//#undef _PREP
+	float *vertex=buf+4*((int)(y)*(complexity)+(int)(x)) ;
+	*vertex = 1.0;
 	//ins->getTextureInstance("curHeightSampler", 0)->getBuffer()->blitFromMemory(*m_pPixelBox, box);
 	mHeightBuf->blitFromMemory(*m_pPixelBox, m_imageBox);
 }
