@@ -13,6 +13,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\ogre_plugin\ogre_plugin.cpp" />
     <ClCompile Include="..\..\ogre_plugin\sample_generator.cpp" />
+    <ClCompile Include="..\..\stable_fluids\solver.cpp" />
+    <ClCompile Include="..\..\stable_fluids\stable_fluids_grid.cpp" />
+    <ClCompile Include="..\..\stable_fluids\stable_fluids.cpp" />
     <ClCompile Include="..\..\vtfw_simulation\vtfw_mesh.cpp" />
     <ClCompile Include="..\..\vtfw_simulation\vtfw_render_listener.cpp" />
     <ClCompile Include="..\..\vtfw_simulation\vtfw_simluation.cpp" />
@@ -23,6 +26,8 @@
     <ClInclude Include="..\..\ogre_plugin\ogre_plugin.h" />
     <ClInclude Include="..\..\simulation_interface\simulation_interface.h" />
     <ClInclude Include="..\..\simulation_interface\water_interface.h" />
+    <ClInclude Include="..\..\stable_fluids\stable_fluids_grid.h" />
+    <ClInclude Include="..\..\stable_fluids\stable_fluids.h" />
     <ClInclude Include="..\..\vtfw_simulation\vtfw_mesh.h" />
     <ClInclude Include="..\..\vtfw_simulation\vtfw_render_listener.h" />
     <ClInclude Include="..\..\vtfw_simulation\vtfw_simulation.h" />

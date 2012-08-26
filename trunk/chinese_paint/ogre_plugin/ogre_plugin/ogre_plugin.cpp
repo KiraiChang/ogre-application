@@ -2,6 +2,7 @@
 #include "OgreBillboardParticleRenderer.h"
 #include "../water_simulation/water_simulation.h"
 #include "../vtfw_simulation/vtfw_simulation.h"
+#include "../stable_fluids/stable_fluids.h"
 
 #define PANEL_WIDTH 200
 
@@ -18,7 +19,8 @@ OgreSample::OgreSample() : m_pSim(0)
 // Just override the mandatory create scene method
 void OgreSample::setupContent(void)
 {
-	m_pSim = new VTFWSimulation(mSceneMgr, mCamera, mWindow, mViewport);
+	//m_pSim = new VTFWSimulation(mSceneMgr, mCamera, mWindow, mViewport);
+	m_pSim = new StableFluids(mSceneMgr, mCamera);
 	//m_pSim = new WaterSimulation(mSceneMgr, mCamera);
 	m_pSim->init();
 

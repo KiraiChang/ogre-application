@@ -64,7 +64,11 @@ void VTFWSimulation::release(void)
 {
 	if(m_pSceneMgr != NULL)
 	{
-
+		if(m_pWaterInterface != NULL)
+		{
+			delete m_pWaterInterface;
+			m_pWaterInterface = NULL;
+		}
 	}
 }
 
@@ -89,12 +93,16 @@ void VTFWSimulation::update(float timePass)
 	if(m_fMoveSpeed > 0)
 	{
 		float t = timePass * m_fMoveSpeed;
-		static int i = 0;
-		if(i == 100)
-		{
+		//static int i = 0;
+		//if(i == 100)
+		//{
 			((VTFWMesh *)m_pWaterInterface)->push(64, 64, -0.01);
-		}
-		i++;
+			//((VTFWMesh *)m_pWaterInterface)->push(65, 65, -0.01);
+			//((VTFWMesh *)m_pWaterInterface)->push(66, 66, -0.01);
+			//((VTFWMesh *)m_pWaterInterface)->push(67, 67, -0.01);
+			//((VTFWMesh *)m_pWaterInterface)->push(68, 68, -0.01);
+		//}
+		//i++;
 		m_fTimeoutDelay-=t ;
 		if (m_fTimeoutDelay<=0)
 			m_fTimeoutDelay = 0;
