@@ -16,6 +16,9 @@ private:
 	float									m_fLastAnimationTimeStamp;
 	float									m_fLastFrameTime ;
 	WaterInterface*							m_pWaterInterface;
+	Ogre::Entity*							m_pFish;
+	Ogre::SceneNode*						m_pFishNode;
+	Ogre::AnimationState*					m_pSwimState;
 
 public:
 											StableFluids(Ogre::SceneManager *sceneMgr, Ogre::Camera *camera) ;
