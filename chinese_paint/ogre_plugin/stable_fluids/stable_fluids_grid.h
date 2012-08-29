@@ -1,13 +1,7 @@
 #ifndef _STABLE_FLUIDS_GRID_H_
 #define _STABLE_FLUIDS_GRID_H_
 #include "../simulation_interface/water_interface.h"
-
-namespace Ogre
-{
-	class ManualObject ;
-	class SceneManager ;
-	class SceneNode;
-}
+#include <ogre.h>
 
 class StableFluidsGrid : public WaterInterface
 {
@@ -17,9 +11,17 @@ private:
 	float									m_fVisc;
 	float									m_fForce;
 	float									m_fSource;
+	float *									m_vfHeightMap[3] ; // 3 map to do wave equation
+	float *									m_vfDumpening;
+	int										m_iCurrentMap ;
+	Ogre::HardwarePixelBufferSharedPtr		m_heightMap;
+	Ogre::PixelBox*							m_pPixelBox;
 	Ogre::ManualObject *					m_pManuObj;
 	Ogre::SceneManager *					m_pSceneMgr;
 	Ogre::SceneNode *						m_pManualNode;
+	Ogre::Rectangle2D *						m_pMiniScreen;
+	Ogre::SceneNode	*						m_pMiniScreenNode;
+
 
 public:
 	float *									m_vfU;
