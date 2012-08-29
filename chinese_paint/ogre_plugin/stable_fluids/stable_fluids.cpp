@@ -8,6 +8,9 @@
 
 StableFluids::StableFluids(Ogre::SceneManager *sceneMgr, Ogre::Camera *camera):
 	m_pSceneMgr(sceneMgr), 
+	m_pFish(NULL),
+	m_pFishNode(NULL),
+	m_pSwimState(NULL),
 	m_pCamera(camera)
 {
 }
@@ -31,6 +34,15 @@ void StableFluids::init()
 	camNode->translate(32, 64, 32);
 	camNode->pitch(Ogre::Degree(-90));
 	camNode->attachObject(m_pCamera);
+
+	m_pFishNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	m_pFish = m_pSceneMgr->createEntity("FishEntity", "fish.mesh");
+	m_pFishNode->attachObject(m_pFish);
+	m_pFishNode->setPosition(32.0, 0.0, 32.0);
+	m_pFishNode->yaw(Ogre::Degree(-90));
+	m_pSwimState = m_pFish->getAnimationState("swim");
+	m_pSwimState->setEnabled(true);
+	m_pSwimState->setLoop(true);
 }
 
 void StableFluids::release()
@@ -39,6 +51,21 @@ void StableFluids::release()
 	{
 		((StableFluidsGrid *)m_pWaterInterface)->release();
 		delete m_pWaterInterface;
+	}
+
+	if(m_pSceneMgr!= NULL)
+	{
+		if(m_pFishNode != NULL)
+		{
+			m_pFishNode->detachObject(m_pFish);
+			m_pSceneMgr->destroySceneNode(m_pFishNode);
+			m_pFishNode = NULL;
+		}
+		if(m_pFish != NULL)
+		{
+			m_pSceneMgr->destroyEntity( m_pFish );
+			m_pFish = NULL;
+		}
 	}
 }
 
@@ -66,6 +93,7 @@ void StableFluids::update(float timeSinceLastFrame)
 {
 	m_fLastFrameTime = timeSinceLastFrame ;
 	m_fLastTimeStamp += timeSinceLastFrame ;
+	m_pSwimState->addTime(timeSinceLastFrame);
 	static int I = 0;
 	I++;
 	if(I == 100)
