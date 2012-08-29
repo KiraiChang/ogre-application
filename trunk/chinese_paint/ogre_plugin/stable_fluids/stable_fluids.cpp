@@ -69,7 +69,16 @@ void StableFluids::update(float timeSinceLastFrame)
 	static int I = 0;
 	I++;
 	if(I == 100)
-		((StableFluidsGrid *)m_pWaterInterface)->push(32, 32, 5);
+		((StableFluidsGrid *)m_pWaterInterface)->push(32, 32, 1);
+	else if(I == 150)
+		((StableFluidsGrid *)m_pWaterInterface)->push(16, 32, 1);
+	else if(I == 200)
+		((StableFluidsGrid *)m_pWaterInterface)->push(32, 16, 1);
+	else if(I == 250)
+		((StableFluidsGrid *)m_pWaterInterface)->push(32, 48, 1);
+	else if(I == 300)
+		((StableFluidsGrid *)m_pWaterInterface)->push(48, 32, 1);
+
 	m_pWaterInterface->updateMesh(timeSinceLastFrame);
 }
 

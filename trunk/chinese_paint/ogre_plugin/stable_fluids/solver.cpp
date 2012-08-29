@@ -13,16 +13,27 @@ void set_bnd ( int N, int b, float * x )
 {
 	int i;
 
+	//for ( i=1 ; i<=N ; i++ ) {
+	//	x[IX(0  ,i)] = b==1 ? -x[IX(1,i)] : x[IX(1,i)];
+	//	x[IX(N+1,i)] = b==1 ? -x[IX(N,i)] : x[IX(N,i)];
+	//	x[IX(i,0  )] = b==2 ? -x[IX(i,1)] : x[IX(i,1)];
+	//	x[IX(i,N+1)] = b==2 ? -x[IX(i,N)] : x[IX(i,N)];
+	//}
+	//x[IX(0  ,0  )] = 0.5f*(x[IX(1,0  )]+x[IX(0  ,1)]);
+	//x[IX(0  ,N+1)] = 0.5f*(x[IX(1,N+1)]+x[IX(0  ,N)]);
+	//x[IX(N+1,0  )] = 0.5f*(x[IX(N,0  )]+x[IX(N+1,1)]);
+	//x[IX(N+1,N+1)] = 0.5f*(x[IX(N,N+1)]+x[IX(N+1,N)]);
+
 	for ( i=1 ; i<=N ; i++ ) {
-		x[IX(0  ,i)] = b==1 ? -x[IX(1,i)] : x[IX(1,i)];
-		x[IX(N+1,i)] = b==1 ? -x[IX(N,i)] : x[IX(N,i)];
-		x[IX(i,0  )] = b==2 ? -x[IX(i,1)] : x[IX(i,1)];
-		x[IX(i,N+1)] = b==2 ? -x[IX(i,N)] : x[IX(i,N)];
+		x[IX(0  ,i)] = b==1 ? 0 : x[IX(0,i)];
+		x[IX(N+1,i)] = b==1 ? 0 : x[IX(N+1,i)];
+		x[IX(i,0  )] = b==2 ? 0 : x[IX(i,0)];
+		x[IX(i,N+1)] = b==2 ? 0 : x[IX(i,N+1)];
 	}
-	x[IX(0  ,0  )] = 0.5f*(x[IX(1,0  )]+x[IX(0  ,1)]);
-	x[IX(0  ,N+1)] = 0.5f*(x[IX(1,N+1)]+x[IX(0  ,N)]);
-	x[IX(N+1,0  )] = 0.5f*(x[IX(N,0  )]+x[IX(N+1,1)]);
-	x[IX(N+1,N+1)] = 0.5f*(x[IX(N,N+1)]+x[IX(N+1,N)]);
+	x[IX(0  ,0  )] = 0;
+	x[IX(0  ,N+1)] = 0;
+	x[IX(N+1,0  )] = 0;
+	x[IX(N+1,N+1)] = 0;
 }
 
 void lin_solve ( int N, int b, float * x, float * x0, float a, float c )
@@ -95,5 +106,38 @@ void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc,
 	SWAP ( u0, u ); SWAP ( v0, v );
 	advect ( N, 1, u, u0, u0, v0, dt ); advect ( N, 2, v, v0, u0, v0, dt );
 	project ( N, u, v, u0, v0 );
+}
+
+void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampening, float timePass )
+{
+	int x, y;
+	float height_x1y1;
+	float height_x0y1, height_x2y1;
+	float height_x1y0, height_x1y2;
+	float pre, dum;
+	float dt = timePass * timePass;
+	for(y=1;y<N;y++)
+	{ 
+		float *row = buf + y*(N) ;
+		float *row1 = buf1 + y*(N) ;
+		float *row1up = buf1 + (y-1)*(N) ;
+		float *row1down = buf1 + (y+1)*(N) ;
+		float *row2 = buf2 + y*(N) ;
+		float *dump = dampening + y*(N) ;
+		for(x=1;x<N;x++) 
+		{
+			height_x1y1 = row1[x];
+			pre = row2[x];
+			height_x0y1 = row1[x-1];
+			height_x2y1 = row1[x+1];
+			height_x1y0 = row1up[x];
+			height_x1y2 = row1down[x];
+			dum = dump[x] ;
+
+			float force = 2 * dump[x] *  (row1[x-1] + row1[x+1] + row1up[x]+row1down[x] - (4 * row[x]));
+			float newHight =  (1.99 * row1[x]) - (0.99 * row2[x]) + (0.5 * force * dt);
+			row[x] = newHight;
+		}
+	}
 }
 
