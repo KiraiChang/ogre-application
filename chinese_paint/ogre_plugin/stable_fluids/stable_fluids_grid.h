@@ -21,6 +21,8 @@ private:
 	Ogre::SceneNode *						m_pManualNode;
 	Ogre::Rectangle2D *						m_pMiniScreen;
 	Ogre::SceneNode	*						m_pMiniScreenNode;
+	Ogre::ParticleSystem *					m_pPS;
+	Ogre::SceneNode	*						m_pPSNode;
 
 
 public:
@@ -39,6 +41,7 @@ public:
 	~StableFluidsGrid(void);
 	void init(Ogre::SceneManager *mgr);
 	void release(void);
+	void updateParticle(float timePass);
 	void updateMesh(float timePass);
 	void updateDebug();
 	void push(float x, float y, float depth, bool absolute=false) ;
