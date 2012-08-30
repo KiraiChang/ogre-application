@@ -29,6 +29,8 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_pPixelBox(NULL),
 	m_pMiniScreenNode(NULL),
 	m_pMiniScreen(NULL),
+	m_pPS(NULL),
+	m_pPSNode(NULL),
 	m_pSceneMgr(NULL)
 {
 	m_iGridSize = (m_iGridNumber+2)*(m_iGridNumber+2);
@@ -96,6 +98,11 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 	m_pMiniScreenNode->attachObject(m_pMiniScreen);
 
 	m_pMiniScreen->setMaterial("ChinesePaint/Texture");
+
+	m_pPS = m_pSceneMgr->createParticleSystem();
+	m_pPSNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	m_pPSNode->attachObject(m_pPS);
+	m_pPSNode->setPosition(32, 0, 48);
 }
 
 void StableFluidsGrid::release(void)
@@ -138,6 +145,18 @@ void StableFluidsGrid::release(void)
 			delete m_pMiniScreen;
 			m_pMiniScreen = NULL;
 		}
+
+		if(m_pPSNode != NULL)
+		{
+			m_pPSNode->detachObject(m_pPS);
+			m_pSceneMgr->destroySceneNode(m_pPSNode);
+			m_pPSNode = NULL;
+		}
+		if(m_pPS != NULL)
+		{
+			m_pSceneMgr->destroyParticleSystem(m_pPS);
+			m_pPS = NULL;
+		}
 	}
 	if(m_pPixelBox != NULL)
 	{
@@ -146,6 +165,30 @@ void StableFluidsGrid::release(void)
 	}
 
 	Ogre::TextureManager::getSingleton().remove("heightSampler");
+}
+
+void StableFluidsGrid::updateParticle(float timePass)
+{
+	Ogre::Particle* particle = NULL;
+	int index;
+	Ogre::ParticleIterator ite = m_pPS->_getIterator();
+	while(!ite.end())
+	{
+		particle = ite.getNext();
+		Ogre::Vector3 pos = particle->position;
+		index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
+		pos.x += m_vfU[index];
+		pos.z += m_vfV[index];
+		particle->position = pos;
+	}
+	particle = m_pPS->createParticle();
+	if(particle != NULL)
+	{
+		particle->totalTimeToLive = 5;
+		particle->setDimensions (0.5, 0.5);
+		particle->position.x = 32;
+		particle->position.z = 48;
+	}
 }
 
 void StableFluidsGrid::updateMesh(float timePass)
@@ -161,6 +204,8 @@ void StableFluidsGrid::updateMesh(float timePass)
 	updateDebug();
 	m_pPixelBox->data =  m_vfHeightMap[m_iCurrentMap];
 	m_heightMap->blitFromMemory(*m_pPixelBox);
+
+	updateParticle(timePass);
 }
 
 void StableFluidsGrid::updateDebug()
@@ -183,7 +228,7 @@ void StableFluidsGrid::updateDebug()
 			y = (j-0.5f)*h;
 			index = (i)+(m_iGridNumber+2)*(j);
 			Ogre::Vector3 origin(x*m_iGridNumber, 0, y*m_iGridNumber);
-			Ogre::Vector3 to((x+m_vfU[index])*m_iGridNumber, 0, (y+m_vfU[index])*m_iGridNumber);
+			Ogre::Vector3 to((x+m_vfU[index])*m_iGridNumber, 0, (y+m_vfV[index])*m_iGridNumber);
 			m_pManuObj->position(origin);
 			m_pManuObj->position(to);
 		}
@@ -216,8 +261,8 @@ void StableFluidsGrid::push(float x, float y, float depth, bool absolute)
 	unsigned int index = (x)+(m_iGridNumber+2)*(y);
 	if(index > m_iGridSize)
 		return;
-	m_vfU[index] = m_fForce;
-	m_vfU[index] = -m_fForce;
+	m_vfU[index] = 0;
+	m_vfV[index] = -m_fForce;
 
 	::push(m_iGridNumber+2, x, y, 0, 0, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
 	::push(m_iGridNumber+2, x, y, 0, 1, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
