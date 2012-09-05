@@ -1,5 +1,5 @@
 #include "stable_fluids_grid.h"
-
+#include "../ogre_tool/ogre_mesh_tool.h"
 #include <iostream>
 
 extern void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt );
@@ -23,6 +23,7 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_vfUPrev(NULL), 
 	m_vfVPrev(NULL),
 	m_vfDumpening(NULL),
+	m_vbIntersectGrid(NULL),
 	m_iCurrentMap(0),
 	m_pManuObj(NULL),
 	m_pManualNode(NULL),
@@ -31,6 +32,10 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_pMiniScreen(NULL),
 	m_pPS(NULL),
 	m_pPSNode(NULL),
+	m_sVertexCount(0),
+	m_sIndex_count(0),
+	m_vVertices(NULL),
+	m_vIndices(NULL),
 	m_pSceneMgr(NULL)
 {
 	m_iGridSize = (m_iGridNumber+2)*(m_iGridNumber+2);
@@ -50,8 +55,12 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 	m_vfV			= new float[m_iGridSize];
 	m_vfUPrev		= new float[m_iGridSize];
 	m_vfVPrev		= new float[m_iGridSize];
+	m_vbIntersectGrid = new bool[m_iGridSize];
 	//m_vfDens		= new float[m_iGridSize];
 	//m_vfDensPrev	= new float[m_iGridSize];
+
+	memset(m_vbIntersectGrid, 0, m_iGridSize);
+
 	clear();
 	int y ,x;
 	for(int i = 0; i < MAX_HEIGHT_MAP_COUNT;i++)
@@ -114,6 +123,12 @@ void StableFluidsGrid::release(void)
 	//if ( m_vfDens ) delete ( m_vfDens );
 	//if ( m_vfDensPrev ) delete ( m_vfDensPrev );
 
+	if ( m_vbIntersectGrid ) 
+	{
+		delete [] m_vbIntersectGrid;
+		m_vbIntersectGrid = NULL;
+	}
+
 	for(int i = 0; i < MAX_HEIGHT_MAP_COUNT;i++)
 		if(m_vfHeightMap[i] != NULL)
 		{
@@ -164,6 +179,18 @@ void StableFluidsGrid::release(void)
 		m_pPixelBox = NULL;
 	}
 
+	if(m_vVertices != NULL)
+	{
+		delete[] m_vVertices;
+		m_vVertices = NULL;
+	}
+
+	if(m_vIndices != NULL)
+	{
+		delete[] m_vIndices;
+		m_vIndices = NULL;
+	}
+
 	Ogre::TextureManager::getSingleton().remove("heightSampler");
 }
 
@@ -187,7 +214,7 @@ void StableFluidsGrid::updateParticle(float timePass)
 		particle->totalTimeToLive = 5;
 		particle->setDimensions (0.5, 0.5);
 		particle->position.x = 32;
-		particle->position.z = 48;
+		particle->position.z = 36;
 	}
 }
 
@@ -206,6 +233,7 @@ void StableFluidsGrid::updateMesh(float timePass)
 	m_heightMap->blitFromMemory(*m_pPixelBox);
 
 	updateParticle(timePass);
+	setMeshBoundary();
 }
 
 void StableFluidsGrid::updateDebug()
@@ -277,5 +305,80 @@ void StableFluidsGrid::clear(void)
 	for ( i=0 ; i<m_iGridSize ; i++ ) 
 	{
 		m_vfU[i] = m_vfV[i] = m_vfUPrev[i] = m_vfVPrev[i] = /*m_vfDens[i] = m_vfDensPrev[i] =*/ 0.0f;
+	}
+}
+
+void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity)
+{
+	getMeshInformation(entity->getMesh().getPointer(), 
+		m_sVertexCount, 
+		m_vVertices, 
+		m_sIndex_count,
+		m_vIndices, 
+		node->getPosition(), 
+		node->getOrientation(), 
+		node->getScale());
+	calcMeshFace();
+}
+
+void StableFluidsGrid::calcMeshFace()
+{
+	int i, x, y, ite;
+	unsigned int index;
+	bool hasEdge = false;
+	int front, back;
+	for(i = 0;i < m_sVertexCount;i++)
+	{
+		if(m_vVertices[i].y < 1.0 && m_vVertices[i].y > -1.0)
+		{
+			index = ((int)m_vVertices[i].x) + 1 +  ((int)m_vVertices[i].x)*(m_iGridNumber+2);
+			if(index < m_iGridSize)
+				m_vbIntersectGrid[index] = true;//draw contour of object
+		}
+	}
+
+
+	for(y = 1; y < m_iGridNumber; y++)
+	{
+		hasEdge = false;
+		for(x = 1; x < m_iGridNumber; x++)
+		{
+			index = x + (y*(m_iGridNumber+2));
+			if(m_vbIntersectGrid[index])
+			{
+				if(!hasEdge)
+				{
+					front = x;
+					hasEdge = true;
+				}
+				else
+				{
+					back = x;
+					hasEdge = false;
+					for(ite = front; ite < back; ite++)
+					{
+						index = ite + (y*(m_iGridNumber+2));
+						m_vbIntersectGrid[index] = true;
+					}
+				}
+			}
+		}
+	}
+}
+
+void StableFluidsGrid::setMeshBoundary()
+{
+	int x, y;
+	unsigned int index;
+	for(y = 1; y < m_iGridNumber; y++)
+	{
+		for(x = 1; x < m_iGridNumber; x++)
+		{
+			index = x + (y*(m_iGridNumber+2));
+			if(m_vbIntersectGrid[index])
+			{
+				m_vfHeightMap[m_iCurrentMap][index] = 0;
+			}
+		}
 	}
 }

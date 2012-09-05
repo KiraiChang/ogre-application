@@ -1,6 +1,7 @@
 #include "stable_fluids.h"
 #include "stable_fluids_grid.h"
 
+
 #define ANIMATIONS_PER_SECOND 100.0f
 #define IX(i,j,N) ((i)+(N+2)*(j))
 
@@ -100,7 +101,7 @@ void StableFluids::update(float timeSinceLastFrame)
 	//	((StableFluidsGrid *)m_pWaterInterface)->push(32, 48, 1);
 
 	if(I == 50)
-		((StableFluidsGrid *)m_pWaterInterface)->push(32, 48, 1);
+		((StableFluidsGrid *)m_pWaterInterface)->push(32, 36, 1);
 	//else if(I == 150)
 	//	((StableFluidsGrid *)m_pWaterInterface)->push(16, 32, 1);
 	//else if(I == 200)
@@ -110,7 +111,10 @@ void StableFluids::update(float timeSinceLastFrame)
 	//else if(I == 300)
 	//	((StableFluidsGrid *)m_pWaterInterface)->push(48, 32, 1);
 
+	((StableFluidsGrid *)m_pWaterInterface)->updateMeshData(m_pFishNode, m_pFish);
 	m_pWaterInterface->updateMesh(timeSinceLastFrame);
 }
+
+
 
 

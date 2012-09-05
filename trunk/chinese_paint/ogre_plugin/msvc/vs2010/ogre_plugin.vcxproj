@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\ogre_plugin\ogre_plugin.cpp" />
     <ClCompile Include="..\..\ogre_plugin\sample_generator.cpp" />
+    <ClCompile Include="..\..\ogre_tool\ogre_mesh_tool.cpp" />
     <ClCompile Include="..\..\stable_fluids\solver.cpp" />
     <ClCompile Include="..\..\stable_fluids\stable_fluids_grid.cpp" />
     <ClCompile Include="..\..\stable_fluids\stable_fluids.cpp" />
@@ -24,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_plugin\ogre_plugin.h" />
+    <ClInclude Include="..\..\ogre_tool\ogre_mesh_tool.h" />
     <ClInclude Include="..\..\simulation_interface\simulation_interface.h" />
     <ClInclude Include="..\..\simulation_interface\water_interface.h" />
     <ClInclude Include="..\..\stable_fluids\stable_fluids_grid.h" />
