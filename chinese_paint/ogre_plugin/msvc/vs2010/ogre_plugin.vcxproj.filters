@@ -16,6 +16,9 @@
     <Filter Include="stable_fluids">
       <UniqueIdentifier>{8581df22-f8c6-4caf-ba7d-dd6cfba04abf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ogre_tool">
+      <UniqueIdentifier>{27585113-2e89-47ea-ba0e-9d8718de13d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ogre_plugin\ogre_plugin.cpp">
@@ -48,6 +51,9 @@
     <ClCompile Include="..\..\stable_fluids\stable_fluids.cpp">
       <Filter>stable_fluids</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ogre_tool\ogre_mesh_tool.cpp">
+      <Filter>ogre_tool</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_plugin\ogre_plugin.h">
@@ -79,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="..\..\stable_fluids\stable_fluids.h">
       <Filter>stable_fluids</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ogre_tool\ogre_mesh_tool.h">
+      <Filter>ogre_tool</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -13,6 +13,7 @@ private:
 	float									m_fSource;
 	float *									m_vfHeightMap[3] ; // 3 map to do wave equation
 	float *									m_vfDumpening;
+	bool *									m_vbIntersectGrid;
 	int										m_iCurrentMap ;
 	Ogre::HardwarePixelBufferSharedPtr		m_heightMap;
 	Ogre::PixelBox*							m_pPixelBox;
@@ -23,6 +24,12 @@ private:
 	Ogre::SceneNode	*						m_pMiniScreenNode;
 	Ogre::ParticleSystem *					m_pPS;
 	Ogre::SceneNode	*						m_pPSNode;
+
+	//fish vertex data
+	size_t									m_sVertexCount;
+	size_t									m_sIndex_count;
+	Ogre::Vector3*							m_vVertices;
+	unsigned long*							m_vIndices;
 
 
 public:
@@ -37,15 +44,18 @@ public:
 private:
 
 public:
-	StableFluidsGrid(unsigned int number);
-	~StableFluidsGrid(void);
-	void init(Ogre::SceneManager *mgr);
-	void release(void);
-	void updateParticle(float timePass);
-	void updateMesh(float timePass);
-	void updateDebug();
-	void push(float x, float y, float depth, bool absolute=false) ;
-	void clear(void);
+											StableFluidsGrid(unsigned int number);
+											~StableFluidsGrid(void);
+	void									init(Ogre::SceneManager *mgr);
+	void									release(void);
+	void									updateParticle(float timePass);
+	void									updateMesh(float timePass);
+	void									updateDebug();
+	void									push(float x, float y, float depth, bool absolute=false) ;
+	void									clear(void);
+	void									updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity);
+	void									calcMeshFace();
+	void									setMeshBoundary();
 };
 
 #endif //_STABLE_FLUIDS_GRID_H_
