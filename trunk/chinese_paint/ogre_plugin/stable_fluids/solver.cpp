@@ -126,13 +126,13 @@ void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampenin
 		float *dump = dampening + y*(N) ;
 		for(x=1;x<N;x++) 
 		{
-			height_x1y1 = row1[x];
-			pre = row2[x];
-			height_x0y1 = row1[x-1];
-			height_x2y1 = row1[x+1];
-			height_x1y0 = row1up[x];
-			height_x1y2 = row1down[x];
-			dum = dump[x] ;
+			//height_x1y1 = row1[x];
+			//pre = row2[x];
+			//height_x0y1 = row1[x-1];
+			//height_x2y1 = row1[x+1];
+			//height_x1y0 = row1up[x];
+			//height_x1y2 = row1down[x];
+			//dum = dump[x] ;
 
 			float force = 2 * dump[x] *  (row1[x-1] + row1[x+1] + row1up[x]+row1down[x] - (4 * row[x]));
 			float newHight =  (1.99 * row1[x]) - (0.99 * row2[x]) + (0.5 * force * dt);

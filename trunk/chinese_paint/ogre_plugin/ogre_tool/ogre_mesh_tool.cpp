@@ -1,6 +1,6 @@
 #include "ogre_mesh_tool.h"
 
-void getMeshInformation(const Ogre::Mesh* const mesh,
+void getMeshInformation(Ogre::Entity* entity,
                         size_t &vertex_count,
                         Ogre::Vector3* &vertices,
                         size_t &index_count,
@@ -9,14 +9,22 @@ void getMeshInformation(const Ogre::Mesh* const mesh,
                         const Ogre::Quaternion &orient,
                         const Ogre::Vector3 &scale)
 {
+	entity->addSoftwareAnimationRequest(false);
     bool added_shared = false;
     size_t current_offset = 0;
     size_t shared_offset = 0;
     size_t next_offset = 0;
     size_t index_offset = 0;
- 
+	Ogre::MeshPtr mesh = entity->getMesh();
     vertex_count = index_count = 0;
  
+	bool useSoftwareBlendingVertices = entity->hasSkeleton();
+
+	if (useSoftwareBlendingVertices)
+	{
+		entity->_updateAnimation();
+	}
+
     // Calculate how many vertices and indices we're going to need
     for ( unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i)
     {
@@ -51,7 +59,13 @@ void getMeshInformation(const Ogre::Mesh* const mesh,
     {
         Ogre::SubMesh* submesh = mesh->getSubMesh(i);
  
-        Ogre::VertexData* vertex_data = submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
+        //Ogre::VertexData* vertex_data = submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
+		bool useSharedVertices = submesh->useSharedVertices;
+		const Ogre::VertexData * vertex_data;
+		if(useSoftwareBlendingVertices)
+			vertex_data = useSharedVertices ? entity->_getSkelAnimVertexData() : entity->getSubEntity(i)->_getSkelAnimVertexData();
+		else
+			vertex_data = useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
  
         if ((!submesh->useSharedVertices) || (submesh->useSharedVertices && !added_shared))
         {
@@ -117,4 +131,5 @@ void getMeshInformation(const Ogre::Mesh* const mesh,
         ibuf->unlock();
         current_offset = next_offset;
     }
+	entity->removeSoftwareAnimationRequest(false);
 }
