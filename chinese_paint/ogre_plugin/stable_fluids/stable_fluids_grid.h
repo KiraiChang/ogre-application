@@ -13,7 +13,7 @@ private:
 	float									m_fSource;
 	float *									m_vfHeightMap[3] ; // 3 map to do wave equation
 	float *									m_vfDumpening;
-	bool *									m_vbIntersectGrid;
+	float *									m_vbIntersectGrid;
 	int										m_iCurrentMap ;
 	Ogre::HardwarePixelBufferSharedPtr		m_heightMap;
 	Ogre::PixelBox*							m_pPixelBox;

@@ -3,7 +3,7 @@
 
 #include <ogre.h>
 
-void getMeshInformation(const Ogre::Mesh* const mesh,
+void getMeshInformation(Ogre::Entity* entity,
                         size_t &vertex_count,
                         Ogre::Vector3* &vertices,
                         size_t &index_count,

@@ -41,6 +41,7 @@ void StableFluids::init()
 	m_pFishNode->attachObject(m_pFish);
 	m_pFishNode->setPosition(32.0, 0.0, 32.0);
 	m_pFishNode->yaw(Ogre::Degree(-90));
+	
 	m_pSwimState = m_pFish->getAnimationState("swim");
 	m_pSwimState->setEnabled(true);
 	m_pSwimState->setLoop(true);
@@ -101,7 +102,7 @@ void StableFluids::update(float timeSinceLastFrame)
 	//	((StableFluidsGrid *)m_pWaterInterface)->push(32, 48, 1);
 
 	if(I == 50)
-		((StableFluidsGrid *)m_pWaterInterface)->push(32, 36, 1);
+		((StableFluidsGrid *)m_pWaterInterface)->push(32, 48, 1);
 	//else if(I == 150)
 	//	((StableFluidsGrid *)m_pWaterInterface)->push(16, 32, 1);
 	//else if(I == 200)
