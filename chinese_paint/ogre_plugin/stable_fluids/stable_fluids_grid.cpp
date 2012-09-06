@@ -394,8 +394,19 @@ void StableFluidsGrid::setMeshBoundary()
 			if(m_vbIntersectGrid[index])
 			{
 				m_vfHeightMap[m_iCurrentMap][index] = 0;
-				m_vfU[index] = 0;
-				m_vfV[index] = 0;
+				if(!m_vbIntersectGrid[left])
+					m_vfU[index] = -m_vfU[left];
+				else if(!m_vbIntersectGrid[right])
+					m_vfU[index] = -m_vfU[right];
+				else
+					m_vfU[index] = 0;
+
+				if(!m_vbIntersectGrid[up])
+					m_vfV[index] = -m_vfV[up];
+				else if(!m_vbIntersectGrid[down])
+					m_vfV[index] = -m_vfV[down];
+				else
+					m_vfV[index] = 0;
 			}
 		}
 	}
