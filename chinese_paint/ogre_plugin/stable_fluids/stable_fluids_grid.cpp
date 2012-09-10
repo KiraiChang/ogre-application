@@ -125,7 +125,6 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 	m_pPS = m_pSceneMgr->createParticleSystem();
 	m_pPSNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_pPSNode->attachObject(m_pPS);
-	m_pPSNode->setPosition(32, 0, 48);
 }
 
 void StableFluidsGrid::release(void)
@@ -239,13 +238,15 @@ void StableFluidsGrid::release(void)
 void StableFluidsGrid::updateParticle(float timePass)
 {
 	Ogre::Particle* particle = NULL;
-	int index;
+	unsigned int index;
 	Ogre::ParticleIterator ite = m_pPS->_getIterator();
 	while(!ite.end())
 	{
 		particle = ite.getNext();
 		Ogre::Vector3 pos = particle->position;
 		index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
+		if(index > m_iGridSize)
+			break;
 		pos.x += m_vfU[index];
 		pos.z += m_vfV[index];
 		particle->position = pos;
@@ -255,8 +256,7 @@ void StableFluidsGrid::updateParticle(float timePass)
 	{
 		particle->totalTimeToLive = 5;
 		particle->setDimensions (0.5, 0.5);
-		particle->position.x = 32;
-		particle->position.z = 42;
+		particle->position = m_pPS->getParentSceneNode()->getPosition();
 	}
 }
 
@@ -275,9 +275,9 @@ void StableFluidsGrid::updateMesh(float timePass)
 	m_pPixelBox->data =  m_vbIntersectGrid;
 	m_heightMap->blitFromMemory(*m_pPixelBox);
 
-	updateParticle(timePass);
 	setMeshBoundary();
-	setMeshEnforce();
+	setMeshEnforce(timePass);
+	updateParticle(timePass);
 }
 
 void StableFluidsGrid::updateDebug()
@@ -354,6 +354,9 @@ void StableFluidsGrid::clear(void)
 
 void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity)
 {
+	Ogre::Vector3 pos = node->getPosition();
+	pos = pos + ( node->getOrientation() * Ogre::Vector3(-1.0, 0.0, 0.0) ) * 5;
+	m_pPSNode->setPosition(pos);
 	m_iCurrentVertex = (m_iCurrentVertex + 1) % 3 ;
 	getMeshInformation(entity, 
 		m_sVertexCount, 
@@ -553,7 +556,7 @@ void StableFluidsGrid::setMeshBoundary()
 	}
 }
 
-void StableFluidsGrid::setMeshEnforce()
+void StableFluidsGrid::setMeshEnforce(float timePass)
 {
 	int x, y;
 	unsigned int index;
@@ -563,9 +566,9 @@ void StableFluidsGrid::setMeshEnforce()
 		{
 			index = x + (y*(m_iGridNumber+2));
 			if(m_viEnforceUCount[index] > 0)
-				m_vfU[index] += m_vfEnforceU[index]/m_viEnforceUCount[index];
+				m_vfU[index] += m_vfEnforceU[index] / m_viEnforceUCount[index];
 			if(m_viEnforceVCount[index] > 0)
-				m_vfV[index] += m_vfEnforceV[index]/m_viEnforceVCount[index];;
+				m_vfV[index] += m_vfEnforceV[index] / m_viEnforceVCount[index];
 		}
 	}
 }
