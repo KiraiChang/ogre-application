@@ -62,7 +62,7 @@ public:
 	void									calcMeshFace();
 	void									calcMeshEnforce();
 	void									setMeshBoundary();
-	void									setMeshEnforce();
+	void									setMeshEnforce(float timePass);
 };
 
 #endif //_STABLE_FLUIDS_GRID_H_

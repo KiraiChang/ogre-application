@@ -19,6 +19,7 @@ private:
 	Ogre::Entity*							m_pFish;
 	Ogre::SceneNode*						m_pFishNode;
 	Ogre::AnimationState*					m_pSwimState;
+	Ogre::Vector3							m_vec3Pos;
 
 public:
 											StableFluids(Ogre::SceneManager *sceneMgr, Ogre::Camera *camera) ;
