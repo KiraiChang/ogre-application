@@ -394,19 +394,93 @@ void StableFluidsGrid::setMeshBoundary()
 			if(m_vbIntersectGrid[index])
 			{
 				m_vfHeightMap[m_iCurrentMap][index] = 0;
-				if(!m_vbIntersectGrid[left])
-					m_vfU[index] = -m_vfU[left];
+				if(!m_vbIntersectGrid[left] && !m_vbIntersectGrid[right])
+				{
+					if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
+					{
+						m_vfU[index] = -((m_vfU[down]+m_vfU[down] + m_vfU[left] + m_vfU[right])*0.25);
+						m_vfV[index] = -((m_vfV[down]+m_vfV[down] + m_vfV[left] + m_vfV[right])*0.25);
+					}
+					else if(!m_vbIntersectGrid[up])
+					{
+						m_vfU[index] = -((m_vfU[up]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
+						m_vfV[index] = -((m_vfV[up]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
+					}
+					else if(!m_vbIntersectGrid[down])
+					{
+						m_vfU[index] = -((m_vfU[down]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
+						m_vfV[index] = -((m_vfV[down]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
+					}
+					else
+					{
+						m_vfU[index] = -((m_vfU[left] + m_vfU[right])*0.5);
+						m_vfV[index] = -((m_vfV[left] + m_vfV[right])*0.5);
+					}
+				}
+				else if(!m_vbIntersectGrid[left])
+				{
+					if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
+					{
+						m_vfU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[left]*0.5));
+						m_vfV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[left]*0.5));
+					}
+					else if(!m_vbIntersectGrid[up])
+					{
+						m_vfU[index] = -((m_vfU[up]+m_vfU[left])*0.5);
+						m_vfV[index] = -((m_vfV[up]+m_vfV[left])*0.5);
+					}
+					else if(!m_vbIntersectGrid[down])
+					{
+						m_vfU[index] = -((m_vfU[down]+m_vfU[left])*0.5);
+						m_vfV[index] = -((m_vfV[down]+m_vfV[left])*0.5);
+					}
+					else
+					{
+						m_vfU[index] = -m_vfU[left];
+						m_vfV[index] = -m_vfV[left];
+					}
+				}
 				else if(!m_vbIntersectGrid[right])
-					m_vfU[index] = -m_vfU[right];
+				{
+					if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
+					{
+						m_vfU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[right]*0.5));
+						m_vfV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[right]*0.5));
+					}
+					else if(!m_vbIntersectGrid[up])
+					{
+						m_vfU[index] = -((m_vfU[up]+m_vfU[right])*0.5);
+						m_vfV[index] = -((m_vfV[up]+m_vfV[right])*0.5);
+					}
+					else if(!m_vbIntersectGrid[down])
+					{
+						m_vfU[index] = -((m_vfU[down]+m_vfU[right])*0.5);
+						m_vfV[index] = -((m_vfV[down]+m_vfV[right])*0.5);
+					}
+					else
+					{
+						m_vfU[index] = -m_vfU[right];
+						m_vfV[index] = -m_vfV[right];
+					}
+				}
 				else
-					m_vfU[index] = 0;
-
-				if(!m_vbIntersectGrid[up])
-					m_vfV[index] = -m_vfV[up];
-				else if(!m_vbIntersectGrid[down])
-					m_vfV[index] = -m_vfV[down];
-				else
-					m_vfV[index] = 0;
+				{
+					if(!m_vbIntersectGrid[up])
+					{
+						m_vfU[index] = -m_vfU[up];
+						m_vfV[index] = -m_vfV[up];
+					}
+					else if(!m_vbIntersectGrid[down])
+					{
+						m_vfU[index] = -m_vfU[down];
+						m_vfV[index] = -m_vfV[down];
+					}
+					else
+					{
+						m_vfU[index] = 0;
+						m_vfV[index] = 0;
+					}
+				}
 			}
 		}
 	}
