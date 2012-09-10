@@ -19,6 +19,7 @@ OgreSample::OgreSample() : m_pSim(0)
 // Just override the mandatory create scene method
 void OgreSample::setupContent(void)
 {
+	mTrayMgr->hideLogo();
 	//m_pSim = new VTFWSimulation(mSceneMgr, mCamera, mWindow, mViewport);
 	m_pSim = new StableFluids(mSceneMgr, mCamera);
 	//m_pSim = new WaterSimulation(mSceneMgr, mCamera);

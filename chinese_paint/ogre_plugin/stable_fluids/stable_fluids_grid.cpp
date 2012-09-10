@@ -8,6 +8,7 @@ extern void set_bnd ( int N, int b, float * x );
 extern void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampening, float timePass );
 
 static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
+static unsigned int MAX_VERTEX_MAP_COUNT = 3;
 
 StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_iGridNumber(number),
@@ -34,13 +35,21 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_pPSNode(NULL),
 	m_sVertexCount(0),
 	m_sIndex_count(0),
-	m_vVertices(NULL),
 	m_vIndices(NULL),
+	m_iCurrentVertex(0),
+	m_vfEnforceU(0),
+	m_viEnforceUCount(0),
+	m_vfEnforceV(0),
+	m_viEnforceVCount(0),
 	m_pSceneMgr(NULL)
 {
 	m_iGridSize = (m_iGridNumber+2)*(m_iGridNumber+2);
 	for(int i = 0; i < MAX_HEIGHT_MAP_COUNT;i++)
+	{
 		m_vfHeightMap[i] = 0;
+		if(i < MAX_VERTEX_MAP_COUNT)
+			m_vVertices[i] = 0;
+	}
 }
 
 StableFluidsGrid::~StableFluidsGrid(void)
@@ -58,6 +67,11 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 	m_vbIntersectGrid = new float[m_iGridSize];
 	//m_vfDens		= new float[m_iGridSize];
 	//m_vfDensPrev	= new float[m_iGridSize];
+
+	m_vfEnforceU	= new float[m_iGridSize];
+	m_viEnforceUCount = new int[m_iGridSize];
+	m_vfEnforceV = new float[m_iGridSize];
+	m_viEnforceVCount = new int[m_iGridSize];
 
 	memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
 
@@ -129,6 +143,31 @@ void StableFluidsGrid::release(void)
 		m_vbIntersectGrid = NULL;
 	}
 
+	
+	if ( m_vfEnforceU ) 
+	{
+		delete [] m_vfEnforceU;
+		m_vfEnforceU = NULL;
+	}
+
+	if ( m_viEnforceUCount ) 
+	{
+		delete [] m_viEnforceUCount;
+		m_viEnforceUCount = NULL;
+	}
+
+	if ( m_vfEnforceV ) 
+	{
+		delete [] m_vfEnforceV;
+		m_vfEnforceV = NULL;
+	}
+
+	if ( m_viEnforceVCount ) 
+	{
+		delete [] m_viEnforceVCount;
+		m_viEnforceVCount = NULL;
+	}
+
 	for(int i = 0; i < MAX_HEIGHT_MAP_COUNT;i++)
 		if(m_vfHeightMap[i] != NULL)
 		{
@@ -179,10 +218,13 @@ void StableFluidsGrid::release(void)
 		m_pPixelBox = NULL;
 	}
 
-	if(m_vVertices != NULL)
+	for(int i = 0;i < MAX_VERTEX_MAP_COUNT;i++)
 	{
-		delete[] m_vVertices;
-		m_vVertices = NULL;
+		if(m_vVertices[i] != NULL)
+		{
+			delete[] m_vVertices[i];
+			m_vVertices[i] = NULL;
+		}
 	}
 
 	if(m_vIndices != NULL)
@@ -214,7 +256,7 @@ void StableFluidsGrid::updateParticle(float timePass)
 		particle->totalTimeToLive = 5;
 		particle->setDimensions (0.5, 0.5);
 		particle->position.x = 32;
-		particle->position.z = 48;
+		particle->position.z = 42;
 	}
 }
 
@@ -235,6 +277,7 @@ void StableFluidsGrid::updateMesh(float timePass)
 
 	updateParticle(timePass);
 	setMeshBoundary();
+	setMeshEnforce();
 }
 
 void StableFluidsGrid::updateDebug()
@@ -311,10 +354,10 @@ void StableFluidsGrid::clear(void)
 
 void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity)
 {
-	
+	m_iCurrentVertex = (m_iCurrentVertex + 1) % 3 ;
 	getMeshInformation(entity, 
 		m_sVertexCount, 
-		m_vVertices, 
+		m_vVertices[m_iCurrentVertex], 
 		m_sIndex_count,
 		m_vIndices, 
 		node->getPosition(), 
@@ -330,6 +373,7 @@ void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entit
 	//convertMeshData(entity, m_vVertices, m_sVertexCount, m_vIndices, m_sIndex_count);
 
 	calcMeshFace();
+	calcMeshEnforce();
 }
 
 void StableFluidsGrid::calcMeshFace()
@@ -341,14 +385,13 @@ void StableFluidsGrid::calcMeshFace()
 	int front, back;
 	for(i = 0;i < m_sVertexCount;i++)
 	{
-		if(m_vVertices[i].y < 1.0 && m_vVertices[i].y > -1.0)
+		if(m_vVertices[m_iCurrentVertex][i].y < 1.0 && m_vVertices[m_iCurrentVertex][i].y > -1.0)
 		{
-			index = ((int)m_vVertices[i].x)  +  ((int)m_vVertices[i].z)*(m_iGridNumber+2);
+			index = ((int)m_vVertices[m_iCurrentVertex][i].x)  +  ((int)m_vVertices[m_iCurrentVertex][i].z)*(m_iGridNumber+2);
 			if(index < m_iGridSize)
 				m_vbIntersectGrid[index] = true;//draw contour of object
 		}
 	}
-
 
 	for(y = 1; y < m_iGridNumber; y++)
 	{
@@ -374,6 +417,30 @@ void StableFluidsGrid::calcMeshFace()
 					front = x;
 				}
 			}
+		}
+	}
+}
+
+void StableFluidsGrid::calcMeshEnforce()
+{
+	memset(m_vfEnforceU, 0, m_iGridSize * sizeof(m_vfEnforceU));
+	memset(m_viEnforceUCount, 0, m_iGridSize * sizeof(m_viEnforceUCount));
+	memset(m_vfEnforceV, 0, m_iGridSize * sizeof(m_vfEnforceV));
+	memset(m_viEnforceVCount, 0, m_iGridSize * sizeof(m_viEnforceVCount));
+	unsigned int index;
+	int prev  = (m_iCurrentVertex + 2) %3;
+	if(m_vVertices[prev] == NULL)
+		return;
+	int i;
+	for(i = 0;i < m_sVertexCount;i++)
+	{
+		if(m_vVertices[prev][i].y < 1.0 && m_vVertices[prev][i].y > -1.0)
+		{
+			index = ((int)m_vVertices[prev][i].x)  +  ((int)m_vVertices[prev][i].z)*(m_iGridNumber+2);
+			m_vfEnforceU[index] = m_vVertices[prev][i].x - m_vVertices[m_iCurrentVertex][i].x;
+			m_viEnforceUCount[index]++;
+			m_vfEnforceV[index] = m_vVertices[prev][i].z - m_vVertices[m_iCurrentVertex][i].z;
+			m_viEnforceVCount[index]++;
 		}
 	}
 }
@@ -482,6 +549,23 @@ void StableFluidsGrid::setMeshBoundary()
 					}
 				}
 			}
+		}
+	}
+}
+
+void StableFluidsGrid::setMeshEnforce()
+{
+	int x, y;
+	unsigned int index;
+	for(y = 1; y < m_iGridNumber; y++)
+	{
+		for(x = 1; x < m_iGridNumber; x++)
+		{
+			index = x + (y*(m_iGridNumber+2));
+			if(m_viEnforceUCount[index] > 0)
+				m_vfU[index] += m_vfEnforceU[index]/m_viEnforceUCount[index];
+			if(m_viEnforceVCount[index] > 0)
+				m_vfV[index] += m_vfEnforceV[index]/m_viEnforceVCount[index];;
 		}
 	}
 }

@@ -28,8 +28,13 @@ private:
 	//fish vertex data
 	size_t									m_sVertexCount;
 	size_t									m_sIndex_count;
-	Ogre::Vector3*							m_vVertices;
+	int										m_iCurrentVertex ;
+	Ogre::Vector3*							m_vVertices[3];
 	unsigned long*							m_vIndices;
+	float *									m_vfEnforceU;
+	int *									m_viEnforceUCount;
+	float *									m_vfEnforceV;
+	int *									m_viEnforceVCount;
 
 
 public:
@@ -55,7 +60,9 @@ public:
 	void									clear(void);
 	void									updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity);
 	void									calcMeshFace();
+	void									calcMeshEnforce();
 	void									setMeshBoundary();
+	void									setMeshEnforce();
 };
 
 #endif //_STABLE_FLUIDS_GRID_H_
