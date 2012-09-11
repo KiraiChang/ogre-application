@@ -125,6 +125,7 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 	m_pPS = m_pSceneMgr->createParticleSystem();
 	m_pPSNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_pPSNode->attachObject(m_pPS);
+	m_pPSNode->setPosition(32, 0, 40);
 }
 
 void StableFluidsGrid::release(void)
@@ -354,9 +355,10 @@ void StableFluidsGrid::clear(void)
 
 void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity)
 {
-	Ogre::Vector3 pos = node->getPosition();
-	pos = pos + ( node->getOrientation() * Ogre::Vector3(-1.0, 0.0, 0.0) ) * 5;
-	m_pPSNode->setPosition(pos);
+	//set particle system before fish head
+	//Ogre::Vector3 pos = node->getPosition();
+	//pos = pos + ( node->getOrientation() * Ogre::Vector3(-1.0, 0.0, 0.0) ) * 5;
+	//m_pPSNode->setPosition(pos);
 	m_iCurrentVertex = (m_iCurrentVertex + 1) % 3 ;
 	getMeshInformation(entity, 
 		m_sVertexCount, 
@@ -366,14 +368,6 @@ void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entit
 		node->getPosition(), 
 		node->getOrientation(), 
 		node->getScale());
-
-	//if(m_vVertices == NULL && m_vIndices == NULL)
-	//{
-	//	countIndicesAndVertices(entity, m_sIndex_count, m_sVertexCount);
-	//	m_vVertices = new Ogre::Vector3[m_sVertexCount];
-	//	m_vIndices = new unsigned long[m_sIndex_count];
-	//}
-	//convertMeshData(entity, m_vVertices, m_sVertexCount, m_vIndices, m_sIndex_count);
 
 	calcMeshFace();
 	calcMeshEnforce();
@@ -390,13 +384,20 @@ void StableFluidsGrid::calcMeshFace()
 	{
 		if(m_vVertices[m_iCurrentVertex][i].y < 1.0 && m_vVertices[m_iCurrentVertex][i].y > -1.0)
 		{
-			index = ((int)m_vVertices[m_iCurrentVertex][i].x)  +  ((int)m_vVertices[m_iCurrentVertex][i].z)*(m_iGridNumber+2);
+			x = ((int)m_vVertices[m_iCurrentVertex][i].x);
+			if(m_vVertices[m_iCurrentVertex][i].x - x > 0.5)
+				x++;
+			y = ((int)m_vVertices[m_iCurrentVertex][i].z);
+			if( m_vVertices[m_iCurrentVertex][i].z - y > 0.5)
+				y++;
+
+			index = x +  (y*(m_iGridNumber+2));
 			if(index < m_iGridSize)
 				m_vbIntersectGrid[index] = true;//draw contour of object
 		}
 	}
 
-	for(y = 1; y < m_iGridNumber; y++)
+	for(y = 1; y < m_iGridNumber; y++)//fill contour hole
 	{
 		hasEdge = false;
 		for(x = 1; x < m_iGridNumber; x++)
@@ -440,9 +441,9 @@ void StableFluidsGrid::calcMeshEnforce()
 		if(m_vVertices[prev][i].y < 1.0 && m_vVertices[prev][i].y > -1.0)
 		{
 			index = ((int)m_vVertices[prev][i].x)  +  ((int)m_vVertices[prev][i].z)*(m_iGridNumber+2);
-			m_vfEnforceU[index] = m_vVertices[prev][i].x - m_vVertices[m_iCurrentVertex][i].x;
+			m_vfEnforceU[index] = m_vVertices[m_iCurrentVertex][i].x - m_vVertices[prev][i].x;
 			m_viEnforceUCount[index]++;
-			m_vfEnforceV[index] = m_vVertices[prev][i].z - m_vVertices[m_iCurrentVertex][i].z;
+			m_vfEnforceV[index] = m_vVertices[m_iCurrentVertex][i].z - m_vVertices[prev][i].z;
 			m_viEnforceVCount[index]++;
 		}
 	}

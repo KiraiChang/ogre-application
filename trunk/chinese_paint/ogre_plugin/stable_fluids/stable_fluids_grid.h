@@ -53,16 +53,16 @@ public:
 											~StableFluidsGrid(void);
 	void									init(Ogre::SceneManager *mgr);
 	void									release(void);
-	void									updateParticle(float timePass);
+	void									updateParticle(float timePass);//draw particle
 	void									updateMesh(float timePass);
-	void									updateDebug();
-	void									push(float x, float y, float depth, bool absolute=false) ;
-	void									clear(void);
-	void									updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity);
-	void									calcMeshFace();
-	void									calcMeshEnforce();
-	void									setMeshBoundary();
-	void									setMeshEnforce(float timePass);
+	void									updateDebug();//draw velocity field
+	void									push(float x, float y, float depth, bool absolute=false) ;//set pressure to wave equation and add force to velocity
+	void									clear(void);//clear velocity
+	void									updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity);//get mesh vertex data from mesh
+	void									calcMeshFace();//compute fish boundary to m_vbIntersectGrid
+	void									calcMeshEnforce();//compute fish animation force to m_vfEnforceU and m_vfEnforceV
+	void									setMeshBoundary();//set m_vbIntersectGrid to m_vfU and m_vfV
+	void									setMeshEnforce(float timePass);//set m_vfEnforceU and m_vfEnforceV to m_vfU and m_vfV
 };
 
 #endif //_STABLE_FLUIDS_GRID_H_
