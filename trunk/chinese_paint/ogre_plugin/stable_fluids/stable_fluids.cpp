@@ -46,9 +46,12 @@ void StableFluids::init()
 	m_pSwimState->setEnabled(true);
 	m_pSwimState->setLoop(true);
 
-	m_vec3Pos.x = 32;
-	m_vec3Pos.y = 0;
-	m_vec3Pos.z = 16;
+	m_uiCurrentTarget = 0;
+	m_vTarget.push_back(Ogre::Vector3(8.0, 0.0, 8.0));
+	m_vTarget.push_back(Ogre::Vector3(8.0, 0.0, 56.0));
+	m_vTarget.push_back(Ogre::Vector3(56.0, 0.0, 56.0));
+	m_vTarget.push_back(Ogre::Vector3(56.0, 0.0, 8.0));
+	m_vec3Pos = m_vTarget[m_uiCurrentTarget];
 }
 
 void StableFluids::release()
@@ -100,8 +103,6 @@ void StableFluids::update(float timeSinceLastFrame)
 	static int I = 0, J = 0;
 	I++;
 	J++;
-	m_fLastFrameTime = timeSinceLastFrame ;
-	m_fLastTimeStamp += timeSinceLastFrame ;
 	//if(J < 50)
 		m_pSwimState->addTime(timeSinceLastFrame);//mesh animation
 	
@@ -111,22 +112,23 @@ void StableFluids::update(float timeSinceLastFrame)
 	if(I == 50)
 		((StableFluidsGrid *)m_pWaterInterface)->push(32, 42, 1);//add a force up
 
-	//if(m_pFishNode->getPosition().distance(m_vec3Pos) >= 0)//mesh move around
+	//if(m_pFishNode->getPosition().distance(m_vec3Pos) >= 5.0)//mesh move around
 	//{
-	//	//Ogre::Vector3 pos = m_pFishNode->getPosition();
-	//	//Ogre::Quaternion dir = pos.getRotationTo(m_vec3Pos);
-	//	//Ogre::Vector3 dif = (m_vec3Pos - pos) / (pos.distance(m_vec3Pos));
-	//	//pos +=  dif * timeSinceLastFrame ;
-	//	//m_pFishNode->setPosition(pos);
-	//	//m_pFishNode->setOrientation(dir);
-
 	//	Ogre::Vector3 dir = m_vec3Pos - m_pFishNode->getPosition();
-	//	m_pFishNode->translate(dir * timeSinceLastFrame);
+	//	m_pFishNode->translate(dir * timeSinceLastFrame * 0.2);
 
 	//	Ogre::Vector3 src = m_pFishNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_X;/*Ogre::Vector3::UNIT_X;*/
 	//	Ogre::Quaternion quat = src.getRotationTo(dir);
 	//	m_pFishNode->rotate(quat);
 	//}
+	//else
+	//{
+	//	m_uiCurrentTarget++;
+	//	if(m_uiCurrentTarget >= m_vTarget.size())
+	//		m_uiCurrentTarget = 0;
+	//	m_vec3Pos = m_vTarget[m_uiCurrentTarget];
+	//}
+
 
 	((StableFluidsGrid *)m_pWaterInterface)->updateMeshData(m_pFishNode, m_pFish);
 	m_pWaterInterface->updateMesh(timeSinceLastFrame);

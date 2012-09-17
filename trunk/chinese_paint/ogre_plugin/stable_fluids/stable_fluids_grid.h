@@ -36,8 +36,18 @@ private:
 	float *									m_vfEnforceV;
 	int *									m_viEnforceVCount;
 
+	float									m_fLastTimeStamp ;
+	float									m_fLastAnimationTimeStamp;
+	float									m_fLastFrameTime ;
+
 
 public:
+	enum MAP_DISPLAY_TYPE
+	{
+		DISPLAY_DENSITY_MAP,
+		DISPLAY_BOOLEAN_GRID,
+	};
+	MAP_DISPLAY_TYPE						m_eMapDisplayType;
 	float *									m_vfU;
 	float *									m_vfV;
 	float *									m_vfUPrev;
@@ -56,6 +66,7 @@ public:
 	void									updateParticle(float timePass);//draw particle
 	void									updateMesh(float timePass);
 	void									updateDebug();//draw velocity field
+	void									push(int N, float x, float y, float addx, float addy, float depth, bool absolute, float *current);//set presure to 00 10 01 11 
 	void									push(float x, float y, float depth, bool absolute=false) ;//set pressure to wave equation and add force to velocity
 	void									clear(void);//clear velocity
 	void									updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity);//get mesh vertex data from mesh

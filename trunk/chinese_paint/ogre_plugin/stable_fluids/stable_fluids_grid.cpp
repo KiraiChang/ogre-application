@@ -9,6 +9,8 @@ extern void wave_step ( int N, float * buf, float * buf1, float * buf2, float *d
 
 static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
+static float FISH_DEPTH = 0.01;
+static float ANIMATIONS_PER_SECOND = 1.0f;
 
 StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_iGridNumber(number),
@@ -41,6 +43,9 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_viEnforceUCount(0),
 	m_vfEnforceV(0),
 	m_viEnforceVCount(0),
+	m_eMapDisplayType(DISPLAY_DENSITY_MAP),
+	m_fLastTimeStamp(0),
+	m_fLastFrameTime(0),
 	m_pSceneMgr(NULL)
 {
 	m_iGridSize = (m_iGridNumber+2)*(m_iGridNumber+2);
@@ -259,10 +264,29 @@ void StableFluidsGrid::updateParticle(float timePass)
 		particle->setDimensions (0.5, 0.5);
 		particle->position = m_pPS->getParentSceneNode()->getPosition();
 	}
+	particle = m_pPS->createParticle();
+	if(particle != NULL)
+	{
+		particle->totalTimeToLive = 5;
+		particle->setDimensions (0.5, 0.5);
+		particle->position = m_pPS->getParentSceneNode()->getPosition();
+		particle->position.x += 0.5;
+	}
+		particle = m_pPS->createParticle();
+	if(particle != NULL)
+	{
+		particle->totalTimeToLive = 5;
+		particle->setDimensions (0.5, 0.5);
+		particle->position = m_pPS->getParentSceneNode()->getPosition();
+		particle->position.x -= 0.5;
+	}
 }
 
 void StableFluidsGrid::updateMesh(float timePass)
 {
+	m_fLastFrameTime = timePass ;
+	m_fLastTimeStamp += timePass ;
+
 	vel_step ( m_iGridNumber, m_vfU, m_vfV, m_vfUPrev, m_vfVPrev, m_fVisc, timePass);
 	//dens_step ( m_iGridNumber, m_vfDens, m_vfDensPrev, m_vfU, m_vfV, m_fDiff, timePass);
 
@@ -272,8 +296,15 @@ void StableFluidsGrid::updateMesh(float timePass)
 	float *buf2 = m_vfHeightMap[(m_iCurrentMap+1)%3] ;
 	wave_step (m_iGridNumber+2, buf, buf1, buf2, m_vfDumpening, timePass);
 	updateDebug();
-	//m_pPixelBox->data =  m_vfHeightMap[m_iCurrentMap];
-	m_pPixelBox->data =  m_vbIntersectGrid;
+	switch(m_eMapDisplayType)
+	{
+	case DISPLAY_BOOLEAN_GRID:
+		m_pPixelBox->data =  m_vbIntersectGrid;
+		break;
+	default:
+		m_pPixelBox->data =  m_vfHeightMap[m_iCurrentMap];
+	}
+
 	m_heightMap->blitFromMemory(*m_pPixelBox);
 
 	setMeshBoundary();
@@ -295,10 +326,10 @@ void StableFluidsGrid::updateDebug()
 	for(i = 1;i <= m_iGridNumber;i++)
 	{
 		
-		x = (i-0.5f)*h;
+		x = i * h;//(i-0.5f)*h;
 		for(j = 1;j <= m_iGridNumber;j++)
 		{
-			y = (j-0.5f)*h;
+			y = j * h;//(j-0.5f)*h;
 			index = (i)+(m_iGridNumber+2)*(j);
 			Ogre::Vector3 origin(x*m_iGridNumber, 0, y*m_iGridNumber);
 			Ogre::Vector3 to((x+m_vfU[index])*m_iGridNumber, 0, (y+m_vfV[index])*m_iGridNumber);
@@ -314,8 +345,9 @@ void StableFluidsGrid::updateDebug()
 	//m_pManuObj->end();
 }
 
-void push(int N, float x, float y, float addx, float addy, float depth, bool absolute, float *current)
+void StableFluidsGrid::push(int N, float x, float y, float addx, float addy, float depth, bool absolute, float *current)
 {
+	depth = depth * m_fLastFrameTime * ANIMATIONS_PER_SECOND ;
 	float *vertex=current+((int)(y+addy)*N+(int)(x+addx));
 	float diffy = y - floor(y+addy);
 	float diffx = x - floor(x+addx);
@@ -337,10 +369,10 @@ void StableFluidsGrid::push(float x, float y, float depth, bool absolute)
 	m_vfU[index] = 0;
 	m_vfV[index] = -m_fForce;
 
-	::push(m_iGridNumber+2, x, y, 0, 0, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
-	::push(m_iGridNumber+2, x, y, 0, 1, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
-	::push(m_iGridNumber+2, x, y, 1, 0, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
-	::push(m_iGridNumber+2, x, y, 1, 1, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
+	//::push(m_iGridNumber+2, x, y, 0, 0, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
+	//::push(m_iGridNumber+2, x, y, 0, 1, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
+	//::push(m_iGridNumber+2, x, y, 1, 0, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
+	//::push(m_iGridNumber+2, x, y, 1, 1, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
 }
 
 
@@ -464,7 +496,12 @@ void StableFluidsGrid::setMeshBoundary()
 			right =  (x+1) + ((y)*(m_iGridNumber+2));
 			if(m_vbIntersectGrid[index])
 			{
-				m_vfHeightMap[m_iCurrentMap][index] = 0;
+				//m_vfHeightMap[m_iCurrentMap][index] = 0;
+				push(m_iGridNumber+2, x, y, 0, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+				push(m_iGridNumber+2, x, y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+				push(m_iGridNumber+2, x, y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+				push(m_iGridNumber+2, x, y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+
 				if(!m_vbIntersectGrid[left] && !m_vbIntersectGrid[right])
 				{
 					if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
