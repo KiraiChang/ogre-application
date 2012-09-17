@@ -39,11 +39,14 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_sIndex_count(0),
 	m_vIndices(NULL),
 	m_iCurrentVertex(0),
+	m_vfBoundaryU(NULL),
+	m_vfBoundaryV(NULL),
 	m_vfEnforceU(0),
 	m_viEnforceUCount(0),
 	m_vfEnforceV(0),
 	m_viEnforceVCount(0),
 	m_eMapDisplayType(DISPLAY_DENSITY_MAP),
+	m_eVelocityType(DISPLAY_NONE),
 	m_fLastTimeStamp(0),
 	m_fLastFrameTime(0),
 	m_pSceneMgr(NULL)
@@ -77,6 +80,9 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 	m_viEnforceUCount = new int[m_iGridSize];
 	m_vfEnforceV = new float[m_iGridSize];
 	m_viEnforceVCount = new int[m_iGridSize];
+
+	m_vfBoundaryU	= new float[m_iGridSize];
+	m_vfBoundaryV	= new float[m_iGridSize];
 
 	memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
 
@@ -127,10 +133,10 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 
 	m_pMiniScreen->setMaterial("ChinesePaint/Texture");
 
-	m_pPS = m_pSceneMgr->createParticleSystem();
+	m_pPS = m_pSceneMgr->createParticleSystem(1000U);
 	m_pPSNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_pPSNode->attachObject(m_pPS);
-	m_pPSNode->setPosition(32, 0, 40);
+	m_pPSNode->setPosition(32, 0, 42);
 }
 
 void StableFluidsGrid::release(void)
@@ -153,6 +159,18 @@ void StableFluidsGrid::release(void)
 	{
 		delete [] m_vfEnforceU;
 		m_vfEnforceU = NULL;
+	}
+
+	if ( m_vfBoundaryU ) 
+	{
+		delete [] m_vfBoundaryU;
+		m_vfBoundaryU = NULL;
+	}
+
+	if ( m_vfBoundaryV ) 
+	{
+		delete [] m_vfBoundaryU;
+		m_vfBoundaryU = NULL;
 	}
 
 	if ( m_viEnforceUCount ) 
@@ -260,14 +278,14 @@ void StableFluidsGrid::updateParticle(float timePass)
 	particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
-		particle->totalTimeToLive = 5;
+		particle->timeToLive = 5;
 		particle->setDimensions (0.5, 0.5);
 		particle->position = m_pPS->getParentSceneNode()->getPosition();
 	}
 	particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
-		particle->totalTimeToLive = 5;
+		particle->timeToLive = 5;
 		particle->setDimensions (0.5, 0.5);
 		particle->position = m_pPS->getParentSceneNode()->getPosition();
 		particle->position.x += 0.5;
@@ -275,7 +293,7 @@ void StableFluidsGrid::updateParticle(float timePass)
 		particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
-		particle->totalTimeToLive = 5;
+		particle->timeToLive = 5;
 		particle->setDimensions (0.5, 0.5);
 		particle->position = m_pPS->getParentSceneNode()->getPosition();
 		particle->position.x -= 0.5;
@@ -295,7 +313,35 @@ void StableFluidsGrid::updateMesh(float timePass)
 	float *buf1 = m_vfHeightMap[(m_iCurrentMap+2)%3] ;
 	float *buf2 = m_vfHeightMap[(m_iCurrentMap+1)%3] ;
 	wave_step (m_iGridNumber+2, buf, buf1, buf2, m_vfDumpening, timePass);
-	updateDebug();
+
+	float *vfU = NULL, *vfV = NULL;
+
+	switch(m_eVelocityType)
+	{
+
+	case DISPLAY_ORIGIN:
+		vfU = m_vfU;
+		vfV = m_vfV;
+		break;
+	case DISPLAY_ADD_FORCE:
+		vfU = m_vfEnforceU;
+		vfV = m_vfEnforceV;
+		break;
+	case DISPLAY_BOUNDARY:
+		vfU = m_vfBoundaryU;
+		vfV = m_vfBoundaryV;
+		break;
+	default:
+		break;
+	}
+	if(vfU != NULL && vfV != NULL)
+		updateDebug(vfU, vfV);
+	else
+	{
+		if(m_pManuObj != NULL)
+			m_pManuObj->clear();
+	}
+
 	switch(m_eMapDisplayType)
 	{
 	case DISPLAY_BOOLEAN_GRID:
@@ -312,7 +358,7 @@ void StableFluidsGrid::updateMesh(float timePass)
 	updateParticle(timePass);
 }
 
-void StableFluidsGrid::updateDebug()
+void StableFluidsGrid::updateDebug(float *vfU, float *vfV)
 {
 	int i, j;
 	float x, y, h;
@@ -332,7 +378,7 @@ void StableFluidsGrid::updateDebug()
 			y = j * h;//(j-0.5f)*h;
 			index = (i)+(m_iGridNumber+2)*(j);
 			Ogre::Vector3 origin(x*m_iGridNumber, 0, y*m_iGridNumber);
-			Ogre::Vector3 to((x+m_vfU[index])*m_iGridNumber, 0, (y+m_vfV[index])*m_iGridNumber);
+			Ogre::Vector3 to((x+vfU[index])*m_iGridNumber, 0, (y+vfV[index])*m_iGridNumber);
 			m_pManuObj->position(origin);
 			m_pManuObj->position(to);
 		}
@@ -367,7 +413,7 @@ void StableFluidsGrid::push(float x, float y, float depth, bool absolute)
 	if(index > m_iGridSize)
 		return;
 	m_vfU[index] = 0;
-	m_vfV[index] = -m_fForce;
+	m_vfV[index] = -m_fForce * m_fLastFrameTime;
 
 	//::push(m_iGridNumber+2, x, y, 0, 0, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
 	//::push(m_iGridNumber+2, x, y, 0, 1, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
@@ -483,6 +529,8 @@ void StableFluidsGrid::calcMeshEnforce()
 
 void StableFluidsGrid::setMeshBoundary()
 {
+	memset(m_vfBoundaryU, 0, m_iGridSize * sizeof(m_vfBoundaryU));
+	memset(m_vfBoundaryV, 0, m_iGridSize * sizeof(m_vfBoundaryV));
 	int x, y;
 	unsigned int index, up, down, left, right;
 	for(y = 1; y < m_iGridNumber; y++)
@@ -506,89 +554,91 @@ void StableFluidsGrid::setMeshBoundary()
 				{
 					if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
 					{
-						m_vfU[index] = -((m_vfU[down]+m_vfU[down] + m_vfU[left] + m_vfU[right])*0.25);
-						m_vfV[index] = -((m_vfV[down]+m_vfV[down] + m_vfV[left] + m_vfV[right])*0.25);
+						m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[down] + m_vfU[left] + m_vfU[right])*0.25);
+						m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[down] + m_vfV[left] + m_vfV[right])*0.25);
 					}
 					else if(!m_vbIntersectGrid[up])
 					{
-						m_vfU[index] = -((m_vfU[up]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
-						m_vfV[index] = -((m_vfV[up]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
+						m_vfBoundaryU[index] = -((m_vfU[up]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
+						m_vfBoundaryV[index] = -((m_vfV[up]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
 					}
 					else if(!m_vbIntersectGrid[down])
 					{
-						m_vfU[index] = -((m_vfU[down]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
-						m_vfV[index] = -((m_vfV[down]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
+						m_vfBoundaryU[index] = -((m_vfU[down]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
+						m_vfBoundaryV[index] = -((m_vfV[down]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
 					}
 					else
 					{
-						m_vfU[index] = -((m_vfU[left] + m_vfU[right])*0.5);
-						m_vfV[index] = -((m_vfV[left] + m_vfV[right])*0.5);
+						m_vfBoundaryU[index] = -((m_vfU[left] + m_vfU[right])*0.5);
+						m_vfBoundaryV[index] = -((m_vfV[left] + m_vfV[right])*0.5);
 					}
 				}
 				else if(!m_vbIntersectGrid[left])
 				{
 					if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
 					{
-						m_vfU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[left]*0.5));
-						m_vfV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[left]*0.5));
+						m_vfBoundaryU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[left]*0.5));
+						m_vfBoundaryV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[left]*0.5));
 					}
 					else if(!m_vbIntersectGrid[up])
 					{
-						m_vfU[index] = -((m_vfU[up]+m_vfU[left])*0.5);
-						m_vfV[index] = -((m_vfV[up]+m_vfV[left])*0.5);
+						m_vfBoundaryU[index] = -((m_vfU[up]+m_vfU[left])*0.5);
+						m_vfBoundaryV[index] = -((m_vfV[up]+m_vfV[left])*0.5);
 					}
 					else if(!m_vbIntersectGrid[down])
 					{
-						m_vfU[index] = -((m_vfU[down]+m_vfU[left])*0.5);
-						m_vfV[index] = -((m_vfV[down]+m_vfV[left])*0.5);
+						m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[left])*0.5);
+						m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[left])*0.5);
 					}
 					else
 					{
-						m_vfU[index] = -m_vfU[left];
-						m_vfV[index] = -m_vfV[left];
+						m_vfBoundaryU[index] = -m_vfU[left];
+						m_vfBoundaryV[index] = -m_vfV[left];
 					}
 				}
 				else if(!m_vbIntersectGrid[right])
 				{
 					if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
 					{
-						m_vfU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[right]*0.5));
-						m_vfV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[right]*0.5));
+						m_vfBoundaryU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[right]*0.5));
+						m_vfBoundaryV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[right]*0.5));
 					}
 					else if(!m_vbIntersectGrid[up])
 					{
-						m_vfU[index] = -((m_vfU[up]+m_vfU[right])*0.5);
-						m_vfV[index] = -((m_vfV[up]+m_vfV[right])*0.5);
+						m_vfBoundaryU[index] = -((m_vfU[up]+m_vfU[right])*0.5);
+						m_vfBoundaryV[index] = -((m_vfV[up]+m_vfV[right])*0.5);
 					}
 					else if(!m_vbIntersectGrid[down])
 					{
-						m_vfU[index] = -((m_vfU[down]+m_vfU[right])*0.5);
-						m_vfV[index] = -((m_vfV[down]+m_vfV[right])*0.5);
+						m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[right])*0.5);
+						m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[right])*0.5);
 					}
 					else
 					{
-						m_vfU[index] = -m_vfU[right];
-						m_vfV[index] = -m_vfV[right];
+						m_vfBoundaryU[index] = -m_vfU[right];
+						m_vfBoundaryV[index] = -m_vfV[right];
 					}
 				}
 				else
 				{
 					if(!m_vbIntersectGrid[up])
 					{
-						m_vfU[index] = -m_vfU[up];
-						m_vfV[index] = -m_vfV[up];
+						m_vfBoundaryU[index] = -m_vfU[up];
+						m_vfBoundaryV[index] = -m_vfV[up];
 					}
 					else if(!m_vbIntersectGrid[down])
 					{
-						m_vfU[index] = -m_vfU[down];
-						m_vfV[index] = -m_vfV[down];
+						m_vfBoundaryU[index] = -m_vfU[down];
+						m_vfBoundaryV[index] = -m_vfV[down];
 					}
 					else
 					{
-						m_vfU[index] = 0;
-						m_vfV[index] = 0;
+						m_vfBoundaryU[index] = 0;
+						m_vfBoundaryV[index] = 0;
 					}
 				}
+				m_vfU[index] = m_vfBoundaryU[index];
+				m_vfV[index] = m_vfBoundaryV[index];
 			}
 		}
 	}
@@ -596,17 +646,28 @@ void StableFluidsGrid::setMeshBoundary()
 
 void StableFluidsGrid::setMeshEnforce(float timePass)
 {
-	int x, y;
+	int x, y, count;
+	float force;
 	unsigned int index;
 	for(y = 1; y < m_iGridNumber; y++)
 	{
 		for(x = 1; x < m_iGridNumber; x++)
 		{
 			index = x + (y*(m_iGridNumber+2));
-			if(m_viEnforceUCount[index] > 0)
-				m_vfU[index] += m_vfEnforceU[index] / m_viEnforceUCount[index];
-			if(m_viEnforceVCount[index] > 0)
-				m_vfV[index] += m_vfEnforceV[index] / m_viEnforceVCount[index];
+			if(m_vfEnforceU[index] != 0)
+			{
+				count = m_viEnforceUCount[index];
+				force = m_vfEnforceU[index];
+				force = force / count;
+				m_vfU[index] += force;
+			}
+			if(m_vfEnforceV[index] != 0)
+			{
+				count = m_viEnforceVCount[index];
+				force = m_vfEnforceV[index];
+				force = force / count;
+				m_vfV[index] += force;
+			}
 		}
 	}
 }

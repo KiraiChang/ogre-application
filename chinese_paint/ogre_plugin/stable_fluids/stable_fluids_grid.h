@@ -31,6 +31,9 @@ private:
 	int										m_iCurrentVertex ;
 	Ogre::Vector3*							m_vVertices[3];
 	unsigned long*							m_vIndices;
+	float *									m_vfBoundaryU;
+	float *									m_vfBoundaryV;
+
 	float *									m_vfEnforceU;
 	int *									m_viEnforceUCount;
 	float *									m_vfEnforceV;
@@ -48,6 +51,15 @@ public:
 		DISPLAY_BOOLEAN_GRID,
 	};
 	MAP_DISPLAY_TYPE						m_eMapDisplayType;
+
+	enum VELOCITY_DISPLAY_TYPE
+	{
+		DISPLAY_NONE,
+		DISPLAY_ORIGIN,
+		DISPLAY_ADD_FORCE,
+		DISPLAY_BOUNDARY,
+	};
+	VELOCITY_DISPLAY_TYPE					m_eVelocityType;
 	float *									m_vfU;
 	float *									m_vfV;
 	float *									m_vfUPrev;
@@ -65,7 +77,7 @@ public:
 	void									release(void);
 	void									updateParticle(float timePass);//draw particle
 	void									updateMesh(float timePass);
-	void									updateDebug();//draw velocity field
+	void									updateDebug(float *vfU, float *vfV);//draw velocity field
 	void									push(int N, float x, float y, float addx, float addy, float depth, bool absolute, float *current);//set presure to 00 10 01 11 
 	void									push(float x, float y, float depth, bool absolute=false) ;//set pressure to wave equation and add force to velocity
 	void									clear(void);//clear velocity

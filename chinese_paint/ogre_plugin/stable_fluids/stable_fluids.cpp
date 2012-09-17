@@ -1,6 +1,7 @@
 #include "stable_fluids.h"
 #include "stable_fluids_grid.h"
-
+#include <SdkSample.h>
+#define PANEL_WIDTH 200
 
 #define ANIMATIONS_PER_SECOND 100.0f
 #define IX(i,j,N) ((i)+(N+2)*(j))
@@ -78,9 +79,13 @@ void StableFluids::release()
 	}
 }
 
-void StableFluids::setupControls(OgreBites::SdkTrayManager* sdkTray)
+void StableFluids::setupControls(OgreBites::SdkTrayManager* mTrayMgr)
 {
-
+	OgreBites::SelectMenu* waterMaterial = mTrayMgr->createThickSelectMenu(OgreBites::TL_TOPLEFT, "VelocityMenu", "Velocity Field Display", PANEL_WIDTH, 9);
+	waterMaterial->addItem("DISPLAY_NONE");
+	waterMaterial->addItem("DISPLAY_ORIGIN");
+	waterMaterial->addItem("DISPLAY_ADD_FORCE");
+	waterMaterial->addItem("DISPLAY_BOUNDARY");
 }
 
 void StableFluids::sliderMoved(OgreBites::Slider* slider)
@@ -95,22 +100,38 @@ void StableFluids::checkBoxToggled(OgreBites::CheckBox* checkBox)
 
 void StableFluids::itemSelected(OgreBites::SelectMenu* menu)
 {
+	if(m_pWaterInterface == NULL)
+		return;
 
+	StableFluidsGrid *fg = (StableFluidsGrid *)m_pWaterInterface;
+	if(menu->getName() == "VelocityMenu")
+	{
+		const Ogre::String& materialName = menu->getSelectedItem();
+		if(materialName == "DISPLAY_NONE")
+			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_NONE;
+		else if(materialName == "DISPLAY_ORIGIN")
+			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_ORIGIN;
+		else if(materialName == "DISPLAY_ADD_FORCE")
+			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_ADD_FORCE;
+		else if(materialName == "DISPLAY_BOUNDARY")
+			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_BOUNDARY;
+	}
 }
 
 void StableFluids::update(float timeSinceLastFrame)
 {
-	static int I = 0, J = 0;
+	static int I = 0;
 	I++;
-	J++;
-	//if(J < 50)
+	//static int J = 0;
+	//J++;
+	//if(J < 40)
 		m_pSwimState->addTime(timeSinceLastFrame);//mesh animation
 	
 	//if(I % 50 == 0)
-	//	((StableFluidsGrid *)m_pWaterInterface)->push(32, 48, 1);
+		((StableFluidsGrid *)m_pWaterInterface)->push(32, 42, 1);
 
-	if(I == 50)
-		((StableFluidsGrid *)m_pWaterInterface)->push(32, 42, 1);//add a force up
+	//if(I == 50)
+	//	((StableFluidsGrid *)m_pWaterInterface)->push(32, 42, 1);//add a force up
 
 	//if(m_pFishNode->getPosition().distance(m_vec3Pos) >= 5.0)//mesh move around
 	//{
