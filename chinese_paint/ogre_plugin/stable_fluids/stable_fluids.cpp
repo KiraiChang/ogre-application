@@ -1,6 +1,7 @@
 #include "stable_fluids.h"
 #include "stable_fluids_grid.h"
 #include <SdkSample.h>
+#include <math.h>
 #define PANEL_WIDTH 200
 
 #define ANIMATIONS_PER_SECOND 100.0f
@@ -53,6 +54,11 @@ void StableFluids::init()
 	m_vTarget.push_back(Ogre::Vector3(56.0, 0.0, 56.0));
 	m_vTarget.push_back(Ogre::Vector3(56.0, 0.0, 8.0));
 	m_vec3Pos = m_vTarget[m_uiCurrentTarget];
+	m_vec3Pos.x = 0;
+	m_vec3Pos.y = 0;
+	m_vec3Pos.z = 0;
+
+	m_fCurrentTime = 0.0;
 }
 
 void StableFluids::release()
@@ -82,10 +88,16 @@ void StableFluids::release()
 void StableFluids::setupControls(OgreBites::SdkTrayManager* mTrayMgr)
 {
 	OgreBites::SelectMenu* waterMaterial = mTrayMgr->createThickSelectMenu(OgreBites::TL_TOPLEFT, "VelocityMenu", "Velocity Field Display", PANEL_WIDTH, 9);
-	waterMaterial->addItem("DISPLAY_NONE");
 	waterMaterial->addItem("DISPLAY_ORIGIN");
+	waterMaterial->addItem("DISPLAY_VELOCITY_NONE");
 	waterMaterial->addItem("DISPLAY_ADD_FORCE");
 	waterMaterial->addItem("DISPLAY_BOUNDARY");
+
+	waterMaterial = mTrayMgr->createThickSelectMenu(OgreBites::TL_TOPLEFT, "DensityMenu", "Density Field Display", PANEL_WIDTH, 9);
+	waterMaterial->addItem("DISPLAY_MAP_NONE");
+	waterMaterial->addItem("DISPLAY_DENSITY_MAP");
+	waterMaterial->addItem("DISPLAY_BOOLEAN_GRID");
+	waterMaterial->selectItem("DISPLAY_DENSITY_MAP");
 }
 
 void StableFluids::sliderMoved(OgreBites::Slider* slider)
@@ -107,14 +119,25 @@ void StableFluids::itemSelected(OgreBites::SelectMenu* menu)
 	if(menu->getName() == "VelocityMenu")
 	{
 		const Ogre::String& materialName = menu->getSelectedItem();
-		if(materialName == "DISPLAY_NONE")
-			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_NONE;
+		if(materialName == "DISPLAY_VELOCITY_NONE")
+			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_VELOCITY_NONE;
 		else if(materialName == "DISPLAY_ORIGIN")
 			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_ORIGIN;
 		else if(materialName == "DISPLAY_ADD_FORCE")
 			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_ADD_FORCE;
 		else if(materialName == "DISPLAY_BOUNDARY")
 			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_BOUNDARY;
+	}
+	else if(menu->getName() == "DensityMenu")
+	{
+		const Ogre::String& materialName = menu->getSelectedItem();
+		if(materialName == "DISPLAY_MAP_NONE")
+			fg->m_eMapDisplayType = StableFluidsGrid::MAP_DISPLAY_TYPE::DISPLAY_MAP_NONE;
+		else if(materialName == "DISPLAY_BOOLEAN_GRID")
+			fg->m_eMapDisplayType = StableFluidsGrid::MAP_DISPLAY_TYPE::DISPLAY_BOOLEAN_GRID;
+		else if(materialName == "DISPLAY_DENSITY_MAP")
+			fg->m_eMapDisplayType = StableFluidsGrid::MAP_DISPLAY_TYPE::DISPLAY_DENSITY_MAP;
+
 	}
 }
 
@@ -128,15 +151,15 @@ void StableFluids::update(float timeSinceLastFrame)
 		m_pSwimState->addTime(timeSinceLastFrame);//mesh animation
 	
 	//if(I % 50 == 0)
-		((StableFluidsGrid *)m_pWaterInterface)->push(32, 42, 1);
+		//((StableFluidsGrid *)m_pWaterInterface)->push(32, 25, 1);
 
-	//if(I == 50)
-	//	((StableFluidsGrid *)m_pWaterInterface)->push(32, 42, 1);//add a force up
+	if(I == 50)
+		((StableFluidsGrid *)m_pWaterInterface)->push(32, 42, 1);//add a force up
 
 	//if(m_pFishNode->getPosition().distance(m_vec3Pos) >= 5.0)//mesh move around
 	//{
 	//	Ogre::Vector3 dir = m_vec3Pos - m_pFishNode->getPosition();
-	//	m_pFishNode->translate(dir * timeSinceLastFrame * 0.2);
+	//	m_pFishNode->translate(dir * timeSinceLastFrame * 0.1);
 
 	//	Ogre::Vector3 src = m_pFishNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_X;/*Ogre::Vector3::UNIT_X;*/
 	//	Ogre::Quaternion quat = src.getRotationTo(dir);
@@ -149,6 +172,22 @@ void StableFluids::update(float timeSinceLastFrame)
 	//		m_uiCurrentTarget = 0;
 	//	m_vec3Pos = m_vTarget[m_uiCurrentTarget];
 	//}
+
+		//m_fCurrentTime += timeSinceLastFrame;
+		//if(m_fCurrentTime >= 30)
+		//	m_fCurrentTime = 0;
+		//Ogre::Vector3 pos, prev;
+		//float T = m_fCurrentTime / 30 * 2 * 3.141596;
+		//pos.x = cos(T) * 20 + 32;
+		//pos.y = 0.0;
+		//pos.z = sin(T) * 20 + 32;
+
+		//Ogre::Vector3 dir = pos - m_pFishNode->getPosition();
+		//m_pFishNode->setPosition(pos);
+
+		//Ogre::Vector3 src = m_pFishNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_X;/*Ogre::Vector3::UNIT_X;*/
+		//Ogre::Quaternion quat = src.getRotationTo(dir);
+		//m_pFishNode->rotate(quat);
 
 
 	((StableFluidsGrid *)m_pWaterInterface)->updateMeshData(m_pFishNode, m_pFish);

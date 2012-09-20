@@ -46,7 +46,7 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_vfEnforceV(0),
 	m_viEnforceVCount(0),
 	m_eMapDisplayType(DISPLAY_DENSITY_MAP),
-	m_eVelocityType(DISPLAY_NONE),
+	m_eVelocityType(DISPLAY_ORIGIN),
 	m_fLastTimeStamp(0),
 	m_fLastFrameTime(0),
 	m_pSceneMgr(NULL)
@@ -271,8 +271,20 @@ void StableFluidsGrid::updateParticle(float timePass)
 		index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
 		if(index > m_iGridSize)
 			break;
-		pos.x += m_vfU[index];
-		pos.z += m_vfV[index];
+
+		if(m_vbIntersectGrid[index])
+		{
+			Ogre::Vector2 nor(m_vfU[index], m_vfV[index]);
+			nor.normalise();
+			nor *= 0.1;
+			pos.x -= nor.x;
+			pos.z -= nor.y;
+		}
+		else
+		{
+			pos.x += m_vfU[index];
+			pos.z += m_vfV[index];
+		}
 		particle->position = pos;
 	}
 	particle = m_pPS->createParticle();
@@ -346,12 +358,20 @@ void StableFluidsGrid::updateMesh(float timePass)
 	{
 	case DISPLAY_BOOLEAN_GRID:
 		m_pPixelBox->data =  m_vbIntersectGrid;
+		m_heightMap->blitFromMemory(*m_pPixelBox);
+		m_pMiniScreenNode->setVisible(true);
+		break;
+	case DISPLAY_DENSITY_MAP:
+		m_pPixelBox->data =  m_vfHeightMap[m_iCurrentMap];
+		m_heightMap->blitFromMemory(*m_pPixelBox);
+		m_pMiniScreenNode->setVisible(true);
 		break;
 	default:
-		m_pPixelBox->data =  m_vfHeightMap[m_iCurrentMap];
+		m_pMiniScreenNode->setVisible(false);
+		break;
 	}
 
-	m_heightMap->blitFromMemory(*m_pPixelBox);
+	
 
 	setMeshEnforce(timePass);
 	setMeshBoundary();
@@ -414,7 +434,7 @@ void StableFluidsGrid::push(float x, float y, float depth, bool absolute)
 	if(index > m_iGridSize)
 		return;
 	m_vfU[index] = 0;
-	m_vfV[index] = -m_fForce * m_fLastFrameTime;
+	m_vfV[index] = m_fForce * m_fLastFrameTime;
 
 	//::push(m_iGridNumber+2, x, y, 0, 0, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
 	//::push(m_iGridNumber+2, x, y, 0, 1, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
@@ -435,9 +455,9 @@ void StableFluidsGrid::clear(void)
 void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity)
 {
 	//set particle system before fish head
-	//Ogre::Vector3 pos = node->getPosition();
-	//pos = pos + ( node->getOrientation() * Ogre::Vector3(-1.0, 0.0, 0.0) ) * 5;
-	//m_pPSNode->setPosition(pos);
+	Ogre::Vector3 pos = node->getPosition();
+	pos = pos + ( node->getOrientation() * Ogre::Vector3(-1.0, 0.0, 0.0) ) * 4;
+	m_pPSNode->setPosition(pos);
 	m_iCurrentVertex = (m_iCurrentVertex + 1) % 3 ;
 	getMeshInformation(entity, 
 		m_sVertexCount, 
@@ -689,28 +709,41 @@ void StableFluidsGrid::setMeshBoundary()
 
 void StableFluidsGrid::setMeshEnforce(float timePass)
 {
-	int x, y, count;
-	float force;
-	unsigned int index;
+	int x, y, dx, dy, count;
+	float uforce, vforce;
+	unsigned int index, dIndex;
 	for(y = 1; y < m_iGridNumber; y++)
 	{
 		for(x = 1; x < m_iGridNumber; x++)
 		{
 			index = x + (y*(m_iGridNumber+2));
+			uforce = m_vfU[index];
+			vforce = m_vfV[index];
+			dx = 0;
+			dy = 0;
 			if(m_vfEnforceU[index] != 0)
 			{
+				//count = m_viEnforceUCount[index];
+				//force = m_vfEnforceU[index];
+				//force = force / count;
+				//m_vfU[index] += force;
 				count = m_viEnforceUCount[index];
-				force = m_vfEnforceU[index];
-				force = force / count;
-				m_vfU[index] += force;
+				uforce = m_vfEnforceU[index] / count;
+				dx = x + uforce;
 			}
 			if(m_vfEnforceV[index] != 0)
 			{
+				//count = m_viEnforceVCount[index];
+				//force = m_vfEnforceV[index];
+				//force = force / count;
+				//m_vfV[index] += force;
 				count = m_viEnforceVCount[index];
-				force = m_vfEnforceV[index];
-				force = force / count;
-				m_vfV[index] += force;
+				vforce = m_vfEnforceV[index] / count;
+				dy = y + vforce;
 			}
+			dIndex = dx + (dy*(m_iGridNumber+2));
+			m_vfU[dIndex] = uforce;
+			m_vfV[dIndex] = vforce;
 		}
 	}
 }
