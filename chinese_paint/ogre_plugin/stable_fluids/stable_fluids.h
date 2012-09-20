@@ -13,6 +13,7 @@ private:
 	typedef std::vector<Ogre::Vector3>		VECTOR_TARGET_POSITION;
 	Ogre::SceneManager *					m_pSceneMgr;
 	Ogre::Camera *							m_pCamera;
+	Ogre::SceneNode*						m_pCameraNode;
 	WaterInterface*							m_pWaterInterface;
 	Ogre::Entity*							m_pFish;
 	Ogre::SceneNode*						m_pFishNode;

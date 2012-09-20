@@ -133,7 +133,7 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 
 	m_pMiniScreen->setMaterial("ChinesePaint/Texture");
 
-	m_pPS = m_pSceneMgr->createParticleSystem(1000U);
+	m_pPS = m_pSceneMgr->createParticleSystem(3000U);
 	m_pPSNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_pPSNode->attachObject(m_pPS);
 	m_pPSNode->setPosition(32, 0, 42);
@@ -262,6 +262,7 @@ void StableFluidsGrid::release(void)
 void StableFluidsGrid::updateParticle(float timePass)
 {
 	Ogre::Particle* particle = NULL;
+	//float h = (float)1 / m_iGridNumber;
 	unsigned int index;
 	Ogre::ParticleIterator ite = m_pPS->_getIterator();
 	while(!ite.end())
@@ -272,43 +273,41 @@ void StableFluidsGrid::updateParticle(float timePass)
 		if(index > m_iGridSize)
 			break;
 
-		if(m_vbIntersectGrid[index])
+		//if(m_vbIntersectGrid[index])
 		{
 			Ogre::Vector2 nor(m_vfU[index], m_vfV[index]);
 			nor.normalise();
-			nor *= 0.1;
-			pos.x -= nor.x;
-			pos.z -= nor.y;
+			nor *= timePass * 1.5;
+			pos.x += nor.x;
+			pos.z += nor.y;
 		}
-		else
-		{
-			pos.x += m_vfU[index];
-			pos.z += m_vfV[index];
-		}
+		//else
+		//{
+		//	pos.x += m_vfU[index];
+		//	pos.z += m_vfV[index];
+		//}
 		particle->position = pos;
 	}
 	particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
-		particle->timeToLive = 5;
+		particle->timeToLive = 10;
 		particle->setDimensions (0.5, 0.5);
-		particle->position = m_pPS->getParentSceneNode()->getPosition();
+		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, -0.5);
 	}
 	particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
-		particle->timeToLive = 5;
+		particle->timeToLive = 10;
 		particle->setDimensions (0.5, 0.5);
-		particle->position = m_pPS->getParentSceneNode()->getPosition();
-		particle->position.x += 0.5;
+		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.5, 0.0, 0);
 	}
 		particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
-		particle->timeToLive = 5;
+		particle->timeToLive = 10;
 		particle->setDimensions (0.5, 0.5);
-		particle->position = m_pPS->getParentSceneNode()->getPosition();
-		particle->position.x -= 0.5;
+		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, 0.5);
 	}
 }
 
@@ -434,7 +433,7 @@ void StableFluidsGrid::push(float x, float y, float depth, bool absolute)
 	if(index > m_iGridSize)
 		return;
 	m_vfU[index] = 0;
-	m_vfV[index] = m_fForce * m_fLastFrameTime;
+	m_vfV[index] = -m_fForce * m_fLastFrameTime;
 
 	//::push(m_iGridNumber+2, x, y, 0, 0, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
 	//::push(m_iGridNumber+2, x, y, 0, 1, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
@@ -456,8 +455,16 @@ void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entit
 {
 	//set particle system before fish head
 	Ogre::Vector3 pos = node->getPosition();
-	pos = pos + ( node->getOrientation() * Ogre::Vector3(-1.0, 0.0, 0.0) ) * 4;
-	m_pPSNode->setPosition(pos);
+	pos = pos + ( node->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * node->getScale().x;
+	m_pPSNode->setPosition( node->getPosition());
+	m_pPSNode->setOrientation(node->getOrientation());
+	
+	Ogre::Vector3 dir = node->getOrientation() * Ogre::Vector3(-1.0, 0.0, 0.0);
+	dir.normalise();
+	unsigned int index = ((int)pos.x)+((int)pos.z * (m_iGridNumber+2));
+	m_vfU[index] = dir.x * m_fForce * 2 * m_fLastFrameTime;
+	m_vfV[index] = dir.z * m_fForce * 2 * m_fLastFrameTime;
+
 	m_iCurrentVertex = (m_iCurrentVertex + 1) % 3 ;
 	getMeshInformation(entity, 
 		m_sVertexCount, 
@@ -484,11 +491,11 @@ void StableFluidsGrid::calcMeshFace()
 		if(m_vVertices[m_iCurrentVertex][i].y < 1.0 && m_vVertices[m_iCurrentVertex][i].y > -1.0)//the y position at surface
 		{
 			x = ((int)m_vVertices[m_iCurrentVertex][i].x);
-			if(m_vVertices[m_iCurrentVertex][i].x - x > 0.5)
-				x++;
+			//if(m_vVertices[m_iCurrentVertex][i].x - x > 0.5)
+			//	x++;
 			y = ((int)m_vVertices[m_iCurrentVertex][i].z);
-			if( m_vVertices[m_iCurrentVertex][i].z - y > 0.5)
-				y++;
+			//if( m_vVertices[m_iCurrentVertex][i].z - y > 0.5)
+			//	y++;
 
 			index = x +  (y*(m_iGridNumber+2));
 			if(index < m_iGridSize)
@@ -709,41 +716,55 @@ void StableFluidsGrid::setMeshBoundary()
 
 void StableFluidsGrid::setMeshEnforce(float timePass)
 {
-	int x, y, dx, dy, count;
-	float uforce, vforce;
-	unsigned int index, dIndex;
-	for(y = 1; y < m_iGridNumber; y++)
-	{
-		for(x = 1; x < m_iGridNumber; x++)
-		{
-			index = x + (y*(m_iGridNumber+2));
-			uforce = m_vfU[index];
-			vforce = m_vfV[index];
-			dx = 0;
-			dy = 0;
-			if(m_vfEnforceU[index] != 0)
-			{
-				//count = m_viEnforceUCount[index];
-				//force = m_vfEnforceU[index];
-				//force = force / count;
-				//m_vfU[index] += force;
-				count = m_viEnforceUCount[index];
-				uforce = m_vfEnforceU[index] / count;
-				dx = x + uforce;
-			}
-			if(m_vfEnforceV[index] != 0)
-			{
-				//count = m_viEnforceVCount[index];
-				//force = m_vfEnforceV[index];
-				//force = force / count;
-				//m_vfV[index] += force;
-				count = m_viEnforceVCount[index];
-				vforce = m_vfEnforceV[index] / count;
-				dy = y + vforce;
-			}
-			dIndex = dx + (dy*(m_iGridNumber+2));
-			m_vfU[dIndex] = uforce;
-			m_vfV[dIndex] = vforce;
-		}
-	}
+	//int x, y, count;
+	//float uforce, vforce;
+	//Ogre::Vector2 diff;
+	//unsigned int index, dIndex;
+	//for(y = 1; y < m_iGridNumber; y++)
+	//{
+	//	for(x = 1; x < m_iGridNumber; x++)
+	//	{
+	//		index = x + (y*(m_iGridNumber+2));
+	//		uforce = m_vfU[index];
+	//		vforce = m_vfV[index];
+	//		diff.x = 0;
+	//		diff.y = 0;
+	//		if(m_vfEnforceU[index] != 0)
+	//		{
+	//			//count = m_viEnforceUCount[index];
+	//			//force = m_vfEnforceU[index];
+	//			//force = force / count;
+	//			//m_vfU[index] += force;
+	//			count = m_viEnforceUCount[index];
+	//			uforce = m_vfEnforceU[index] / count;
+	//			diff.x = uforce;
+	//			uforce *= 10; 
+	//		}
+	//		if(m_vfEnforceV[index] != 0)
+	//		{
+	//			//count = m_viEnforceVCount[index];
+	//			//force = m_vfEnforceV[index];
+	//			//force = force / count;
+	//			//m_vfV[index] += force;
+	//			count = m_viEnforceVCount[index];
+	//			vforce = m_vfEnforceV[index] / count;
+	//			diff.y = vforce;
+	//			vforce *= 10;
+	//		}
+	//		diff.normalise();
+	//		if(diff.x > 0.5)
+	//			diff.x = 1;
+	//		else if(diff.x < -0.5)
+	//			diff.x = -1;
+	//		if(diff.y > 0.5)
+	//			diff.y = 1;
+	//		else if(diff.y < -0.5)
+	//			diff.y = -1;
+	//		diff.x += x;
+	//		diff.y += y;
+	//		dIndex = (int)diff.x + ((int)diff.y*(m_iGridNumber+2));
+	//		m_vfU[dIndex] = uforce;
+	//		m_vfV[dIndex] = vforce;
+	//	}
+	//}
 }
