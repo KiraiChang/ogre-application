@@ -65,8 +65,8 @@ public:
 	float *									m_vfV;
 	float *									m_vfUPrev;
 	float *									m_vfVPrev;
-	int										m_iGridNumber;
-	int										m_iGridSize;
+	int										m_iGridNumber;// Grid one side size
+	int										m_iGridSize;// (m_iGridNumber + 2)*(m_iGridNumber + 2)
 	//float *								m_vfDens;
 	//float *								m_vfDensPrev;
 private:

@@ -75,7 +75,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\..\..\..\SDK\VS2010\CEGUI_SDK_076\lib;..\..\..\..\..\SDK\VS2010\ogre_src_v1-7-4\lib\debug;..\..\..\..\..\SDK\VS2010\boost_1_48_0\lib;..\..\..\..\..\SDK\VS2010\bullet-2.79\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Kinect10.lib;OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;CEGUIBase_d.lib;CEGUIOgreRenderer_d.lib;BulletDynamics_d.lib;BulletCollision_d.lib;LinearMath_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OgreMain_d.lib;OIS_d.lib;OgreTerrain_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -92,7 +92,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>OgreMain.lib;OIS.lib;OgreTerrain.lib;CEGUIBase.lib;CEGUIOgreRenderer.lib;BulletDynamics.lib;BulletCollision.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OgreMain.lib;OIS.lib;OgreTerrain.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\..\..\SDK\VS2010\CEGUI_SDK_076\lib;..\..\..\..\..\SDK\VS2010\ogre_src_v1-7-4\lib\release;..\..\..\..\..\SDK\VS2010\boost_1_48_0\lib;..\..\..\..\..\SDK\VS2010\bullet-2.79\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
