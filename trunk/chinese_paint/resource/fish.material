@@ -1,0 +1,12 @@
+
+material Examples/Fish
+{
+	technique
+	{
+		pass
+		{
+
+			diffuse 1.0 0.0 0.0
+		}
+	}
+}

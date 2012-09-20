@@ -20,6 +20,7 @@ private:
 	unsigned int							m_uiCurrentTarget;
 	VECTOR_TARGET_POSITION					m_vTarget;
 	Ogre::Vector3							m_vec3Pos;
+	float									m_fCurrentTime;
 
 public:
 											StableFluids(Ogre::SceneManager *sceneMgr, Ogre::Camera *camera) ;
