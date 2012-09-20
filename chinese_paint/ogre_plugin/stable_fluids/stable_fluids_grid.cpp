@@ -353,8 +353,9 @@ void StableFluidsGrid::updateMesh(float timePass)
 
 	m_heightMap->blitFromMemory(*m_pPixelBox);
 
-	setMeshBoundary();
 	setMeshEnforce(timePass);
+	setMeshBoundary();
+	
 	updateParticle(timePass);
 }
 
@@ -460,7 +461,7 @@ void StableFluidsGrid::calcMeshFace()
 	int front, back;
 	for(i = 0;i < m_sVertexCount;i++)
 	{
-		if(m_vVertices[m_iCurrentVertex][i].y < 1.0 && m_vVertices[m_iCurrentVertex][i].y > -1.0)
+		if(m_vVertices[m_iCurrentVertex][i].y < 1.0 && m_vVertices[m_iCurrentVertex][i].y > -1.0)//the y position at surface
 		{
 			x = ((int)m_vVertices[m_iCurrentVertex][i].x);
 			if(m_vVertices[m_iCurrentVertex][i].x - x > 0.5)
@@ -544,101 +545,143 @@ void StableFluidsGrid::setMeshBoundary()
 			right =  (x+1) + ((y)*(m_iGridNumber+2));
 			if(m_vbIntersectGrid[index])
 			{
-				//m_vfHeightMap[m_iCurrentMap][index] = 0;
+				//set fish model to density field
 				push(m_iGridNumber+2, x, y, 0, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 				push(m_iGridNumber+2, x, y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 				push(m_iGridNumber+2, x, y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 				push(m_iGridNumber+2, x, y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 
-				if(!m_vbIntersectGrid[left] && !m_vbIntersectGrid[right])
-				{
-					if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
-					{
-						m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[down] + m_vfU[left] + m_vfU[right])*0.25);
-						m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[down] + m_vfV[left] + m_vfV[right])*0.25);
-					}
-					else if(!m_vbIntersectGrid[up])
-					{
-						m_vfBoundaryU[index] = -((m_vfU[up]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
-						m_vfBoundaryV[index] = -((m_vfV[up]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
-					}
-					else if(!m_vbIntersectGrid[down])
-					{
-						m_vfBoundaryU[index] = -((m_vfU[down]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
-						m_vfBoundaryV[index] = -((m_vfV[down]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
-					}
-					else
-					{
-						m_vfBoundaryU[index] = -((m_vfU[left] + m_vfU[right])*0.5);
-						m_vfBoundaryV[index] = -((m_vfV[left] + m_vfV[right])*0.5);
-					}
-				}
-				else if(!m_vbIntersectGrid[left])
-				{
-					if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
-					{
-						m_vfBoundaryU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[left]*0.5));
-						m_vfBoundaryV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[left]*0.5));
-					}
-					else if(!m_vbIntersectGrid[up])
-					{
-						m_vfBoundaryU[index] = -((m_vfU[up]+m_vfU[left])*0.5);
-						m_vfBoundaryV[index] = -((m_vfV[up]+m_vfV[left])*0.5);
-					}
-					else if(!m_vbIntersectGrid[down])
-					{
-						m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[left])*0.5);
-						m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[left])*0.5);
-					}
-					else
-					{
-						m_vfBoundaryU[index] = -m_vfU[left];
-						m_vfBoundaryV[index] = -m_vfV[left];
-					}
-				}
-				else if(!m_vbIntersectGrid[right])
-				{
-					if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
-					{
-						m_vfBoundaryU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[right]*0.5));
-						m_vfBoundaryV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[right]*0.5));
-					}
-					else if(!m_vbIntersectGrid[up])
-					{
-						m_vfBoundaryU[index] = -((m_vfU[up]+m_vfU[right])*0.5);
-						m_vfBoundaryV[index] = -((m_vfV[up]+m_vfV[right])*0.5);
-					}
-					else if(!m_vbIntersectGrid[down])
-					{
-						m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[right])*0.5);
-						m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[right])*0.5);
-					}
-					else
-					{
-						m_vfBoundaryU[index] = -m_vfU[right];
-						m_vfBoundaryV[index] = -m_vfV[right];
-					}
-				}
-				else
-				{
-					if(!m_vbIntersectGrid[up])
-					{
-						m_vfBoundaryU[index] = -m_vfU[up];
-						m_vfBoundaryV[index] = -m_vfV[up];
-					}
-					else if(!m_vbIntersectGrid[down])
-					{
-						m_vfBoundaryU[index] = -m_vfU[down];
-						m_vfBoundaryV[index] = -m_vfV[down];
-					}
-					else
-					{
-						m_vfBoundaryU[index] = 0;
-						m_vfBoundaryV[index] = 0;
-					}
-				}
-				m_vfU[index] = m_vfBoundaryU[index];
-				m_vfV[index] = m_vfBoundaryV[index];
+				//if(!m_vbIntersectGrid[left] && !m_vbIntersectGrid[right])
+				//{
+				//	if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
+				//	{
+				//		m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[down] + m_vfU[left] + m_vfU[right])*0.25);
+				//		m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[down] + m_vfV[left] + m_vfV[right])*0.25);
+				//	}
+				//	else if(!m_vbIntersectGrid[up])
+				//	{
+				//		m_vfBoundaryU[index] = -((m_vfU[up]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
+				//		m_vfBoundaryV[index] = -((m_vfV[up]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
+				//	}
+				//	else if(!m_vbIntersectGrid[down])
+				//	{
+				//		m_vfBoundaryU[index] = -((m_vfU[down]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
+				//		m_vfBoundaryV[index] = -((m_vfV[down]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
+				//	}
+				//	else
+				//	{
+				//		m_vfBoundaryU[index] = -((m_vfU[left] + m_vfU[right])*0.5);
+				//		m_vfBoundaryV[index] = -((m_vfV[left] + m_vfV[right])*0.5);
+				//	}
+				//}
+				//else if(!m_vbIntersectGrid[left])
+				//{
+				//	if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
+				//	{
+				//		m_vfBoundaryU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[left]*0.5));
+				//		m_vfBoundaryV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[left]*0.5));
+				//	}
+				//	else if(!m_vbIntersectGrid[up])
+				//	{
+				//		m_vfBoundaryU[index] = -((m_vfU[up]+m_vfU[left])*0.5);
+				//		m_vfBoundaryV[index] = -((m_vfV[up]+m_vfV[left])*0.5);
+				//	}
+				//	else if(!m_vbIntersectGrid[down])
+				//	{
+				//		m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[left])*0.5);
+				//		m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[left])*0.5);
+				//	}
+				//	else
+				//	{
+				//		m_vfBoundaryU[index] = -m_vfU[left];
+				//		m_vfBoundaryV[index] = -m_vfV[left];
+				//	}
+				//}
+				//else if(!m_vbIntersectGrid[right])
+				//{
+				//	if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
+				//	{
+				//		m_vfBoundaryU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[right]*0.5));
+				//		m_vfBoundaryV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[right]*0.5));
+				//	}
+				//	else if(!m_vbIntersectGrid[up])
+				//	{
+				//		m_vfBoundaryU[index] = -((m_vfU[up]+m_vfU[right])*0.5);
+				//		m_vfBoundaryV[index] = -((m_vfV[up]+m_vfV[right])*0.5);
+				//	}
+				//	else if(!m_vbIntersectGrid[down])
+				//	{
+				//		m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[right])*0.5);
+				//		m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[right])*0.5);
+				//	}
+				//	else
+				//	{
+				//		m_vfBoundaryU[index] = -m_vfU[right];
+				//		m_vfBoundaryV[index] = -m_vfV[right];
+				//	}
+				//}
+				//else
+				//{
+				//	if(!m_vbIntersectGrid[up])
+				//	{
+				//		m_vfBoundaryU[index] = -m_vfU[up];
+				//		m_vfBoundaryV[index] = -m_vfV[up];
+				//	}
+				//	else if(!m_vbIntersectGrid[down])
+				//	{
+				//		m_vfBoundaryU[index] = -m_vfU[down];
+				//		m_vfBoundaryV[index] = -m_vfV[down];
+				//	}
+				//	else
+				//	{
+				//		m_vfBoundaryU[index] = 0;
+				//		m_vfBoundaryV[index] = 0;
+				//	}
+				//}
+				//m_vfU[index] = m_vfBoundaryU[index];
+				//m_vfV[index] = m_vfBoundaryV[index];
+				//m_vfU[index] = m_vfBoundaryU[index];
+				//m_vfV[index] = m_vfBoundaryV[index];
+
+				//set the velocity inside model to zero
+				m_vfU[index] = 0;
+				m_vfV[index] = 0;
+			}
+		}
+	}
+
+	for(y = 1; y < m_iGridNumber; y++)
+	{
+		for(x = 1; x < m_iGridNumber; x++)
+		{
+			up = x + ((y-1)*(m_iGridNumber+2));
+			index = x + (y*(m_iGridNumber+2));
+			down = x + ((y+1)*(m_iGridNumber+2));
+			left = (x-1) + ((y)*(m_iGridNumber+2));
+			right =  (x+1) + ((y)*(m_iGridNumber+2));
+			if(m_vbIntersectGrid[index])
+			{
+				//set the velocity by neighbor velocity
+				m_vfBoundaryU[index] = -(m_vfU[up]+m_vfU[down]+m_vfU[left]+m_vfU[right])/4;
+				m_vfBoundaryV[index] = -(m_vfV[up]+m_vfV[down]+m_vfV[left]+m_vfV[right])/4;
+			}
+		}
+	}
+
+	for(y = 1; y < m_iGridNumber; y++)
+	{
+		for(x = 1; x < m_iGridNumber; x++)
+		{
+			up = x + ((y-1)*(m_iGridNumber+2));
+			index = x + (y*(m_iGridNumber+2));
+			down = x + ((y+1)*(m_iGridNumber+2));
+			left = (x-1) + ((y)*(m_iGridNumber+2));
+			right =  (x+1) + ((y)*(m_iGridNumber+2));
+			if(m_vbIntersectGrid[index])
+			{
+				//set boundary velocity to velocity field
+				m_vfU[up] = m_vfBoundaryU[index];
+				m_vfV[up] = m_vfBoundaryV[index];
 			}
 		}
 	}
