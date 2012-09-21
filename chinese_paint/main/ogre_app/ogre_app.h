@@ -9,6 +9,7 @@ private:
 	void redirectIOToConsole(void);
 public:
 	OgreApp(void);
+	virtual void setup();
 };
 
 

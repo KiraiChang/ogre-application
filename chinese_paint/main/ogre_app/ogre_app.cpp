@@ -46,3 +46,9 @@ OgreApp::OgreApp()
 {
 	redirectIOToConsole();
 }
+
+void OgreApp::setup()
+{
+	OgreBites::SampleBrowser::setup();
+	runSample(Ogre::any_cast<OgreBites::Sample*>(mThumbs[0]->getUserAny()));
+}
