@@ -11,6 +11,10 @@ static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
 static float FISH_DEPTH = 0.01;
 static float ANIMATIONS_PER_SECOND = 1.0f;
+#define PARTICLE_LIVE_TIME 20
+#define PARTICLE_SIZE_X 0.5
+#define PARTICLE_SIZE_Y 0.5
+#define PARTICLE_MOVE_SPEED 2
 
 StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_iGridNumber(number),
@@ -262,7 +266,7 @@ void StableFluidsGrid::release(void)
 void StableFluidsGrid::updateParticle(float timePass)
 {
 	Ogre::Particle* particle = NULL;
-	//float h = (float)1 / m_iGridNumber;
+
 	unsigned int index;
 	Ogre::ParticleIterator ite = m_pPS->_getIterator();
 	while(!ite.end())
@@ -273,40 +277,33 @@ void StableFluidsGrid::updateParticle(float timePass)
 		if(index > m_iGridSize)
 			break;
 
-		//if(m_vbIntersectGrid[index])
-		{
-			Ogre::Vector2 nor(m_vfU[index], m_vfV[index]);
-			nor.normalise();
-			nor *= timePass * 2;
-			pos.x += nor.x;
-			pos.z += nor.y;
-		}
-		//else
-		//{
-		//	pos.x += m_vfU[index];
-		//	pos.z += m_vfV[index];
-		//}
+		Ogre::Vector2 nor(m_vfU[index], m_vfV[index]);
+		nor.normalise();
+		nor *= timePass * PARTICLE_MOVE_SPEED;
+		pos.x += nor.x;
+		pos.z += nor.y;
+
 		particle->position = pos;
 	}
 	particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
-		particle->timeToLive = 20;
-		particle->setDimensions (0.2, 0.2);
+		particle->timeToLive = PARTICLE_LIVE_TIME;
+		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
 		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, -0.5);
 	}
 	particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
-		particle->timeToLive = 20;
-		particle->setDimensions (0.2, 0.2);
+		particle->timeToLive = PARTICLE_LIVE_TIME;
+		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
 		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.5, 0.0, 0);
 	}
 		particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
-		particle->timeToLive = 20;
-		particle->setDimensions (0.2, 0.2);
+		particle->timeToLive = PARTICLE_LIVE_TIME;
+		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
 		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, 0.5);
 	}
 }
@@ -320,9 +317,9 @@ void StableFluidsGrid::updateMesh(float timePass)
 	//dens_step ( m_iGridNumber, m_vfDens, m_vfDensPrev, m_vfU, m_vfV, m_fDiff, timePass);
 
 	m_iCurrentMap = (m_iCurrentMap + 1) % 3 ;
-	float *buf = m_vfHeightMap[m_iCurrentMap] ; // +1 for Y coordinate
-	float *buf1 = m_vfHeightMap[(m_iCurrentMap+2)%3] ;
-	float *buf2 = m_vfHeightMap[(m_iCurrentMap+1)%3] ;
+	float *buf = m_vfHeightMap[m_iCurrentMap] ; //new map
+	float *buf1 = m_vfHeightMap[(m_iCurrentMap+2)%3] ;//current map
+	float *buf2 = m_vfHeightMap[(m_iCurrentMap+1)%3] ;//prev map
 	wave_step (m_iGridNumber+2, buf, buf1, buf2, m_vfDumpening, timePass);
 
 	float *vfU = NULL, *vfV = NULL;
@@ -404,11 +401,6 @@ void StableFluidsGrid::updateDebug(float *vfU, float *vfV)
 		}
 	}
 	m_pManuObj->end();
-
-	//m_pManuObj->begin("ChinesePaint/Debug", Ogre::RenderOperation::OT_LINE_LIST);
-	//m_pManuObj->position(0.0, 0.0, 0.0);
-	//m_pManuObj->position(100.0, 0.0, 100.0);
-	//m_pManuObj->end();
 }
 
 void StableFluidsGrid::push(int N, float x, float y, float addx, float addy, float depth, bool absolute, float *current)
@@ -427,18 +419,13 @@ void StableFluidsGrid::push(int N, float x, float y, float addx, float addy, flo
 		*vertex += depth*power ;
 }
 
-void StableFluidsGrid::push(float x, float y, float depth, bool absolute)
+void StableFluidsGrid::push(float x, float y, float depth, bool absolute)//this function just for test
 {
 	unsigned int index = (x)+(m_iGridNumber+2)*(y);
 	if(index > m_iGridSize)
 		return;
 	m_vfU[index] = 0;
 	m_vfV[index] = -m_fForce * m_fLastFrameTime;
-
-	//::push(m_iGridNumber+2, x, y, 0, 0, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
-	//::push(m_iGridNumber+2, x, y, 0, 1, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
-	//::push(m_iGridNumber+2, x, y, 1, 0, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
-	//::push(m_iGridNumber+2, x, y, 1, 1, depth, absolute, m_vfHeightMap[m_iCurrentMap]);
 }
 
 
@@ -458,7 +445,11 @@ void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entit
 	pos = pos + ( node->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * node->getScale().x;
 	m_pPSNode->setPosition( node->getPosition());
 	m_pPSNode->setOrientation(node->getOrientation());
-	
+
+	//node->setVisible(false);
+	//m_pPSNode->setVisible(false);
+
+	//when fish move front fluid will give back force
 	Ogre::Vector3 dir = node->getOrientation() * Ogre::Vector3(1.0, 0.0, 0.0);
 	dir.normalise();
 	unsigned int index = ((int)pos.x)+((int)pos.z * (m_iGridNumber+2));
@@ -573,98 +564,6 @@ void StableFluidsGrid::setMeshBoundary()
 				push(m_iGridNumber+2, x, y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 				push(m_iGridNumber+2, x, y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 				push(m_iGridNumber+2, x, y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-
-				//if(!m_vbIntersectGrid[left] && !m_vbIntersectGrid[right])
-				//{
-				//	if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
-				//	{
-				//		m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[down] + m_vfU[left] + m_vfU[right])*0.25);
-				//		m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[down] + m_vfV[left] + m_vfV[right])*0.25);
-				//	}
-				//	else if(!m_vbIntersectGrid[up])
-				//	{
-				//		m_vfBoundaryU[index] = -((m_vfU[up]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
-				//		m_vfBoundaryV[index] = -((m_vfV[up]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
-				//	}
-				//	else if(!m_vbIntersectGrid[down])
-				//	{
-				//		m_vfBoundaryU[index] = -((m_vfU[down]*0.5)+((m_vfU[left] + m_vfU[right])*0.25));
-				//		m_vfBoundaryV[index] = -((m_vfV[down]*0.5)+((m_vfV[left] + m_vfV[right])*0.25));
-				//	}
-				//	else
-				//	{
-				//		m_vfBoundaryU[index] = -((m_vfU[left] + m_vfU[right])*0.5);
-				//		m_vfBoundaryV[index] = -((m_vfV[left] + m_vfV[right])*0.5);
-				//	}
-				//}
-				//else if(!m_vbIntersectGrid[left])
-				//{
-				//	if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
-				//	{
-				//		m_vfBoundaryU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[left]*0.5));
-				//		m_vfBoundaryV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[left]*0.5));
-				//	}
-				//	else if(!m_vbIntersectGrid[up])
-				//	{
-				//		m_vfBoundaryU[index] = -((m_vfU[up]+m_vfU[left])*0.5);
-				//		m_vfBoundaryV[index] = -((m_vfV[up]+m_vfV[left])*0.5);
-				//	}
-				//	else if(!m_vbIntersectGrid[down])
-				//	{
-				//		m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[left])*0.5);
-				//		m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[left])*0.5);
-				//	}
-				//	else
-				//	{
-				//		m_vfBoundaryU[index] = -m_vfU[left];
-				//		m_vfBoundaryV[index] = -m_vfV[left];
-				//	}
-				//}
-				//else if(!m_vbIntersectGrid[right])
-				//{
-				//	if(!m_vbIntersectGrid[down] && !m_vbIntersectGrid[up])
-				//	{
-				//		m_vfBoundaryU[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfU[right]*0.5));
-				//		m_vfBoundaryV[index] = -(((m_vfU[down]+m_vfU[down])*0.25) + (m_vfV[right]*0.5));
-				//	}
-				//	else if(!m_vbIntersectGrid[up])
-				//	{
-				//		m_vfBoundaryU[index] = -((m_vfU[up]+m_vfU[right])*0.5);
-				//		m_vfBoundaryV[index] = -((m_vfV[up]+m_vfV[right])*0.5);
-				//	}
-				//	else if(!m_vbIntersectGrid[down])
-				//	{
-				//		m_vfBoundaryU[index] = -((m_vfU[down]+m_vfU[right])*0.5);
-				//		m_vfBoundaryV[index] = -((m_vfV[down]+m_vfV[right])*0.5);
-				//	}
-				//	else
-				//	{
-				//		m_vfBoundaryU[index] = -m_vfU[right];
-				//		m_vfBoundaryV[index] = -m_vfV[right];
-				//	}
-				//}
-				//else
-				//{
-				//	if(!m_vbIntersectGrid[up])
-				//	{
-				//		m_vfBoundaryU[index] = -m_vfU[up];
-				//		m_vfBoundaryV[index] = -m_vfV[up];
-				//	}
-				//	else if(!m_vbIntersectGrid[down])
-				//	{
-				//		m_vfBoundaryU[index] = -m_vfU[down];
-				//		m_vfBoundaryV[index] = -m_vfV[down];
-				//	}
-				//	else
-				//	{
-				//		m_vfBoundaryU[index] = 0;
-				//		m_vfBoundaryV[index] = 0;
-				//	}
-				//}
-				//m_vfU[index] = m_vfBoundaryU[index];
-				//m_vfV[index] = m_vfBoundaryV[index];
-				//m_vfU[index] = m_vfBoundaryU[index];
-				//m_vfV[index] = m_vfBoundaryV[index];
 
 				//set the velocity inside model to zero
 				m_vfU[index] = 0;
