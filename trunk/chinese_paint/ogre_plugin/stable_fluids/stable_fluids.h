@@ -10,7 +10,7 @@ class WaterInterface;
 class StableFluids : public SimulationInterface
 {
 private:
-	typedef std::vector<Ogre::Vector3>		VECTOR_TARGET_POSITION;
+	//typedef std::vector<Ogre::Vector3>		VECTOR_TARGET_POSITION;
 	Ogre::SceneManager *					m_pSceneMgr;
 	Ogre::Camera *							m_pCamera;
 	Ogre::SceneNode*						m_pCameraNode;
@@ -18,8 +18,8 @@ private:
 	Ogre::Entity*							m_pFish;
 	Ogre::SceneNode*						m_pFishNode;
 	Ogre::AnimationState*					m_pSwimState;
-	unsigned int							m_uiCurrentTarget;
-	VECTOR_TARGET_POSITION					m_vTarget;
+	//unsigned int							m_uiCurrentTarget;
+	//VECTOR_TARGET_POSITION					m_vTarget;
 	Ogre::Vector3							m_vec3Pos;
 	float									m_fCurrentTime;
 

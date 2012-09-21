@@ -8,6 +8,8 @@
 #define IX(i,j,N) ((i)+(N+2)*(j))
 
 #define COMPLEXITY 64
+#define PI 3.141596
+#define ONE_CIRCLE_NEED_TIME 75
 
 StableFluids::StableFluids(Ogre::SceneManager *sceneMgr, Ogre::Camera *camera):
 	m_pSceneMgr(sceneMgr), 
@@ -32,17 +34,17 @@ void StableFluids::init()
 	m_pSceneMgr->setAmbientLight(Ogre::ColourValue(0.75, 0.75, 0.75));
 
 	Ogre::Light* l = m_pSceneMgr->createLight("MainLight");
-	l->setPosition(32,32,32);
+	l->setPosition(COMPLEXITY/2, COMPLEXITY/2, COMPLEXITY/2);
 
 	m_pCameraNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	m_pCameraNode->translate(32, 64, 32);
+	m_pCameraNode->translate(COMPLEXITY/2, COMPLEXITY, COMPLEXITY/2);
 	m_pCameraNode->pitch(Ogre::Degree(-90));
 	m_pCameraNode->attachObject(m_pCamera);
 
 	m_pFishNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_pFish = m_pSceneMgr->createEntity("FishEntity", "fish.mesh");
 	m_pFishNode->attachObject(m_pFish);
-	m_pFishNode->setPosition(32.0, 0.0, 32.0);
+	m_pFishNode->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
 	m_pFishNode->yaw(Ogre::Degree(-90));
 	//m_pFishNode->setScale(2.0, 2.0, 2.0);
 	
@@ -50,12 +52,12 @@ void StableFluids::init()
 	m_pSwimState->setEnabled(true);
 	m_pSwimState->setLoop(true);
 
-	m_uiCurrentTarget = 0;
-	m_vTarget.push_back(Ogre::Vector3(8.0, 0.0, 8.0));
-	m_vTarget.push_back(Ogre::Vector3(8.0, 0.0, 56.0));
-	m_vTarget.push_back(Ogre::Vector3(56.0, 0.0, 56.0));
-	m_vTarget.push_back(Ogre::Vector3(56.0, 0.0, 8.0));
-	m_vec3Pos = m_vTarget[m_uiCurrentTarget];
+	//m_uiCurrentTarget = 0;
+	//m_vTarget.push_back(Ogre::Vector3(8.0, 0.0, 8.0));
+	//m_vTarget.push_back(Ogre::Vector3(8.0, 0.0, 56.0));
+	//m_vTarget.push_back(Ogre::Vector3(56.0, 0.0, 56.0));
+	//m_vTarget.push_back(Ogre::Vector3(56.0, 0.0, 8.0));
+	//m_vec3Pos = m_vTarget[m_uiCurrentTarget];
 	m_vec3Pos.x = 0;
 	m_vec3Pos.y = 0;
 	m_vec3Pos.z = 0;
@@ -145,8 +147,8 @@ void StableFluids::itemSelected(OgreBites::SelectMenu* menu)
 
 void StableFluids::update(float timeSinceLastFrame)
 {
-	static int I = 0;
-	I++;
+	//static int I = 0;
+	//I++;
 	//static int J = 0;
 	//J++;
 	//if(J < 40)
@@ -174,23 +176,23 @@ void StableFluids::update(float timeSinceLastFrame)
 	//	m_vec3Pos = m_vTarget[m_uiCurrentTarget];
 	//}
 
-		m_fCurrentTime += timeSinceLastFrame;
-		if(m_fCurrentTime >= 90)
-			m_fCurrentTime = 0;
-		Ogre::Vector3 pos, prev;
-		float T = m_fCurrentTime / 90 * 2 * 3.141596;
-		pos.x = cos(T) * 20 + 32;
-		pos.y = 0.0;
-		pos.z = sin(T) * 20 + 32;
+	m_fCurrentTime += timeSinceLastFrame;
+	if(m_fCurrentTime >= ONE_CIRCLE_NEED_TIME)
+		m_fCurrentTime = 0;
+	Ogre::Vector3 pos, prev;
+	float T = m_fCurrentTime / ONE_CIRCLE_NEED_TIME * 2 * PI;
+	pos.x = cos(T) * (COMPLEXITY/3) + (COMPLEXITY/2);
+	pos.y = 0.0;
+	pos.z = sin(T) * (COMPLEXITY/3) + (COMPLEXITY/2);
 
-		Ogre::Vector3 dir = pos - m_pFishNode->getPosition();
-		m_pFishNode->setPosition(pos);
+	Ogre::Vector3 dir = pos - m_pFishNode->getPosition();
+	m_pFishNode->setPosition(pos);
 
-		Ogre::Vector3 src = m_pFishNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_X;/*Ogre::Vector3::UNIT_X;*/
-		Ogre::Quaternion quat = src.getRotationTo(dir);
-		m_pFishNode->rotate(quat);
+	Ogre::Vector3 src = m_pFishNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_X;/*Ogre::Vector3::UNIT_X;*/
+	Ogre::Quaternion quat = src.getRotationTo(dir);
+	m_pFishNode->rotate(quat);
 
-		//m_pCameraNode->setPosition(pos.x, 32, pos.z);
+	//m_pCameraNode->setPosition(pos.x, 32, pos.z);
 
 
 	((StableFluidsGrid *)m_pWaterInterface)->updateMeshData(m_pFishNode, m_pFish);
