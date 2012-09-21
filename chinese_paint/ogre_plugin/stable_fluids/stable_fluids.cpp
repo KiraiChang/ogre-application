@@ -189,6 +189,7 @@ void StableFluids::update(float timeSinceLastFrame)
 		Ogre::Vector3 src = m_pFishNode->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_X;/*Ogre::Vector3::UNIT_X;*/
 		Ogre::Quaternion quat = src.getRotationTo(dir);
 		m_pFishNode->rotate(quat);
+
 		//m_pCameraNode->setPosition(pos.x, 32, pos.z);
 
 
