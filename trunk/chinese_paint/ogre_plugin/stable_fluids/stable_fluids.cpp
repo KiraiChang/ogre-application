@@ -7,7 +7,7 @@
 #define ANIMATIONS_PER_SECOND 100.0f
 #define IX(i,j,N) ((i)+(N+2)*(j))
 
-#define COMPLEXITY 64
+#define COMPLEXITY 128
 #define PI 3.141596
 #define ONE_CIRCLE_NEED_TIME 75
 
@@ -46,7 +46,7 @@ void StableFluids::init()
 	m_pFishNode->attachObject(m_pFish);
 	m_pFishNode->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
 	m_pFishNode->yaw(Ogre::Degree(-90));
-	//m_pFishNode->setScale(2.0, 2.0, 2.0);
+	m_pFishNode->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
 	
 	m_pSwimState = m_pFish->getAnimationState("swim");
 	m_pSwimState->setEnabled(true);

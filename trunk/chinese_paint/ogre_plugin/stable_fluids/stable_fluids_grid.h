@@ -2,7 +2,7 @@
 #define _STABLE_FLUIDS_GRID_H_
 #include "../simulation_interface/water_interface.h"
 #include <ogre.h>
-
+#define FISH_SCALE_SIZE 2.0
 class StableFluidsGrid : public WaterInterface
 {
 private:
