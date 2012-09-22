@@ -14,7 +14,7 @@ static float ANIMATIONS_PER_SECOND = 1.0f;
 #define PARTICLE_LIVE_TIME 20
 #define PARTICLE_SIZE_X 0.5
 #define PARTICLE_SIZE_Y 0.5
-#define PARTICLE_MOVE_SPEED 2
+#define PARTICLE_MOVE_SPEED 2.5
 
 StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_iGridNumber(number),
@@ -290,21 +290,21 @@ void StableFluidsGrid::updateParticle(float timePass)
 	{
 		particle->timeToLive = PARTICLE_LIVE_TIME;
 		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, -0.5);
+		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, -0.5) * FISH_SCALE_SIZE;
 	}
 	particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
 		particle->timeToLive = PARTICLE_LIVE_TIME;
 		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.5, 0.0, 0);
+		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.5, 0.0, 0) * FISH_SCALE_SIZE;
 	}
 		particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
 		particle->timeToLive = PARTICLE_LIVE_TIME;
 		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, 0.5);
+		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, 0.5) * FISH_SCALE_SIZE;
 	}
 }
 
@@ -442,7 +442,7 @@ void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entit
 {
 	//set particle system before fish head
 	Ogre::Vector3 pos = node->getPosition();
-	pos = pos + ( node->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * node->getScale().x;
+	pos = pos + ( node->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * FISH_SCALE_SIZE;
 	m_pPSNode->setPosition( node->getPosition());
 	m_pPSNode->setOrientation(node->getOrientation());
 
@@ -490,7 +490,7 @@ void StableFluidsGrid::calcMeshFace()
 
 			index = x +  (y*(m_iGridNumber+2));
 			if(index < m_iGridSize)
-				m_vbIntersectGrid[index] = true;//draw contour of object
+				m_vbIntersectGrid[index] = 1.0;//draw contour of object
 		}
 	}
 
@@ -510,7 +510,7 @@ void StableFluidsGrid::calcMeshFace()
 				else
 				{
 					back = x;
-					for(ite = front; ite < back; ite++)
+					for(ite = front+1; ite < back; ite++)
 					{
 						index = ite + (y*(m_iGridNumber+2));
 						m_vbIntersectGrid[index] = true;
@@ -584,8 +584,12 @@ void StableFluidsGrid::setMeshBoundary()
 			if(m_vbIntersectGrid[index])
 			{
 				//set the velocity by neighbor velocity
-				m_vfBoundaryU[index] = (/*m_vfU[up]+m_vfU[down]+*/-m_vfU[left]+m_vfU[right]);
-				m_vfBoundaryV[index] = (-m_vfV[up]+m_vfV[down]/*+m_vfV[left]+m_vfV[right]*/);
+				//m_vfBoundaryU[index] = (/*m_vfU[up]+m_vfU[down]+*/-m_vfU[left]+m_vfU[right]);
+				//m_vfBoundaryV[index] = (-m_vfV[up]+m_vfV[down]/*+m_vfV[left]+m_vfV[right]*/);
+				m_vfBoundaryU[index] = (m_vfU[up]+m_vfU[down]-(m_vfU[left]+m_vfU[right]));
+				m_vfBoundaryV[index] = (-(m_vfV[up]+m_vfV[down])+m_vfV[left]+m_vfV[right]);
+				//	x[IX(0  ,i)] = b==1 ? -x[IX(1,i)] : x[IX(1,i)];
+				//	x[IX(N+1,i)] = b==1 ? -x[IX(N,i)] : x[IX(N,i)];
 			}
 		}
 	}
