@@ -1,0 +1,59 @@
+//----------------------------------------------------------------------------
+// Copyright 2005 Nelson S.-H. Chu and The Hong Kong University of Science and
+// Technology.
+//
+// Permission to use, copy, modify and distribute this software and its
+// documentation for research or educational purpose is hereby granted without
+// fee, provided that the above copyright notice appear in all copies and that
+// both that copyright notice and this permission notice appear in supporting
+// documentation. This software is provided "as is" without express or implied
+// warranty.
+//----------------------------------------------------------------------------
+//
+// TypeUtils.cg - Defines common data types and functions
+//
+// (cut-down version)
+
+struct v2f0 {
+    float4 Pos  : POSITION;
+    float2 Tex0 : TEXCOORD0;
+    float2 TexPaper : TEXCOORD5;
+    float2 TexGrain : TEXCOORD6; // [0..1]
+    float2 Tex0Hi : TEXCOORD7;
+};
+
+struct v2f1 {
+    float4 Pos  : POSITION;
+    float2 Tex0 : TEXCOORD0;
+    float2 TexN : TEXCOORD1;
+    float2 TexE : TEXCOORD2;
+    float2 TexW : TEXCOORD3;
+    float2 TexS : TEXCOORD4;
+    float2 TexPaper : TEXCOORD5;
+    float4 TexGrain : TEXCOORD6; // [0..1]  TexHair as TexGrain.zw
+    float2 Tex0Hi : TEXCOORD7;
+};
+
+struct v2f2 {
+    float4 Pos   : POSITION;
+    float2 Tex0  : TEXCOORD0;
+    float2 TexNE : TEXCOORD1;
+    float2 TexSE : TEXCOORD2;
+    float2 TexNW : TEXCOORD3;
+    float2 TexSW : TEXCOORD4;
+    float2 TexPaper : TEXCOORD5;
+    float2 TexGrain : TEXCOORD6; // [0..1]
+};
+
+struct v2fAll {
+    float4 Pos     : POSITION;
+    float2 Tex0    : TEXCOORD0;
+    float4 TexN_NE : TEXCOORD1;
+    float4 TexE_SE : TEXCOORD2;
+    float4 TexW_NW : TEXCOORD3;
+    float4 TexS_SW : TEXCOORD4;
+    float2 TexPaper : TEXCOORD5;
+    float2 TexGrain : TEXCOORD6; // [0..1]
+
+    float2 Tex0Hi : TEXCOORD7;    
+};
