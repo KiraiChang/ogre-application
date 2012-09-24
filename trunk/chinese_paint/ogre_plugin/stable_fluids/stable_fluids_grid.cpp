@@ -283,6 +283,15 @@ void StableFluidsGrid::updateParticle(float timePass)
 		pos.x += nor.x;
 		pos.z += nor.y;
 
+		index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
+		if(m_vbIntersectGrid[index])
+		{
+			Ogre::Vector3 dir = pos - m_v3FishPos;
+			dir.normalise();
+			dir *= timePass * PARTICLE_MOVE_SPEED;
+			pos.x += dir.x;
+			pos.z += dir.z;
+		}
 		particle->position = pos;
 	}
 	particle = m_pPS->createParticle();
@@ -455,8 +464,8 @@ void StableFluidsGrid::clear(void)
 void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity)
 {
 	//set particle system before fish head
-	Ogre::Vector3 pos = node->getPosition();
-	pos = pos + ( node->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * FISH_SCALE_SIZE;
+	m_v3FishPos = node->getPosition();
+	Ogre::Vector3 pos = m_v3FishPos + ( node->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * FISH_SCALE_SIZE;
 	m_pPSNode->setPosition( node->getPosition());
 	m_pPSNode->setOrientation(node->getOrientation());
 

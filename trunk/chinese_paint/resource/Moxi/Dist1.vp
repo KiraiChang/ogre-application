@@ -1,0 +1,56 @@
+//----------------------------------------------------------------------------
+// Copyright 2005 Nelson S.-H. Chu and The Hong Kong University of Science and
+// Technology.
+//
+// Permission to use, copy, modify and distribute this software and its
+// documentation for research or educational purpose is hereby granted without
+// fee, provided that the above copyright notice appear in all copies and that
+// both that copyright notice and this permission notice appear in supporting
+// documentation. This software is provided "as is" without express or implied
+// warranty.
+//----------------------------------------------------------------------------
+//
+// LBMDist1.vp - Passing Tex. Coord. of 4 nearest neighbors
+//
+
+#include "TypesUtils.cg"
+
+struct instream
+{
+    float4 Pos  : POSITION;
+    float2 Tex  : TEXCOORD0;
+};
+
+v2f1 main( instream IN,
+   uniform float4x4 ModelViewProj,
+   uniform float TexScale   = 8,
+   uniform float GrainScale = 8,
+   uniform float2 dx        = 0,
+   uniform float HiMul      = 1,
+   uniform float TexResol   = 512 )
+{
+    v2f1 OUT;
+
+    OUT.Pos = mul(ModelViewProj, IN.Pos);
+
+    OUT.TexPaper = IN.Tex * TexScale;  // paper appearance texture
+    OUT.TexPaper.x = 1 - OUT.TexPaper.x; // Flip
+
+    OUT.TexGrain.xy = IN.Tex * GrainScale;  // DisorderMap
+    OUT.TexGrain.x = 1 - OUT.TexGrain.x; // Flip
+
+    // central texel, * TexResol for Rectangle texture format
+    OUT.Tex0 = IN.Tex * TexResol;
+
+    OUT.Tex0Hi = OUT.Tex0 * HiMul + dx; // dx to fix a shift bug
+
+    OUT.Tex0 += dx; // to fix a shift bug
+
+    // shift texcoord. for the 4 nearest neighbors
+    OUT.TexN.xy = OUT.Tex0 + float2( 0,-1);             //   +--> +x
+    OUT.TexE.xy = OUT.Tex0 + float2( 1, 0);             //   |
+    OUT.TexW.xy = OUT.Tex0 + float2(-1, 0);             //   v +y
+    OUT.TexS.xy = OUT.Tex0 + float2( 0, 1);
+
+    return OUT;
+}
