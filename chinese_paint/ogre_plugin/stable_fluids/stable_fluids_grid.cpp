@@ -11,7 +11,7 @@ static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
 static float FISH_DEPTH = 0.01;
 static float ANIMATIONS_PER_SECOND = 1.0f;
-#define PARTICLE_LIVE_TIME 20
+#define PARTICLE_LIVE_TIME 15
 #define PARTICLE_SIZE_X 0.5
 #define PARTICLE_SIZE_Y 0.5
 #define PARTICLE_MOVE_SPEED 2.5
@@ -137,7 +137,7 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 
 	m_pMiniScreen->setMaterial("ChinesePaint/Texture");
 
-	m_pPS = m_pSceneMgr->createParticleSystem(10000U);
+	m_pPS = m_pSceneMgr->createParticleSystem(20000U);
 	m_pPSNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_pPSNode->attachObject(m_pPS);
 	m_pPSNode->setPosition(32, 0, 42);
@@ -297,9 +297,23 @@ void StableFluidsGrid::updateParticle(float timePass)
 	{
 		particle->timeToLive = PARTICLE_LIVE_TIME;
 		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, -0.25) * FISH_SCALE_SIZE;
+	}
+	particle = m_pPS->createParticle();
+	if(particle != NULL)
+	{
+		particle->timeToLive = PARTICLE_LIVE_TIME;
+		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
 		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.5, 0.0, 0) * FISH_SCALE_SIZE;
 	}
-		particle = m_pPS->createParticle();
+	particle = m_pPS->createParticle();
+	if(particle != NULL)
+	{
+		particle->timeToLive = PARTICLE_LIVE_TIME;
+		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, 0.25) * FISH_SCALE_SIZE;
+	}
+	particle = m_pPS->createParticle();
 	if(particle != NULL)
 	{
 		particle->timeToLive = PARTICLE_LIVE_TIME;
