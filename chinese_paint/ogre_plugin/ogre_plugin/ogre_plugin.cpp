@@ -98,3 +98,57 @@ bool OgreSample::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
 	return true;
 }
+
+bool OgreSample::mouseMoved(const OIS::MouseEvent& evt)
+{
+	bool ret = true;//OgreBites::SdkSample::mouseMoved(evt);
+	if (mTrayMgr->injectMouseMove(evt)) return true;
+
+	mCameraMan->injectMouseMove(evt);
+	if(m_pSim != NULL)
+	{
+		StableFluids *sf = (StableFluids*)m_pSim;
+		sf->mouseMoved(evt);
+	}
+	return ret;
+}
+
+bool OgreSample::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
+{
+	bool ret = true;//OgreBites::SdkSample::mousePressed(evt, id);
+	if (mTrayMgr->injectMouseDown(evt, id)) return true;
+
+	//if (mDragLook && id == OIS::MB_Left)
+	//{
+	//	mCameraMan->setStyle(OgreBites::CS_FREELOOK);
+	//	mTrayMgr->hideCursor();
+	//}
+
+	mCameraMan->injectMouseDown(evt, id);
+	if(m_pSim != NULL)
+	{
+		StableFluids *sf = (StableFluids*)m_pSim;
+		sf->mousePressed(evt, id);
+	}
+	return ret;
+}
+
+bool OgreSample::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
+{
+	bool ret = true;//OgreBites::SdkSample::mouseReleased(evt, id);
+	if (mTrayMgr->injectMouseUp(evt, id)) return true;
+
+	//if (mDragLook && id == OIS::MB_Left)
+	//{
+	//	mCameraMan->setStyle(OgreBites::CS_MANUAL);
+	//	mTrayMgr->showCursor();
+	//}
+
+	mCameraMan->injectMouseUp(evt, id);
+	if(m_pSim != NULL)
+	{
+		StableFluids *sf = (StableFluids*)m_pSim;
+		sf->mouseReleased(evt, id);
+	}
+	return ret;
+}

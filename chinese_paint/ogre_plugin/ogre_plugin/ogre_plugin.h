@@ -24,5 +24,9 @@ protected:
 	virtual void										sliderMoved(OgreBites::Slider* slider);
 	virtual void										checkBoxToggled(OgreBites::CheckBox* checkBox);
 	virtual void										itemSelected(OgreBites::SelectMenu* menu);
+
+	virtual bool										mouseMoved(const OIS::MouseEvent& evt);
+	virtual bool										mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+	virtual bool										mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
 };
 #endif

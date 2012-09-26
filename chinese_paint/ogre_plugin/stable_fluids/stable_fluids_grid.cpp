@@ -53,6 +53,8 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_eVelocityType(DISPLAY_ORIGIN),
 	m_fLastTimeStamp(0),
 	m_fLastFrameTime(0),
+	m_bExternlForce(false),
+	m_bAddForce(false),
 	m_pSceneMgr(NULL)
 {
 	m_iGridSize = (m_iGridNumber+2)*(m_iGridNumber+2);
@@ -294,47 +296,67 @@ void StableFluidsGrid::updateParticle(float timePass)
 		}
 		particle->position = pos;
 	}
-	particle = m_pPS->createParticle();
-	if(particle != NULL)
+	if(m_bAddForce)
 	{
-		particle->timeToLive = PARTICLE_LIVE_TIME;
-		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, -0.5) * FISH_SCALE_SIZE;
+		particle = m_pPS->createParticle();
+		if(particle != NULL)
+		{
+			particle->timeToLive = PARTICLE_LIVE_TIME;
+			particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, -0.5) * FISH_SCALE_SIZE;
+		}
+		particle = m_pPS->createParticle();
+		if(particle != NULL)
+		{
+			particle->timeToLive = PARTICLE_LIVE_TIME;
+			particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, -0.25) * FISH_SCALE_SIZE;
+		}
+		particle = m_pPS->createParticle();
+		if(particle != NULL)
+		{
+			particle->timeToLive = PARTICLE_LIVE_TIME;
+			particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.5, 0.0, 0) * FISH_SCALE_SIZE;
+		}
+		particle = m_pPS->createParticle();
+		if(particle != NULL)
+		{
+			particle->timeToLive = PARTICLE_LIVE_TIME;
+			particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, 0.25) * FISH_SCALE_SIZE;
+		}
+		particle = m_pPS->createParticle();
+		if(particle != NULL)
+		{
+			particle->timeToLive = PARTICLE_LIVE_TIME;
+			particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, 0.5) * FISH_SCALE_SIZE;
+		}
 	}
-	particle = m_pPS->createParticle();
-	if(particle != NULL)
-	{
-		particle->timeToLive = PARTICLE_LIVE_TIME;
-		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, -0.25) * FISH_SCALE_SIZE;
-	}
-	particle = m_pPS->createParticle();
-	if(particle != NULL)
-	{
-		particle->timeToLive = PARTICLE_LIVE_TIME;
-		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.5, 0.0, 0) * FISH_SCALE_SIZE;
-	}
-	particle = m_pPS->createParticle();
-	if(particle != NULL)
-	{
-		particle->timeToLive = PARTICLE_LIVE_TIME;
-		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, 0.25) * FISH_SCALE_SIZE;
-	}
-	particle = m_pPS->createParticle();
-	if(particle != NULL)
-	{
-		particle->timeToLive = PARTICLE_LIVE_TIME;
-		particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, 0.5) * FISH_SCALE_SIZE;
-	}
+
+	if(m_bExternlForce)
+		for(int i = m_iGridNumber/2 - 2; i < m_iGridNumber/2 + 2;i++)
+		{
+			particle = m_pPS->createParticle();
+			if(particle != NULL)
+			{
+				particle->timeToLive = PARTICLE_LIVE_TIME;
+				particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+				particle->position.x = i;
+				particle->position.y = 0;
+				particle->position.z = m_iGridNumber - 5;
+			}
+		}
 }
 
 void StableFluidsGrid::updateMesh(float timePass)
 {
 	m_fLastFrameTime = timePass ;
 	m_fLastTimeStamp += timePass ;
+
+	if(m_bExternlForce)
+		setExternalForce();
 
 	vel_step ( m_iGridNumber, m_vfU, m_vfV, m_vfUPrev, m_vfVPrev, m_fVisc, timePass);
 	//dens_step ( m_iGridNumber, m_vfDens, m_vfDensPrev, m_vfU, m_vfV, m_fDiff, timePass);
@@ -473,11 +495,11 @@ void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entit
 	//m_pPSNode->setVisible(false);
 
 	//when fish move front fluid will give back force
-	Ogre::Vector3 dir = node->getOrientation() * Ogre::Vector3(1.0, 0.0, 0.0);
-	dir.normalise();
-	unsigned int index = ((int)pos.x)+((int)pos.z * (m_iGridNumber+2));
-	m_vfU[index] = dir.x * m_fForce * 2 * m_fLastFrameTime;
-	m_vfV[index] = dir.z * m_fForce * 2 * m_fLastFrameTime;
+	//Ogre::Vector3 dir = node->getOrientation() * Ogre::Vector3(1.0, 0.0, 0.0);
+	//dir.normalise();
+	//unsigned int index = ((int)pos.x)+((int)pos.z * (m_iGridNumber+2));
+	//m_vfU[index] = dir.x * m_fForce * 2 * m_fLastFrameTime;
+	//m_vfV[index] = dir.z * m_fForce * 2 * m_fLastFrameTime;
 
 	m_iCurrentVertex = (m_iCurrentVertex + 1) % 3 ;
 	getMeshInformation(entity, 
@@ -685,4 +707,14 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 	//		m_vfV[dIndex] = vforce;
 	//	}
 	//}
+}
+
+void StableFluidsGrid::setExternalForce()
+{
+	for(int i = m_iGridNumber/2 - 2; i < m_iGridNumber/2 + 2;i++)
+	{
+		unsigned int index = i +((m_iGridNumber - 5) * (m_iGridNumber+2));
+		//m_vfU[index] = -1 * m_fForce * 2 * m_fLastFrameTime;
+		m_vfV[index] = -1 * m_fForce * 2 * m_fLastFrameTime;
+	}
 }

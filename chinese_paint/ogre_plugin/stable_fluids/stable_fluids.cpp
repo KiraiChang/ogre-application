@@ -19,6 +19,8 @@ StableFluids::StableFluids(Ogre::SceneManager *sceneMgr, Ogre::Camera *camera):
 	m_eCurrentMesh(MESH_FISH),
 	m_pSwimState(NULL),
 	m_pCameraNode(NULL),
+	m_queryPlane(Ogre::Vector3::UNIT_Y, 0),
+	m_bSelectMesh(false),
 	m_pCamera(camera)
 {
 }
@@ -142,6 +144,7 @@ void StableFluids::release()
 void StableFluids::setupControls(OgreBites::SdkTrayManager* mTrayMgr)
 {
 	OgreBites::SelectMenu* menu;
+	OgreBites::CheckBox* check;
 
 	menu = mTrayMgr->createThickSelectMenu(OgreBites::TL_TOPLEFT, "MeshMenu", "Mesh Type", PANEL_WIDTH, 9);
 	menu->addItem("MESH_FISH");
@@ -164,6 +167,8 @@ void StableFluids::setupControls(OgreBites::SdkTrayManager* mTrayMgr)
 	menu->addItem("DISPLAY_DENSITY_MAP");
 	menu->addItem("DISPLAY_BOOLEAN_GRID");
 	menu->selectItem("DISPLAY_DENSITY_MAP");
+
+	check = mTrayMgr->createCheckBox(OgreBites::TL_TOPLEFT, "ExternForceCB", "Extern Force", PANEL_WIDTH);
 }
 
 void StableFluids::sliderMoved(OgreBites::Slider* slider)
@@ -173,7 +178,11 @@ void StableFluids::sliderMoved(OgreBites::Slider* slider)
 
 void StableFluids::checkBoxToggled(OgreBites::CheckBox* checkBox)
 {
-
+	StableFluidsGrid *fg = (StableFluidsGrid *)m_pWaterInterface;
+	if(checkBox->getName() == "ExternForceCB")
+	{
+		fg->m_bExternlForce = checkBox->isChecked();
+	}
 }
 
 void StableFluids::itemSelected(OgreBites::SelectMenu* menu)
@@ -227,6 +236,84 @@ void StableFluids::itemSelected(OgreBites::SelectMenu* menu)
 			fg->m_eMapDisplayType = StableFluidsGrid::DISPLAY_DENSITY_MAP;
 
 	}
+}
+
+bool StableFluids::mouseMoved(const OIS::MouseEvent& evt)
+{
+	if(m_bSelectMesh)
+	{
+		Ogre::Real screenWidth = Ogre::Root::getSingleton().getAutoCreatedWindow()->getWidth();
+		Ogre::Real screenHeight = Ogre::Root::getSingleton().getAutoCreatedWindow()->getHeight();
+
+		// convert to 0-1 offset
+		Ogre::Real offsetX = evt.state.X.abs / screenWidth;
+		Ogre::Real offsetY = evt.state.Y.abs / screenHeight;
+
+		// set up the ray
+		Ogre::Ray mouseRay = m_pCamera->getCameraToViewportRay(offsetX, offsetY);
+
+		// check if the ray intersects our plane
+		// intersects() will return whether it intersects or not (the bool value) and
+		// what distance (the Real value) along the ray the intersection is
+		std::pair<bool, Ogre::Real> result = mouseRay.intersects(m_queryPlane);
+
+		if(result.first) {
+			// if the ray intersect the plane, we have a distance value
+			// telling us how far from the ray origin the intersection occurred.
+			// the last thing we need is the point of the intersection.
+			// Ray provides us getPoint() function which returns a point
+			// along the ray, supplying it with a distance value.
+
+			// get the point where the intersection is
+			Ogre::Vector3 point = mouseRay.getPoint(result.second);
+			point.y = 0;
+
+			// position our ninja to that point  
+			m_vpNode[m_eCurrentMesh]->setPosition(point);
+		}
+	}
+    return true;
+}
+
+bool StableFluids::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
+{
+	switch(id) 
+	{
+	case OIS::MB_Left:
+		if(m_eMoveType == MOVE_CUSTOM)
+		{
+			Ogre::Real screenWidth = Ogre::Root::getSingleton().getAutoCreatedWindow()->getWidth();
+			Ogre::Real screenHeight = Ogre::Root::getSingleton().getAutoCreatedWindow()->getHeight();
+
+			// convert to 0-1 offset
+			Ogre::Real offsetX = evt.state.X.abs / screenWidth;
+			Ogre::Real offsetY = evt.state.Y.abs / screenHeight;
+
+			// set up the ray
+			Ogre::Ray mouseRay = m_pCamera->getCameraToViewportRay(offsetX, offsetY);
+			std::pair<bool, Ogre::Real> result = mouseRay.intersects(m_vpNode[m_eCurrentMesh]->_getWorldAABB());
+			if(result.first)
+				m_bSelectMesh = true;
+		}
+		break;
+	default:
+		break;
+	}
+	return true;
+}
+
+bool StableFluids::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
+{
+	switch(id) 
+	{
+	case OIS::MB_Left:
+		if(m_eMoveType == MOVE_CUSTOM)
+			m_bSelectMesh = false;
+		break;
+	default:
+		break;
+	}
+	return true;
 }
 
 void StableFluids::update(float timeSinceLastFrame)
