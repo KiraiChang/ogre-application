@@ -62,6 +62,8 @@ public:
 		DISPLAY_BOUNDARY,
 	};
 	VELOCITY_DISPLAY_TYPE					m_eVelocityType;
+	bool									m_bExternlForce;
+	bool									m_bAddForce;
 	float *									m_vfU;
 	float *									m_vfV;
 	float *									m_vfUPrev;
@@ -88,6 +90,7 @@ public:
 	void									calcMeshEnforce();//compute fish animation force to m_vfEnforceU and m_vfEnforceV
 	void									setMeshBoundary();//set m_vbIntersectGrid to m_vfU and m_vfV
 	void									setMeshEnforce(float timePass);//set m_vfEnforceU and m_vfEnforceV to m_vfU and m_vfV
+	void									setExternalForce();
 };
 
 #endif //_STABLE_FLUIDS_GRID_H_
