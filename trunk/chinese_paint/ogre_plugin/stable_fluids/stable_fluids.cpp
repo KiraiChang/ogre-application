@@ -105,6 +105,17 @@ void StableFluids::init()
 	m_vec3Pos.z = 0;
 
 	m_fCurrentTime = 0.0;
+
+	//Ogre::MeshManager::getSingleton().createPlane("ground",
+	//	Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, 
+	//	m_queryPlane,
+	//	1500,1500,
+	//	20,20,
+	//	true,
+	//	1,
+	//	1500,1500,
+	//	Ogre::Vector3::UNIT_Z
+	//	);
 }
 
 void StableFluids::release()
