@@ -490,7 +490,7 @@ void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entit
 		node->getScale());
 
 	calcMeshFace();
-	calcMeshEnforce();
+	//calcMeshEnforce();
 }
 
 void StableFluidsGrid::calcMeshFace()
