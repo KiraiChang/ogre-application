@@ -11,9 +11,9 @@ static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
 static float FISH_DEPTH = 0.01;
 static float ANIMATIONS_PER_SECOND = 1.0f;
-#define PARTICLE_LIVE_TIME 15
-#define PARTICLE_SIZE_X 0.5
-#define PARTICLE_SIZE_Y 0.5
+#define PARTICLE_LIVE_TIME 30
+#define PARTICLE_SIZE_X 1
+#define PARTICLE_SIZE_Y 1
 #define PARTICLE_MOVE_SPEED 2.5
 
 StableFluidsGrid::StableFluidsGrid(unsigned int number):
@@ -23,7 +23,7 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	//m_vfDensPrev(NULL),
 	m_fDiff(0.0f), 
 	m_fVisc(0.0f),
-	m_fForce(5.0f), 
+	m_fForce(1.0f), 
 	m_fSource(100.0f),
 	m_vfU(NULL), 
 	m_vfV(NULL), 
@@ -711,10 +711,10 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 
 void StableFluidsGrid::setExternalForce()
 {
-	for(int i = m_iGridNumber/2 - 2; i < m_iGridNumber/2 + 2;i++)
-	{
-		unsigned int index = i +((m_iGridNumber - 5) * (m_iGridNumber+2));
+	//for(int i = m_iGridNumber/2 - 2; i < m_iGridNumber/2 + 2;i++)
+	//{
+		unsigned int index = m_iGridNumber/2 + ((m_iGridNumber - 5) * (m_iGridNumber+2));
 		//m_vfU[index] = -1 * m_fForce * 2 * m_fLastFrameTime;
 		m_vfV[index] = -1 * m_fForce * 2 * m_fLastFrameTime;
-	}
+	//}
 }
