@@ -91,6 +91,7 @@ public:
 	void									setMeshBoundary();//set m_vbIntersectGrid to m_vfU and m_vfV
 	void									setMeshEnforce(float timePass);//set m_vfEnforceU and m_vfEnforceV to m_vfU and m_vfV
 	void									setExternalForce();
+	unsigned int							IX(int x, int y);
 };
 
 #endif //_STABLE_FLUIDS_GRID_H_
