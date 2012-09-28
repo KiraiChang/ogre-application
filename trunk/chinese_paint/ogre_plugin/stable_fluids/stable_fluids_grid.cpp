@@ -11,10 +11,11 @@ static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
 static float FISH_DEPTH = 0.01;
 static float ANIMATIONS_PER_SECOND = 1.0f;
-#define PARTICLE_LIVE_TIME 30
-#define PARTICLE_SIZE_X 1
-#define PARTICLE_SIZE_Y 1
-#define PARTICLE_MOVE_SPEED 2.5
+#define PARTICLE_LIVE_TIME 20
+#define PARTICLE_SIZE_X 0.5
+#define PARTICLE_SIZE_Y 0.5
+#define PARTICLE_MOVE_SPEED 100
+#define EXTERNAL_FORCE_Y_POS_DIFF -5
 
 StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_iGridNumber(number),
@@ -23,7 +24,7 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	//m_vfDensPrev(NULL),
 	m_fDiff(0.0f), 
 	m_fVisc(0.0f),
-	m_fForce(1.0f), 
+	m_fForce(5.0f), 
 	m_fSource(100.0f),
 	m_vfU(NULL), 
 	m_vfV(NULL), 
@@ -270,30 +271,41 @@ void StableFluidsGrid::updateParticle(float timePass)
 	Ogre::Particle* particle = NULL;
 
 	unsigned int index;
+	float u0, u1, v0, v1, u, v;
+	int x0, x1, y0, y1;
 	Ogre::ParticleIterator ite = m_pPS->_getIterator();
 	while(!ite.end())
 	{
 		particle = ite.getNext();
 		Ogre::Vector3 pos = particle->position;
-		index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
-		if(index > m_iGridSize)
-			break;
+		//index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
+		//if(index > m_iGridSize)
+		//	break;
+		x0 = (int)pos.x; y0 = (int)pos.z;
+		x1 = x0 + 1; y1 = y0 + 1;
+		u1 = pos.x-x0; u0 = 1-u1; v1 = pos.z-y0; v0 = 1-v1;
+		u = u0*(v0*m_vfU[IX(x0,y0)]+v1*m_vfU[IX(x0,y1)])+
+			u1*(v0*m_vfU[IX(x1,y0)]+v1*m_vfU[IX(x1,y1)]);
 
-		Ogre::Vector2 nor(m_vfU[index], m_vfV[index]);
-		nor.normalise();
-		nor *= timePass * PARTICLE_MOVE_SPEED;
-		pos.x += nor.x;
-		pos.z += nor.y;
+		v = u0*(v0*m_vfV[IX(x0,y0)]+v1*m_vfV[IX(x0,y1)])+
+			u1*(v0*m_vfV[IX(x1,y0)]+v1*m_vfV[IX(x1,y1)]);
 
-		index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
-		if(m_vbIntersectGrid[index])
-		{
-			Ogre::Vector3 dir = pos - m_v3FishPos;
-			dir.normalise();
-			dir *= timePass * PARTICLE_MOVE_SPEED;
-			pos.x += dir.x;
-			pos.z += dir.z;
-		}
+		pos.x += u * timePass * PARTICLE_MOVE_SPEED; pos.z += v * timePass * PARTICLE_MOVE_SPEED;
+		//Ogre::Vector2 nor(m_vfU[index], m_vfV[index]);
+		//nor.normalise();
+		//nor *= timePass * PARTICLE_MOVE_SPEED;
+		//pos.x += nor.x;
+		//pos.z += nor.y;
+
+		//index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
+		//if(m_vbIntersectGrid[index])
+		//{
+		//	Ogre::Vector3 dir = pos - m_v3FishPos;
+		//	dir.normalise();
+		//	dir *= timePass * PARTICLE_MOVE_SPEED;
+		//	pos.x += dir.x;
+		//	pos.z += dir.z;
+		//}
 		particle->position = pos;
 	}
 	if(m_bAddForce)
@@ -336,6 +348,16 @@ void StableFluidsGrid::updateParticle(float timePass)
 	}
 
 	if(m_bExternlForce)
+	{
+		//particle = m_pPS->createParticle();
+		//if(particle != NULL)
+		//{
+		//	particle->timeToLive = PARTICLE_LIVE_TIME;
+		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+		//	particle->position.x = m_iGridNumber/2;
+		//	particle->position.y = 0;
+		//	particle->position.z = m_iGridNumber - 20;
+		//}
 		for(int i = m_iGridNumber/2 - 2; i < m_iGridNumber/2 + 2;i++)
 		{
 			particle = m_pPS->createParticle();
@@ -345,9 +367,10 @@ void StableFluidsGrid::updateParticle(float timePass)
 				particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
 				particle->position.x = i;
 				particle->position.y = 0;
-				particle->position.z = m_iGridNumber - 5;
+				particle->position.z = m_iGridNumber + EXTERNAL_FORCE_Y_POS_DIFF;
 			}
 		}
+	}
 }
 
 void StableFluidsGrid::updateMesh(float timePass)
@@ -711,10 +734,19 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 
 void StableFluidsGrid::setExternalForce()
 {
+	unsigned int index = m_iGridNumber/2 + ((m_iGridNumber + EXTERNAL_FORCE_Y_POS_DIFF) * (m_iGridNumber+2));
+	//m_vfU[index] = -1 * m_fForce * m_fLastFrameTime;
+	m_vfV[index] = -1 * m_fForce * m_fLastFrameTime;
+
 	//for(int i = m_iGridNumber/2 - 2; i < m_iGridNumber/2 + 2;i++)
 	//{
-		unsigned int index = m_iGridNumber/2 + ((m_iGridNumber - 5) * (m_iGridNumber+2));
-		//m_vfU[index] = -1 * m_fForce * 2 * m_fLastFrameTime;
-		m_vfV[index] = -1 * m_fForce * 2 * m_fLastFrameTime;
+	//	unsigned int index = i + ((m_iGridNumber - 20) * (m_iGridNumber+2));
+	//	//m_vfU[index] = -1 * m_fForce * m_fLastFrameTime;
+	//	m_vfV[index] = -1 * m_fForce * m_fLastFrameTime;
 	//}
+}
+
+unsigned int StableFluidsGrid::IX(int x, int y)
+{
+	return x+(m_iGridNumber+2)*y;
 }
