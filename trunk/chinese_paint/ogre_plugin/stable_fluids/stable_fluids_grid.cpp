@@ -437,8 +437,8 @@ void StableFluidsGrid::updateMesh(float timePass)
 	}
 
 	
-
-	setMeshEnforce(timePass);
+	if(m_bAddForce)
+		setMeshEnforce(timePass);
 	setMeshBoundary();
 	
 	updateParticle(timePass);
