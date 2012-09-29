@@ -230,6 +230,7 @@ void StableFluids::setupControls(OgreBites::SdkTrayManager* mTrayMgr)
 	menu->selectItem("DISPLAY_DENSITY_MAP");
 
 	check = mTrayMgr->createCheckBox(OgreBites::TL_TOPLEFT, "ExternForceCB", "Extern Force", PANEL_WIDTH);
+	check = mTrayMgr->createCheckBox(OgreBites::TL_TOPLEFT, "AddForceCB", "Add Force", PANEL_WIDTH);
 }
 
 void StableFluids::sliderMoved(OgreBites::Slider* slider)
@@ -240,9 +241,14 @@ void StableFluids::sliderMoved(OgreBites::Slider* slider)
 void StableFluids::checkBoxToggled(OgreBites::CheckBox* checkBox)
 {
 	StableFluidsGrid *fg = (StableFluidsGrid *)m_pWaterInterface;
-	if(checkBox->getName() == "ExternForceCB")
+	const Ogre::String& name = checkBox->getName();
+	if(name == "ExternForceCB")
 	{
 		fg->m_bExternlForce = checkBox->isChecked();
+	}
+	else if(name == "AddForceCB")
+	{
+		fg->m_bAddForce = checkBox->isChecked();
 	}
 }
 
