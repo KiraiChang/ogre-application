@@ -774,57 +774,58 @@ void StableFluidsGrid::setMeshBoundary()
 
 void StableFluidsGrid::setMeshEnforce(float timePass)
 {
-	//int x, y, count;
-	//float uforce, vforce;
-	//Ogre::Vector2 diff;
-	//unsigned int index, dIndex;
-	//for(y = 1; y < m_iGridNumber; y++)
-	//{
-	//	for(x = 1; x < m_iGridNumber; x++)
-	//	{
-	//		index = x + (y*(m_iGridNumber+2));
-	//		uforce = m_vfU[index];
-	//		vforce = m_vfV[index];
-	//		diff.x = 0;
-	//		diff.y = 0;
-	//		if(m_vfEnforceU[index] != 0)
-	//		{
-	//			//count = m_viEnforceUCount[index];
-	//			//force = m_vfEnforceU[index];
-	//			//force = force / count;
-	//			//m_vfU[index] += force;
-	//			count = m_viEnforceUCount[index];
-	//			uforce = m_vfEnforceU[index] / count;
-	//			diff.x = uforce;
-	//			uforce *= 10; 
-	//		}
-	//		if(m_vfEnforceV[index] != 0)
-	//		{
-	//			//count = m_viEnforceVCount[index];
-	//			//force = m_vfEnforceV[index];
-	//			//force = force / count;
-	//			//m_vfV[index] += force;
-	//			count = m_viEnforceVCount[index];
-	//			vforce = m_vfEnforceV[index] / count;
-	//			diff.y = vforce;
-	//			vforce *= 10;
-	//		}
-	//		diff.normalise();
-	//		if(diff.x > 0.5)
-	//			diff.x = 1;
-	//		else if(diff.x < -0.5)
-	//			diff.x = -1;
-	//		if(diff.y > 0.5)
-	//			diff.y = 1;
-	//		else if(diff.y < -0.5)
-	//			diff.y = -1;
-	//		diff.x += x;
-	//		diff.y += y;
-	//		dIndex = (int)diff.x + ((int)diff.y*(m_iGridNumber+2));
-	//		m_vfU[dIndex] = uforce;
-	//		m_vfV[dIndex] = vforce;
-	//	}
-	//}
+	//return;
+	int x, y, count;
+	float uforce, vforce;
+	Ogre::Vector2 diff;
+	unsigned int index, dIndex;
+	for(y = 1; y < m_iGridNumber; y++)
+	{
+		for(x = 1; x < m_iGridNumber; x++)
+		{
+			index = x + (y*(m_iGridNumber+2));
+			uforce = 0;//m_vfU[index];
+			vforce = 0;//m_vfV[index];
+			diff.x = 0;
+			diff.y = 0;
+			if(m_vfEnforceU[index] != 0)
+			{
+				//count = m_viEnforceUCount[index];
+				//force = m_vfEnforceU[index];
+				//force = force / count;
+				//m_vfU[index] += force;
+				count = m_viEnforceUCount[index];
+				uforce = m_vfEnforceU[index] / count * timePass;
+				diff.x = uforce;
+				//uforce *= 10; 
+			}
+			if(m_vfEnforceV[index] != 0)
+			{
+				//count = m_viEnforceVCount[index];
+				//force = m_vfEnforceV[index];
+				//force = force / count;
+				//m_vfV[index] += force;
+				count = m_viEnforceVCount[index];
+				vforce = m_vfEnforceV[index] / count * timePass;
+				diff.y = vforce;
+				//vforce *= 10;
+			}
+			diff.normalise();
+			//if(diff.x > 0.5)
+			//	diff.x = 1;
+			//else if(diff.x < -0.5)
+			//	diff.x = -1;
+			//if(diff.y > 0.5)
+			//	diff.y = 1;
+			//else if(diff.y < -0.5)
+			//	diff.y = -1;
+			diff.x += x;
+			diff.y += y;
+			dIndex = (int)diff.x + ((int)diff.y*(m_iGridNumber+2));
+			m_vfU[dIndex] += -uforce;
+			m_vfV[dIndex] += -vforce;
+		}
+	}
 }
 
 void StableFluidsGrid::setExternalForce()
