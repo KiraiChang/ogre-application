@@ -17,7 +17,7 @@ StableFluids::StableFluids(Ogre::SceneManager *sceneMgr, Ogre::Camera *camera):
 	//m_pFishNode(NULL),
 	m_eMoveType(MOVE_AUTO),
 	m_eCurrentMesh(MESH_FISH),
-	m_pSwimState(NULL),
+	//m_pSwimState(NULL),
 	m_pCameraNode(NULL),
 	m_queryPlane(Ogre::Vector3::UNIT_Y, 0),
 	m_bSelectMesh(false),
@@ -45,54 +45,94 @@ void StableFluids::init()
 	m_pCameraNode->pitch(Ogre::Degree(-90));
 	m_pCameraNode->attachObject(m_pCamera);
 
-	Ogre::Entity *ent;
-	Ogre::SceneNode *node;
-	{
-		node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-		ent = m_pSceneMgr->createEntity("Fish", "fish.mesh");
-		node->attachObject(ent);
-		node->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
-		node->yaw(Ogre::Degree(-90));
-		node->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
-		node->setVisible(false);
+	//Ogre::Entity *ent;
+	//Ogre::SceneNode *node;
+	//{
+	//	node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//	ent = m_pSceneMgr->createEntity("Fish", "fish.mesh");
+	//	node->attachObject(ent);
+	//	node->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
+	//	node->yaw(Ogre::Degree(-90));
+	//	node->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
+	//	node->setVisible(false);
 
-		m_pSwimState = ent->getAnimationState("swim");
-		m_pSwimState->setEnabled(true);
-		m_pSwimState->setLoop(true);
-		m_vpEntity.push_back(ent);
-		m_vpNode.push_back(node);
+	//	m_pSwimState = ent->getAnimationState("swim");
+	//	m_pSwimState->setEnabled(true);
+	//	m_pSwimState->setLoop(true);
+	//	m_vpEntity.push_back(ent);
+	//	m_vpNode.push_back(node);
+	//}
+	//{
+	//	node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//	ent = m_pSceneMgr->createEntity("Sphere", "sphere.mesh");
+	//	node->attachObject(ent);
+	//	node->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
+	//	node->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
+	//	node->setVisible(false);
+	//	m_vpEntity.push_back(ent);
+	//	m_vpNode.push_back(node);
+	//}
+	//{
+	//	node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//	ent = m_pSceneMgr->createEntity("Cube", "cube.mesh");
+	//	node->attachObject(ent);
+	//	node->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
+	//	node->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
+	//	node->setVisible(false);
+	//	m_vpEntity.push_back(ent);
+	//	m_vpNode.push_back(node);
+	//}
+	//{
+	//	node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//	ent = m_pSceneMgr->createEntity("Triangle", "triangle.mesh");
+	//	node->attachObject(ent);
+	//	node->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
+	//	node->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
+	//	node->setVisible(false);
+	//	m_vpEntity.push_back(ent);
+	//	m_vpNode.push_back(node);
+	//}
+	//m_vpNode[m_eCurrentMesh]->setVisible(true);
+
+	SolidMesh *mesh = NULL;
+	{
+		mesh = new SolidMesh("Fish", "fish.mesh", m_pSceneMgr);
+		mesh->getNode()->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
+		mesh->getNode()->yaw(Ogre::Degree(-90));
+		mesh->getNode()->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
+		mesh->getNode()->setVisible(false);
+
+		mesh->setAnimation("swim");
+		m_vpSolidMesh.push_back(mesh);
 	}
 	{
-		node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-		ent = m_pSceneMgr->createEntity("Sphere", "sphere.mesh");
-		node->attachObject(ent);
-		node->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
-		node->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
-		node->setVisible(false);
-		m_vpEntity.push_back(ent);
-		m_vpNode.push_back(node);
+		mesh = new SolidMesh("Sphere", "sphere.mesh", m_pSceneMgr);
+		mesh->getNode()->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
+		mesh->getNode()->yaw(Ogre::Degree(-90));
+		mesh->getNode()->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
+		mesh->getNode()->setVisible(false);
+
+		m_vpSolidMesh.push_back(mesh);
 	}
 	{
-		node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-		ent = m_pSceneMgr->createEntity("Cube", "cube.mesh");
-		node->attachObject(ent);
-		node->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
-		node->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
-		node->setVisible(false);
-		m_vpEntity.push_back(ent);
-		m_vpNode.push_back(node);
+		mesh = new SolidMesh("Cube", "cube.mesh", m_pSceneMgr);
+		mesh->getNode()->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
+		mesh->getNode()->yaw(Ogre::Degree(-90));
+		mesh->getNode()->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
+		mesh->getNode()->setVisible(false);
+
+		m_vpSolidMesh.push_back(mesh);
 	}
 	{
-		node = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-		ent = m_pSceneMgr->createEntity("Triangle", "triangle.mesh");
-		node->attachObject(ent);
-		node->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
-		node->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
-		node->setVisible(false);
-		m_vpEntity.push_back(ent);
-		m_vpNode.push_back(node);
+		mesh = new SolidMesh("Triangle", "triangle.mesh", m_pSceneMgr);
+		mesh->getNode()->setPosition(COMPLEXITY/2, 0.0, COMPLEXITY/2);
+		mesh->getNode()->yaw(Ogre::Degree(-90));
+		mesh->getNode()->setScale(FISH_SCALE_SIZE, FISH_SCALE_SIZE, FISH_SCALE_SIZE);
+		mesh->getNode()->setVisible(false);
+
+		m_vpSolidMesh.push_back(mesh);
 	}
-	m_vpNode[m_eCurrentMesh]->setVisible(true);
+	m_vpSolidMesh[m_eCurrentMesh]->getNode()->setVisible(true);
 
 	//m_uiCurrentTarget = 0;
 	//m_vTarget.push_back(Ogre::Vector3(8.0, 0.0, 8.0));
@@ -126,29 +166,39 @@ void StableFluids::release()
 		delete m_pWaterInterface;
 	}
 
-	V_ENTITY::iterator eIte;
-	V_NODE::iterator nIte;
-	Ogre::Entity *ent;
-	Ogre::SceneNode *node;
+	//V_ENTITY::iterator eIte;
+	//V_NODE::iterator nIte;
+	V_SOLID_MESH::iterator ite;
+	SolidMesh *mesh = NULL;
+	//Ogre::Entity *ent;
+	//Ogre::SceneNode *node;
 	if(m_pSceneMgr!= NULL)
 	{
-		for(eIte = m_vpEntity.begin(), nIte = m_vpNode.begin();eIte != m_vpEntity.end();eIte++, nIte++)
+		//for(eIte = m_vpEntity.begin(), nIte = m_vpNode.begin();eIte != m_vpEntity.end();eIte++, nIte++)
+		//{
+		//	ent = *eIte;node = *nIte;
+		//	if(node != NULL)
+		//	{
+		//		node->detachObject(ent);
+		//		m_pSceneMgr->destroySceneNode(node);
+		//		node = NULL;
+		//	}
+		//	if(ent != NULL)
+		//	{
+		//		m_pSceneMgr->destroyEntity( ent );
+		//		ent = NULL;
+		//	}
+		//}
+		//m_vpEntity.clear();
+		//m_vpNode.clear();
+		for(ite = m_vpSolidMesh.begin(); ite != m_vpSolidMesh.end(); ite++)
 		{
-			ent = *eIte;node = *nIte;
-			if(node != NULL)
-			{
-				node->detachObject(ent);
-				m_pSceneMgr->destroySceneNode(node);
-				node = NULL;
-			}
-			if(ent != NULL)
-			{
-				m_pSceneMgr->destroyEntity( ent );
-				ent = NULL;
-			}
+			mesh = *ite;
+			ite = m_vpSolidMesh.erase(ite);
+			mesh->release();
+			delete mesh;
+			mesh = NULL;
 		}
-		m_vpEntity.clear();
-		m_vpNode.clear();
 	}
 }
 
@@ -205,7 +255,8 @@ void StableFluids::itemSelected(OgreBites::SelectMenu* menu)
 	if(menu->getName() == "MeshMenu")
 	{
 		const Ogre::String& materialName = menu->getSelectedItem();
-		m_vpNode[m_eCurrentMesh]->setVisible(false);
+		//m_vpNode[m_eCurrentMesh]->setVisible(false);
+		m_vpSolidMesh[m_eCurrentMesh]->getNode()->setVisible(false);
 		if(materialName == "MESH_FISH")
 			m_eCurrentMesh = MESH_FISH;
 		else if(materialName == "MESH_SPHERE")
@@ -214,7 +265,8 @@ void StableFluids::itemSelected(OgreBites::SelectMenu* menu)
 			m_eCurrentMesh = MESH_CUBE;
 		else if(materialName == "MESH_TRIANGLE")
 			m_eCurrentMesh = MESH_TRIANGLE;
-		m_vpNode[m_eCurrentMesh]->setVisible(true);
+		//m_vpNode[m_eCurrentMesh]->setVisible(true);
+		m_vpSolidMesh[m_eCurrentMesh]->getNode()->setVisible(true);
 	}
 	else if(menu->getName() == "MoveMenu")
 	{
@@ -280,7 +332,8 @@ bool StableFluids::mouseMoved(const OIS::MouseEvent& evt)
 			point.y = 0;
 
 			// position our ninja to that point  
-			m_vpNode[m_eCurrentMesh]->setPosition(point);
+			//m_vpNode[m_eCurrentMesh]->setPosition(point);
+			m_vpSolidMesh[m_eCurrentMesh]->getNode()->setPosition(point);
 		}
 	}
     return true;
@@ -302,7 +355,8 @@ bool StableFluids::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID i
 
 			// set up the ray
 			Ogre::Ray mouseRay = m_pCamera->getCameraToViewportRay(offsetX, offsetY);
-			std::pair<bool, Ogre::Real> result = mouseRay.intersects(m_vpNode[m_eCurrentMesh]->_getWorldAABB());
+			//std::pair<bool, Ogre::Real> result = mouseRay.intersects(m_vpNode[m_eCurrentMesh]->_getWorldAABB());
+			std::pair<bool, Ogre::Real> result = mouseRay.intersects(m_vpSolidMesh[m_eCurrentMesh]->getNode()->_getWorldAABB());
 			if(result.first)
 				m_bSelectMesh = true;
 		}
@@ -334,7 +388,7 @@ void StableFluids::update(float timeSinceLastFrame)
 	//static int J = 0;
 	//J++;
 	//if(J < 40)
-		m_pSwimState->addTime(timeSinceLastFrame);//mesh animation
+	//	m_pSwimState->addTime(timeSinceLastFrame);//mesh animation
 	//if(I % 50 == 0)
 		//((StableFluidsGrid *)m_pWaterInterface)->push(32, 25, 1);
 
@@ -369,22 +423,36 @@ void StableFluids::update(float timeSinceLastFrame)
 		pos.y = 0.0;
 		pos.z = sin(T) * (COMPLEXITY/3) + (COMPLEXITY/2);
 
-		if(m_eCurrentMesh < m_vpNode.size())
-		{
-			Ogre::Vector3 dir = pos - m_vpNode[m_eCurrentMesh]->getPosition();
-			m_vpNode[m_eCurrentMesh]->setPosition(pos);
+		//if(m_eCurrentMesh < m_vpNode.size())
+		//{
+		//	Ogre::Vector3 dir = pos - m_vpNode[m_eCurrentMesh]->getPosition();
+		//	m_vpNode[m_eCurrentMesh]->setPosition(pos);
 
-			if(m_eCurrentMesh == MESH_FISH)
-			{
-				Ogre::Vector3 src = m_vpNode[m_eCurrentMesh]->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_X;/*Ogre::Vector3::UNIT_X;*/
-				Ogre::Quaternion quat = src.getRotationTo(dir);
-				m_vpNode[m_eCurrentMesh]->rotate(quat);
-			}
+		//	if(m_eCurrentMesh == MESH_FISH)
+		//	{
+		//		Ogre::Vector3 src = m_vpNode[m_eCurrentMesh]->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_X;/*Ogre::Vector3::UNIT_X;*/
+		//		Ogre::Quaternion quat = src.getRotationTo(dir);
+		//		m_vpNode[m_eCurrentMesh]->rotate(quat);
+		//	}
+
+		//	//m_pCameraNode->setPosition(pos.x, 32, pos.z);
+		//}
+
+		if(m_eCurrentMesh < m_vpSolidMesh.size())
+		{
+			Ogre::Vector3 dir = pos - m_vpSolidMesh[m_eCurrentMesh]->getNode()->getPosition();
+			m_vpSolidMesh[m_eCurrentMesh]->getNode()->setPosition(pos);
+
+			Ogre::Vector3 src = m_vpSolidMesh[m_eCurrentMesh]->getNode()->getOrientation() * Ogre::Vector3::NEGATIVE_UNIT_X;/*Ogre::Vector3::UNIT_X;*/
+			Ogre::Quaternion quat = src.getRotationTo(dir);
+			m_vpSolidMesh[m_eCurrentMesh]->getNode()->rotate(quat);
 
 			//m_pCameraNode->setPosition(pos.x, 32, pos.z);
 		}
 	}
-	((StableFluidsGrid *)m_pWaterInterface)->updateMeshData(m_vpNode[m_eCurrentMesh], m_vpEntity[m_eCurrentMesh]);
+	//((StableFluidsGrid *)m_pWaterInterface)->updateMeshData(m_vpNode[m_eCurrentMesh], m_vpEntity[m_eCurrentMesh]);
+	m_vpSolidMesh[m_eCurrentMesh]->update(timeSinceLastFrame);
+	((StableFluidsGrid *)m_pWaterInterface)->updateMeshData(m_vpSolidMesh[m_eCurrentMesh], true);
 	m_pWaterInterface->updateMesh(timeSinceLastFrame);
 }
 

@@ -1,8 +1,10 @@
 #ifndef _STABLE_FLUIDS_GRID_H_
 #define _STABLE_FLUIDS_GRID_H_
 #include "../simulation_interface/water_interface.h"
+
 #include <ogre.h>
 #define FISH_SCALE_SIZE 2.0
+class SolidMesh;
 class StableFluidsGrid : public WaterInterface
 {
 private:
@@ -26,12 +28,12 @@ private:
 	Ogre::ParticleSystem *					m_pPS;
 	Ogre::SceneNode	*						m_pPSNode;
 
-	//fish vertex data
-	size_t									m_sVertexCount;
-	size_t									m_sIndex_count;
-	int										m_iCurrentVertex ;
-	Ogre::Vector3*							m_vVertices[3];
-	unsigned long*							m_vIndices;
+	////fish vertex data
+	//size_t									m_sVertexCount;
+	//size_t									m_sIndex_count;
+	//int										m_iCurrentVertex ;
+	//Ogre::Vector3*							m_vVertices[3];
+	//unsigned long*							m_vIndices;
 	float *									m_vfBoundaryU;
 	float *									m_vfBoundaryV;
 
@@ -85,9 +87,12 @@ public:
 	void									push(int N, float x, float y, float addx, float addy, float depth, bool absolute, float *current);//set presure to 00 10 01 11 
 	void									push(float x, float y, float depth, bool absolute=false) ;//set pressure to wave equation and add force to velocity
 	void									clear(void);//clear velocity
-	void									updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity);//get mesh vertex data from mesh
-	void									calcMeshFace();//compute fish boundary to m_vbIntersectGrid
-	void									calcMeshEnforce();//compute fish animation force to m_vfEnforceU and m_vfEnforceV
+	//void									updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity);//get mesh vertex data from mesh
+	void									updateMeshData(SolidMesh *mesh, bool reset = false);
+	//void									calcMeshFace();//compute fish boundary to m_vbIntersectGrid
+	void									calcMeshFace(size_t verticesCount, Ogre::Vector3 *vertices, bool reset = false);//compute fish boundary to m_vbIntersectGrid
+	//void									calcMeshEnforce();//compute fish animation force to m_vfEnforceU and m_vfEnforceV
+	void									calcMeshEnforce(size_t verticesCount, Ogre::Vector3 *vertices, Ogre::Vector3 *prev, bool reset = false);//compute fish animation force to m_vfEnforceU and m_vfEnforceV
 	void									setMeshBoundary();//set m_vbIntersectGrid to m_vfU and m_vfV
 	void									setMeshEnforce(float timePass);//set m_vfEnforceU and m_vfEnforceV to m_vfU and m_vfV
 	void									setExternalForce();

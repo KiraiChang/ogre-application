@@ -54,6 +54,9 @@
     <ClCompile Include="..\..\ogre_tool\ogre_mesh_tool.cpp">
       <Filter>ogre_tool</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\stable_fluids\solid_mesh.cpp">
+      <Filter>stable_fluids</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_plugin\ogre_plugin.h">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="..\..\ogre_tool\ogre_mesh_tool.h">
       <Filter>ogre_tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stable_fluids\solid_mesh.h">
+      <Filter>stable_fluids</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 #include "stable_fluids_grid.h"
 #include "../ogre_tool/ogre_mesh_tool.h"
+#include "solid_mesh.h"
 #include <iostream>
 
 extern void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt );
@@ -40,10 +41,10 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_pMiniScreen(NULL),
 	m_pPS(NULL),
 	m_pPSNode(NULL),
-	m_sVertexCount(0),
-	m_sIndex_count(0),
-	m_vIndices(NULL),
-	m_iCurrentVertex(0),
+	//m_sVertexCount(0),
+	//m_sIndex_count(0),
+	//m_vIndices(NULL),
+	//m_iCurrentVertex(0),
 	m_vfBoundaryU(NULL),
 	m_vfBoundaryV(NULL),
 	m_vfEnforceU(0),
@@ -62,8 +63,8 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	for(int i = 0; i < MAX_HEIGHT_MAP_COUNT;i++)
 	{
 		m_vfHeightMap[i] = 0;
-		if(i < MAX_VERTEX_MAP_COUNT)
-			m_vVertices[i] = 0;
+		//if(i < MAX_VERTEX_MAP_COUNT)
+		//	m_vVertices[i] = 0;
 	}
 }
 
@@ -248,20 +249,20 @@ void StableFluidsGrid::release(void)
 		m_pPixelBox = NULL;
 	}
 
-	for(int i = 0;i < MAX_VERTEX_MAP_COUNT;i++)
-	{
-		if(m_vVertices[i] != NULL)
-		{
-			delete[] m_vVertices[i];
-			m_vVertices[i] = NULL;
-		}
-	}
+	//for(int i = 0;i < MAX_VERTEX_MAP_COUNT;i++)
+	//{
+	//	if(m_vVertices[i] != NULL)
+	//	{
+	//		delete[] m_vVertices[i];
+	//		m_vVertices[i] = NULL;
+	//	}
+	//}
 
-	if(m_vIndices != NULL)
-	{
-		delete[] m_vIndices;
-		m_vIndices = NULL;
-	}
+	//if(m_vIndices != NULL)
+	//{
+	//	delete[] m_vIndices;
+	//	m_vIndices = NULL;
+	//}
 
 	Ogre::TextureManager::getSingleton().remove("heightSampler");
 }
@@ -506,55 +507,121 @@ void StableFluidsGrid::clear(void)
 	}
 }
 
-void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity)
+//void StableFluidsGrid::updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity)
+//{
+//	//set particle system before fish head
+//	m_v3FishPos = node->getPosition();
+//	Ogre::Vector3 pos = m_v3FishPos + ( node->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * FISH_SCALE_SIZE;
+//	m_pPSNode->setPosition( node->getPosition());
+//	m_pPSNode->setOrientation(node->getOrientation());
+//
+//	//node->setVisible(false);
+//	//m_pPSNode->setVisible(false);
+//
+//	//when fish move front fluid will give back force
+//	//Ogre::Vector3 dir = node->getOrientation() * Ogre::Vector3(1.0, 0.0, 0.0);
+//	//dir.normalise();
+//	//unsigned int index = ((int)pos.x)+((int)pos.z * (m_iGridNumber+2));
+//	//m_vfU[index] = dir.x * m_fForce * 2 * m_fLastFrameTime;
+//	//m_vfV[index] = dir.z * m_fForce * 2 * m_fLastFrameTime;
+//	size_t prev_count = m_sVertexCount;
+//	m_iCurrentVertex = (m_iCurrentVertex + 1) % 3 ;
+//	getMeshInformation(entity, 
+//		m_sVertexCount, 
+//		m_vVertices[m_iCurrentVertex], 
+//		m_sIndex_count,
+//		m_vIndices, 
+//		node->getPosition(), 
+//		node->getOrientation(), 
+//		node->getScale());
+//
+//	calcMeshFace();
+//	//if(prev_count == m_sVertexCount)
+//	//	calcMeshEnforce();
+//}
+
+void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 {
 	//set particle system before fish head
-	m_v3FishPos = node->getPosition();
-	Ogre::Vector3 pos = m_v3FishPos + ( node->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * FISH_SCALE_SIZE;
-	m_pPSNode->setPosition( node->getPosition());
-	m_pPSNode->setOrientation(node->getOrientation());
+	m_v3FishPos = mesh->getNode()->getPosition();
+	Ogre::Vector3 pos = m_v3FishPos + ( mesh->getNode()->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * FISH_SCALE_SIZE;
+	m_pPSNode->setPosition( mesh->getNode()->getPosition());
+	m_pPSNode->setOrientation(mesh->getNode()->getOrientation());
 
-	//node->setVisible(false);
-	//m_pPSNode->setVisible(false);
-
-	//when fish move front fluid will give back force
-	//Ogre::Vector3 dir = node->getOrientation() * Ogre::Vector3(1.0, 0.0, 0.0);
-	//dir.normalise();
-	//unsigned int index = ((int)pos.x)+((int)pos.z * (m_iGridNumber+2));
-	//m_vfU[index] = dir.x * m_fForce * 2 * m_fLastFrameTime;
-	//m_vfV[index] = dir.z * m_fForce * 2 * m_fLastFrameTime;
-
-	m_iCurrentVertex = (m_iCurrentVertex + 1) % 3 ;
-	getMeshInformation(entity, 
-		m_sVertexCount, 
-		m_vVertices[m_iCurrentVertex], 
-		m_sIndex_count,
-		m_vIndices, 
-		node->getPosition(), 
-		node->getOrientation(), 
-		node->getScale());
-
-	calcMeshFace();
-	//calcMeshEnforce();
+	calcMeshFace(mesh->getVertexCount(), mesh->getVertices(), reset);
+	calcMeshEnforce(mesh->getVertexCount(), mesh->getVertices(), mesh->getPrevVertices(), reset);
 }
 
-void StableFluidsGrid::calcMeshFace()
+//void StableFluidsGrid::calcMeshFace()
+//{
+//	memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
+//	int i, x, y, ite;
+//	unsigned int index;
+//	bool hasEdge = false;
+//	int front, back;
+//	for(i = 0;i < m_sVertexCount;i++)
+//	{
+//		if(m_vVertices[m_iCurrentVertex][i].y < 1.0 && m_vVertices[m_iCurrentVertex][i].y > -1.0)//the y position at surface
+//		{
+//			x = ((int)m_vVertices[m_iCurrentVertex][i].x);
+//			//if(m_vVertices[m_iCurrentVertex][i].x - x > 0.5)
+//			//	x++;
+//			y = ((int)m_vVertices[m_iCurrentVertex][i].z);
+//			//if( m_vVertices[m_iCurrentVertex][i].z - y > 0.5)
+//			//	y++;
+//
+//			index = x +  (y*(m_iGridNumber+2));
+//			if(index < m_iGridSize)
+//				m_vbIntersectGrid[index] = 1.0;//draw contour of object
+//		}
+//	}
+//
+//	for(y = 1; y < m_iGridNumber; y++)//fill contour hole
+//	{
+//		hasEdge = false;
+//		for(x = 1; x < m_iGridNumber; x++)
+//		{
+//			index = x + (y*(m_iGridNumber+2));
+//			if(m_vbIntersectGrid[index])
+//			{
+//				if(!hasEdge)
+//				{
+//					front = x;
+//					hasEdge = true;
+//				}
+//				else
+//				{
+//					back = x;
+//					for(ite = front+1; ite < back; ite++)
+//					{
+//						index = ite + (y*(m_iGridNumber+2));
+//						m_vbIntersectGrid[index] = true;
+//					}
+//					front = x;
+//				}
+//			}
+//		}
+//	}
+//}
+
+void StableFluidsGrid::calcMeshFace(size_t verticesCount, Ogre::Vector3 *vertices, bool reset)
 {
-	memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
+	if(reset)
+		memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
+
+	if(vertices == NULL)
+		return;
 	int i, x, y, ite;
 	unsigned int index;
 	bool hasEdge = false;
 	int front, back;
-	for(i = 0;i < m_sVertexCount;i++)
+	for(i = 0;i < verticesCount;i++)
 	{
-		if(m_vVertices[m_iCurrentVertex][i].y < 1.0 && m_vVertices[m_iCurrentVertex][i].y > -1.0)//the y position at surface
+		if(vertices[i].y < 1.0 && vertices[i].y > -1.0)//the y position at surface
 		{
-			x = ((int)m_vVertices[m_iCurrentVertex][i].x);
-			//if(m_vVertices[m_iCurrentVertex][i].x - x > 0.5)
-			//	x++;
-			y = ((int)m_vVertices[m_iCurrentVertex][i].z);
-			//if( m_vVertices[m_iCurrentVertex][i].z - y > 0.5)
-			//	y++;
+			x = ((int)vertices[i].x);
+
+			y = ((int)vertices[i].z);
 
 			index = x +  (y*(m_iGridNumber+2));
 			if(index < m_iGridSize)
@@ -590,25 +657,53 @@ void StableFluidsGrid::calcMeshFace()
 	}
 }
 
-void StableFluidsGrid::calcMeshEnforce()
+//void StableFluidsGrid::calcMeshEnforce()
+//{
+//	memset(m_vfEnforceU, 0, m_iGridSize * sizeof(m_vfEnforceU));
+//	memset(m_viEnforceUCount, 0, m_iGridSize * sizeof(m_viEnforceUCount));
+//	memset(m_vfEnforceV, 0, m_iGridSize * sizeof(m_vfEnforceV));
+//	memset(m_viEnforceVCount, 0, m_iGridSize * sizeof(m_viEnforceVCount));
+//	unsigned int index;
+//	int prev  = (m_iCurrentVertex + 2) %3;
+//	if(m_vVertices[prev] == NULL)
+//		return;
+//	int i;
+//	for(i = 0;i < m_sVertexCount;i++)
+//	{
+//		if(m_vVertices[prev][i].y < 1.0 && m_vVertices[prev][i].y > -1.0)
+//		{
+//			index = ((int)m_vVertices[prev][i].x)  +  ((int)m_vVertices[prev][i].z)*(m_iGridNumber+2);
+//			m_vfEnforceU[index] = m_vVertices[m_iCurrentVertex][i].x - m_vVertices[prev][i].x;
+//			m_viEnforceUCount[index]++;
+//			m_vfEnforceV[index] = m_vVertices[m_iCurrentVertex][i].z - m_vVertices[prev][i].z;
+//			m_viEnforceVCount[index]++;
+//		}
+//	}
+//}
+
+void StableFluidsGrid::calcMeshEnforce(size_t verticesCount, Ogre::Vector3 *vertices, Ogre::Vector3 *prev, bool reset)
 {
-	memset(m_vfEnforceU, 0, m_iGridSize * sizeof(m_vfEnforceU));
-	memset(m_viEnforceUCount, 0, m_iGridSize * sizeof(m_viEnforceUCount));
-	memset(m_vfEnforceV, 0, m_iGridSize * sizeof(m_vfEnforceV));
-	memset(m_viEnforceVCount, 0, m_iGridSize * sizeof(m_viEnforceVCount));
 	unsigned int index;
-	int prev  = (m_iCurrentVertex + 2) %3;
-	if(m_vVertices[prev] == NULL)
+	if(reset)
+	{
+		memset(m_vfEnforceU, 0, m_iGridSize * sizeof(m_vfEnforceU));
+		memset(m_viEnforceUCount, 0, m_iGridSize * sizeof(m_viEnforceUCount));
+		memset(m_vfEnforceV, 0, m_iGridSize * sizeof(m_vfEnforceV));
+		memset(m_viEnforceVCount, 0, m_iGridSize * sizeof(m_viEnforceVCount));
+	}
+
+
+	if(prev == NULL)
 		return;
 	int i;
-	for(i = 0;i < m_sVertexCount;i++)
+	for(i = 0;i < verticesCount;i++)
 	{
-		if(m_vVertices[prev][i].y < 1.0 && m_vVertices[prev][i].y > -1.0)
+		if(prev[i].y < 1.0 && prev[i].y > -1.0)
 		{
-			index = ((int)m_vVertices[prev][i].x)  +  ((int)m_vVertices[prev][i].z)*(m_iGridNumber+2);
-			m_vfEnforceU[index] = m_vVertices[m_iCurrentVertex][i].x - m_vVertices[prev][i].x;
+			index = ((int)prev[i].x)  +  ((int)prev[i].z)*(m_iGridNumber+2);
+			m_vfEnforceU[index] = vertices[i].x - prev[i].x;
 			m_viEnforceUCount[index]++;
-			m_vfEnforceV[index] = m_vVertices[m_iCurrentVertex][i].z - m_vVertices[prev][i].z;
+			m_vfEnforceV[index] = vertices[i].z - prev[i].z;
 			m_viEnforceVCount[index]++;
 		}
 	}
