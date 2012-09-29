@@ -111,10 +111,10 @@ void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc,
 void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampening, float timePass )
 {
 	int x, y;
-	float height_x1y1;
-	float height_x0y1, height_x2y1;
-	float height_x1y0, height_x1y2;
-	float pre, dum;
+	//float height_x1y1;
+	//float height_x0y1, height_x2y1;
+	//float height_x1y0, height_x1y2;
+	//float pre, dum;
 	float dt = timePass * timePass;
 	for(y=1;y<N;y++)
 	{ 
