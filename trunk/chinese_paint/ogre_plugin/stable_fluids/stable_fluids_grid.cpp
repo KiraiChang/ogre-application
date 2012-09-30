@@ -316,14 +316,14 @@ void StableFluidsGrid::updateParticle(float timePass)
 		{
 			particle->timeToLive = PARTICLE_LIVE_TIME;
 			particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, -0.5) * FISH_SCALE_SIZE;
+			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, -0.75) * FISH_SCALE_SIZE;
 		}
 		particle = m_pPS->createParticle();
 		if(particle != NULL)
 		{
 			particle->timeToLive = PARTICLE_LIVE_TIME;
 			particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, -0.25) * FISH_SCALE_SIZE;
+			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, -0.5) * FISH_SCALE_SIZE;
 		}
 		particle = m_pPS->createParticle();
 		if(particle != NULL)
@@ -337,14 +337,14 @@ void StableFluidsGrid::updateParticle(float timePass)
 		{
 			particle->timeToLive = PARTICLE_LIVE_TIME;
 			particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, 0.25) * FISH_SCALE_SIZE;
+			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, 0.5) * FISH_SCALE_SIZE;
 		}
 		particle = m_pPS->createParticle();
 		if(particle != NULL)
 		{
 			particle->timeToLive = PARTICLE_LIVE_TIME;
 			particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, 0.5) * FISH_SCALE_SIZE;
+			particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, 0.75) * FISH_SCALE_SIZE;
 		}
 	}
 
@@ -436,10 +436,9 @@ void StableFluidsGrid::updateMesh(float timePass)
 		break;
 	}
 
-	
+	setMeshBoundary();
 	if(m_bAddForce)
 		setMeshEnforce(timePass);
-	setMeshBoundary();
 	
 	updateParticle(timePass);
 }
@@ -775,55 +774,94 @@ void StableFluidsGrid::setMeshBoundary()
 void StableFluidsGrid::setMeshEnforce(float timePass)
 {
 	//return;
-	int x, y, count;
-	float uforce, vforce;
-	Ogre::Vector2 diff;
-	unsigned int index, dIndex;
+	//int x, y, count;
+	//float uforce, vforce;
+	//Ogre::Vector2 diff;
+	//unsigned int index, dIndex;
+	//for(y = 1; y < m_iGridNumber; y++)
+	//{
+	//	for(x = 1; x < m_iGridNumber; x++)
+	//	{
+	//		index = x + (y*(m_iGridNumber+2));
+	//		uforce = 0;//m_vfU[index];
+	//		vforce = 0;//m_vfV[index];
+	//		diff.x = 0;
+	//		diff.y = 0;
+	//		if(m_vfEnforceU[index] != 0)
+	//		{
+	//			//count = m_viEnforceUCount[index];
+	//			//force = m_vfEnforceU[index];
+	//			//force = force / count;
+	//			//m_vfU[index] += force;
+	//			count = m_viEnforceUCount[index];
+	//			uforce = m_vfEnforceU[index] / count * timePass;
+	//			diff.x = uforce;
+	//			//uforce *= 10; 
+	//		}
+	//		if(m_vfEnforceV[index] != 0)
+	//		{
+	//			//count = m_viEnforceVCount[index];
+	//			//force = m_vfEnforceV[index];
+	//			//force = force / count;
+	//			//m_vfV[index] += force;
+	//			count = m_viEnforceVCount[index];
+	//			vforce = m_vfEnforceV[index] / count * timePass;
+	//			diff.y = vforce;
+	//			//vforce *= 10;
+	//		}
+	//		diff.normalise();
+	//		//if(diff.x > 0.5)
+	//		//	diff.x = 1;
+	//		//else if(diff.x < -0.5)
+	//		//	diff.x = -1;
+	//		//if(diff.y > 0.5)
+	//		//	diff.y = 1;
+	//		//else if(diff.y < -0.5)
+	//		//	diff.y = -1;
+	//		diff.x += x;
+	//		diff.y += y;
+	//		dIndex = (int)diff.x + ((int)diff.y*(m_iGridNumber+2));
+	//		m_vfU[dIndex] += -uforce;
+	//		m_vfV[dIndex] += -vforce;
+	//	}
+	//}
+
+	int x, y;
+	float up, down, left, right;
+	unsigned int index, uIndex, dIndex, rIndex, lIndex;
 	for(y = 1; y < m_iGridNumber; y++)
 	{
 		for(x = 1; x < m_iGridNumber; x++)
 		{
+			uIndex = x + ((y-1)*(m_iGridNumber+2));
 			index = x + (y*(m_iGridNumber+2));
-			uforce = 0;//m_vfU[index];
-			vforce = 0;//m_vfV[index];
-			diff.x = 0;
-			diff.y = 0;
-			if(m_vfEnforceU[index] != 0)
-			{
-				//count = m_viEnforceUCount[index];
-				//force = m_vfEnforceU[index];
-				//force = force / count;
-				//m_vfU[index] += force;
-				count = m_viEnforceUCount[index];
-				uforce = m_vfEnforceU[index] / count * timePass;
-				diff.x = uforce;
-				//uforce *= 10; 
-			}
-			if(m_vfEnforceV[index] != 0)
-			{
-				//count = m_viEnforceVCount[index];
-				//force = m_vfEnforceV[index];
-				//force = force / count;
-				//m_vfV[index] += force;
-				count = m_viEnforceVCount[index];
-				vforce = m_vfEnforceV[index] / count * timePass;
-				diff.y = vforce;
-				//vforce *= 10;
-			}
-			diff.normalise();
-			//if(diff.x > 0.5)
-			//	diff.x = 1;
-			//else if(diff.x < -0.5)
-			//	diff.x = -1;
-			//if(diff.y > 0.5)
-			//	diff.y = 1;
-			//else if(diff.y < -0.5)
-			//	diff.y = -1;
-			diff.x += x;
-			diff.y += y;
-			dIndex = (int)diff.x + ((int)diff.y*(m_iGridNumber+2));
-			m_vfU[dIndex] += -uforce;
-			m_vfV[dIndex] += -vforce;
+			dIndex = x + ((y+1)*(m_iGridNumber+2));
+			lIndex = (x-1) + ((y)*(m_iGridNumber+2));
+			rIndex =  (x+1) + ((y)*(m_iGridNumber+2));
+			//U
+			up = down = left = right = 0;
+			if(m_viEnforceUCount[uIndex] > 0)
+				up  = m_vfEnforceU[uIndex] / m_viEnforceUCount[uIndex];
+			if(m_viEnforceUCount[dIndex] > 0)
+				down  = m_vfEnforceU[dIndex] / m_viEnforceUCount[dIndex];
+			if(m_viEnforceUCount[lIndex] > 0)
+				up  = m_vfEnforceU[lIndex] / m_viEnforceUCount[lIndex];
+			if(m_viEnforceUCount[rIndex] > 0)
+				down  = m_vfEnforceU[rIndex] / m_viEnforceUCount[rIndex];
+			if(up || down || left || right)
+				m_vfU[index] = (up+down)-(left+right);
+			//V
+			up = down = left = right = 0;
+			if(m_viEnforceVCount[uIndex] > 0)
+				up  = m_vfEnforceV[uIndex] / m_viEnforceVCount[uIndex];
+			if(m_viEnforceVCount[dIndex] > 0)
+				down  = m_vfEnforceV[dIndex] / m_viEnforceVCount[dIndex];
+			if(m_viEnforceVCount[lIndex] > 0)
+				up  = m_vfEnforceV[lIndex] / m_viEnforceVCount[lIndex];
+			if(m_viEnforceVCount[rIndex] > 0)
+				down  = m_vfEnforceV[rIndex] / m_viEnforceVCount[rIndex];
+			if(up || down || left || right)
+				m_vfV[index] = -(up+down)+(left+right);
 		}
 	}
 }
