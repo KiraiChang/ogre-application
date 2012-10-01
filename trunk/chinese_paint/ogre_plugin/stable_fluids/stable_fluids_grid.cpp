@@ -437,8 +437,12 @@ void StableFluidsGrid::updateMesh(float timePass)
 	}
 
 	setMeshBoundary();
-	if(m_bAddForce)
-		setMeshEnforce(timePass);
+	//if(m_bAddForce)
+	//{
+	//	setMeshEnforce(timePass);
+	//	//vel_step ( m_iGridNumber, m_vfU, m_vfV, m_vfUPrev, m_vfVPrev, m_fVisc, timePass);
+	//	setMeshBoundary();
+	//}
 	
 	updateParticle(timePass);
 }
@@ -548,7 +552,16 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 	m_pPSNode->setOrientation(mesh->getNode()->getOrientation());
 
 	calcMeshFace(mesh->getVertexCount(), mesh->getVertices(), reset);
-	calcMeshEnforce(mesh->getVertexCount(), mesh->getVertices(), mesh->getPrevVertices(), reset);
+	if(m_bAddForce)
+	{
+		//when fish move front fluid will give back force
+		Ogre::Vector3 dir = mesh->getNode()->getOrientation() * Ogre::Vector3(1.0, 0.0, 0.0);
+		dir.normalise();
+		unsigned int index = ((int)pos.x)+((int)pos.z * (m_iGridNumber+2));
+		m_vfU[index] = dir.x * m_fForce * m_fLastFrameTime;
+		m_vfV[index] = dir.z * m_fForce * m_fLastFrameTime;
+	}
+	//calcMeshEnforce(mesh->getVertexCount(), mesh->getVertices(), mesh->getPrevVertices(), reset);
 }
 
 //void StableFluidsGrid::calcMeshFace()
@@ -706,9 +719,17 @@ void StableFluidsGrid::calcMeshEnforce(size_t verticesCount, Ogre::Vector3 *vert
 			m_viEnforceVCount[index]++;
 		}
 	}
+
+	//for(i = 0;i < m_iGridSize;i++)
+	//{
+	//	if(m_viEnforceUCount[i] > 0)
+	//		m_vfEnforceU[i] = m_vfEnforceU[i] / m_viEnforceUCount[i];
+	//	if(m_viEnforceVCount[i] > 0)
+	//		m_vfEnforceV[i] = m_vfEnforceV[i] / m_viEnforceVCount[i];
+	//}
 }
 
-void StableFluidsGrid::setMeshBoundary()
+void StableFluidsGrid::setMeshBoundary(bool setDenstity)
 {
 	memset(m_vfBoundaryU, 0, m_iGridSize * sizeof(m_vfBoundaryU));
 	memset(m_vfBoundaryV, 0, m_iGridSize * sizeof(m_vfBoundaryV));
@@ -722,10 +743,13 @@ void StableFluidsGrid::setMeshBoundary()
 			if(m_vbIntersectGrid[index])
 			{
 				//set fish model to density field
-				push(m_iGridNumber+2, x, y, 0, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-				push(m_iGridNumber+2, x, y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-				push(m_iGridNumber+2, x, y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-				push(m_iGridNumber+2, x, y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+				if(setDenstity)
+				{
+					push(m_iGridNumber+2, x, y, 0, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+					push(m_iGridNumber+2, x, y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+					push(m_iGridNumber+2, x, y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+					push(m_iGridNumber+2, x, y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+				}
 
 				//set the velocity inside model to zero
 				m_vfU[index] = 0;
@@ -833,8 +857,8 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 	{
 		for(x = 1; x < m_iGridNumber; x++)
 		{
-			uIndex = x + ((y-1)*(m_iGridNumber+2));
 			index = x + (y*(m_iGridNumber+2));
+			uIndex = x + ((y-1)*(m_iGridNumber+2));
 			dIndex = x + ((y+1)*(m_iGridNumber+2));
 			lIndex = (x-1) + ((y)*(m_iGridNumber+2));
 			rIndex =  (x+1) + ((y)*(m_iGridNumber+2));
