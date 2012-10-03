@@ -3,7 +3,7 @@
 #include "../simulation_interface/water_interface.h"
 
 #include <ogre.h>
-#define FISH_SCALE_SIZE 2.0
+#define FISH_SCALE_SIZE 1.5
 class SolidMesh;
 class StableFluidsGrid : public WaterInterface
 {

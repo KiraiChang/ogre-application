@@ -12,6 +12,7 @@ static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
 static float FISH_DEPTH = 0.01;
 static float ANIMATIONS_PER_SECOND = 1.0f;
+static float FORCE_STRENGTH = 0.03 / FISH_SCALE_SIZE;//0.02;
 #define PARTICLE_LIVE_TIME 20
 #define PARTICLE_SIZE_X 0.5
 #define PARTICLE_SIZE_Y 0.5
@@ -437,12 +438,12 @@ void StableFluidsGrid::updateMesh(float timePass)
 	}
 
 	setMeshBoundary();
-	//if(m_bAddForce)
-	//{
-	//	setMeshEnforce(timePass);
-	//	//vel_step ( m_iGridNumber, m_vfU, m_vfV, m_vfUPrev, m_vfVPrev, m_fVisc, timePass);
-	//	setMeshBoundary();
-	//}
+	if(m_bAddForce)
+	{
+		setMeshEnforce(timePass);
+		//vel_step ( m_iGridNumber, m_vfU, m_vfV, m_vfUPrev, m_vfVPrev, m_fVisc, timePass);
+		setMeshBoundary();
+	}
 	
 	updateParticle(timePass);
 }
@@ -552,16 +553,16 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 	m_pPSNode->setOrientation(mesh->getNode()->getOrientation());
 
 	calcMeshFace(mesh->getVertexCount(), mesh->getVertices(), reset);
-	if(m_bAddForce)
-	{
-		//when fish move front fluid will give back force
-		Ogre::Vector3 dir = mesh->getNode()->getOrientation() * Ogre::Vector3(1.0, 0.0, 0.0);
-		dir.normalise();
-		unsigned int index = ((int)pos.x)+((int)pos.z * (m_iGridNumber+2));
-		m_vfU[index] = dir.x * m_fForce * m_fLastFrameTime;
-		m_vfV[index] = dir.z * m_fForce * m_fLastFrameTime;
-	}
-	//calcMeshEnforce(mesh->getVertexCount(), mesh->getVertices(), mesh->getPrevVertices(), reset);
+	//if(m_bAddForce)
+	//{
+	//	//when fish move front fluid will give back force
+	//	Ogre::Vector3 dir = mesh->getNode()->getOrientation() * Ogre::Vector3(1.0, 0.0, 0.0);
+	//	dir.normalise();
+	//	unsigned int index = ((int)pos.x)+((int)pos.z * (m_iGridNumber+2));
+	//	m_vfU[index] = dir.x * m_fForce * m_fLastFrameTime;
+	//	m_vfV[index] = dir.z * m_fForce * m_fLastFrameTime;
+	//}
+	calcMeshEnforce(mesh->getVertexCount(), mesh->getVertices(), mesh->getPrevVertices(), reset);
 }
 
 //void StableFluidsGrid::calcMeshFace()
@@ -873,7 +874,7 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 			if(m_viEnforceUCount[rIndex] > 0)
 				down  = m_vfEnforceU[rIndex] / m_viEnforceUCount[rIndex];
 			if(up || down || left || right)
-				m_vfU[index] = (up+down)-(left+right);
+				m_vfU[index] = ((up+down)-(left+right)) / timePass * FORCE_STRENGTH;
 			//V
 			up = down = left = right = 0;
 			if(m_viEnforceVCount[uIndex] > 0)
@@ -885,7 +886,7 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 			if(m_viEnforceVCount[rIndex] > 0)
 				down  = m_vfEnforceV[rIndex] / m_viEnforceVCount[rIndex];
 			if(up || down || left || right)
-				m_vfV[index] = -(up+down)+(left+right);
+				m_vfV[index] = ((up+down)+(left+right)) / timePass * FORCE_STRENGTH;
 		}
 	}
 }
