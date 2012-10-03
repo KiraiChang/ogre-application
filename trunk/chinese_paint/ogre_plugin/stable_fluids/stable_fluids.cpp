@@ -9,7 +9,7 @@
 
 #define COMPLEXITY 128
 #define PI 3.141596
-#define ONE_CIRCLE_NEED_TIME 75
+#define ONE_CIRCLE_NEED_TIME 120
 
 StableFluids::StableFluids(Ogre::SceneManager *sceneMgr, Ogre::Camera *camera):
 	m_pSceneMgr(sceneMgr), 
