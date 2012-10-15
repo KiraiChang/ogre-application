@@ -1,10 +1,55 @@
+vertex_program ChinesePaint/Moxi/BlockVS cg
+{
+	source DistAll.vp
+	entry_point main1
+	profiles vs_1_1 arbvp1
+	
+	default_params
+	{
+		param_named_auto ModelViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program ChinesePaint/Moxi/BlockPS cg
+{
+	source Block.fp
+	entry_point main1
+	profiles ps_3_0 fp30
+}
+
 material ChinesePaint/Moxi
 {
 	technique
 	{
 		pass Block
 		{
-			diffuse 0.6 0.6 0.6
+			vertex_program_ref ChinesePaint/Moxi/BlockVS
+			{
+			}
+			
+			fragment_program_ref ChinesePaint/Moxi/BlockPS
+			{
+			}
+			
+			texture_unit MiscMap
+			{
+			}
+			
+			texture_unit VelDenMap
+			{
+			}
+			
+			texture_unit InkMap
+			{
+			}
+			
+			texture_unit FixInkMap
+			{
+			}
+			
+			texture_unit DisorderMap
+			{
+			}
 		}
 	}
 }
@@ -13,7 +58,7 @@ material ChinesePaint/InkBlock
 {
 	technique
 	{
-		pass
+		pass Block
 		{
 			diffuse 0.2 0.2 0.2
 			ambient 0.2 0.2 0.2
