@@ -148,6 +148,7 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 	m_pMiniScreen->setMaterial("ChinesePaint/Texture");
 
 	m_pPS = m_pSceneMgr->createParticleSystem(20000U);
+	m_pPS->setMaterialName("ChinesePaint/InkBlock");
 	m_pPSNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_pPSNode->attachObject(m_pPS);
 	m_pPSNode->setPosition(32, 0, 42);
