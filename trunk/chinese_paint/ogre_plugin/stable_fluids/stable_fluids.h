@@ -29,6 +29,8 @@ private:
 	Ogre::SceneManager *					m_pSceneMgr;
 	Ogre::Camera *							m_pCamera;
 	Ogre::SceneNode*						m_pCameraNode;
+	Ogre::SceneNode*						m_pPaperNode;
+	Ogre::Entity*							m_pPaper;
 	WaterInterface*							m_pWaterInterface;
 	//Ogre::Entity*							m_pFish;
 	//Ogre::SceneNode*						m_pFishNode;

@@ -19,6 +19,8 @@ StableFluids::StableFluids(Ogre::SceneManager *sceneMgr, Ogre::Camera *camera):
 	m_eCurrentMesh(MESH_FISH),
 	//m_pSwimState(NULL),
 	m_pCameraNode(NULL),
+	m_pPaperNode(NULL),
+	m_pPaper(NULL),
 	m_queryPlane(Ogre::Vector3::UNIT_Y, 0),
 	m_bSelectMesh(false),
 	m_pCamera(camera)
@@ -156,6 +158,17 @@ void StableFluids::init()
 	//	1500,1500,
 	//	Ogre::Vector3::UNIT_Z
 	//	);
+
+    Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
+ 
+    Ogre::MeshManager::getSingleton().createPlane("Paper", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        plane, 1500, 1500, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
+ 
+    m_pPaper = m_pSceneMgr->createEntity("PaperEntity", "Paper");
+	m_pPaper->setMaterialName("ChinesePaint/Moxi");
+    m_pPaperNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	m_pPaperNode->attachObject(m_pPaper);
+	m_pPaperNode->setPosition(0.0, -2.0, 0.0);
 }
 
 void StableFluids::release()
@@ -191,6 +204,20 @@ void StableFluids::release()
 		//}
 		//m_vpEntity.clear();
 		//m_vpNode.clear();
+
+		if(m_pPaperNode != NULL)
+		{
+			m_pPaperNode->detachObject(m_pPaper);
+			m_pSceneMgr->destroySceneNode(m_pPaperNode);
+			m_pPaperNode = NULL;
+		}
+
+		if(m_pPaper != NULL)
+		{
+			m_pSceneMgr->destroyEntity( m_pPaper );
+			m_pPaper = NULL;
+		}
+
 		for(ite = m_vpSolidMesh.begin(); ite != m_vpSolidMesh.end(); ite++)
 		{
 			mesh = *ite;
