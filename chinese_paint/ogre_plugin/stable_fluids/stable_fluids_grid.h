@@ -14,6 +14,7 @@ private:
 	float									m_fForce;
 	float									m_fSource;
 	float *									m_vfHeightMap[3] ; // 3 map to do wave equation
+	float *									m_vfWaveVelocity[2] ; // uv velocity to do wave equation
 	float *									m_vfDumpening;
 	float *									m_vbIntersectGrid;
 	Ogre::Vector3							m_v3FishPos;
@@ -48,6 +49,13 @@ private:
 
 
 public:
+	enum VELOCITY_TYPE
+	{
+		VELOCITY_U, 
+		VELOCITY_V, 
+		VELOCITY_COUNT
+	};
+
 	enum MAP_DISPLAY_TYPE
 	{
 		DISPLAY_MAP_NONE,
@@ -62,6 +70,7 @@ public:
 		DISPLAY_ORIGIN,
 		DISPLAY_ADD_FORCE,
 		DISPLAY_BOUNDARY,
+		DISPLAY_WAVE_EQUATION,
 	};
 	VELOCITY_DISPLAY_TYPE					m_eVelocityType;
 	bool									m_bExternlForce;
