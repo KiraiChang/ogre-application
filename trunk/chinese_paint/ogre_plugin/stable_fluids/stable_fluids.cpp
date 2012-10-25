@@ -249,6 +249,8 @@ void StableFluids::setupControls(OgreBites::SdkTrayManager* mTrayMgr)
 	menu->addItem("DISPLAY_VELOCITY_NONE");
 	menu->addItem("DISPLAY_ADD_FORCE");
 	menu->addItem("DISPLAY_BOUNDARY");
+	menu->addItem("DISPLAY_WAVE_EQUATION");
+	
 
 	menu = mTrayMgr->createThickSelectMenu(OgreBites::TL_TOPLEFT, "DensityMenu", "Density Field Display", PANEL_WIDTH, 9);
 	menu->addItem("DISPLAY_MAP_NONE");
@@ -320,6 +322,8 @@ void StableFluids::itemSelected(OgreBites::SelectMenu* menu)
 			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_ADD_FORCE;
 		else if(materialName == "DISPLAY_BOUNDARY")
 			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_BOUNDARY;
+		else if(materialName == "DISPLAY_WAVE_EQUATION")
+			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_WAVE_EQUATION;
 	}
 	else if(menu->getName() == "DensityMenu")
 	{

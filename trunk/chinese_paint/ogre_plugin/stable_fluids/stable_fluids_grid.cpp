@@ -6,7 +6,7 @@
 extern void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt );
 extern void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc, float dt );
 extern void set_bnd ( int N, int b, float * x );
-extern void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampening, float timePass );
+extern void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampening, float timePass, float *velocity[2]);
 
 static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
@@ -65,13 +65,20 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_bAddForce(false),
 	m_pSceneMgr(NULL)
 {
+	int i;
 	m_iGridSize = (m_iGridNumber+2)*(m_iGridNumber+2);
-	for(int i = 0; i < MAX_HEIGHT_MAP_COUNT;i++)
+	for( i = 0; i < MAX_HEIGHT_MAP_COUNT;i++)
 	{
 		m_vfHeightMap[i] = 0;
 		//if(i < MAX_VERTEX_MAP_COUNT)
 		//	m_vVertices[i] = 0;
 	}
+
+	for( i = 0; i < VELOCITY_COUNT; i++)
+	{
+		m_vfWaveVelocity[i] = 0;
+	}
+	
 }
 
 StableFluidsGrid::~StableFluidsGrid(void)
@@ -98,6 +105,10 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 	m_vfBoundaryU	= new float[m_iGridSize];
 	m_vfBoundaryV	= new float[m_iGridSize];
 
+	m_vfWaveVelocity[VELOCITY_U] = new float[m_iGridSize];
+	m_vfWaveVelocity[VELOCITY_V] = new float[m_iGridSize];
+	memset(m_vfWaveVelocity[VELOCITY_U], 0, m_iGridSize * sizeof(m_vfWaveVelocity[VELOCITY_U]));
+	memset(m_vfWaveVelocity[VELOCITY_V], 0, m_iGridSize * sizeof(m_vfWaveVelocity[VELOCITY_V]));
 	memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
 
 	clear();
@@ -207,11 +218,23 @@ void StableFluidsGrid::release(void)
 	}
 
 	for(int i = 0; i < MAX_HEIGHT_MAP_COUNT;i++)
+	{
 		if(m_vfHeightMap[i] != NULL)
 		{
 			delete m_vfHeightMap[i];
 			m_vfHeightMap[i] = 0;
 		}
+	}
+
+	for(int i = 0; i < VELOCITY_COUNT;i++)
+	{
+		if(m_vfWaveVelocity[i] != NULL)
+		{
+			delete m_vfWaveVelocity[i];
+			m_vfWaveVelocity[i] = 0;
+		}
+	}
+
 	if(m_pSceneMgr != NULL)
 	{
 		if(m_pManualNode != NULL)
@@ -415,7 +438,7 @@ void StableFluidsGrid::updateMesh(float timePass)
 	float *buf = m_vfHeightMap[m_iCurrentMap] ; //new map
 	float *buf1 = m_vfHeightMap[(m_iCurrentMap+2)%3] ;//current map
 	float *buf2 = m_vfHeightMap[(m_iCurrentMap+1)%3] ;//prev map
-	wave_step (m_iGridNumber+2, buf, buf1, buf2, m_vfDumpening, timePass);
+	wave_step (m_iGridNumber+2, buf, buf1, buf2, m_vfDumpening, timePass, m_vfWaveVelocity);
 
 	float *vfU = NULL, *vfV = NULL;
 
@@ -434,16 +457,19 @@ void StableFluidsGrid::updateMesh(float timePass)
 		vfU = m_vfBoundaryU;
 		vfV = m_vfBoundaryV;
 		break;
+	case DISPLAY_WAVE_EQUATION:
+		vfU = m_vfWaveVelocity[VELOCITY_U];
+		vfV = m_vfWaveVelocity[VELOCITY_V];
 	default:
 		break;
 	}
-	if(vfU != NULL && vfV != NULL)
+	//if(vfU != NULL && vfV != NULL)
 		updateDebug(vfU, vfV);
-	else
-	{
-		if(m_pManuObj != NULL)
-			m_pManuObj->clear();
-	}
+	//else
+	//{
+	//	if(m_pManuObj != NULL)
+	//		m_pManuObj->clear();
+	//}
 
 	switch(m_eMapDisplayType)
 	{

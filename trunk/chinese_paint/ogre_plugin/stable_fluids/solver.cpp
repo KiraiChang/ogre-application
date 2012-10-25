@@ -108,7 +108,7 @@ void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc,
 	project ( N, u, v, u0, v0 );
 }
 
-void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampening, float timePass )
+void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampening, float timePass, float *velocity[2] )
 {
 	int x, y;
 	//float height_x1y1;
@@ -119,6 +119,8 @@ void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampenin
 	for(y=1;y<N;y++)
 	{ 
 		float *row = buf + y*(N) ;
+		float *u = velocity[0] + y*(N) ;
+		float *v = velocity[1] + y*(N) ;
 		float *row1 = buf1 + y*(N) ;
 		float *row1up = buf1 + (y-1)*(N) ;
 		float *row1down = buf1 + (y+1)*(N) ;
@@ -133,8 +135,10 @@ void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampenin
 			//height_x1y0 = row1up[x];
 			//height_x1y2 = row1down[x];
 			//dum = dump[x] ;
-
-			float force = 2 * dump[x] *  (row1[x-1] + row1[x+1] + row1up[x]+row1down[x] - (4 * row[x]));
+			//float force = 2 * dump[x] *  (row1[x-1] + row1[x+1] + row1up[x]+row1down[x] - (4 * row[x]));
+			u[x] = - 2 * dump[x] *  (row1[x-1] + row1[x+1] - (2 * row[x]));
+			v[x] = - 2 * dump[x] *  (row1up[x]+row1down[x] - (2 * row[x]));
+			float force = - (u[x] + v[x]);
 			float newHight =  (1.99 * row1[x]) - (0.99 * row2[x]) + (0.5 * force * dt);
 			row[x] = newHight;
 		}
