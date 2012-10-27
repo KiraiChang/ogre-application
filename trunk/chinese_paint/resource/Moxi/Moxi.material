@@ -16,7 +16,19 @@ fragment_program ChinesePaint/Moxi/BlockPS cg
 	entry_point main1
 	profiles ps_3_0 fp30
 }
-
+material ChinesePaint/Background
+{
+	technique
+	{
+		pass Background
+		{
+			texture_unit Background
+			{
+				texture background.png
+			}
+		}
+	}
+}
 material ChinesePaint/Moxi
 {
 	technique

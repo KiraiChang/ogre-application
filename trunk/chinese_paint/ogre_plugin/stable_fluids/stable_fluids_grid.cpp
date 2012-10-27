@@ -300,10 +300,12 @@ void StableFluidsGrid::release(void)
 void StableFluidsGrid::updateParticle(float timePass)
 {
 	Ogre::Particle* particle = NULL;
-
+	float *vfU = NULL, *vfV = NULL;
 	unsigned int index;
 	float u0, u1, v0, v1, u, v;
 	int x0, x1, y0, y1;
+	vfU = m_vfU; vfV = m_vfU;
+	vfU = m_vfWaveVelocity[VELOCITY_U]; vfV = m_vfWaveVelocity[VELOCITY_V];
 	Ogre::ParticleIterator ite = m_pPS->_getIterator();
 	while(!ite.end())
 	{
@@ -315,11 +317,11 @@ void StableFluidsGrid::updateParticle(float timePass)
 		x0 = (int)pos.x; y0 = (int)pos.z;
 		x1 = x0 + 1; y1 = y0 + 1;
 		u1 = pos.x-x0; u0 = 1-u1; v1 = pos.z-y0; v0 = 1-v1;
-		u = u0*(v0*m_vfU[IX(x0,y0)]+v1*m_vfU[IX(x0,y1)])+
-			u1*(v0*m_vfU[IX(x1,y0)]+v1*m_vfU[IX(x1,y1)]);
+		u = u0*(v0*vfU[IX(x0,y0)]+v1*vfV[IX(x0,y1)])+
+			u1*(v0*vfU[IX(x1,y0)]+v1*vfV[IX(x1,y1)]);
 
-		v = u0*(v0*m_vfV[IX(x0,y0)]+v1*m_vfV[IX(x0,y1)])+
-			u1*(v0*m_vfV[IX(x1,y0)]+v1*m_vfV[IX(x1,y1)]);
+		v = u0*(v0*vfU[IX(x0,y0)]+v1*vfV[IX(x0,y1)])+
+			u1*(v0*vfU[IX(x1,y0)]+v1*vfV[IX(x1,y1)]);
 
 		pos.x += u * timePass * PARTICLE_MOVE_SPEED; pos.z += v * timePass * PARTICLE_MOVE_SPEED;
 		//Ogre::Vector2 nor(m_vfU[index], m_vfV[index]);
@@ -463,13 +465,13 @@ void StableFluidsGrid::updateMesh(float timePass)
 	default:
 		break;
 	}
-	//if(vfU != NULL && vfV != NULL)
+	if(vfU != NULL && vfV != NULL)
 		updateDebug(vfU, vfV);
-	//else
-	//{
-	//	if(m_pManuObj != NULL)
-	//		m_pManuObj->clear();
-	//}
+	else
+	{
+		if(m_pManuObj != NULL)
+			m_pManuObj->clear();
+	}
 
 	switch(m_eMapDisplayType)
 	{
@@ -491,9 +493,9 @@ void StableFluidsGrid::updateMesh(float timePass)
 	setMeshBoundary();
 	if(m_bAddForce)
 	{
-		setMeshEnforce(timePass);
+		//setMeshEnforce(timePass);
 		//vel_step ( m_iGridNumber, m_vfU, m_vfV, m_vfUPrev, m_vfVPrev, m_fVisc, timePass);
-		setMeshBoundary();
+		//setMeshBoundary();
 	}
 	
 	updateParticle(timePass);
@@ -513,10 +515,10 @@ void StableFluidsGrid::updateDebug(float *vfU, float *vfV)
 	for(i = 1;i <= m_iGridNumber;i++)
 	{
 		
-		x = i * h;//(i-0.5f)*h;
+		x = (i-0.5f)*h;
 		for(j = 1;j <= m_iGridNumber;j++)
 		{
-			y = j * h;//(j-0.5f)*h;
+			y = (j-0.5f)*h;
 			index = (i)+(m_iGridNumber+2)*(j);
 			Ogre::Vector3 origin(x*m_iGridNumber, 0, y*m_iGridNumber);
 			Ogre::Vector3 to((x+vfU[index])*m_iGridNumber, 0, (y+vfV[index])*m_iGridNumber);

@@ -165,7 +165,7 @@ void StableFluids::init()
         plane, 1500, 1500, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
  
     m_pPaper = m_pSceneMgr->createEntity("PaperEntity", "Paper");
-	m_pPaper->setMaterialName("ChinesePaint/Moxi");
+	m_pPaper->setMaterialName("ChinesePaint/Background");
     m_pPaperNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
 	m_pPaperNode->attachObject(m_pPaper);
 	m_pPaperNode->setPosition(0.0, -2.0, 0.0);
