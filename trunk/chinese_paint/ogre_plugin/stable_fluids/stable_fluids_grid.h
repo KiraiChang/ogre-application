@@ -5,10 +5,12 @@
 #include <ogre.h>
 #define FISH_SCALE_SIZE 1.5
 class SolidMesh;
+class MappingAlgorithm;
 class StableFluidsGrid : public WaterInterface
 {
 private:
 	//float									m_fTimeSpeed;
+	MappingAlgorithm *						m_pMapping3DTo2D;
 	float									m_fDiff;
 	float									m_fVisc;
 	float									m_fForce;
@@ -99,7 +101,7 @@ public:
 	//void									updateMeshData(Ogre::SceneNode *node, Ogre::Entity *entity);//get mesh vertex data from mesh
 	void									updateMeshData(SolidMesh *mesh, bool reset = false);
 	//void									calcMeshFace();//compute fish boundary to m_vbIntersectGrid
-	void									calcMeshFace(size_t verticesCount, Ogre::Vector3 *vertices, bool reset = false);//compute fish boundary to m_vbIntersectGrid
+	//void									calcMeshFace(size_t verticesCount, Ogre::Vector3 *vertices, bool reset = false);//compute fish boundary to m_vbIntersectGrid
 	//void									calcMeshEnforce();//compute fish animation force to m_vfEnforceU and m_vfEnforceV
 	void									calcMeshEnforce(size_t verticesCount, Ogre::Vector3 *vertices, Ogre::Vector3 *prev, bool reset = false);//compute fish animation force to m_vfEnforceU and m_vfEnforceV
 	void									setMeshBoundary(bool setDenstity = true);//set m_vbIntersectGrid to m_vfU and m_vfV
