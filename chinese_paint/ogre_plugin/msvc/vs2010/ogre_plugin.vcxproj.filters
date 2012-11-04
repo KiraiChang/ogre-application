@@ -57,6 +57,9 @@
     <ClCompile Include="..\..\stable_fluids\solid_mesh.cpp">
       <Filter>stable_fluids</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\stable_fluids\mapping_algorithm.cpp">
+      <Filter>stable_fluids</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_plugin\ogre_plugin.h">
@@ -93,6 +96,9 @@
       <Filter>ogre_tool</Filter>
     </ClInclude>
     <ClInclude Include="..\..\stable_fluids\solid_mesh.h">
+      <Filter>stable_fluids</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stable_fluids\mapping_algorithm.h">
       <Filter>stable_fluids</Filter>
     </ClInclude>
   </ItemGroup>

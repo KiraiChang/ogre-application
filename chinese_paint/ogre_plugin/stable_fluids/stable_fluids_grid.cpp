@@ -1,6 +1,7 @@
 #include "stable_fluids_grid.h"
 #include "../ogre_tool/ogre_mesh_tool.h"
 #include "solid_mesh.h"
+#include "mapping_algorithm.h"
 #include <iostream>
 
 extern void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt );
@@ -47,6 +48,7 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_pMiniScreen(NULL),
 	m_pPS(NULL),
 	m_pPSNode(NULL),
+	m_pMapping3DTo2D(NULL),
 	//m_sVertexCount(0),
 	//m_sIndex_count(0),
 	//m_vIndices(NULL),
@@ -79,6 +81,7 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 		m_vfWaveVelocity[i] = 0;
 	}
 	
+	m_pMapping3DTo2D = (MappingAlgorithm *)new ConvexHull();
 }
 
 StableFluidsGrid::~StableFluidsGrid(void)
@@ -605,7 +608,14 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 	m_pPSNode->setPosition( mesh->getNode()->getPosition());
 	m_pPSNode->setOrientation(mesh->getNode()->getOrientation());
 
-	calcMeshFace(mesh->getVertexCount(), mesh->getVertices(), reset);
+	if(reset)
+		memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
+
+	if(m_pMapping3DTo2D != NULL && mesh->getVertices() != NULL)
+	{
+		m_pMapping3DTo2D->process(mesh->getVertexCount(), mesh->getVertices(), m_vbIntersectGrid, m_iGridNumber);
+	}
+	//calcMeshFace(mesh->getVertexCount(), mesh->getVertices(), reset);
 	//if(m_bAddForce)
 	//{
 	//	//when fish move front fluid will give back force
@@ -670,58 +680,58 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 //	}
 //}
 
-void StableFluidsGrid::calcMeshFace(size_t verticesCount, Ogre::Vector3 *vertices, bool reset)
-{
-	if(reset)
-		memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
-
-	if(vertices == NULL)
-		return;
-	int i, x, y, ite;
-	unsigned int index;
-	bool hasEdge = false;
-	int front, back;
-	for(i = 0;i < verticesCount;i++)
-	{
-		if(vertices[i].y < 1.0 && vertices[i].y > -1.0)//the y position at surface
-		{
-			x = ((int)vertices[i].x);
-
-			y = ((int)vertices[i].z);
-
-			index = x +  (y*(m_iGridNumber+2));
-			if(index < m_iGridSize)
-				m_vbIntersectGrid[index] = 1.0;//draw contour of object
-		}
-	}
-
-	for(y = 1; y < m_iGridNumber; y++)//fill contour hole
-	{
-		hasEdge = false;
-		for(x = 1; x < m_iGridNumber; x++)
-		{
-			index = x + (y*(m_iGridNumber+2));
-			if(m_vbIntersectGrid[index])
-			{
-				if(!hasEdge)
-				{
-					front = x;
-					hasEdge = true;
-				}
-				else
-				{
-					back = x;
-					for(ite = front+1; ite < back; ite++)
-					{
-						index = ite + (y*(m_iGridNumber+2));
-						m_vbIntersectGrid[index] = true;
-					}
-					front = x;
-				}
-			}
-		}
-	}
-}
+//void StableFluidsGrid::calcMeshFace(size_t verticesCount, Ogre::Vector3 *vertices, bool reset)
+//{
+//	if(reset)
+//		memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
+//
+//	if(vertices == NULL)
+//		return;
+//	int i, x, y, ite;
+//	unsigned int index;
+//	bool hasEdge = false;
+//	int front, back;
+//	for(i = 0;i < verticesCount;i++)
+//	{
+//		if(vertices[i].y < 1.0 && vertices[i].y > -1.0)//the y position at surface
+//		{
+//			x = ((int)vertices[i].x);
+//
+//			y = ((int)vertices[i].z);
+//
+//			index = x +  (y*(m_iGridNumber+2));
+//			if(index < m_iGridSize)
+//				m_vbIntersectGrid[index] = 1.0;//draw contour of object
+//		}
+//	}
+//
+//	for(y = 1; y < m_iGridNumber; y++)//fill contour hole
+//	{
+//		hasEdge = false;
+//		for(x = 1; x < m_iGridNumber; x++)
+//		{
+//			index = x + (y*(m_iGridNumber+2));
+//			if(m_vbIntersectGrid[index])
+//			{
+//				if(!hasEdge)
+//				{
+//					front = x;
+//					hasEdge = true;
+//				}
+//				else
+//				{
+//					back = x;
+//					for(ite = front+1; ite < back; ite++)
+//					{
+//						index = ite + (y*(m_iGridNumber+2));
+//						m_vbIntersectGrid[index] = true;
+//					}
+//					front = x;
+//				}
+//			}
+//		}
+//	}
+//}
 
 //void StableFluidsGrid::calcMeshEnforce()
 //{
