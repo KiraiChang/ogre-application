@@ -2,6 +2,7 @@
 #include "../ogre_tool/ogre_mesh_tool.h"
 #include "solid_mesh.h"
 #include "mapping_algorithm.h"
+#include "particle_simulation.h"
 #include <iostream>
 
 extern void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt );
@@ -49,6 +50,7 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_pPS(NULL),
 	m_pPSNode(NULL),
 	m_pMapping3DTo2D(NULL),
+	m_pParticleSimulation(NULL),
 	//m_sVertexCount(0),
 	//m_sIndex_count(0),
 	//m_vIndices(NULL),
@@ -82,6 +84,7 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	}
 	
 	m_pMapping3DTo2D = (MappingAlgorithm *)new ConvexHull();
+	m_pParticleSimulation = (ParticleSimulation *)new WaveParticle();
 }
 
 StableFluidsGrid::~StableFluidsGrid(void)
@@ -300,133 +303,133 @@ void StableFluidsGrid::release(void)
 	Ogre::TextureManager::getSingleton().remove("heightSampler");
 }
 
-void StableFluidsGrid::updateParticle(float timePass)
-{
-	Ogre::Particle* particle = NULL;
-	float *vfU = NULL, *vfV = NULL;
-	unsigned int index;
-	float u0, u1, v0, v1, u, v;
-	int x0, x1, y0, y1;
-	vfU = m_vfU; vfV = m_vfU;
-	vfU = m_vfWaveVelocity[VELOCITY_U]; vfV = m_vfWaveVelocity[VELOCITY_V];
-	Ogre::ParticleIterator ite = m_pPS->_getIterator();
-	while(!ite.end())
-	{
-		particle = ite.getNext();
-		Ogre::Vector3 pos = particle->position;
-		//index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
-		//if(index > m_iGridSize)
-		//	break;
-		x0 = (int)pos.x; y0 = (int)pos.z;
-		x1 = x0 + 1; y1 = y0 + 1;
-		u1 = pos.x-x0; u0 = 1-u1; v1 = pos.z-y0; v0 = 1-v1;
-		u = u0*(v0*vfU[IX(x0,y0)]+v1*vfV[IX(x0,y1)])+
-			u1*(v0*vfU[IX(x1,y0)]+v1*vfV[IX(x1,y1)]);
-
-		v = u0*(v0*vfU[IX(x0,y0)]+v1*vfV[IX(x0,y1)])+
-			u1*(v0*vfU[IX(x1,y0)]+v1*vfV[IX(x1,y1)]);
-
-		pos.x += u * timePass * PARTICLE_MOVE_SPEED; pos.z += v * timePass * PARTICLE_MOVE_SPEED;
-		//Ogre::Vector2 nor(m_vfU[index], m_vfV[index]);
-		//nor.normalise();
-		//nor *= timePass * PARTICLE_MOVE_SPEED;
-		//pos.x += nor.x;
-		//pos.z += nor.y;
-
-		//index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
-		//if(m_vbIntersectGrid[index])
-		//{
-		//	Ogre::Vector3 dir = pos - m_v3FishPos;
-		//	dir.normalise();
-		//	dir *= timePass * PARTICLE_MOVE_SPEED;
-		//	pos.x += dir.x;
-		//	pos.z += dir.z;
-		//}
-		particle->position = pos;
-	}
-	if(m_bAddForce)
-	{
-		float dirX;
-		float dirZ;
-		float halfCount = PARTICLE_COUNT / 2;
-		for(int i = 0; i < PARTICLE_COUNT; i++)
-		{
-			particle = m_pPS->createParticle();
-			if(particle != NULL)
-			{
-				if(halfCount >= i)
-					dirX = PARTICLE_X_BEG + ((halfCount-i) * PARTICLE_X_DIFF);
-				else
-					dirX = PARTICLE_X_BEG + ((i-halfCount) * PARTICLE_X_DIFF);
-				dirZ = PARTICLE_Z_BEG + (i * PARTICLE_Z_DIFF);
-				particle->timeToLive = PARTICLE_LIVE_TIME;
-				particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-				particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(dirX, 0.0, dirZ) * FISH_SCALE_SIZE;
-			}
-		}
-
-		//particle = m_pPS->createParticle();
-		//if(particle != NULL)
-		//{
-		//	particle->timeToLive = PARTICLE_LIVE_TIME;
-		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		//	particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, -0.75) * FISH_SCALE_SIZE;
-		//}
-		//particle = m_pPS->createParticle();
-		//if(particle != NULL)
-		//{
-		//	particle->timeToLive = PARTICLE_LIVE_TIME;
-		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		//	particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, -0.5) * FISH_SCALE_SIZE;
-		//}
-		//particle = m_pPS->createParticle();
-		//if(particle != NULL)
-		//{
-		//	particle->timeToLive = PARTICLE_LIVE_TIME;
-		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		//	particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.5, 0.0, 0) * FISH_SCALE_SIZE;
-		//}
-		//particle = m_pPS->createParticle();
-		//if(particle != NULL)
-		//{
-		//	particle->timeToLive = PARTICLE_LIVE_TIME;
-		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		//	particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, 0.5) * FISH_SCALE_SIZE;
-		//}
-		//particle = m_pPS->createParticle();
-		//if(particle != NULL)
-		//{
-		//	particle->timeToLive = PARTICLE_LIVE_TIME;
-		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		//	particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, 0.75) * FISH_SCALE_SIZE;
-		//}
-	}
-
-	if(m_bExternlForce)
-	{
-		//particle = m_pPS->createParticle();
-		//if(particle != NULL)
-		//{
-		//	particle->timeToLive = PARTICLE_LIVE_TIME;
-		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-		//	particle->position.x = m_iGridNumber/2;
-		//	particle->position.y = 0;
-		//	particle->position.z = m_iGridNumber - 20;
-		//}
-		for(int i = m_iGridNumber/2 - 2; i < m_iGridNumber/2 + 2;i++)
-		{
-			particle = m_pPS->createParticle();
-			if(particle != NULL)
-			{
-				particle->timeToLive = PARTICLE_LIVE_TIME;
-				particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
-				particle->position.x = i;
-				particle->position.y = 0;
-				particle->position.z = m_iGridNumber + EXTERNAL_FORCE_Y_POS_DIFF;
-			}
-		}
-	}
-}
+//void StableFluidsGrid::updateParticle(float timePass)
+//{
+//	Ogre::Particle* particle = NULL;
+//	float *vfU = NULL, *vfV = NULL;
+//	unsigned int index;
+//	float u0, u1, v0, v1, u, v;
+//	int x0, x1, y0, y1;
+//	vfU = m_vfU; vfV = m_vfU;
+//	vfU = m_vfWaveVelocity[VELOCITY_U]; vfV = m_vfWaveVelocity[VELOCITY_V];
+//	Ogre::ParticleIterator ite = m_pPS->_getIterator();
+//	while(!ite.end())
+//	{
+//		particle = ite.getNext();
+//		Ogre::Vector3 pos = particle->position;
+//		//index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
+//		//if(index > m_iGridSize)
+//		//	break;
+//		x0 = (int)pos.x; y0 = (int)pos.z;
+//		x1 = x0 + 1; y1 = y0 + 1;
+//		u1 = pos.x-x0; u0 = 1-u1; v1 = pos.z-y0; v0 = 1-v1;
+//		u = u0*(v0*vfU[IX(x0,y0)]+v1*vfV[IX(x0,y1)])+
+//			u1*(v0*vfU[IX(x1,y0)]+v1*vfV[IX(x1,y1)]);
+//
+//		v = u0*(v0*vfU[IX(x0,y0)]+v1*vfV[IX(x0,y1)])+
+//			u1*(v0*vfU[IX(x1,y0)]+v1*vfV[IX(x1,y1)]);
+//
+//		pos.x += u * timePass * PARTICLE_MOVE_SPEED; pos.z += v * timePass * PARTICLE_MOVE_SPEED;
+//		//Ogre::Vector2 nor(m_vfU[index], m_vfV[index]);
+//		//nor.normalise();
+//		//nor *= timePass * PARTICLE_MOVE_SPEED;
+//		//pos.x += nor.x;
+//		//pos.z += nor.y;
+//
+//		//index = ((int)pos.x)+(m_iGridNumber+2)*((int)pos.z);
+//		//if(m_vbIntersectGrid[index])
+//		//{
+//		//	Ogre::Vector3 dir = pos - m_v3FishPos;
+//		//	dir.normalise();
+//		//	dir *= timePass * PARTICLE_MOVE_SPEED;
+//		//	pos.x += dir.x;
+//		//	pos.z += dir.z;
+//		//}
+//		particle->position = pos;
+//	}
+//	if(m_bAddForce)
+//	{
+//		float dirX;
+//		float dirZ;
+//		float halfCount = PARTICLE_COUNT / 2;
+//		for(int i = 0; i < PARTICLE_COUNT; i++)
+//		{
+//			particle = m_pPS->createParticle();
+//			if(particle != NULL)
+//			{
+//				if(halfCount >= i)
+//					dirX = PARTICLE_X_BEG + ((halfCount-i) * PARTICLE_X_DIFF);
+//				else
+//					dirX = PARTICLE_X_BEG + ((i-halfCount) * PARTICLE_X_DIFF);
+//				dirZ = PARTICLE_Z_BEG + (i * PARTICLE_Z_DIFF);
+//				particle->timeToLive = PARTICLE_LIVE_TIME;
+//				particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+//				particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(dirX, 0.0, dirZ) * FISH_SCALE_SIZE;
+//			}
+//		}
+//
+//		//particle = m_pPS->createParticle();
+//		//if(particle != NULL)
+//		//{
+//		//	particle->timeToLive = PARTICLE_LIVE_TIME;
+//		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+//		//	particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, -0.75) * FISH_SCALE_SIZE;
+//		//}
+//		//particle = m_pPS->createParticle();
+//		//if(particle != NULL)
+//		//{
+//		//	particle->timeToLive = PARTICLE_LIVE_TIME;
+//		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+//		//	particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, -0.5) * FISH_SCALE_SIZE;
+//		//}
+//		//particle = m_pPS->createParticle();
+//		//if(particle != NULL)
+//		//{
+//		//	particle->timeToLive = PARTICLE_LIVE_TIME;
+//		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+//		//	particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.5, 0.0, 0) * FISH_SCALE_SIZE;
+//		//}
+//		//particle = m_pPS->createParticle();
+//		//if(particle != NULL)
+//		//{
+//		//	particle->timeToLive = PARTICLE_LIVE_TIME;
+//		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+//		//	particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.25, 0.0, 0.5) * FISH_SCALE_SIZE;
+//		//}
+//		//particle = m_pPS->createParticle();
+//		//if(particle != NULL)
+//		//{
+//		//	particle->timeToLive = PARTICLE_LIVE_TIME;
+//		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+//		//	particle->position = m_pPS->getParentSceneNode()->getPosition() + m_pPS->getParentSceneNode()->getOrientation() * Ogre::Vector3(-4.0, 0.0, 0.75) * FISH_SCALE_SIZE;
+//		//}
+//	}
+//
+//	if(m_bExternlForce)
+//	{
+//		//particle = m_pPS->createParticle();
+//		//if(particle != NULL)
+//		//{
+//		//	particle->timeToLive = PARTICLE_LIVE_TIME;
+//		//	particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+//		//	particle->position.x = m_iGridNumber/2;
+//		//	particle->position.y = 0;
+//		//	particle->position.z = m_iGridNumber - 20;
+//		//}
+//		for(int i = m_iGridNumber/2 - 2; i < m_iGridNumber/2 + 2;i++)
+//		{
+//			particle = m_pPS->createParticle();
+//			if(particle != NULL)
+//			{
+//				particle->timeToLive = PARTICLE_LIVE_TIME;
+//				particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+//				particle->position.x = i;
+//				particle->position.y = 0;
+//				particle->position.z = m_iGridNumber + EXTERNAL_FORCE_Y_POS_DIFF;
+//			}
+//		}
+//	}
+//}
 
 void StableFluidsGrid::updateMesh(float timePass)
 {
@@ -501,7 +504,11 @@ void StableFluidsGrid::updateMesh(float timePass)
 		//setMeshBoundary();
 	}
 	
-	updateParticle(timePass);
+	//updateParticle(timePass);
+	if(m_pParticleSimulation != NULL)
+	{
+		m_pParticleSimulation->update(m_pPS, timePass, m_vfWaveVelocity[VELOCITY_U], m_vfWaveVelocity[VELOCITY_V], m_iGridNumber);
+	}
 }
 
 void StableFluidsGrid::updateDebug(float *vfU, float *vfV)
@@ -608,12 +615,18 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 	m_pPSNode->setPosition( mesh->getNode()->getPosition());
 	m_pPSNode->setOrientation(mesh->getNode()->getOrientation());
 
+	std::vector<Ogre::Vector2> contour;
 	if(reset)
 		memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
 
 	if(m_pMapping3DTo2D != NULL && mesh->getVertices() != NULL)
 	{
-		m_pMapping3DTo2D->process(mesh->getVertexCount(), mesh->getVertices(), m_vbIntersectGrid, m_iGridNumber);
+		contour = m_pMapping3DTo2D->process(mesh->getVertexCount(), mesh->getVertices(), m_vbIntersectGrid, m_iGridNumber);
+	}
+
+	if(m_pParticleSimulation != NULL)
+	{
+		m_pParticleSimulation->initParticle(m_pPS, contour);
 	}
 	//calcMeshFace(mesh->getVertexCount(), mesh->getVertices(), reset);
 	//if(m_bAddForce)
