@@ -1,10 +1,9 @@
 #include "mapping_algorithm.h"
-#include <ogre.h>
-#include <set>
-#include <vector>
 
-void Normal::process(size_t verticesCount, Ogre::Vector3 *vertices, float *grid, size_t gridNumber)
+
+V_POINT Normal::process(size_t verticesCount, Ogre::Vector3 *vertices, float *grid, size_t gridNumber)
 {
+	V_POINT result;
 	int gridSize = (gridNumber+2)*(gridNumber+2);
 	int i, x, y, ite;
 	unsigned int index;
@@ -50,6 +49,7 @@ void Normal::process(size_t verticesCount, Ogre::Vector3 *vertices, float *grid,
 			}
 		}
 	}
+	return result;
 }
 
 double cross(Ogre::Vector2 &o, Ogre::Vector2 &a, Ogre::Vector2 &b)
@@ -62,17 +62,15 @@ bool compare(Ogre::Vector2 &a, Ogre::Vector2 &b)
 	return (a.x < b.x) || (a.x == b.x && a.y < b.y);
 }
 
-void ConvexHull::process(size_t verticesCount, Ogre::Vector3 *vertices, float *grid, size_t gridNumber)
+V_POINT ConvexHull::process(size_t verticesCount, Ogre::Vector3 *vertices, float *grid, size_t gridNumber)
 {
 	int i, x, y;
 	unsigned int index;
 	Ogre::Vector2 p1;
 	Ogre::Vector2 p2;
 	Ogre::Vector2 dist;
-	std::set<Ogre::Vector2> vPointSet;
-	std::set<Ogre::Vector2>::iterator ite;
-	std::vector<Ogre::Vector2> vPoint;
-	std::vector<Ogre::Vector2> vResult;
+	V_POINT vPoint;
+	V_POINT vResult;
 	for(i = 0;i < verticesCount;i++)
 	{
 		if(vertices[i].y < 1.0 && vertices[i].y > -1.0)//the y position at surface
@@ -112,6 +110,7 @@ void ConvexHull::process(size_t verticesCount, Ogre::Vector3 *vertices, float *g
 	}
 
 	m--;    // 最後一個點是重複出現兩次的起點，故要減一。
+	vResult.resize(m);
 	for(int i = 0; i < m; i++)
 	{
 		p1 = vResult[i];
@@ -134,5 +133,6 @@ void ConvexHull::process(size_t verticesCount, Ogre::Vector3 *vertices, float *g
 		index = x +  (y*(gridNumber+2));
 		grid[index] = 1.0;
 	}
+	return vResult;
 }
 

@@ -6,11 +6,13 @@
 #define FISH_SCALE_SIZE 1.5
 class SolidMesh;
 class MappingAlgorithm;
+class ParticleSimulation;
 class StableFluidsGrid : public WaterInterface
 {
 private:
 	//float									m_fTimeSpeed;
 	MappingAlgorithm *						m_pMapping3DTo2D;
+	ParticleSimulation *					m_pParticleSimulation;
 	float									m_fDiff;
 	float									m_fVisc;
 	float									m_fForce;
@@ -92,7 +94,7 @@ public:
 											~StableFluidsGrid(void);
 	void									init(Ogre::SceneManager *mgr);
 	void									release(void);
-	void									updateParticle(float timePass);//draw particle
+	//void									updateParticle(float timePass);//draw particle
 	void									updateMesh(float timePass);
 	void									updateDebug(float *vfU, float *vfV);//draw velocity field
 	void									push(int N, float x, float y, float addx, float addy, float depth, bool absolute, float *current);//set presure to 00 10 01 11 
