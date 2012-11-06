@@ -12,7 +12,7 @@ extern void wave_step ( int N, float * buf, float * buf1, float * buf2, float *d
 
 static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
-static float FISH_DEPTH = 0.01;
+static float FISH_DEPTH = 0.1;
 static float ANIMATIONS_PER_SECOND = 1.0f;
 static float FORCE_STRENGTH = 0.04 / FISH_SCALE_SIZE;//0.02;
 #define PARTICLE_LIVE_TIME 20
@@ -553,6 +553,7 @@ void StableFluidsGrid::push(int N, float x, float y, float addx, float addy, flo
 		*vertex = depth*power ;
 	else
 		*vertex += depth*power ;
+	//printf("pos: %f, %f ,depth:%f, power:%f, density:%f\n", y+addy, x+addx, depth, power, *vertex);
 }
 
 void StableFluidsGrid::push(float x, float y, float depth, bool absolute)//this function just for test
@@ -626,6 +627,12 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 
 	if(m_pParticleSimulation != NULL)
 	{
+		Ogre::Vector2 center;
+		m_pParticleSimulation->process(contour, center);
+		push(m_iGridNumber+2, center.x, center.y, 0, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+		push(m_iGridNumber+2, center.x, center.y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+		push(m_iGridNumber+2, center.x, center.y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+		push(m_iGridNumber+2, center.x, center.y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 		m_pParticleSimulation->initParticle(m_pPS, contour);
 	}
 	//calcMeshFace(mesh->getVertexCount(), mesh->getVertices(), reset);
@@ -819,15 +826,6 @@ void StableFluidsGrid::setMeshBoundary(bool setDenstity)
 			index = x + (y*(m_iGridNumber+2));
 			if(m_vbIntersectGrid[index])
 			{
-				//set fish model to density field
-				if(setDenstity)
-				{
-					push(m_iGridNumber+2, x, y, 0, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-					push(m_iGridNumber+2, x, y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-					push(m_iGridNumber+2, x, y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-					push(m_iGridNumber+2, x, y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-				}
-
 				//set the velocity inside model to zero
 				m_vfU[index] = 0;
 				m_vfV[index] = 0;

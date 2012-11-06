@@ -114,7 +114,7 @@ V_POINT ConvexHull::process(size_t verticesCount, Ogre::Vector3 *vertices, float
 	for(int i = 0; i < m; i++)
 	{
 		p1 = vResult[i];
-		p2 = vResult[(i+1)%size];
+		p2 = vResult[(i+1)%m];
 		x = (int)p1.x;
 		y = (int)p1.y;
 		index = x +  (y*(gridNumber+2));
