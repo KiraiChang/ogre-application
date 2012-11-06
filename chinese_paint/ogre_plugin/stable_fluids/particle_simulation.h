@@ -9,6 +9,7 @@ class ParticleSimulation
 {
 public:
 	virtual void update(Ogre::ParticleSystem *ps, float timePass, float *vU, float *vV, int gridNumber) = 0;
+	virtual void process(V_POINT &vPoint, Ogre::Vector2 &center) = 0;
 	virtual void initParticle(Ogre::ParticleSystem *ps, V_POINT vPoint) = 0;
 };
 
@@ -16,6 +17,7 @@ class WaveParticle : ParticleSimulation
 {
 public:
 	virtual void update(Ogre::ParticleSystem *ps, float timePass, float *vU, float *vV, int gridNumber);
+	virtual void process(V_POINT &vPoint, Ogre::Vector2 &center);
 	virtual void initParticle(Ogre::ParticleSystem *ps, V_POINT vPoint);
 };
 #endif //_PARTICLE_SIMULATION_
