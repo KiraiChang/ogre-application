@@ -136,10 +136,10 @@ void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampenin
 			//height_x1y2 = row1down[x];
 			//dum = dump[x] ;
 			//float force = 2 * dump[x] *  (row1[x-1] + row1[x+1] + row1up[x]+row1down[x] - (4 * row[x]));
-			u[x] = dump[x] *  (row1[x-1] + row1[x+1] - (2 * row[x]));
-			v[x] = dump[x] *  (row1up[x]+row1down[x] - (2 * row[x]));
+			u[x] = 10 * dump[x] *  (row1[x-1] + row1[x+1] - (2 * row[x])) * dt;
+			v[x] = 10 * dump[x] *  (row1up[x]+row1down[x] - (2 * row[x])) * dt;
 			float force = u[x] + v[x];
-			float newHight =  (1.99 * row1[x]) - (0.99 * row2[x]) + force * dt;
+			float newHight =  (1.99 * row1[x]) - (0.99 * row2[x]) + 0.1 * force;
 			row[x] = newHight;
 		}
 	}

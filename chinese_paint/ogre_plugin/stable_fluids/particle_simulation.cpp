@@ -1,6 +1,6 @@
 #include "particle_simulation.h"
 
-#define PARTICLE_MOVE_SPEED 25
+#define PARTICLE_MOVE_SPEED 100
 #define PARTICLE_LIVE_TIME 10
 #define PARTICLE_SIZE_X 0.5
 #define PARTICLE_SIZE_Y 0.5
@@ -18,16 +18,16 @@ void WaveParticle::update(Ogre::ParticleSystem *ps, float timePass, float *vU, f
 	{
 		particle = ite.getNext();
 		Ogre::Vector3 pos = particle->position;
-		x0 = (int)(pos.x-0.5); y0 = (int)(pos.z-0.5);
+		x0 = (int)pos.x; y0 = (int)pos.z;
 		x1 = x0 + 1; y1 = y0 + 1;
-		u1 = (pos.x-0.5)-x0; u0 = 1-u1; v1 = (pos.z-0.5)-y0; v0 = 1-v1;
+		u1 = pos.x-x0; u0 = 1-u1; v1 = pos.z-y0; v0 = 1-v1;
 		u = u0*(v0*vU[IX(x0,y0,gridNumber)]+v1*vV[IX(x0,y1,gridNumber)])+
 			u1*(v0*vU[IX(x1,y0,gridNumber)]+v1*vV[IX(x1,y1,gridNumber)]);
 
 		v = u0*(v0*vU[IX(x0,y0,gridNumber)]+v1*vV[IX(x0,y1,gridNumber)])+
 			u1*(v0*vU[IX(x1,y0,gridNumber)]+v1*vV[IX(x1,y1,gridNumber)]);
 
-		pos.x += u * timePass * PARTICLE_MOVE_SPEED; pos.z += v * timePass * PARTICLE_MOVE_SPEED;
+		pos.x += u * PARTICLE_MOVE_SPEED; pos.z += v * PARTICLE_MOVE_SPEED;
 		particle->position = pos;
 	}
 }
