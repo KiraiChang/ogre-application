@@ -6,7 +6,6 @@
 
 #define PANEL_WIDTH 200
 
-
 OgreSample::OgreSample() : m_pSim(0)
 {
 	mInfo["Title"] = "ChinesePaint";
@@ -21,7 +20,11 @@ void OgreSample::setupContent(void)
 {
 	mTrayMgr->hideLogo();
 	//m_pSim = new VTFWSimulation(mSceneMgr, mCamera, mWindow, mViewport);
-	m_pSim = new StableFluids(mSceneMgr, mCamera);
+	Ogre::SceneManager *mgr = mRoot->createSceneManager(Ogre::ST_GENERIC, mInfo["Title"]);
+	Ogre::Camera* cam = mgr->createCamera(mInfo["Title"] + "Camera");
+	mWindow->removeAllViewports();
+	mWindow->addViewport(cam);
+	m_pSim = new StableFluids(mgr, cam);
 	//m_pSim = new WaterSimulation(mSceneMgr, mCamera);
 	m_pSim->init();
 
@@ -46,6 +49,13 @@ void OgreSample::cleanupContent()
 		m_pSim->release();
 		delete m_pSim;
 		m_pSim = NULL;
+	}
+
+	Ogre::SceneManager *mgr = mRoot->getSceneManager(mInfo["Title"]);
+	if(mgr != NULL)
+	{
+		mgr->destroyCamera(mInfo["Title"] + "Camera");
+		mRoot->destroySceneManager(mgr);
 	}
 }
 
