@@ -19,6 +19,9 @@
     <Filter Include="ogre_tool">
       <UniqueIdentifier>{27585113-2e89-47ea-ba0e-9d8718de13d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="stable_fluids\stroke">
+      <UniqueIdentifier>{b26540cf-ee8d-4450-95c6-4fcd7bd298d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ogre_plugin\ogre_plugin.cpp">
@@ -63,6 +66,12 @@
     <ClCompile Include="..\..\stable_fluids\particle_simulation.cpp">
       <Filter>stable_fluids</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\stable_fluids\stroke\stroke.cpp">
+      <Filter>stable_fluids\stroke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stable_fluids\stroke\stroke_manager.cpp">
+      <Filter>stable_fluids\stroke</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\ogre_plugin\ogre_plugin.h">
@@ -106,6 +115,15 @@
     </ClInclude>
     <ClInclude Include="..\..\stable_fluids\particle_simulation.h">
       <Filter>stable_fluids</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stable_fluids\stroke\stroke.h">
+      <Filter>stable_fluids\stroke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stable_fluids\stroke\stroke_manager.h">
+      <Filter>stable_fluids\stroke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stable_fluids\stroke\point.h">
+      <Filter>stable_fluids\stroke</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -20,6 +20,8 @@
     <ClCompile Include="..\..\stable_fluids\solver.cpp" />
     <ClCompile Include="..\..\stable_fluids\stable_fluids_grid.cpp" />
     <ClCompile Include="..\..\stable_fluids\stable_fluids.cpp" />
+    <ClCompile Include="..\..\stable_fluids\stroke\stroke.cpp" />
+    <ClCompile Include="..\..\stable_fluids\stroke\stroke_manager.cpp" />
     <ClCompile Include="..\..\vtfw_simulation\vtfw_mesh.cpp" />
     <ClCompile Include="..\..\vtfw_simulation\vtfw_render_listener.cpp" />
     <ClCompile Include="..\..\vtfw_simulation\vtfw_simluation.cpp" />
@@ -36,6 +38,9 @@
     <ClInclude Include="..\..\stable_fluids\solid_mesh.h" />
     <ClInclude Include="..\..\stable_fluids\stable_fluids_grid.h" />
     <ClInclude Include="..\..\stable_fluids\stable_fluids.h" />
+    <ClInclude Include="..\..\stable_fluids\stroke\point.h" />
+    <ClInclude Include="..\..\stable_fluids\stroke\stroke.h" />
+    <ClInclude Include="..\..\stable_fluids\stroke\stroke_manager.h" />
     <ClInclude Include="..\..\vtfw_simulation\vtfw_mesh.h" />
     <ClInclude Include="..\..\vtfw_simulation\vtfw_render_listener.h" />
     <ClInclude Include="..\..\vtfw_simulation\vtfw_simulation.h" />
