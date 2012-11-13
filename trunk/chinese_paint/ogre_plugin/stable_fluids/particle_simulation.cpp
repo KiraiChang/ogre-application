@@ -21,11 +21,11 @@ void WaveParticle::update(Ogre::ParticleSystem *ps, float timePass, float *vU, f
 		x0 = (int)pos.x; y0 = (int)pos.z;
 		x1 = x0 + 1; y1 = y0 + 1;
 		u1 = pos.x-x0; u0 = 1-u1; v1 = pos.z-y0; v0 = 1-v1;
-		u = u0*(v0*vU[IX(x0,y0,gridNumber)]+v1*vV[IX(x0,y1,gridNumber)])+
-			u1*(v0*vU[IX(x1,y0,gridNumber)]+v1*vV[IX(x1,y1,gridNumber)]);
+		u = u0*(v0*vU[IX(x0,y0,gridNumber)]+v1*vU[IX(x0,y1,gridNumber)])+
+			u1*(v0*vU[IX(x1,y0,gridNumber)]+v1*vU[IX(x1,y1,gridNumber)]);
 
-		v = u0*(v0*vU[IX(x0,y0,gridNumber)]+v1*vV[IX(x0,y1,gridNumber)])+
-			u1*(v0*vU[IX(x1,y0,gridNumber)]+v1*vV[IX(x1,y1,gridNumber)]);
+		v = u0*(v0*vV[IX(x0,y0,gridNumber)]+v1*vV[IX(x0,y1,gridNumber)])+
+			u1*(v0*vV[IX(x1,y0,gridNumber)]+v1*vV[IX(x1,y1,gridNumber)]);
 
 		pos.x += u * PARTICLE_MOVE_SPEED; pos.z += v * PARTICLE_MOVE_SPEED;
 		particle->position = pos;
