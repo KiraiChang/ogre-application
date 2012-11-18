@@ -1,9 +1,9 @@
 #include "mapping_algorithm.h"
 
 
-V_POINT Normal::process(size_t verticesCount, Ogre::Vector3 *vertices, float *grid, size_t gridNumber)
+Stroke::V_POINT Normal::process(size_t verticesCount, Ogre::Vector3 *vertices, float *grid, size_t gridNumber)
 {
-	V_POINT result;
+	Stroke::V_POINT result;
 	int gridSize = (gridNumber+2)*(gridNumber+2);
 	int i, x, y, ite;
 	unsigned int index;
@@ -52,25 +52,25 @@ V_POINT Normal::process(size_t verticesCount, Ogre::Vector3 *vertices, float *gr
 	return result;
 }
 
-double cross(Ogre::Vector2 &o, Ogre::Vector2 &a, Ogre::Vector2 &b)
+double cross(Stroke::Point &o, Stroke::Point &a, Stroke::Point &b)
 {
 	return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
 }
 
-bool compare(Ogre::Vector2 &a, Ogre::Vector2 &b)
+bool compare(Stroke::Point &a, Stroke::Point &b)
 {
 	return (a.x < b.x) || (a.x == b.x && a.y < b.y);
 }
 
-V_POINT ConvexHull::process(size_t verticesCount, Ogre::Vector3 *vertices, float *grid, size_t gridNumber)
+Stroke::V_POINT ConvexHull::process(size_t verticesCount, Ogre::Vector3 *vertices, float *grid, size_t gridNumber)
 {
-	int i, x, y;
+	int i, x, y, t;
 	unsigned int index;
-	Ogre::Vector2 p1;
-	Ogre::Vector2 p2;
-	Ogre::Vector2 dist;
-	V_POINT vPoint;
-	V_POINT vResult;
+	Stroke::Point p1;
+	Stroke::Point p2;
+	Stroke::Point dist;
+	Stroke::V_POINT vPoint;
+	Stroke::V_POINT vResult;
 	for(i = 0;i < verticesCount;i++)
 	{
 		if(vertices[i].y < 1.0 && vertices[i].y > -1.0)//the y position at surface
@@ -96,14 +96,14 @@ V_POINT ConvexHull::process(size_t verticesCount, Ogre::Vector3 *vertices, float
 	size_t size = vPoint.size();
 	vResult.resize(size * 2);
 	// 包下半部
-	for (int i=0; i<size; ++i)
+	for (i=0; i<size; ++i)
 	{
 		while (m >= 2 && cross(vResult[m-2], vResult[m-1], vPoint[i]) <= 0) m--;
 		vResult[m++] = vPoint[i];
 	}
 
 	// 包上半部，不用再包入方才包過的終點，但會再包一次起點
-	for (int i=size-2, t=m+1; i>=0; --i)
+	for (i=size-2, t=m+1; i>=0; --i)
 	{
 		while (m >= t && cross(vResult[m-2], vResult[m-1], vPoint[i]) <= 0) m--;
 		vResult[m++] = vPoint[i];
@@ -111,7 +111,7 @@ V_POINT ConvexHull::process(size_t verticesCount, Ogre::Vector3 *vertices, float
 
 	m--;    // 最後一個點是重複出現兩次的起點，故要減一。
 	vResult.resize(m);
-	for(int i = 0; i < m; i++)
+	for(i = 0; i < m; i++)
 	{
 		p1 = vResult[i];
 		p2 = vResult[(i+1)%m];

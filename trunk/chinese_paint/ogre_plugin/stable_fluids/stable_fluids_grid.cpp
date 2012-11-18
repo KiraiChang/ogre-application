@@ -2,7 +2,10 @@
 #include "../ogre_tool/ogre_mesh_tool.h"
 #include "solid_mesh.h"
 #include "mapping_algorithm.h"
-#include "particle_simulation.h"
+//#include "stroke\particle_simulation.h"
+#include "stroke/stroke_manager.h"
+#include "stroke/particle_draw.h"
+#include "stroke/ogre_draw.h"
 #include <iostream>
 
 extern void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt );
@@ -15,16 +18,16 @@ static unsigned int MAX_VERTEX_MAP_COUNT = 3;
 static float FISH_DEPTH = 0.1;
 static float ANIMATIONS_PER_SECOND = 1.0f;
 static float FORCE_STRENGTH = 0.04 / FISH_SCALE_SIZE;//0.02;
-#define PARTICLE_LIVE_TIME 20
-#define PARTICLE_SIZE_X 0.5
-#define PARTICLE_SIZE_Y 0.5
-#define PARTICLE_MOVE_SPEED 100
+#define PARTICLE_LIVE_TIME 10
+//#define PARTICLE_SIZE_X 0.5
+//#define PARTICLE_SIZE_Y 0.5
+//#define PARTICLE_MOVE_SPEED 100
 #define EXTERNAL_FORCE_Y_POS_DIFF -5
-#define PARTICLE_COUNT 5
-#define PARTICLE_X_BEG -4.5
-#define PARTICLE_X_DIFF 0.25
-#define PARTICLE_Z_BEG -0.8
-#define PARTICLE_Z_DIFF 0.4
+//#define PARTICLE_COUNT 5
+//#define PARTICLE_X_BEG -4.5
+//#define PARTICLE_X_DIFF 0.25
+//#define PARTICLE_Z_BEG -0.8
+//#define PARTICLE_Z_DIFF 0.4
 
 StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_iGridNumber(number),
@@ -47,10 +50,10 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_pPixelBox(NULL),
 	m_pMiniScreenNode(NULL),
 	m_pMiniScreen(NULL),
-	m_pPS(NULL),
-	m_pPSNode(NULL),
+	//m_pPS(NULL),
+	//m_pPSNode(NULL),
 	m_pMapping3DTo2D(NULL),
-	m_pParticleSimulation(NULL),
+	//m_pParticleSimulation(NULL),
 	//m_sVertexCount(0),
 	//m_sIndex_count(0),
 	//m_vIndices(NULL),
@@ -84,7 +87,7 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	}
 	
 	m_pMapping3DTo2D = (MappingAlgorithm *)new ConvexHull();
-	m_pParticleSimulation = (ParticleSimulation *)new WaveParticle();
+	//m_pParticleSimulation = (ParticleSimulation *)new WaveParticle();
 }
 
 StableFluidsGrid::~StableFluidsGrid(void)
@@ -167,11 +170,11 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 
 	m_pMiniScreen->setMaterial("ChinesePaint/Texture");
 
-	m_pPS = m_pSceneMgr->createParticleSystem(20000U);
-	m_pPS->setMaterialName("ChinesePaint/InkBlock");
-	m_pPSNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
-	m_pPSNode->attachObject(m_pPS);
-	m_pPSNode->setPosition(32, 0, 42);
+	//m_pPS = m_pSceneMgr->createParticleSystem(20000U);
+	//m_pPS->setMaterialName("ChinesePaint/InkBlock");
+	//m_pPSNode = m_pSceneMgr->getRootSceneNode()->createChildSceneNode();
+	//m_pPSNode->attachObject(m_pPS);
+	//m_pPSNode->setPosition(32, 0, 42);
 }
 
 void StableFluidsGrid::release(void)
@@ -271,17 +274,17 @@ void StableFluidsGrid::release(void)
 			m_pMiniScreen = NULL;
 		}
 
-		if(m_pPSNode != NULL)
-		{
-			m_pPSNode->detachObject(m_pPS);
-			m_pSceneMgr->destroySceneNode(m_pPSNode);
-			m_pPSNode = NULL;
-		}
-		if(m_pPS != NULL)
-		{
-			m_pSceneMgr->destroyParticleSystem(m_pPS);
-			m_pPS = NULL;
-		}
+		//if(m_pPSNode != NULL)
+		//{
+		//	m_pPSNode->detachObject(m_pPS);
+		//	m_pSceneMgr->destroySceneNode(m_pPSNode);
+		//	m_pPSNode = NULL;
+		//}
+		//if(m_pPS != NULL)
+		//{
+		//	m_pSceneMgr->destroyParticleSystem(m_pPS);
+		//	m_pPS = NULL;
+		//}
 	}
 	if(m_pPixelBox != NULL)
 	{
@@ -509,10 +512,11 @@ void StableFluidsGrid::updateMesh(float timePass)
 	}
 	
 	//updateParticle(timePass);
-	if(m_pParticleSimulation != NULL)
-	{
-		m_pParticleSimulation->update(m_pPS, timePass, m_vfWaveVelocity[VELOCITY_U], m_vfWaveVelocity[VELOCITY_V], m_iGridNumber);
-	}
+	//if(m_pParticleSimulation != NULL)
+	//{
+	//	m_pParticleSimulation->update(m_pPS, timePass, m_vfWaveVelocity[VELOCITY_U], m_vfWaveVelocity[VELOCITY_V], m_iGridNumber);
+	//}
+	Stroke::StrokeManager::getSingleton()->update(timePass, m_vfWaveVelocity, m_iGridNumber);
 }
 
 void StableFluidsGrid::updateDebug(float *vfU, float *vfV)
@@ -612,33 +616,72 @@ void StableFluidsGrid::clear(void)
 //	//	calcMeshEnforce();
 //}
 
+void process(const Stroke::V_POINT &vPoint, Ogre::Vector2 &center)
+{
+	Stroke::Point point;
+	center.x = 0;
+	center.y = 0;
+	Stroke::V_POINT vResult;
+	Stroke::Point scale;
+	size_t size = vPoint.size();
+	for(int i = 0; i < size; i++)
+	{
+		center.x += vPoint[i].x;
+		center.y += vPoint[i].y;
+	}
+	center /= size;
+	//for(int i = 0; i < size; i++)
+	//{
+	//	point = vPoint[i];
+	//	point = (point-center) * SCALE + center;
+	//	vPoint[i] = point;
+	//}
+}
+
 void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 {
 	//set particle system before fish head
 	m_v3FishPos = mesh->getNode()->getPosition();
 	Ogre::Vector3 pos = m_v3FishPos + ( mesh->getNode()->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * FISH_SCALE_SIZE;
-	m_pPSNode->setPosition( mesh->getNode()->getPosition());
-	m_pPSNode->setOrientation(mesh->getNode()->getOrientation());
+	//m_pPSNode->setPosition( mesh->getNode()->getPosition());
+	//m_pPSNode->setOrientation(mesh->getNode()->getOrientation());
 
-	std::vector<Ogre::Vector2> contour;
+	//std::vector<Ogre::Vector2> contour;
+	Stroke::V_POINT contour;
 	if(reset)
 		memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
 
 	if(m_pMapping3DTo2D != NULL && mesh->getVertices() != NULL)
 	{
 		contour = m_pMapping3DTo2D->process(mesh->getVertexCount(), mesh->getVertices(), m_vbIntersectGrid, m_iGridNumber);
-	}
-
-	if(m_pParticleSimulation != NULL)
-	{
 		Ogre::Vector2 center;
-		m_pParticleSimulation->process(contour, center);
+		process(contour, center);
 		push(m_iGridNumber+2, center.x, center.y, 0, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 		push(m_iGridNumber+2, center.x, center.y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 		push(m_iGridNumber+2, center.x, center.y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 		push(m_iGridNumber+2, center.x, center.y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-		m_pParticleSimulation->initParticle(m_pPS, contour);
+
+		//Stroke::ParticleDraw *draw = new Stroke::ParticleDraw();
+		//draw->init();
+		//draw->setAttribute("ChinesePaint/InkBlock", 100U);
+		
+		Stroke::OgreDraw *draw = new Stroke::OgreDraw();
+		draw->init();
+		draw->setAttribute("ChinesePaint/InkBlock", Ogre::RenderOperation::OT_LINE_LIST);
+
+		Stroke::StrokeManager::getSingleton()->createStroke(PARTICLE_LIVE_TIME, contour, (Stroke::StrokeDraw *)draw);
 	}
+
+	//if(m_pParticleSimulation != NULL)
+	//{
+	//	Ogre::Vector2 center;
+	//	m_pParticleSimulation->process(contour, center);
+	//	push(m_iGridNumber+2, center.x, center.y, 0, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+	//	push(m_iGridNumber+2, center.x, center.y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+	//	push(m_iGridNumber+2, center.x, center.y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+	//	push(m_iGridNumber+2, center.x, center.y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
+	//	m_pParticleSimulation->initParticle(m_pPS, contour);
+	//}
 	//calcMeshFace(mesh->getVertexCount(), mesh->getVertices(), reset);
 	//if(m_bAddForce)
 	//{

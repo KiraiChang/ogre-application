@@ -46,7 +46,7 @@ public:
 private:
 	//float									m_fTimeSpeed;
 	MappingAlgorithm *						m_pMapping3DTo2D;
-	ParticleSimulation *					m_pParticleSimulation;
+	//ParticleSimulation *					m_pParticleSimulation;
 	float									m_fDiff;
 	float									m_fVisc;
 	float									m_fForce;
@@ -70,8 +70,8 @@ private:
 	Ogre::SceneNode *						m_pManualNode;
 	Ogre::Rectangle2D *						m_pMiniScreen;
 	Ogre::SceneNode	*						m_pMiniScreenNode;
-	Ogre::ParticleSystem *					m_pPS;
-	Ogre::SceneNode	*						m_pPSNode;
+	//Ogre::ParticleSystem *					m_pPS;
+	//Ogre::SceneNode	*						m_pPSNode;
 
 	////fish vertex data
 	//size_t									m_sVertexCount;

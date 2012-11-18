@@ -22,13 +22,12 @@ namespace Stroke
 
 	void OgreDraw::init(void)
 	{
-		if(m_pManuObj == NULL)
-			release();
+		release();
 
 		Ogre::SceneManager *mgr = Ogre::Root::getSingleton().getSingleton().getSceneManager(PROJECT_NAME);
 		if(mgr != NULL)
 		{
-			m_pManualNode = mgr->createSceneNode();
+			m_pManualNode = mgr->getRootSceneNode()->createChildSceneNode();
 
 			m_pManuObj = mgr->createManualObject();
 
@@ -43,6 +42,7 @@ namespace Stroke
 			Ogre::SceneManager *mgr = Ogre::Root::getSingleton().getSingleton().getSceneManager(PROJECT_NAME);
 			if(mgr != NULL)
 			{
+				m_pManuObj->clear();
 				m_pManualNode->detachObject(m_pManuObj);
 				mgr->destroySceneNode(m_pManualNode);
 				m_pManualNode = NULL;
@@ -54,16 +54,37 @@ namespace Stroke
 
 	void OgreDraw::drawBegin(void)
 	{
+		m_pManuObj->clear();
 		m_pManuObj->begin(m_sMaterial, m_iType);
 	}
 
-	void OgreDraw::draw(const Point &pos)
+	void OgreDraw::draw(const LIST_POINT &list)
 	{
-		Ogre::Vector3 o;
-		o.x = pos.x;
-		o.y = 0.0;
-		o.z = pos.y;
-		m_pManuObj->position(o);
+		LIST_POINT::const_iterator ite;
+		Ogre::Vector3 from;
+		Ogre::Vector3 to;
+		ite = list.begin();
+		from.x = ite->x;
+		from.y = 0.0;
+		from.z = ite->y;
+		if(ite != list.end())
+		{
+			++ite;
+			to.x = ite->x;
+			to.y = 0.0;
+			to.z = ite->y;
+			m_pManuObj->position(from);
+			m_pManuObj->position(to);
+		}
+		for(;ite != list.end();++ite)
+		{
+			from = to;
+			to.x = ite->x;
+			to.y = 0.0;
+			to.z = ite->y;
+			m_pManuObj->position(from);
+			m_pManuObj->position(to);
+		}
 	}
 
 	void OgreDraw::drawEnd(void)
@@ -71,7 +92,7 @@ namespace Stroke
 		m_pManuObj->end();
 	}
 
-	void OgreDraw::setMaterial(const std::string &materail, Ogre::RenderOperation::OperationType type)
+	void OgreDraw::setAttribute(const std::string &materail, Ogre::RenderOperation::OperationType type)
 	{
 		m_sMaterial = materail;
 		m_iType = type;

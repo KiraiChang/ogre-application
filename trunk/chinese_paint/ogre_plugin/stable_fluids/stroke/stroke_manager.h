@@ -3,22 +3,27 @@
 
 #include "stroke.h"
 #include <vector>
+#include <list>
 
 namespace Stroke
 {
-	typedef std::vector< Stroke > V_STROKE;
+	typedef std::vector< Stroke *>	V_STROKE;
+	typedef std::list< Stroke *>	LIST_STROKE;
 	class StrokeDraw;
-	class StrokeManger
+	class StrokeManager
 	{
 	private:
-								StrokeManger();
-		static StrokeManger *	m_pInstance;
-		V_STROKE				m_vStroke;
+									StrokeManager(void);
+		static StrokeManager *		m_pInstance;
+		//V_STROKE					m_vStroke;
+		LIST_STROKE					m_listStroke;
+		float						m_fDelayTime;
 	public:
-								~StrokeManger();
-		static StrokeManger *	getSingleton();
-		void					update(float timePass, float **field, float **prev, unsigned int size);
-		void					createStroke(float existTime, const LIST_POINT &listPoint, StrokeDraw *draw);
+									~StrokeManager(void);
+		static StrokeManager *		getSingleton(void);
+		void						release(void);
+		void						update(float timePass, float **field, unsigned int size);
+		void						createStroke(float existTime, const V_POINT &vPoint, StrokeDraw *draw);
 	};
 }
 #endif //_STROKE_MANAGER_H_
