@@ -16,14 +16,14 @@ namespace Stroke
 
 	public:
 		OgreDraw(void);
-		~OgreDraw(void);
+		virtual ~OgreDraw(void);
 		virtual bool isValid(void);
 		virtual void init(void);
 		virtual void release(void);
 		virtual void drawBegin(void);
-		virtual void draw(const Point &pos);
+		virtual void draw(const LIST_POINT &list);
 		virtual void drawEnd(void);
-		void setMaterial(const std::string &materail, Ogre::RenderOperation::OperationType type);
+		void setAttribute(const std::string &materail, Ogre::RenderOperation::OperationType type);
 	};
 }
 

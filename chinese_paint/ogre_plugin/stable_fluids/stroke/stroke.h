@@ -2,12 +2,10 @@
 #define _STROKE_H_
 
 #include "point.h"
-#include <list>
 
 namespace Stroke
 {
 	class StrokeDraw;
-	typedef std::list < Point > LIST_POINT;
 	class Stroke
 	{
 	private:
@@ -16,10 +14,10 @@ namespace Stroke
 		float						m_fExistTime;
 
 	public:
-									Stroke(float time, const LIST_POINT &listPoint, StrokeDraw *draw);
+									Stroke(float time, const V_POINT &vPoint, StrokeDraw *draw);
 									~Stroke(void);
 		void						release(void);
-		void						update(float timePass, float **field, float **prev, unsigned int size );
+		void						update(float timePass, float **field, unsigned int size );
 		bool						isExist(void);
 	};
 }

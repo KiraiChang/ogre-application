@@ -21,6 +21,7 @@
     <ClCompile Include="..\..\stable_fluids\stable_fluids_grid.cpp" />
     <ClCompile Include="..\..\stable_fluids\stable_fluids.cpp" />
     <ClCompile Include="..\..\stable_fluids\stroke\ogre_draw.cpp" />
+    <ClCompile Include="..\..\stable_fluids\stroke\particle_draw.cpp" />
     <ClCompile Include="..\..\stable_fluids\stroke\stroke.cpp" />
     <ClCompile Include="..\..\stable_fluids\stroke\stroke_manager.cpp" />
     <ClCompile Include="..\..\vtfw_simulation\vtfw_mesh.cpp" />
@@ -40,6 +41,7 @@
     <ClInclude Include="..\..\stable_fluids\stable_fluids_grid.h" />
     <ClInclude Include="..\..\stable_fluids\stable_fluids.h" />
     <ClInclude Include="..\..\stable_fluids\stroke\ogre_draw.h" />
+    <ClInclude Include="..\..\stable_fluids\stroke\particle_draw.h" />
     <ClInclude Include="..\..\stable_fluids\stroke\stroke_draw.h" />
     <ClInclude Include="..\..\stable_fluids\stroke\point.h" />
     <ClInclude Include="..\..\stable_fluids\stroke\stroke.h" />
