@@ -6,20 +6,21 @@
 
 namespace Stroke
 {
+	class StrokeDraw;
 	typedef std::list < Point > LIST_POINT;
 	class Stroke
 	{
 	private:
 		LIST_POINT					m_vControlPoint;
-		float **					m_pField;
-		unsigned int				m_uiFieldSize;
+		StrokeDraw *				m_pDraw;
 		float						m_fExistTime;
 
 	public:
-									Stroke(float **field, unsigned int size, float time, const LIST_POINT &listPoint);
-									~Stroke();
-		void						update(float timePass);
-		bool						isExist();
+									Stroke(float time, const LIST_POINT &listPoint, StrokeDraw *draw);
+									~Stroke(void);
+		void						release(void);
+		void						update(float timePass, float **field, float **prev, unsigned int size );
+		bool						isExist(void);
 	};
 }
 

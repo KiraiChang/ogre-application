@@ -2,6 +2,7 @@
 #define _OGRE_DRAW_H_
 #include "stroke_draw.h"
 #include <ogre.h>
+#include <string>
 
 namespace Stroke
 {
@@ -10,13 +11,19 @@ namespace Stroke
 	private:
 		Ogre::ManualObject *					m_pManuObj;
 		Ogre::SceneNode *						m_pManualNode;
+		std::string								m_sMaterial;
+		Ogre::RenderOperation::OperationType	m_iType;
+
 	public:
 		OgreDraw(void);
 		~OgreDraw(void);
+		virtual bool isValid(void);
 		virtual void init(void);
+		virtual void release(void);
 		virtual void drawBegin(void);
-		virtual void draw(const Point &from, const Point &to);
+		virtual void draw(const Point &pos);
 		virtual void drawEnd(void);
+		void setMaterial(const std::string &materail, Ogre::RenderOperation::OperationType type);
 	};
 }
 

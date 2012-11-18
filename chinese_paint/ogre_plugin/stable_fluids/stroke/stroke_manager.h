@@ -7,6 +7,7 @@
 namespace Stroke
 {
 	typedef std::vector< Stroke > V_STROKE;
+	class StrokeDraw;
 	class StrokeManger
 	{
 	private:
@@ -16,8 +17,8 @@ namespace Stroke
 	public:
 								~StrokeManger();
 		static StrokeManger *	getSingleton();
-		void					update(float timePass);
-		void					createStroke(float **field, unsigned int size, float existTime, const LIST_POINT &listPoint);
+		void					update(float timePass, float **field, float **prev, unsigned int size);
+		void					createStroke(float existTime, const LIST_POINT &listPoint, StrokeDraw *draw);
 	};
 }
 #endif //_STROKE_MANAGER_H_

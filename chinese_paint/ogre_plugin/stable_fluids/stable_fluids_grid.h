@@ -9,6 +9,40 @@ class MappingAlgorithm;
 class ParticleSimulation;
 class StableFluidsGrid : public WaterInterface
 {
+public:
+	enum VELOCITY_TYPE
+	{
+		VELOCITY_U, 
+		VELOCITY_V, 
+		VELOCITY_PREV_U, 
+		VELOCITY_PREV_V, 
+		VELOCITY_COUNT
+	};
+
+	enum MAP_DISPLAY_TYPE
+	{
+		DISPLAY_MAP_NONE,
+		DISPLAY_DENSITY_MAP,
+		DISPLAY_BOOLEAN_GRID,
+	};
+	MAP_DISPLAY_TYPE						m_eMapDisplayType;
+
+	enum VELOCITY_DISPLAY_TYPE
+	{
+		DISPLAY_VELOCITY_NONE,
+		DISPLAY_ORIGIN,
+		DISPLAY_ADD_FORCE,
+		DISPLAY_BOUNDARY,
+		DISPLAY_WAVE_EQUATION,
+	};
+	VELOCITY_DISPLAY_TYPE					m_eVelocityType;
+	bool									m_bExternlForce;
+	bool									m_bAddForce;
+	int										m_iGridNumber;// Grid one side size
+	int										m_iGridSize;// (m_iGridNumber + 2)*(m_iGridNumber + 2)
+	//float *								m_vfDens;
+	//float *								m_vfDensPrev;
+
 private:
 	//float									m_fTimeSpeed;
 	MappingAlgorithm *						m_pMapping3DTo2D;
@@ -18,7 +52,13 @@ private:
 	float									m_fForce;
 	float									m_fSource;
 	float *									m_vfHeightMap[3] ; // 3 map to do wave equation
-	float *									m_vfWaveVelocity[2] ; // uv velocity to do wave equation
+	//velocity
+	float *									m_vfWaveVelocity[VELOCITY_COUNT] ; // uv velocity to do wave equation
+	float *									m_vfU;
+	float *									m_vfV;
+	float *									m_vfUPrev;
+	float *									m_vfVPrev;
+
 	float *									m_vfDumpening;
 	float *									m_vbIntersectGrid;
 	Ogre::Vector3							m_v3FishPos;
@@ -51,42 +91,6 @@ private:
 	float									m_fLastAnimationTimeStamp;
 	float									m_fLastFrameTime ;
 
-
-public:
-	enum VELOCITY_TYPE
-	{
-		VELOCITY_U, 
-		VELOCITY_V, 
-		VELOCITY_COUNT
-	};
-
-	enum MAP_DISPLAY_TYPE
-	{
-		DISPLAY_MAP_NONE,
-		DISPLAY_DENSITY_MAP,
-		DISPLAY_BOOLEAN_GRID,
-	};
-	MAP_DISPLAY_TYPE						m_eMapDisplayType;
-
-	enum VELOCITY_DISPLAY_TYPE
-	{
-		DISPLAY_VELOCITY_NONE,
-		DISPLAY_ORIGIN,
-		DISPLAY_ADD_FORCE,
-		DISPLAY_BOUNDARY,
-		DISPLAY_WAVE_EQUATION,
-	};
-	VELOCITY_DISPLAY_TYPE					m_eVelocityType;
-	bool									m_bExternlForce;
-	bool									m_bAddForce;
-	float *									m_vfU;
-	float *									m_vfV;
-	float *									m_vfUPrev;
-	float *									m_vfVPrev;
-	int										m_iGridNumber;// Grid one side size
-	int										m_iGridSize;// (m_iGridNumber + 2)*(m_iGridNumber + 2)
-	//float *								m_vfDens;
-	//float *								m_vfDensPrev;
 private:
 
 public:
