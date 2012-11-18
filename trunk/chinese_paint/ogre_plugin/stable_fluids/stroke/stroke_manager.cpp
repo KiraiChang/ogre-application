@@ -1,4 +1,5 @@
 #include "stroke_manager.h"
+#include "stroke_draw.h"
 
 
 namespace Stroke
@@ -27,13 +28,13 @@ namespace Stroke
 		return m_pInstance;
 	}
 
-	void StrokeManger::update(float timePass)
+	void StrokeManger::update(float timePass, float **field, float **prev, unsigned int size)
 	{
 		V_STROKE::iterator ite;
 		
 		for(ite = m_vStroke.begin(); ite != m_vStroke.end(); ++ite)
 		{
-			ite->update(timePass);
+			ite->update(timePass, field, prev, size);
 			if(!ite->isExist())
 			{
 				ite = m_vStroke.erase(ite);
@@ -41,8 +42,8 @@ namespace Stroke
 		}
 	}
 
-	void StrokeManger::createStroke(float **field, unsigned int size, float existTime, const LIST_POINT &listPoint)
+	void StrokeManger::createStroke(float existTime, const LIST_POINT &listPoint, StrokeDraw *draw)
 	{
-		m_vStroke.push_back(Stroke(field, size, existTime, listPoint));
+		m_vStroke.push_back(Stroke(existTime, listPoint, draw));
 	}
 }

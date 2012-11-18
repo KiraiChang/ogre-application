@@ -8,7 +8,7 @@
 extern void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt );
 extern void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc, float dt );
 extern void set_bnd ( int N, int b, float * x );
-extern void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampening, float timePass, float *velocity[2]);
+extern void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampening, float timePass, float **velocity);
 
 static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
@@ -94,6 +94,7 @@ StableFluidsGrid::~StableFluidsGrid(void)
 
 void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 {
+	int i;
 	m_pSceneMgr = mgr;
 	m_vfU			= new float[m_iGridSize];
 	m_vfV			= new float[m_iGridSize];
@@ -111,10 +112,12 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 	m_vfBoundaryU	= new float[m_iGridSize];
 	m_vfBoundaryV	= new float[m_iGridSize];
 
-	m_vfWaveVelocity[VELOCITY_U] = new float[m_iGridSize];
-	m_vfWaveVelocity[VELOCITY_V] = new float[m_iGridSize];
-	memset(m_vfWaveVelocity[VELOCITY_U], 0, m_iGridSize * sizeof(m_vfWaveVelocity[VELOCITY_U]));
-	memset(m_vfWaveVelocity[VELOCITY_V], 0, m_iGridSize * sizeof(m_vfWaveVelocity[VELOCITY_V]));
+	for( i = 0; i < VELOCITY_COUNT; i++)
+	{
+		m_vfWaveVelocity[i] = new float[m_iGridSize];
+		memset(m_vfWaveVelocity[i], 0, m_iGridSize * sizeof(m_vfWaveVelocity[i]));
+	}
+
 	memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
 
 	clear();
@@ -173,6 +176,7 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 
 void StableFluidsGrid::release(void)
 {
+	int i;
 	if ( m_vfU ) delete ( m_vfU );
 	if ( m_vfV ) delete ( m_vfV );
 	if ( m_vfUPrev ) delete ( m_vfUPrev );
@@ -223,7 +227,7 @@ void StableFluidsGrid::release(void)
 		m_viEnforceVCount = NULL;
 	}
 
-	for(int i = 0; i < MAX_HEIGHT_MAP_COUNT;i++)
+	for(i = 0; i < MAX_HEIGHT_MAP_COUNT;i++)
 	{
 		if(m_vfHeightMap[i] != NULL)
 		{
@@ -232,7 +236,7 @@ void StableFluidsGrid::release(void)
 		}
 	}
 
-	for(int i = 0; i < VELOCITY_COUNT;i++)
+	for(i = 0; i < VELOCITY_COUNT;i++)
 	{
 		if(m_vfWaveVelocity[i] != NULL)
 		{
