@@ -14,7 +14,7 @@ namespace Stroke
 		float						m_fExistTime;
 
 	public:
-									Stroke(float time, const V_POINT &vPoint, StrokeDraw *draw);
+									Stroke(float time, const V_POINT &vPoint, StrokeDraw *draw, const Point &center, const Point &dir);
 									~Stroke(void);
 		void						release(void);
 		void						update(float timePass, float **field, unsigned int size );

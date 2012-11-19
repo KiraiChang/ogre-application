@@ -6,7 +6,7 @@
 
 namespace Stroke
 {
-	Stroke::Stroke(float time, const V_POINT &vPoint, StrokeDraw *draw):m_fExistTime(time),
+	Stroke::Stroke(float time, const V_POINT &vPoint, StrokeDraw *draw, const Point &center, const Point &dir):m_fExistTime(time),
 		m_pDraw(draw)
 	{
 		m_vControlPoint.clear();
