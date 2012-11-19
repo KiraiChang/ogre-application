@@ -68,6 +68,14 @@ namespace Stroke
 			return *this;
 		}
 
+		inline Point& operator /= ( const Point& rkVector )
+		{
+			x /= rkVector.x;
+			y /= rkVector.y;
+
+			return *this;
+		}
+
 		inline float length () const
 		{
 			return sqrt( x * x + y * y );
@@ -98,6 +106,11 @@ namespace Stroke
 			Point ret = *this;
 			ret.normalise();
 			return ret;
+		}
+
+		inline float dot(const Point &rh) const
+		{
+			return x * rh.x + y * rh.y;
 		}
 	};
 	typedef std::list < Point >		LIST_POINT;

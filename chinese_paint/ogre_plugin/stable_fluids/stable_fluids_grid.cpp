@@ -661,6 +661,16 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 		push(m_iGridNumber+2, center.x, center.y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 		push(m_iGridNumber+2, center.x, center.y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 
+		Ogre::Vector3 dir = mesh->getNode()->getOrientation() * Ogre::Vector3(-1.0, 0.0, 0.0);
+		Stroke::Point pointCenter;
+		Stroke::Point pointDir;
+
+		pointCenter.x = center.x;
+		pointCenter.y = center.y;
+		pointDir.x = dir.x;
+		pointDir.y = dir.z;
+
+
 		//Stroke::ParticleDraw *draw = new Stroke::ParticleDraw();
 		//draw->init();
 		//draw->setAttribute("ChinesePaint/InkBlock", 100U);
@@ -669,7 +679,7 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 		draw->init();
 		draw->setAttribute("ChinesePaint/InkBlock", Ogre::RenderOperation::OT_LINE_LIST);
 
-		Stroke::StrokeManager::getSingleton()->createStroke(PARTICLE_LIVE_TIME, contour, (Stroke::StrokeDraw *)draw);
+		Stroke::StrokeManager::getSingleton()->createStroke(PARTICLE_LIVE_TIME, contour, (Stroke::StrokeDraw *)draw, pointCenter, pointDir);
 	}
 
 	//if(m_pParticleSimulation != NULL)
