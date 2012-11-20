@@ -616,7 +616,7 @@ void StableFluidsGrid::clear(void)
 //	//	calcMeshEnforce();
 //}
 
-void process(const Stroke::V_POINT &vPoint, Ogre::Vector2 &center)
+void process(const Stroke::V_POINT &vPoint, Stroke::Point &center)
 {
 	Stroke::Point point;
 	center.x = 0;
@@ -641,8 +641,8 @@ void process(const Stroke::V_POINT &vPoint, Ogre::Vector2 &center)
 void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 {
 	//set particle system before fish head
-	m_v3FishPos = mesh->getNode()->getPosition();
-	Ogre::Vector3 pos = m_v3FishPos + ( mesh->getNode()->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * FISH_SCALE_SIZE;
+	//m_v3FishPos = mesh->getNode()->getPosition();
+	//Ogre::Vector3 pos = m_v3FishPos + ( mesh->getNode()->getOrientation() * Ogre::Vector3(-5.0, 0.0, 0.0) ) * FISH_SCALE_SIZE;
 	//m_pPSNode->setPosition( mesh->getNode()->getPosition());
 	//m_pPSNode->setOrientation(mesh->getNode()->getOrientation());
 
@@ -654,32 +654,44 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 	if(m_pMapping3DTo2D != NULL && mesh->getVertices() != NULL)
 	{
 		contour = m_pMapping3DTo2D->process(mesh->getVertexCount(), mesh->getVertices(), m_vbIntersectGrid, m_iGridNumber);
-		Ogre::Vector2 center;
+		Stroke::Point center;
 		process(contour, center);
 		push(m_iGridNumber+2, center.x, center.y, 0, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 		push(m_iGridNumber+2, center.x, center.y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 		push(m_iGridNumber+2, center.x, center.y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 		push(m_iGridNumber+2, center.x, center.y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 
-		Ogre::Vector3 dir = mesh->getNode()->getOrientation() * Ogre::Vector3(-1.0, 0.0, 0.0);
-		Stroke::Point pointCenter;
-		Stroke::Point pointDir;
+		static Stroke::Point preCenter = center;
+		Stroke::Point dir = center - preCenter;
+		preCenter = center;
+		//static Ogre::Vector3 prePos = mesh->getNode()->getPosition();
+		//Ogre::Vector3 dir = prePos - mesh->getNode()->getPosition();
+		//prePos = mesh->getNode()->getPosition();
+		//Ogre::Vector3 dir = mesh->getNode()->getOrientation() * Ogre::Vector3(-1.0, 0.0, 0.0);
+		//Stroke::Point pointCenter;
+		//Stroke::Point pointDir;
 
-		pointCenter.x = center.x;
-		pointCenter.y = center.y;
-		pointDir.x = dir.x;
-		pointDir.y = dir.z;
+		//pointCenter.x = center.x;
+		//pointCenter.y = center.y;
+		//pointDir.x = dir.x;
+		//pointDir.y = dir.y;
 
 
 		//Stroke::ParticleDraw *draw = new Stroke::ParticleDraw();
 		//draw->init();
 		//draw->setAttribute("ChinesePaint/InkBlock", 100U);
 		
-		Stroke::OgreDraw *draw = new Stroke::OgreDraw();
-		draw->init();
-		draw->setAttribute("ChinesePaint/InkBlock", Ogre::RenderOperation::OT_LINE_LIST);
+		Stroke::OgreDraw *drawNegative = new Stroke::OgreDraw();
+		drawNegative->init();
+		drawNegative->setAttribute("ChinesePaint/InkBlue", Ogre::RenderOperation::OT_LINE_LIST);
 
-		Stroke::StrokeManager::getSingleton()->createStroke(PARTICLE_LIVE_TIME, contour, (Stroke::StrokeDraw *)draw, pointCenter, pointDir);
+		Stroke::OgreDraw *drawPositive = new Stroke::OgreDraw();
+		drawPositive->init();
+		drawPositive->setAttribute("ChinesePaint/InkRed", Ogre::RenderOperation::OT_LINE_LIST);
+
+		
+
+		Stroke::StrokeManager::getSingleton()->createStroke(PARTICLE_LIVE_TIME, contour, (Stroke::StrokeDraw *)drawNegative, (Stroke::StrokeDraw *)drawPositive, center, dir);
 	}
 
 	//if(m_pParticleSimulation != NULL)

@@ -3,6 +3,7 @@
 #include <math.h>
 #include <list>
 #include <vector>
+#include <assert.h>
 namespace Stroke
 {
 	class Point
@@ -26,6 +27,27 @@ namespace Stroke
 			return Point(
 				x - rkVector.x,
 				y - rkVector.y);
+		}
+
+		inline Point operator * ( const float fScalar ) const
+		{
+			return Point(
+				x * fScalar,
+				y * fScalar);
+		}
+
+		inline Point operator * ( const Point& rhs) const
+		{
+			return Point(
+				x * rhs.x,
+				y * rhs.y);
+		}
+
+		inline friend Point operator * ( const float fScalar, const Point& rkVector )
+		{
+			return Point(
+				fScalar * rkVector.x,
+				fScalar * rkVector.y);
 		}
 
 		inline Point& operator = ( const Point& rkVector )
@@ -68,10 +90,30 @@ namespace Stroke
 			return *this;
 		}
 
+		inline Point& operator *= ( const float fScaler )
+		{
+			x *= fScaler;
+			y *= fScaler;
+
+			return *this;
+		}
+
 		inline Point& operator /= ( const Point& rkVector )
 		{
 			x /= rkVector.x;
 			y /= rkVector.y;
+
+			return *this;
+		}
+
+		inline Point& operator /= ( const float fScalar )
+		{
+			assert( fScalar != 0.0 );
+
+			float fInv = 1.0f / fScalar;
+
+			x *= fInv;
+			y *= fInv;
 
 			return *this;
 		}
