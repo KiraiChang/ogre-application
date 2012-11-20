@@ -18,6 +18,7 @@ namespace Stroke
 		//V_STROKE					m_vStroke;
 		LIST_STROKE					m_listStroke;
 		float						m_fDelayTime;
+		Point						m_preCenter;
 	public:
 									~StrokeManager(void);
 		static StrokeManager *		getSingleton(void);

@@ -1,7 +1,7 @@
 #include "stroke_manager.h"
 #include "stroke_draw.h"
 
-#define DEFAULT_DELAY_CREATE 4.0 //0.33;
+#define DEFAULT_DELAY_CREATE 2.0 //0.33;
 
 namespace Stroke
 {
@@ -101,7 +101,9 @@ namespace Stroke
 		{
 			m_fDelayTime = DEFAULT_DELAY_CREATE;
 			//m_vStroke.push_back(new Stroke(existTime, vPoint, draw));
-			m_listStroke.push_back(new Stroke(existTime, vPoint, drawNegative, drawPositive, center, dir));
+			Point curDir = m_preCenter - center;
+			m_preCenter = center;
+			m_listStroke.push_back(new Stroke(existTime, vPoint, drawNegative, drawPositive, center, curDir));
 		}
 		else
 		{
