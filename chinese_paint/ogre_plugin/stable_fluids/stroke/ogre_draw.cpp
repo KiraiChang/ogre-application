@@ -60,6 +60,8 @@ namespace Stroke
 
 	void OgreDraw::draw(const LIST_POINT &list)
 	{
+		if(list.size() < 2)
+			return ;
 		LIST_POINT::const_iterator ite;
 		Ogre::Vector3 from;
 		Ogre::Vector3 to;

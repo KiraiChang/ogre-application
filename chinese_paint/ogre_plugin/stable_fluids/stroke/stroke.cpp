@@ -6,85 +6,95 @@
 
 namespace Stroke
 {
-	void process(const V_POINT &vPoint, LIST_POINT &vCPNegative, LIST_POINT &vCPPositive, const Point &center, const Point &dir)
-	{
-		/*
-		method 1:
-		y - m * x - b = 0
-			y2 - y1
-		a = -------
-			x2 - x1
+	//void process(const V_POINT &vPoint, LIST_POINT &vCPNegative, LIST_POINT &vCPPositive, const Point &center, const Point &dir)
+	//{
+	//	/*
+	//	method 1:
+	//	y - m * x - b = 0
+	//		y2 - y1
+	//	a = -------
+	//		x2 - x1
 
-			x2*y1 - x1*y2
-		b = -------------
-				x2 - x1
+	//		x2*y1 - x1*y2
+	//	b = -------------
+	//			x2 - x1
 
-		method 2:
-		a = (y2-y1)/(x2-x1);
-		y = a * ( x - x2 ) + y2;
+	//	method 2:
+	//	a = (y2-y1)/(x2-x1);
+	//	y = a * ( x - x2 ) + y2;
 
-		*/
+	//	*/
 
-		V_POINT::const_iterator ite;
-		if(dir.x == 0)
-		{
-			for(ite = vPoint.begin(); ite != vPoint.end();++ite)
-			{
-				if(ite->y > center.y)
-				{
-					vCPPositive.push_back(*ite);
-				}
-				else
-				{
-					vCPNegative.push_back(*ite);
-				}
-			}
-		}
-		else
-		{
-			//float c = -(dir.y * center.x + (-dir.x * center.y));
-			float a = dir.y / dir.x;
-			//Point p2 = center + dir;
-			//float b = (center.x*p2.y - p2.x*center.y) / (center.x - p2.x);
-			float b = center.y - a * center.x;
+	//	V_POINT::const_iterator ite;
+	//	if(dir.x == 0)
+	//	{
+	//		for(ite = vPoint.begin(); ite != vPoint.end();++ite)
+	//		{
+	//			if(ite->y > center.y)
+	//			{
+	//				vCPPositive.push_back(*ite);
+	//			}
+	//			else
+	//			{
+	//				vCPNegative.push_back(*ite);
+	//			}
+	//		}
+	//	}
+	//	else
+	//	{
+	//		//float c = -(dir.y * center.x + (-dir.x * center.y));
+	//		float a = dir.y / dir.x;
+	//		//Point p2 = center + dir;
+	//		//float b = (center.x*p2.y - p2.x*center.y) / (center.x - p2.x);
+	//		float b = center.y - a * center.x;
 
-			for(ite = vPoint.begin(); ite != vPoint.end();++ite)
-			{
-				float value = 1;
-				//value = dir.y * ite->x + (-dir.x * ite->y) + c;
+	//		for(ite = vPoint.begin(); ite != vPoint.end();++ite)
+	//		{
+	//			float value = 1;
+	//			//value = dir.y * ite->x + (-dir.x * ite->y) + c;
 
-				//value = a * (ite->x - dir.x) - ite->y  + dir.y;
+	//			//value = a * (ite->x - dir.x) - ite->y  + dir.y;
 
-				value = a * ite->x + b - ite->y;
+	//			value = a * ite->x + b - ite->y;
 
-				if(value > 0)
-				{
-					vCPPositive.push_back(*ite);
-				}
-				else if(value < 0)
-				{
-					vCPNegative.push_back(*ite);
-				}
-			}
-		}
-	}
+	//			if(value > 0)
+	//			{
+	//				vCPPositive.push_back(*ite);
+	//			}
+	//			else if(value < 0)
+	//			{
+	//				vCPNegative.push_back(*ite);
+	//			}
+	//		}
+	//	}
+	//}
 
 	Stroke::Stroke(float time, const V_POINT &vPoint, StrokeDraw *drawNegative, StrokeDraw *drawPositive, const Point &center, const Point &dir):m_fExistTime(time),
 		m_center(center),
 		m_pDrawNegative(drawNegative),
 		m_pDrawPositive(drawPositive)
 	{
-		//m_vControlPoint.clear();
-		//V_POINT::const_iterator ite;
-		//for(ite = vPoint.begin(); ite != vPoint.end();++ite)
-		//{
-		//	m_vControlPoint.push_back(*ite);
-		//}
+		m_vControlPoint.clear();
+		V_POINT::const_iterator ite;
+		for(ite = vPoint.begin(); ite != vPoint.end();++ite)
+		{
+			m_vControlPoint.push_back(*ite);
+		}
 
-		m_vCPPositive.clear();
-		m_vCPNegative.clear();
+		//m_vCPPositive.clear();
+		//m_vCPNegative.clear();
+
+		if(dir.x == 0)
+		{
+			m_fA = 0.0;
+		}
+		else
+		{
+			m_fA = dir.y / dir.x;
+		}
+		m_fB = center.y - m_fA * center.x;
 		m_preCenter = center + dir;
-		process(vPoint, m_vCPNegative, m_vCPPositive, center, dir);
+		//process(vPoint, m_vCPNegative, m_vCPPositive, center, dir);
 	}
 
 	Stroke::~Stroke()
@@ -104,6 +114,29 @@ namespace Stroke
 		{
 			delete m_pDrawPositive;
 			m_pDrawPositive = 0;
+		}
+	}
+
+	void Stroke::classifier(const LIST_POINT &vContorlPoint, LIST_POINT &vNegative, LIST_POINT &vPositive)
+	{
+		LIST_POINT::const_iterator ite;
+		for(ite = vContorlPoint.begin(); ite != vContorlPoint.end();++ite)
+		{
+			//float value = 1;
+			//value = dir.y * ite->x + (-dir.x * ite->y) + c;
+
+			//value = a * (ite->x - dir.x) - ite->y  + dir.y;
+
+			float value = m_fA * ite->x + m_fB - ite->y;
+
+			if(value > 0)
+			{
+				vPositive.push_back(*ite);
+			}
+			else
+			{
+				vNegative.push_back(*ite);
+			}
 		}
 	}
 
@@ -135,17 +168,20 @@ namespace Stroke
 		if(m_pDrawNegative == 0 || m_pDrawPositive == 0)
 			return;
 		m_fExistTime -= timePass;
-
+		LIST_POINT vNegative, vPositive;
 		if(field != 0)
 		{
-			process(m_vCPNegative, field, size);
-			process(m_vCPPositive, field, size);
 
+			//process(m_vCPNegative, field, size);
+			//process(m_vCPPositive, field, size);
+
+			process(m_vControlPoint, field, size);
+			classifier(m_vControlPoint, vNegative, vPositive);
 		}
 		if(m_pDrawNegative->isValid())
 		{
 			m_pDrawNegative->drawBegin();
-			m_pDrawNegative->draw(m_vCPNegative);
+			m_pDrawNegative->draw(vNegative);
 			LIST_POINT vPoint;
 			vPoint.push_back(m_preCenter);
 			vPoint.push_back(m_center);
@@ -156,7 +192,7 @@ namespace Stroke
 		if(m_pDrawPositive->isValid())
 		{
 			m_pDrawPositive->drawBegin();
-			m_pDrawPositive->draw(m_vCPPositive);
+			m_pDrawPositive->draw(vPositive);
 			m_pDrawPositive->drawEnd();
 		}
 	}
