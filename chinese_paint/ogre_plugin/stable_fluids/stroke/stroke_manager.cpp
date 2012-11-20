@@ -95,18 +95,21 @@ namespace Stroke
 		}
 	}
 
-	void StrokeManager::createStroke(float existTime, const V_POINT &vPoint, StrokeDraw *draw, const Point &center, const Point &dir)
+	void StrokeManager::createStroke(float existTime, const V_POINT &vPoint, StrokeDraw *drawNegative, StrokeDraw *drawPositive, const Point &center, const Point &dir)
 	{
 		if(m_fDelayTime <= 0)
 		{
 			m_fDelayTime = DEFAULT_DELAY_CREATE;
 			//m_vStroke.push_back(new Stroke(existTime, vPoint, draw));
-			m_listStroke.push_back(new Stroke(existTime, vPoint, draw, center, dir));
+			m_listStroke.push_back(new Stroke(existTime, vPoint, drawNegative, drawPositive, center, dir));
 		}
 		else
 		{
-			delete draw;
-			draw = 0;
+			delete drawNegative;
+			drawNegative = 0;
+
+			delete drawPositive;
+			drawPositive = 0;
 		}
 	}
 }
