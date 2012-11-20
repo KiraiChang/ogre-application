@@ -12,7 +12,7 @@ namespace Stroke
 		method 1:
 		y - m * x - b = 0
 			y2 - y1
-		m = -------
+		a = -------
 			x2 - x1
 
 			x2*y1 - x1*y2
@@ -26,16 +26,23 @@ namespace Stroke
 		*/
 
 		
-		float c = -(dir.y * center.x + (-dir.x * center.y));
+		//float c = -(dir.y * center.x + (-dir.x * center.y));
 
-		//float a = dir.y / dir.x;
+		float a = dir.y / dir.x;
+		//Point p2 = center + dir;
+		//float b = (center.x*p2.y - p2.x*center.y) / (center.x - p2.x);
+		float b = center.y - a * center.x;
 
 		V_POINT::const_iterator ite;
+
 		for(ite = vPoint.begin(); ite != vPoint.end();++ite)
 		{
-			float value = dir.y * ite->x + (-dir.x * ite->y) + c;
+			float value = 1;
+			//value = dir.y * ite->x + (-dir.x * ite->y) + c;
 			
-			//float value = a * (ite->x - dir.x) + ite->y -dir.y;
+			//value = a * (ite->x - dir.x) - ite->y  + dir.y;
+
+			value = a * ite->x + b - ite->y;
 
 			if(value > 0)
 			{
