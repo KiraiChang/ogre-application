@@ -23,7 +23,7 @@ namespace Stroke
 									Stroke(float time, const V_POINT &vPoint, StrokeDraw *drawNegative, StrokeDraw *drawPositive, const Point &center, const Point &dir);
 									~Stroke(void);
 		void						release(void);
-		void						classifier(const LIST_POINT &vContorlPoint, LIST_POINT &vNegative, LIST_POINT &vPositive);
+		void						classifier(const LIST_POINT &vContorlPoint, V_POINT &vNegative, V_POINT &vPositive);
 
 		void						update(float timePass, float **field, unsigned int size );
 		bool						isExist(void);

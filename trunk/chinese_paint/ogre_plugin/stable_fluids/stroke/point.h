@@ -118,6 +118,11 @@ namespace Stroke
 			return *this;
 		}
 
+		inline bool operator < (Stroke::Point &rhs)
+		{
+			return (x < rhs.x) || (x == rhs.x && y < rhs.y);
+		}
+
 		inline float length () const
 		{
 			return sqrt( x * x + y * y );

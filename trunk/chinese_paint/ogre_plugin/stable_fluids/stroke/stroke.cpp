@@ -1,8 +1,12 @@
 #include "stroke.h"
 #include "stroke_draw.h"
+#include <algorithm>
 
 #define PARTICLE_MOVE_SPEED 100
 #define IX(i,j,k) ((i)+(k+2)*(j))
+#define THRESHOLD 0.3
+
+extern bool compare(Stroke::Point &a, Stroke::Point &b);//utilize/sort.cpp
 
 namespace Stroke
 {
@@ -84,9 +88,9 @@ namespace Stroke
 		//m_vCPPositive.clear();
 		//m_vCPNegative.clear();
 
-		if(dir.x == 0)
+		if(dir.x < 0.1 && dir.x > -0.1)
 		{
-			m_fA = 0.0;
+			m_fA = 1000.0;
 		}
 		else
 		{
@@ -117,7 +121,7 @@ namespace Stroke
 		}
 	}
 
-	void Stroke::classifier(const LIST_POINT &vContorlPoint, LIST_POINT &vNegative, LIST_POINT &vPositive)
+	void Stroke::classifier(const LIST_POINT &vContorlPoint, V_POINT &vNegative, V_POINT &vPositive)
 	{
 		LIST_POINT::const_iterator ite;
 		for(ite = vContorlPoint.begin(); ite != vContorlPoint.end();++ite)
@@ -126,18 +130,25 @@ namespace Stroke
 			//value = dir.y * ite->x + (-dir.x * ite->y) + c;
 
 			//value = a * (ite->x - dir.x) - ite->y  + dir.y;
+			float value = 1;
+			if(m_fA < 1000)
+				value = m_fA * ite->x + m_fB - ite->y;
+			else
+			{
+				value = ite->x - m_center.x;
+			}
 
-			float value = m_fA * ite->x + m_fB - ite->y;
-
-			if(value > 0)
+			if(value > THRESHOLD)
 			{
 				vPositive.push_back(*ite);
 			}
-			else
+			else if(value < -THRESHOLD)
 			{
 				vNegative.push_back(*ite);
 			}
 		}
+		std::sort(vPositive.begin(), vPositive.end());
+		std::sort(vNegative.begin(), vNegative.end());
 	}
 
 	void process(LIST_POINT &vControlPoint, float **field, unsigned int size)
@@ -168,7 +179,7 @@ namespace Stroke
 		if(m_pDrawNegative == 0 || m_pDrawPositive == 0)
 			return;
 		m_fExistTime -= timePass;
-		LIST_POINT vNegative, vPositive;
+		V_POINT vNegative, vPositive;
 		if(field != 0)
 		{
 
