@@ -653,17 +653,20 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 
 	if(m_pMapping3DTo2D != NULL && mesh->getVertices() != NULL)
 	{
+		Ogre::Vector3 pos = mesh->getNode()->getPosition();
 		contour = m_pMapping3DTo2D->process(mesh->getVertexCount(), mesh->getVertices(), m_vbIntersectGrid, m_iGridNumber);
 		Stroke::Point center;
 		process(contour, center);
+		center.x = pos.x;
+		center.y = pos.z;
 		push(m_iGridNumber+2, center.x, center.y, 0, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 		push(m_iGridNumber+2, center.x, center.y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 		push(m_iGridNumber+2, center.x, center.y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 		push(m_iGridNumber+2, center.x, center.y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
 
-		static Stroke::Point preCenter = center;
-		Stroke::Point dir = center - preCenter;
-		preCenter = center;
+		//static Stroke::Point preCenter = center;
+		//Stroke::Point dir = center - preCenter;
+		//preCenter = center;
 		//static Ogre::Vector3 prePos = mesh->getNode()->getPosition();
 		//Ogre::Vector3 dir = prePos - mesh->getNode()->getPosition();
 		//prePos = mesh->getNode()->getPosition();
@@ -691,7 +694,7 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 
 		
 
-		Stroke::StrokeManager::getSingleton()->createStroke(PARTICLE_LIVE_TIME, contour, (Stroke::StrokeDraw *)drawNegative, (Stroke::StrokeDraw *)drawPositive, center, dir);
+		Stroke::StrokeManager::getSingleton()->createStroke(PARTICLE_LIVE_TIME, contour, (Stroke::StrokeDraw *)drawNegative, (Stroke::StrokeDraw *)drawPositive, center);
 	}
 
 	//if(m_pParticleSimulation != NULL)
