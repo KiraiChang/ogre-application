@@ -13,6 +13,7 @@ namespace Stroke
 		virtual void init(void) = 0;
 		virtual void release(void) = 0;
 		virtual void drawBegin(void) = 0;
+		virtual void draw(const V_POINT &list) = 0;
 		virtual void draw(const LIST_POINT &list) = 0;
 		virtual void drawEnd(void) = 0;
 	};

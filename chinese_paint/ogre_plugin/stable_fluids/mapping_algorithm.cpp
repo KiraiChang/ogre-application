@@ -1,5 +1,6 @@
 #include "mapping_algorithm.h"
 
+//extern bool compare(Stroke::Point &a, Stroke::Point &b);//utilize/sort.cpp
 
 Stroke::V_POINT Normal::process(size_t verticesCount, Ogre::Vector3 *vertices, float *grid, size_t gridNumber)
 {
@@ -57,10 +58,7 @@ double cross(Stroke::Point &o, Stroke::Point &a, Stroke::Point &b)
 	return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
 }
 
-bool compare(Stroke::Point &a, Stroke::Point &b)
-{
-	return (a.x < b.x) || (a.x == b.x && a.y < b.y);
-}
+
 
 Stroke::V_POINT ConvexHull::process(size_t verticesCount, Ogre::Vector3 *vertices, float *grid, size_t gridNumber)
 {
@@ -89,7 +87,7 @@ Stroke::V_POINT ConvexHull::process(size_t verticesCount, Ogre::Vector3 *vertice
 	//	vPoint.push_back(*ite);
 	//}
 	// 將所有點依照座標大小排序
-	std::sort(vPoint.begin(), vPoint.end(), compare);
+	std::sort(vPoint.begin(), vPoint.end());
 
 	int m = 0;  // m 為凸包頂點數目
 

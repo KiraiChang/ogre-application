@@ -58,6 +58,28 @@ namespace Stroke
 		m_pManuObj->begin(m_sMaterial, m_iType);
 	}
 
+	void OgreDraw::draw(const V_POINT &vect)
+	{
+		size_t i, size = vect.size();
+		if(size < 2)
+			return ;
+		Ogre::Vector3 from, to;
+
+		from.x = vect[0].x;
+		from.y = 0;
+		from.z = vect[0].y;
+
+		for(i = 1; i < size; i++)
+		{
+			to.x = vect[i].x;
+			to.y = 0;
+			to.z = vect[i].y;
+			m_pManuObj->position(from);
+			m_pManuObj->position(to);
+			from = to;
+		}
+	}
+
 	void OgreDraw::draw(const LIST_POINT &list)
 	{
 		if(list.size() < 2)

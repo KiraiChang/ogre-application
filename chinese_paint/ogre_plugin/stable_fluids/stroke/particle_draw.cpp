@@ -59,6 +59,35 @@ namespace Stroke
 	{
 	}
 
+	void ParticleDraw::draw(const V_POINT &vect)
+	{
+		V_POINT::const_iterator ite;
+		Ogre::Particle* particle = NULL;
+		Ogre::ParticleIterator p_ite = m_pPS->_getIterator();
+		for(ite = vect.begin(); ite != vect.end(); ++ite)
+		{
+			if(!p_ite.end())
+			{
+				particle = p_ite.getNext();
+				particle->position.x = ite->x;
+				particle->position.y = 0.0;
+				particle->position.z = ite->y;
+			}
+			else
+			{
+				particle = m_pPS->createParticle();
+				if(particle != NULL)
+				{
+					particle->position.x = ite->x;
+					particle->position.y = 0;
+					particle->position.z = ite->y;
+					particle->timeToLive = PARTICLE_LIVE_TIME;
+					particle->setDimensions (PARTICLE_SIZE_X, PARTICLE_SIZE_Y);
+				}
+			}
+		}
+	}
+
 	void ParticleDraw::draw(const LIST_POINT &list)
 	{
 		LIST_POINT::const_iterator ite;
