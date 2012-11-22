@@ -4,7 +4,7 @@
 
 #define PARTICLE_MOVE_SPEED 100
 #define IX(i,j,k) ((i)+(k+2)*(j))
-#define THRESHOLD 0.3
+#define THRESHOLD 0.5
 
 extern bool compare(Stroke::Point &a, Stroke::Point &b);//utilize/sort.cpp
 
@@ -88,7 +88,7 @@ namespace Stroke
 		//m_vCPPositive.clear();
 		//m_vCPNegative.clear();
 
-		if(dir.x < 0.1 && dir.x > -0.1)
+		if(dir.x < 0.001 && dir.x > -0.001)
 		{
 			m_fA = 1000.0;
 		}
