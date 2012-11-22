@@ -118,7 +118,7 @@ namespace Stroke
 			return *this;
 		}
 
-		inline bool operator < (Stroke::Point &rhs)
+		inline bool operator < (const Stroke::Point &rhs)
 		{
 			return (x < rhs.x) || (x == rhs.x && y < rhs.y);
 		}
