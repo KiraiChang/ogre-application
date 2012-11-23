@@ -16,6 +16,7 @@ fragment_program ChinesePaint/Moxi/BlockPS cg
 	entry_point main1
 	profiles ps_3_0 fp30
 }
+
 material ChinesePaint/Background
 {
 	technique

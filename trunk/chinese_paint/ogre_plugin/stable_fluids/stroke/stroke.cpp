@@ -152,30 +152,34 @@ namespace Stroke
 		std::sort(vNegative.begin(), vNegative.end());
 	}
 
-	void process(LIST_POINT &vControlPoint, float **field, unsigned int size)
+	void process(LIST_POINT &vControlPoint, float **field, float *density, unsigned int size)
 	{
 
 		LIST_POINT::iterator ite;
-		unsigned int index;
+		unsigned int index, index_right, index_down;
 		float u0, u1, v0, v1, u, v;
 		int x0, x1, y0, y1;
 
 		for(ite = vControlPoint.begin(); ite != vControlPoint.end();++ite)
 		{
 			x0 = ite->x; y0 = ite->y;
-			x1 = x0 + 1; y1 = y0 + 1;
+			index = IX(x0,y0,size);
+			index_right = index + 1;
+			index_down = index + size;
+			//x1 = x0 + 1; y1 = y0 + 1;
 			u1 = ite->x-x0; u0 = 1-u1; v1 = ite->y-y0; v0 = 1-v1;
-			u = u0*(v0*field[0][IX(x0,y0,size)]+v1*field[0][IX(x0,y1,size)])+
-				u1*(v0*field[0][IX(x1,y0,size)]+v1*field[0][IX(x1,y1,size)]);
+			u = u0*(v0*field[0][index]+v1*field[0][index_down])+
+				u1*(v0*field[0][index_right]+v1*field[0][index_right]);
 
-			v = u0*(v0*field[1][IX(x0,y0,size)]+v1*field[1][IX(x0,y1,size)])+
-				u1*(v0*field[1][IX(x1,y0,size)]+v1*field[1][IX(x1,y1,size)]);
+			v = u0*(v0*field[1][index]+v1*field[1][index_down])+
+				u1*(v0*field[1][index_right]+v1*field[1][index_right]);
 
-			ite->x += u * PARTICLE_MOVE_SPEED; ite->y += v * PARTICLE_MOVE_SPEED;	
+			ite->x += u * PARTICLE_MOVE_SPEED; ite->y += v * PARTICLE_MOVE_SPEED;
+			density[index] = 1.0;
 		}
 	}
 
-	void Stroke::update(float timePass, float **field, unsigned int size)
+	void Stroke::update(float timePass, float **field, float *density, unsigned int size)
 	{
 		if(m_pDrawNegative == 0 || m_pDrawPositive == 0)
 			return;
@@ -187,24 +191,24 @@ namespace Stroke
 			//process(m_vCPNegative, field, size);
 			//process(m_vCPPositive, field, size);
 
-			process(m_vControlPoint, field, size);
+			process(m_vControlPoint, field, density, size);
 			classifier(m_vControlPoint, vNegative, vPositive);
 		}
 		if(m_pDrawNegative->isValid())
 		{
 			m_pDrawNegative->drawBegin();
-			m_pDrawNegative->draw(vNegative);
+			m_pDrawNegative->draw(vNegative, density);
 			LIST_POINT vPoint;
 			vPoint.push_back(m_preCenter);
 			vPoint.push_back(m_center);
-			m_pDrawNegative->draw(vPoint);
+			m_pDrawNegative->draw(vPoint, NULL);
 			m_pDrawNegative->drawEnd();
 		}
 
 		if(m_pDrawPositive->isValid())
 		{
 			m_pDrawPositive->drawBegin();
-			m_pDrawPositive->draw(vPositive);
+			m_pDrawPositive->draw(vPositive, density);
 			m_pDrawPositive->drawEnd();
 		}
 	}

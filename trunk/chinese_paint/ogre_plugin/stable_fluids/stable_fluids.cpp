@@ -256,7 +256,8 @@ void StableFluids::setupControls(OgreBites::SdkTrayManager* mTrayMgr)
 	menu->addItem("DISPLAY_MAP_NONE");
 	menu->addItem("DISPLAY_DENSITY_MAP");
 	menu->addItem("DISPLAY_BOOLEAN_GRID");
-	menu->selectItem("DISPLAY_DENSITY_MAP");
+	menu->addItem("DISPLAY_MOXI_RESULT");
+	menu->selectItem("DISPLAY_MOXI_RESULT");
 
 	check = mTrayMgr->createCheckBox(OgreBites::TL_TOPLEFT, "ExternForceCB", "Extern Force", PANEL_WIDTH);
 	check = mTrayMgr->createCheckBox(OgreBites::TL_TOPLEFT, "AddForceCB", "Add Force", PANEL_WIDTH);
@@ -314,6 +315,7 @@ void StableFluids::itemSelected(OgreBites::SelectMenu* menu)
 	else if(menu->getName() == "VelocityMenu")
 	{
 		const Ogre::String& materialName = menu->getSelectedItem();
+		
 		if(materialName == "DISPLAY_VELOCITY_NONE")
 			fg->m_eVelocityType = StableFluidsGrid::DISPLAY_VELOCITY_NONE;
 		else if(materialName == "DISPLAY_ORIGIN")
@@ -328,12 +330,18 @@ void StableFluids::itemSelected(OgreBites::SelectMenu* menu)
 	else if(menu->getName() == "DensityMenu")
 	{
 		const Ogre::String& materialName = menu->getSelectedItem();
+		fg->setMiniScreenMaterial("ChinesePaint/Texture");
 		if(materialName == "DISPLAY_MAP_NONE")
 			fg->m_eMapDisplayType = StableFluidsGrid::DISPLAY_MAP_NONE;
 		else if(materialName == "DISPLAY_BOOLEAN_GRID")
 			fg->m_eMapDisplayType = StableFluidsGrid::DISPLAY_BOOLEAN_GRID;
 		else if(materialName == "DISPLAY_DENSITY_MAP")
 			fg->m_eMapDisplayType = StableFluidsGrid::DISPLAY_DENSITY_MAP;
+		else if(materialName == "DISPLAY_MOXI_RESULT")
+		{
+			fg->m_eMapDisplayType = StableFluidsGrid::DISPLAY_MOXI_RESULT;
+			//fg->setMiniScreenMaterial("ChinesePaint/Moxi");
+		}
 
 	}
 }

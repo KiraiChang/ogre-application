@@ -19,8 +19,8 @@ namespace Stroke
 		virtual void init(void);
 		virtual void release(void);
 		virtual void drawBegin(void);
-		virtual void draw(const V_POINT &list);
-		virtual void draw(const LIST_POINT &list);
+		virtual void draw(const V_POINT &list, float *density);
+		virtual void draw(const LIST_POINT &list, float *density);
 		virtual void drawEnd(void);
 		void setAttribute(const std::string &materail, unsigned int size);
 	};

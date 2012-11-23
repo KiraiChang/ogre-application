@@ -113,6 +113,7 @@ float4 main1( v2fAll IN,
      uniform float  Corn_mul = 1    // corner multipler
 	 ) : COLOR
 {
+	return float4(IN.Tex0, 0.0, 0.0);
     float4 Misc0 = texRECT(MiscMap, IN.Tex0);
     float  f0    = Misc0.y;
     float  ws    = Misc0.w;

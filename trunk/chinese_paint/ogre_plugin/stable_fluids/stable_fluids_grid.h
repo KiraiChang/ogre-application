@@ -24,6 +24,7 @@ public:
 		DISPLAY_MAP_NONE,
 		DISPLAY_DENSITY_MAP,
 		DISPLAY_BOOLEAN_GRID,
+		DISPLAY_MOXI_RESULT,
 	};
 	MAP_DISPLAY_TYPE						m_eMapDisplayType;
 
@@ -40,8 +41,8 @@ public:
 	bool									m_bAddForce;
 	int										m_iGridNumber;// Grid one side size
 	int										m_iGridSize;// (m_iGridNumber + 2)*(m_iGridNumber + 2)
-	//float *								m_vfDens;
-	//float *								m_vfDensPrev;
+	float *									m_vfDens;
+	float *									m_vfDensPrev;
 
 private:
 	//float									m_fTimeSpeed;
@@ -113,6 +114,7 @@ public:
 	void									setMeshBoundary(bool setDenstity = true);//set m_vbIntersectGrid to m_vfU and m_vfV
 	void									setMeshEnforce(float timePass);//set m_vfEnforceU and m_vfEnforceV to m_vfU and m_vfV
 	void									setExternalForce();
+	void									setMiniScreenMaterial(const std::string name);
 	unsigned int							IX(int x, int y);
 };
 

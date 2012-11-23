@@ -23,7 +23,7 @@ namespace Stroke
 									~StrokeManager(void);
 		static StrokeManager *		getSingleton(void);
 		void						release(void);
-		void						update(float timePass, float **field, unsigned int size);
+		void						update(float timePass, float **field, float *density, unsigned int size);
 		void						createStroke(float existTime, const V_POINT &vPoint, StrokeDraw *drawNegative, StrokeDraw *drawPositive, const Point &center);
 	};
 }
