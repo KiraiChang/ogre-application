@@ -59,7 +59,7 @@ namespace Stroke
 	{
 	}
 
-	void ParticleDraw::draw(const V_POINT &vect)
+	void ParticleDraw::draw(const V_POINT &vect, float *density)
 	{
 		V_POINT::const_iterator ite;
 		Ogre::Particle* particle = NULL;
@@ -88,7 +88,7 @@ namespace Stroke
 		}
 	}
 
-	void ParticleDraw::draw(const LIST_POINT &list)
+	void ParticleDraw::draw(const LIST_POINT &list, float *density)
 	{
 		LIST_POINT::const_iterator ite;
 		Ogre::Particle* particle = NULL;

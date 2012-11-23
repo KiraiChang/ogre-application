@@ -1,5 +1,4 @@
 #include "ogre_draw.h"
-
 #define PROJECT_NAME "ChinesePaint"
 
 namespace Stroke
@@ -58,7 +57,7 @@ namespace Stroke
 		m_pManuObj->begin(m_sMaterial, m_iType);
 	}
 
-	void OgreDraw::draw(const V_POINT &vect)
+	void OgreDraw::draw(const V_POINT &vect, float *density)
 	{
 		size_t i, size = vect.size();
 		if(size < 2)
@@ -80,7 +79,7 @@ namespace Stroke
 		}
 	}
 
-	void OgreDraw::draw(const LIST_POINT &list)
+	void OgreDraw::draw(const LIST_POINT &list, float *density)
 	{
 		if(list.size() < 2)
 			return ;

@@ -1,7 +1,7 @@
 #include "stroke_manager.h"
 #include "stroke_draw.h"
 
-#define DEFAULT_DELAY_CREATE 0.33;
+#define DEFAULT_DELAY_CREATE 1.0// 0.33;
 
 namespace Stroke
 {
@@ -55,7 +55,7 @@ namespace Stroke
 		}
 	}
 
-	void StrokeManager::update(float timePass, float **field, unsigned int size)
+	void StrokeManager::update(float timePass, float **field, float *density, unsigned int size)
 	{
 		m_fDelayTime -= timePass;
 		//V_STROKE::iterator ite;
@@ -85,7 +85,7 @@ namespace Stroke
 			del_ite = ite;
 			++ite;
 			stroke = *del_ite;
-			stroke->update(timePass, field, size);
+			stroke->update(timePass, field, density, size);
 			if(!stroke->isExist())
 			{
 				m_listStroke.erase(del_ite);

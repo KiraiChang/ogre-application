@@ -17,7 +17,7 @@ static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
 static float FISH_DEPTH = 0.1;
 static float ANIMATIONS_PER_SECOND = 1.0f;
-static float FORCE_STRENGTH = 0.04 / FISH_SCALE_SIZE;//0.02;
+static float FORCE_STRENGTH = 100;//0.02;
 #define PARTICLE_LIVE_TIME 10
 //#define PARTICLE_SIZE_X 0.5
 //#define PARTICLE_SIZE_Y 0.5
@@ -28,12 +28,13 @@ static float FORCE_STRENGTH = 0.04 / FISH_SCALE_SIZE;//0.02;
 //#define PARTICLE_X_DIFF 0.25
 //#define PARTICLE_Z_BEG -0.8
 //#define PARTICLE_Z_DIFF 0.4
+#define DUMPING_TEXTURE_SIZE 128
 
 StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_iGridNumber(number),
 	//m_fTimeSpeed(0.1f), 
-	//m_vfDens(NULL),
-	//m_vfDensPrev(NULL),
+	m_vfDens(NULL),
+	m_vfDensPrev(NULL),
 	m_fDiff(0.0f), 
 	m_fVisc(0.0f),
 	m_fForce(5.0f), 
@@ -104,8 +105,8 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 	m_vfUPrev		= new float[m_iGridSize];
 	m_vfVPrev		= new float[m_iGridSize];
 	m_vbIntersectGrid = new float[m_iGridSize];
-	//m_vfDens		= new float[m_iGridSize];
-	//m_vfDensPrev	= new float[m_iGridSize];
+	m_vfDens		= new float[m_iGridSize];
+	m_vfDensPrev	= new float[m_iGridSize];
 
 	m_vfEnforceU	= new float[m_iGridSize];
 	m_viEnforceUCount = new int[m_iGridSize];
@@ -184,8 +185,8 @@ void StableFluidsGrid::release(void)
 	if ( m_vfV ) delete ( m_vfV );
 	if ( m_vfUPrev ) delete ( m_vfUPrev );
 	if ( m_vfVPrev ) delete ( m_vfVPrev );
-	//if ( m_vfDens ) delete ( m_vfDens );
-	//if ( m_vfDensPrev ) delete ( m_vfDensPrev );
+	if ( m_vfDens ) delete ( m_vfDens );
+	if ( m_vfDensPrev ) delete ( m_vfDensPrev );
 
 	if ( m_vbIntersectGrid ) 
 	{
@@ -447,13 +448,16 @@ void StableFluidsGrid::updateMesh(float timePass)
 		setExternalForce();
 
 	vel_step ( m_iGridNumber, m_vfU, m_vfV, m_vfUPrev, m_vfVPrev, m_fVisc, timePass);
-	//dens_step ( m_iGridNumber, m_vfDens, m_vfDensPrev, m_vfU, m_vfV, m_fDiff, timePass);
+	dens_step ( m_iGridNumber, m_vfDens, m_vfDensPrev, m_vfU, m_vfV, m_fDiff, timePass);
+	//vel_step ( m_iGridNumber, m_vfWaveVelocity[VELOCITY_U], m_vfWaveVelocity[VELOCITY_V], m_vfWaveVelocity[VELOCITY_PREV_U], m_vfWaveVelocity[VELOCITY_PREV_V], m_fVisc, timePass);
+	//dens_step ( m_iGridNumber, m_vfDens, m_vfDensPrev, m_vfWaveVelocity[VELOCITY_U], m_vfWaveVelocity[VELOCITY_V], m_fDiff, timePass);
 
 	m_iCurrentMap = (m_iCurrentMap + 1) % 3 ;
 	float *buf = m_vfHeightMap[m_iCurrentMap] ; //new map
 	float *buf1 = m_vfHeightMap[(m_iCurrentMap+2)%3] ;//current map
 	float *buf2 = m_vfHeightMap[(m_iCurrentMap+1)%3] ;//prev map
 	wave_step (m_iGridNumber+2, buf, buf1, buf2, m_vfDumpening, timePass, m_vfWaveVelocity);
+	
 
 	float *vfU = NULL, *vfV = NULL;
 
@@ -472,6 +476,7 @@ void StableFluidsGrid::updateMesh(float timePass)
 		vfU = m_vfBoundaryU;
 		vfV = m_vfBoundaryV;
 		break;
+	//case DISPLAY_ORIGIN:
 	case DISPLAY_WAVE_EQUATION:
 		vfU = m_vfWaveVelocity[VELOCITY_U];
 		vfV = m_vfWaveVelocity[VELOCITY_V];
@@ -498,6 +503,11 @@ void StableFluidsGrid::updateMesh(float timePass)
 		m_heightMap->blitFromMemory(*m_pPixelBox);
 		m_pMiniScreenNode->setVisible(true);
 		break;
+	case DISPLAY_MOXI_RESULT:
+		m_pPixelBox->data =  m_vfDens;
+		m_heightMap->blitFromMemory(*m_pPixelBox);
+		m_pMiniScreenNode->setVisible(true);
+		break;
 	default:
 		m_pMiniScreenNode->setVisible(false);
 		break;
@@ -506,7 +516,7 @@ void StableFluidsGrid::updateMesh(float timePass)
 	setMeshBoundary();
 	if(m_bAddForce)
 	{
-		//setMeshEnforce(timePass);
+		setMeshEnforce(timePass);
 		//vel_step ( m_iGridNumber, m_vfU, m_vfV, m_vfUPrev, m_vfVPrev, m_fVisc, timePass);
 		//setMeshBoundary();
 	}
@@ -516,7 +526,7 @@ void StableFluidsGrid::updateMesh(float timePass)
 	//{
 	//	m_pParticleSimulation->update(m_pPS, timePass, m_vfWaveVelocity[VELOCITY_U], m_vfWaveVelocity[VELOCITY_V], m_iGridNumber);
 	//}
-	Stroke::StrokeManager::getSingleton()->update(timePass, m_vfWaveVelocity, m_iGridNumber);
+	Stroke::StrokeManager::getSingleton()->update(timePass, m_vfWaveVelocity, m_vfDens, m_iGridNumber);
 }
 
 void StableFluidsGrid::updateDebug(float *vfU, float *vfV)
@@ -529,7 +539,7 @@ void StableFluidsGrid::updateDebug(float *vfU, float *vfV)
 	if(m_pManuObj == NULL)
 		return;
 	m_pManuObj->clear();
-	m_pManuObj->begin("ChinesePaint/Debug", Ogre::RenderOperation::OT_LINE_LIST);
+	m_pManuObj->begin("ChinesePaint/InkBlock", Ogre::RenderOperation::OT_LINE_LIST);
 	for(i = 1;i <= m_iGridNumber;i++)
 	{
 		
@@ -580,6 +590,7 @@ void StableFluidsGrid::clear(void)
 	for ( i=0 ; i<m_iGridSize ; i++ ) 
 	{
 		m_vfU[i] = m_vfV[i] = m_vfUPrev[i] = m_vfVPrev[i] = /*m_vfDens[i] = m_vfDensPrev[i] =*/ 0.0f;
+		m_vfWaveVelocity[VELOCITY_U][i] = m_vfWaveVelocity[VELOCITY_V][i] = m_vfWaveVelocity[VELOCITY_PREV_U][i] = m_vfWaveVelocity[VELOCITY_PREV_V][i] = 0.0f;
 	}
 }
 
@@ -1020,7 +1031,8 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 			if(m_viEnforceUCount[rIndex] > 0)
 				down  = m_vfEnforceU[rIndex] / m_viEnforceUCount[rIndex];
 			if(up || down || left || right)
-				m_vfU[index] = ((up+down)-(left+right)) / timePass * FORCE_STRENGTH;
+				m_vfU[index] = ((up+down)-(left+right)) * timePass * timePass * FORCE_STRENGTH;
+				//m_vfU[index] = ((up+down)-(left+right)) / timePass * FORCE_STRENGTH;
 			//V
 			up = down = left = right = 0;
 			if(m_viEnforceVCount[uIndex] > 0)
@@ -1032,7 +1044,7 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 			if(m_viEnforceVCount[rIndex] > 0)
 				down  = m_vfEnforceV[rIndex] / m_viEnforceVCount[rIndex];
 			if(up || down || left || right)
-				m_vfV[index] = ((up+down)+(left+right)) / timePass * FORCE_STRENGTH;
+				m_vfV[index] = ((up+down)+(left+right)) * timePass * timePass * FORCE_STRENGTH;
 		}
 	}
 }
@@ -1049,6 +1061,12 @@ void StableFluidsGrid::setExternalForce()
 	//	//m_vfU[index] = -1 * m_fForce * m_fLastFrameTime;
 	//	m_vfV[index] = -1 * m_fForce * m_fLastFrameTime;
 	//}
+}
+
+void StableFluidsGrid::setMiniScreenMaterial(const std::string name)
+{
+	if(m_pMiniScreen != NULL)
+		m_pMiniScreen->setMaterial(name);
 }
 
 unsigned int StableFluidsGrid::IX(int x, int y)

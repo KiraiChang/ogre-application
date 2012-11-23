@@ -25,7 +25,7 @@ namespace Stroke
 		void						release(void);
 		void						classifier(const LIST_POINT &vContorlPoint, V_POINT &vNegative, V_POINT &vPositive);
 
-		void						update(float timePass, float **field, unsigned int size );
+		void						update(float timePass, float **field, float *density, unsigned int size );
 		bool						isExist(void);
 	};
 }
