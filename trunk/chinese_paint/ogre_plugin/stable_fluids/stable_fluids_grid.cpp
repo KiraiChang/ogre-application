@@ -23,7 +23,7 @@ static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
 static float FISH_DEPTH = 0.1;
 static float ANIMATIONS_PER_SECOND = 1.0f;
-static float FORCE_STRENGTH = 10;//0.02;
+static float FORCE_STRENGTH = 1;//0.02;
 #define PARTICLE_LIVE_TIME 10
 //#define PARTICLE_SIZE_X 0.5
 //#define PARTICLE_SIZE_Y 0.5
@@ -1022,7 +1022,7 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 			if(m_viEnforceUCount[rIndex] > 0)
 				down  = m_vfEnforceU[rIndex] / m_viEnforceUCount[rIndex];
 			if(up || down || left || right)
-				m_vfUPrev[index] = ((up+down)-(left+right)) * timePass * FORCE_STRENGTH;
+				m_vfUPrev[index] = ((up+down)-(left+right)) * FORCE_STRENGTH;
 				//m_vfU[index] = ((up+down)-(left+right)) / timePass * FORCE_STRENGTH;
 			//V
 			up = down = left = right = 0;
@@ -1035,7 +1035,7 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 			if(m_viEnforceVCount[rIndex] > 0)
 				down  = m_vfEnforceV[rIndex] / m_viEnforceVCount[rIndex];
 			if(up || down || left || right)
-				m_vfVPrev[index] = ((up+down)+(left+right)) * timePass * FORCE_STRENGTH;
+				m_vfVPrev[index] = ((up+down)+(left+right)) * FORCE_STRENGTH;
 		}
 	}
 }

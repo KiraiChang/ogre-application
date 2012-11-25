@@ -1,7 +1,7 @@
 #include "stroke_manager.h"
 #include "stroke_draw.h"
 
-#define DEFAULT_DELAY_CREATE 1.0//0.33;
+#define DEFAULT_DELAY_CREATE 4.0//0.33;
 
 namespace Stroke
 {
