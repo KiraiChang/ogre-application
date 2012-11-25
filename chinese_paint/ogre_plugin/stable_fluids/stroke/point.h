@@ -3,6 +3,7 @@
 #include <math.h>
 #include <list>
 #include <vector>
+#include <set>
 #include <assert.h>
 namespace Stroke
 {
@@ -162,6 +163,7 @@ namespace Stroke
 	};
 	typedef std::list < Point >		LIST_POINT;
 	typedef std::vector < Point >	V_POINT;
+	typedef std::set < Point >		SET_POINT;
 }
 
 #endif //_POINT_H_

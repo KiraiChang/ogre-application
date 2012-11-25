@@ -46,8 +46,6 @@ public:
 
 private:
 	//float									m_fTimeSpeed;
-	MappingAlgorithm *						m_pMapping3DTo2D;
-	//ParticleSimulation *					m_pParticleSimulation;
 	float									m_fDiff;
 	float									m_fVisc;
 	float									m_fForce;

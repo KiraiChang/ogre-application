@@ -3,6 +3,8 @@
 #define FOR_EACH_CELL for ( i=1 ; i<=N ; i++ ) { for ( j=1 ; j<=N ; j++ ) {
 #define END_FOR }}
 
+#include "stroke\point.h"
+
 void add_source ( int N, float * x, float * s, float dt )
 {
 	int i, size=(N+2)*(N+2);
@@ -148,3 +150,64 @@ void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampenin
 	}
 }
 
+void particle_move(Stroke::LIST_POINT &vControlPoint, float **field, unsigned int N, float moveSpeed)
+{
+
+	Stroke::LIST_POINT::iterator ite;
+	unsigned int index, index_right, index_down;
+	float u0, u1, v0, v1, u, v;
+	int x0, y0;//, x1, y1;
+
+	for(ite = vControlPoint.begin(); ite != vControlPoint.end();++ite)
+	{
+		x0 = (int)ite->x; y0 = (int)ite->y;
+		index = IX(x0,y0);
+		index_right = index + 1;
+		index_down = index + N;
+		//x1 = x0 + 1; y1 = y0 + 1;
+		u1 = ite->x-x0; u0 = 1-u1; v1 = ite->y-y0; v0 = 1-v1;
+		u = u0*(v0*field[0][index]+v1*field[0][index_down])+
+			u1*(v0*field[0][index_right]+v1*field[0][index_right]);
+
+		v = u0*(v0*field[1][index]+v1*field[1][index_down])+
+			u1*(v0*field[1][index_right]+v1*field[1][index_right]);
+
+		ite->x += u * moveSpeed; ite->y += v * moveSpeed;
+	}
+}
+
+void draw_line(Stroke::V_POINT &vControlPoint, float *grid, unsigned int N, float value, bool absolute)
+{
+	unsigned int i, count;
+	int x, y;
+	Stroke::Point p1, p2, dist;
+	count = vControlPoint.size();
+	for(i = 0; i < count; i++)
+	{
+		p1 = vControlPoint[i];
+		p2 = vControlPoint[(i+1)%count];
+		x = (int)p1.x;
+		y = (int)p1.y;
+		if(absolute)
+			grid[IX(x,y)] = value;
+		else
+			grid[IX(x,y)] += value;
+		while(p2.distance(p1) > 1.0)
+		{
+			dist = (p2 - p1).normalisedCopy();
+			p1 += dist;
+			x = (int)p1.x;
+			y = (int)p1.y;
+			if(absolute)
+				grid[IX(x,y)] = value;
+			else
+				grid[IX(x,y)] += value;
+		}
+		x = (int)p2.x;
+		y = (int)p2.y;
+		if(absolute)
+			grid[IX(x,y)] = value;
+		else
+			grid[IX(x,y)] += value;
+	}
+}

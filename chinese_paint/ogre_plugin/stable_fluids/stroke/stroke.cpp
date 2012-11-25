@@ -3,76 +3,14 @@
 #include <algorithm>
 
 #define PARTICLE_MOVE_SPEED 100
-#define IX(i,j,k) ((i)+(k+2)*(j))
 #define THRESHOLD 0.3
+#define ADD_DENSITY 2.0
 
-extern bool compare(Stroke::Point &a, Stroke::Point &b);//utilize/sort.cpp
+extern void draw_line(Stroke::V_POINT &vControlPoint, float *grid, unsigned int gridSize, float value, bool absolute);
+extern void particle_move(Stroke::LIST_POINT &vControlPoint, float **field, unsigned int N, float moveSpeed);
 
 namespace Stroke
 {
-	//void process(const V_POINT &vPoint, LIST_POINT &vCPNegative, LIST_POINT &vCPPositive, const Point &center, const Point &dir)
-	//{
-	//	/*
-	//	method 1:
-	//	y - m * x - b = 0
-	//		y2 - y1
-	//	a = -------
-	//		x2 - x1
-
-	//		x2*y1 - x1*y2
-	//	b = -------------
-	//			x2 - x1
-
-	//	method 2:
-	//	a = (y2-y1)/(x2-x1);
-	//	y = a * ( x - x2 ) + y2;
-
-	//	*/
-
-	//	V_POINT::const_iterator ite;
-	//	if(dir.x == 0)
-	//	{
-	//		for(ite = vPoint.begin(); ite != vPoint.end();++ite)
-	//		{
-	//			if(ite->y > center.y)
-	//			{
-	//				vCPPositive.push_back(*ite);
-	//			}
-	//			else
-	//			{
-	//				vCPNegative.push_back(*ite);
-	//			}
-	//		}
-	//	}
-	//	else
-	//	{
-	//		//float c = -(dir.y * center.x + (-dir.x * center.y));
-	//		float a = dir.y / dir.x;
-	//		//Point p2 = center + dir;
-	//		//float b = (center.x*p2.y - p2.x*center.y) / (center.x - p2.x);
-	//		float b = center.y - a * center.x;
-
-	//		for(ite = vPoint.begin(); ite != vPoint.end();++ite)
-	//		{
-	//			float value = 1;
-	//			//value = dir.y * ite->x + (-dir.x * ite->y) + c;
-
-	//			//value = a * (ite->x - dir.x) - ite->y  + dir.y;
-
-	//			value = a * ite->x + b - ite->y;
-
-	//			if(value > 0)
-	//			{
-	//				vCPPositive.push_back(*ite);
-	//			}
-	//			else if(value < 0)
-	//			{
-	//				vCPNegative.push_back(*ite);
-	//			}
-	//		}
-	//	}
-	//}
-
 	Stroke::Stroke(float time, const V_POINT &vPoint, StrokeDraw *drawNegative, StrokeDraw *drawPositive, const Point &center, const Point &dir):m_fExistTime(time),
 		m_center(center),
 		m_pDrawNegative(drawNegative),
@@ -85,8 +23,11 @@ namespace Stroke
 			m_vControlPoint.push_back(*ite);
 		}
 
-		//m_vCPPositive.clear();
-		//m_vCPNegative.clear();
+		/*
+		method y=ax+b :
+		a = (y2-y1)/(x2-x1);
+		y = a * ( x - x2 ) + y2;
+		*/
 
 		if(dir.x < 0.0001 && dir.x > -0.0001)
 		{
@@ -98,8 +39,7 @@ namespace Stroke
 		}
 		m_fB = center.y - m_fA * center.x;
 		m_preCenter = center + dir;
-		printf("%fx+%f=y\n", m_fA, m_fB);
-		//process(vPoint, m_vCPNegative, m_vCPPositive, center, dir);
+		//printf("%fx+%f=y\n", m_fA, m_fB);
 	}
 
 	Stroke::~Stroke()
@@ -127,10 +67,6 @@ namespace Stroke
 		LIST_POINT::const_iterator ite;
 		for(ite = vContorlPoint.begin(); ite != vContorlPoint.end();++ite)
 		{
-			//float value = 1;
-			//value = dir.y * ite->x + (-dir.x * ite->y) + c;
-
-			//value = a * (ite->x - dir.x) - ite->y  + dir.y;
 			float value = 1;
 			if(m_fA < 1000)
 				value = m_fA * ite->x + m_fB - ite->y;
@@ -152,33 +88,6 @@ namespace Stroke
 		std::sort(vNegative.begin(), vNegative.end());
 	}
 
-	void process(LIST_POINT &vControlPoint, float **field, float *density, unsigned int size)
-	{
-
-		LIST_POINT::iterator ite;
-		unsigned int index, index_right, index_down;
-		float u0, u1, v0, v1, u, v;
-		int x0, x1, y0, y1;
-
-		for(ite = vControlPoint.begin(); ite != vControlPoint.end();++ite)
-		{
-			x0 = ite->x; y0 = ite->y;
-			index = IX(x0,y0,size);
-			index_right = index + 1;
-			index_down = index + size;
-			//x1 = x0 + 1; y1 = y0 + 1;
-			u1 = ite->x-x0; u0 = 1-u1; v1 = ite->y-y0; v0 = 1-v1;
-			u = u0*(v0*field[0][index]+v1*field[0][index_down])+
-				u1*(v0*field[0][index_right]+v1*field[0][index_right]);
-
-			v = u0*(v0*field[1][index]+v1*field[1][index_down])+
-				u1*(v0*field[1][index_right]+v1*field[1][index_right]);
-
-			ite->x += u * PARTICLE_MOVE_SPEED; ite->y += v * PARTICLE_MOVE_SPEED;
-			density[index] = 1.0;
-		}
-	}
-
 	void Stroke::update(float timePass, float **field, float *density, unsigned int size)
 	{
 		if(m_pDrawNegative == 0 || m_pDrawPositive == 0)
@@ -187,12 +96,10 @@ namespace Stroke
 		V_POINT vNegative, vPositive;
 		if(field != 0)
 		{
-
-			//process(m_vCPNegative, field, size);
-			//process(m_vCPPositive, field, size);
-
-			process(m_vControlPoint, field, density, size);
+			particle_move(m_vControlPoint, field, size, PARTICLE_MOVE_SPEED);
 			classifier(m_vControlPoint, vNegative, vPositive);
+			draw_line(vNegative, density, size, timePass * ADD_DENSITY, true);
+			draw_line(vPositive, density, size, timePass * ADD_DENSITY, true);
 		}
 		if(m_pDrawNegative->isValid())
 		{

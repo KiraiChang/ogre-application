@@ -261,6 +261,7 @@ void StableFluids::setupControls(OgreBites::SdkTrayManager* mTrayMgr)
 
 	check = mTrayMgr->createCheckBox(OgreBites::TL_TOPLEFT, "ExternForceCB", "Extern Force", PANEL_WIDTH);
 	check = mTrayMgr->createCheckBox(OgreBites::TL_TOPLEFT, "AddForceCB", "Add Force", PANEL_WIDTH);
+	check->setChecked(true);
 }
 
 void StableFluids::sliderMoved(OgreBites::Slider* slider)

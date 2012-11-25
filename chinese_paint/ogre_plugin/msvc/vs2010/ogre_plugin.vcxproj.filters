@@ -72,10 +72,7 @@
     <ClCompile Include="..\..\stable_fluids\stroke\particle_draw.cpp">
       <Filter>stable_fluids\stroke</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\stable_fluids\mapping_algorithm.cpp">
-      <Filter>stable_fluids</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\stable_fluids\particle_simulation.cpp">
+    <ClCompile Include="..\..\stable_fluids\ogre_solver.cpp">
       <Filter>stable_fluids</Filter>
     </ClCompile>
   </ItemGroup>
@@ -133,12 +130,6 @@
     </ClInclude>
     <ClInclude Include="..\..\stable_fluids\stroke\particle_draw.h">
       <Filter>stable_fluids\stroke</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\stable_fluids\mapping_algorithm.h">
-      <Filter>stable_fluids</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\stable_fluids\particle_simulation.h">
-      <Filter>stable_fluids</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
