@@ -9,9 +9,9 @@
 #include <iostream>
 
 //solver.cpp
-extern void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt );
-extern void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc, float dt );
-extern void set_bnd ( int N, int b, float * x );
+extern void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt, float * blocked);
+extern void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc, float dt, float * blocked);
+extern void set_bnd ( int N, int b, float * x, float * blocked);
 extern void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampening, float timePass, float **velocity);
 extern void draw_line(Stroke::V_POINT &vControlPoint, float *grid, unsigned int gridSize, float value, bool absolute);
 
@@ -23,7 +23,7 @@ static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
 static float FISH_DEPTH = 0.1;
 static float ANIMATIONS_PER_SECOND = 1.0f;
-static float FORCE_STRENGTH = 1000;//0.02;
+static float FORCE_STRENGTH = 10;//0.02;
 #define PARTICLE_LIVE_TIME 10
 //#define PARTICLE_SIZE_X 0.5
 //#define PARTICLE_SIZE_Y 0.5
@@ -149,8 +149,8 @@ void StableFluidsGrid::init(Ogre::SceneManager *mgr)
 			*vertex = 1.0f ; // rand() % 30 ;
 		}
 	}
-	set_bnd(m_iGridNumber, 1, m_vfDumpening);
-	set_bnd(m_iGridNumber, 2, m_vfDumpening);
+	//set_bnd(m_iGridNumber, 1, m_vfDumpening);
+	//set_bnd(m_iGridNumber, 2, m_vfDumpening);
 	m_pPixelBox = new Ogre::PixelBox(m_iGridNumber+2, m_iGridNumber+2, 1, Ogre::PF_FLOAT32_R);
 
 	m_pManuObj = m_pSceneMgr->createManualObject();
@@ -448,8 +448,8 @@ void StableFluidsGrid::updateMesh(float timePass)
 	if(m_bExternlForce)
 		setExternalForce();
 
-	vel_step ( m_iGridNumber, m_vfU, m_vfV, m_vfUPrev, m_vfVPrev, m_fVisc, timePass);
-	dens_step ( m_iGridNumber, m_vfDens, m_vfDensPrev, m_vfU, m_vfV, m_fDiff, timePass);
+	vel_step ( m_iGridNumber, m_vfU, m_vfV, m_vfUPrev, m_vfVPrev, m_fVisc, timePass, m_vbIntersectGrid);
+	dens_step ( m_iGridNumber, m_vfDens, m_vfDensPrev, m_vfU, m_vfV, m_fDiff, timePass, m_vbIntersectGrid);
 	//vel_step ( m_iGridNumber, m_vfWaveVelocity[VELOCITY_U], m_vfWaveVelocity[VELOCITY_V], m_vfWaveVelocity[VELOCITY_PREV_U], m_vfWaveVelocity[VELOCITY_PREV_V], m_fVisc, timePass);
 	//dens_step ( m_iGridNumber, m_vfDens, m_vfDensPrev, m_vfWaveVelocity[VELOCITY_U], m_vfWaveVelocity[VELOCITY_V], m_fDiff, timePass);
 
@@ -458,6 +458,8 @@ void StableFluidsGrid::updateMesh(float timePass)
 	float *buf1 = m_vfHeightMap[(m_iCurrentMap+2)%3] ;//current map
 	float *buf2 = m_vfHeightMap[(m_iCurrentMap+1)%3] ;//prev map
 	wave_step (m_iGridNumber+2, buf, buf1, buf2, m_vfDumpening, timePass, m_vfWaveVelocity);
+
+	set_bnd(m_iGridNumber, 1, buf, NULL);
 	
 
 	float *vfU = NULL, *vfV = NULL;
@@ -517,7 +519,7 @@ void StableFluidsGrid::updateMesh(float timePass)
 	}
 	//m_heightMap->unlock();
 
-	setMeshBoundary();
+	//setMeshBoundary();
 	if(m_bAddForce)
 	{
 		setMeshEnforce(timePass);
@@ -525,7 +527,7 @@ void StableFluidsGrid::updateMesh(float timePass)
 		//setMeshBoundary();
 	}
 	
-	Stroke::StrokeManager::getSingleton()->update(timePass, m_vfWaveVelocity, m_vfDens, m_iGridNumber);
+	Stroke::StrokeManager::getSingleton()->update(timePass, m_vfWaveVelocity, m_vfDensPrev, m_iGridNumber);
 }
 
 void StableFluidsGrid::updateDebug(float *vfU, float *vfV)
@@ -588,7 +590,7 @@ void StableFluidsGrid::clear(void)
 	int i = 0;
 	for ( i=0 ; i<m_iGridSize ; i++ ) 
 	{
-		m_vfU[i] = m_vfV[i] = m_vfUPrev[i] = m_vfVPrev[i] = /*m_vfDens[i] = m_vfDensPrev[i] =*/ 0.0f;
+		m_vfU[i] = m_vfV[i] = m_vfUPrev[i] = m_vfVPrev[i] = m_vfDens[i] = m_vfDensPrev[i] = 0.0f;
 		m_vfWaveVelocity[VELOCITY_U][i] = m_vfWaveVelocity[VELOCITY_V][i] = m_vfWaveVelocity[VELOCITY_PREV_U][i] = m_vfWaveVelocity[VELOCITY_PREV_V][i] = 0.0f;
 	}
 }
@@ -885,62 +887,62 @@ void StableFluidsGrid::calcMeshEnforce(size_t verticesCount, Ogre::Vector3 *vert
 	//}
 }
 
-void StableFluidsGrid::setMeshBoundary(bool setDenstity)
-{
-	memset(m_vfBoundaryU, 0, m_iGridSize * sizeof(m_vfBoundaryU));
-	memset(m_vfBoundaryV, 0, m_iGridSize * sizeof(m_vfBoundaryV));
-	int x, y;
-	unsigned int index, up, down, left, right;
-	for(y = 1; y < m_iGridNumber; y++)
-	{
-		for(x = 1; x < m_iGridNumber; x++)
-		{
-			index = x + (y*(m_iGridNumber+2));
-			if(m_vbIntersectGrid[index])
-			{
-				//set the velocity inside model to zero
-				m_vfU[index] = 0;
-				m_vfV[index] = 0;
-			}
-		}
-	}
-
-	for(y = 1; y < m_iGridNumber; y++)
-	{
-		for(x = 1; x < m_iGridNumber; x++)
-		{
-			up = x + ((y-1)*(m_iGridNumber+2));
-			index = x + (y*(m_iGridNumber+2));
-			down = x + ((y+1)*(m_iGridNumber+2));
-			left = (x-1) + ((y)*(m_iGridNumber+2));
-			right =  (x+1) + ((y)*(m_iGridNumber+2));
-			if(m_vbIntersectGrid[index])
-			{
-				//set the velocity by neighbor velocity
-				//m_vfBoundaryU[index] = (/*m_vfU[up]+m_vfU[down]+*/-m_vfU[left]+m_vfU[right]);
-				//m_vfBoundaryV[index] = (-m_vfV[up]+m_vfV[down]/*+m_vfV[left]+m_vfV[right]*/);
-				m_vfBoundaryU[index] = (m_vfU[up]+m_vfU[down]-(m_vfU[left]+m_vfU[right]));
-				m_vfBoundaryV[index] = (-(m_vfV[up]+m_vfV[down])+m_vfV[left]+m_vfV[right]);
-				//	x[IX(0  ,i)] = b==1 ? -x[IX(1,i)] : x[IX(1,i)];
-				//	x[IX(N+1,i)] = b==1 ? -x[IX(N,i)] : x[IX(N,i)];
-			}
-		}
-	}
-
-	for(y = 1; y < m_iGridNumber; y++)
-	{
-		for(x = 1; x < m_iGridNumber; x++)
-		{
-			index = x + (y*(m_iGridNumber+2));
-			if(m_vbIntersectGrid[index])
-			{
-				//set boundary velocity to velocity field
-				m_vfU[index] = m_vfBoundaryU[index];
-				m_vfV[index] = m_vfBoundaryV[index];
-			}
-		}
-	}
-}
+//void StableFluidsGrid::setMeshBoundary(bool setDenstity)
+//{
+//	memset(m_vfBoundaryU, 0, m_iGridSize * sizeof(m_vfBoundaryU));
+//	memset(m_vfBoundaryV, 0, m_iGridSize * sizeof(m_vfBoundaryV));
+//	int x, y;
+//	unsigned int index, up, down, left, right;
+//	for(y = 1; y < m_iGridNumber; y++)
+//	{
+//		for(x = 1; x < m_iGridNumber; x++)
+//		{
+//			index = x + (y*(m_iGridNumber+2));
+//			if(m_vbIntersectGrid[index])
+//			{
+//				//set the velocity inside model to zero
+//				m_vfUPrev[index] = 0;
+//				m_vfVPrev[index] = 0;
+//			}
+//		}
+//	}
+//
+//	for(y = 1; y < m_iGridNumber; y++)
+//	{
+//		for(x = 1; x < m_iGridNumber; x++)
+//		{
+//			up = x + ((y-1)*(m_iGridNumber+2));
+//			index = x + (y*(m_iGridNumber+2));
+//			down = x + ((y+1)*(m_iGridNumber+2));
+//			left = (x-1) + ((y)*(m_iGridNumber+2));
+//			right =  (x+1) + ((y)*(m_iGridNumber+2));
+//			if(m_vbIntersectGrid[index])
+//			{
+//				//set the velocity by neighbor velocity
+//				//m_vfBoundaryU[index] = (/*m_vfU[up]+m_vfU[down]+*/-m_vfU[left]+m_vfU[right]);
+//				//m_vfBoundaryV[index] = (-m_vfV[up]+m_vfV[down]/*+m_vfV[left]+m_vfV[right]*/);
+//				m_vfBoundaryU[index] = (m_vfU[up]+m_vfU[down]-(m_vfU[left]+m_vfU[right]));
+//				m_vfBoundaryV[index] = (-(m_vfV[up]+m_vfV[down])+m_vfV[left]+m_vfV[right]);
+//				//	x[IX(0  ,i)] = b==1 ? -x[IX(1,i)] : x[IX(1,i)];
+//				//	x[IX(N+1,i)] = b==1 ? -x[IX(N,i)] : x[IX(N,i)];
+//			}
+//		}
+//	}
+//
+//	for(y = 1; y < m_iGridNumber; y++)
+//	{
+//		for(x = 1; x < m_iGridNumber; x++)
+//		{
+//			index = x + (y*(m_iGridNumber+2));
+//			if(m_vbIntersectGrid[index])
+//			{
+//				//set boundary velocity to velocity field
+//				m_vfUPrev[index] = m_vfBoundaryU[index];
+//				m_vfVPrev[index] = m_vfBoundaryV[index];
+//			}
+//		}
+//	}
+//}
 
 void StableFluidsGrid::setMeshEnforce(float timePass)
 {
@@ -1020,7 +1022,7 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 			if(m_viEnforceUCount[rIndex] > 0)
 				down  = m_vfEnforceU[rIndex] / m_viEnforceUCount[rIndex];
 			if(up || down || left || right)
-				m_vfU[index] = ((up+down)-(left+right)) * timePass * timePass * FORCE_STRENGTH;
+				m_vfUPrev[index] = ((up+down)-(left+right)) * timePass * FORCE_STRENGTH;
 				//m_vfU[index] = ((up+down)-(left+right)) / timePass * FORCE_STRENGTH;
 			//V
 			up = down = left = right = 0;
@@ -1033,7 +1035,7 @@ void StableFluidsGrid::setMeshEnforce(float timePass)
 			if(m_viEnforceVCount[rIndex] > 0)
 				down  = m_vfEnforceV[rIndex] / m_viEnforceVCount[rIndex];
 			if(up || down || left || right)
-				m_vfV[index] = ((up+down)+(left+right)) * timePass * timePass * FORCE_STRENGTH;
+				m_vfVPrev[index] = ((up+down)+(left+right)) * timePass * FORCE_STRENGTH;
 		}
 	}
 }

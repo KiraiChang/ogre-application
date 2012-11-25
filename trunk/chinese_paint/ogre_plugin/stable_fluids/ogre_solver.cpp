@@ -15,9 +15,9 @@ Stroke::V_POINT convex_hull(size_t verticesCount, Ogre::Vector3 *vertices, float
 	{
 		if(vertices[i].y < threshold && vertices[i].y > -threshold)//the y position at surface
 		{
-			p1.x = vertices[i].x;
+			p1.x = (int)vertices[i].x;
 
-			p1.y = vertices[i].z;
+			p1.y = (int)vertices[i].z;
 
 			vPoint.push_back(p1);
 		}
