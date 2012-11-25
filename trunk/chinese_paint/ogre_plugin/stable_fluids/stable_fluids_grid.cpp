@@ -1,23 +1,29 @@
 #include "stable_fluids_grid.h"
 #include "../ogre_tool/ogre_mesh_tool.h"
 #include "solid_mesh.h"
-#include "mapping_algorithm.h"
+//#include "mapping_algorithm.h"
 //#include "stroke\particle_simulation.h"
 #include "stroke/stroke_manager.h"
 #include "stroke/particle_draw.h"
 #include "stroke/ogre_draw.h"
 #include <iostream>
 
+//solver.cpp
 extern void dens_step ( int N, float * x, float * x0, float * u, float * v, float diff, float dt );
 extern void vel_step ( int N, float * u, float * v, float * u0, float * v0, float visc, float dt );
 extern void set_bnd ( int N, int b, float * x );
 extern void wave_step ( int N, float * buf, float * buf1, float * buf2, float *dampening, float timePass, float **velocity);
+extern void draw_line(Stroke::V_POINT &vControlPoint, float *grid, unsigned int gridSize, float value, bool absolute);
 
+//ogre_solver.cpp
+extern Stroke::V_POINT convex_hull(size_t verticesCount, Ogre::Vector3 *vertices, float *grid, size_t gridNumber, float threshold);
+
+#define THRESHOLD 0.1
 static unsigned int MAX_HEIGHT_MAP_COUNT = 3;
 static unsigned int MAX_VERTEX_MAP_COUNT = 3;
 static float FISH_DEPTH = 0.1;
 static float ANIMATIONS_PER_SECOND = 1.0f;
-static float FORCE_STRENGTH = 100;//0.02;
+static float FORCE_STRENGTH = 1000;//0.02;
 #define PARTICLE_LIVE_TIME 10
 //#define PARTICLE_SIZE_X 0.5
 //#define PARTICLE_SIZE_Y 0.5
@@ -53,8 +59,6 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	m_pMiniScreen(NULL),
 	//m_pPS(NULL),
 	//m_pPSNode(NULL),
-	m_pMapping3DTo2D(NULL),
-	//m_pParticleSimulation(NULL),
 	//m_sVertexCount(0),
 	//m_sIndex_count(0),
 	//m_vIndices(NULL),
@@ -86,9 +90,6 @@ StableFluidsGrid::StableFluidsGrid(unsigned int number):
 	{
 		m_vfWaveVelocity[i] = 0;
 	}
-	
-	m_pMapping3DTo2D = (MappingAlgorithm *)new ConvexHull();
-	//m_pParticleSimulation = (ParticleSimulation *)new WaveParticle();
 }
 
 StableFluidsGrid::~StableFluidsGrid(void)
@@ -491,6 +492,8 @@ void StableFluidsGrid::updateMesh(float timePass)
 			m_pManuObj->clear();
 	}
 
+	//m_heightMap->lock(Ogre::HardwareBuffer::LockOptions::HBL_DISCARD);
+	//Ogre::PixelBox pixelBox = m_heightMap->getCurrentLock();
 	switch(m_eMapDisplayType)
 	{
 	case DISPLAY_BOOLEAN_GRID:
@@ -512,6 +515,7 @@ void StableFluidsGrid::updateMesh(float timePass)
 		m_pMiniScreenNode->setVisible(false);
 		break;
 	}
+	//m_heightMap->unlock();
 
 	setMeshBoundary();
 	if(m_bAddForce)
@@ -521,11 +525,6 @@ void StableFluidsGrid::updateMesh(float timePass)
 		//setMeshBoundary();
 	}
 	
-	//updateParticle(timePass);
-	//if(m_pParticleSimulation != NULL)
-	//{
-	//	m_pParticleSimulation->update(m_pPS, timePass, m_vfWaveVelocity[VELOCITY_U], m_vfWaveVelocity[VELOCITY_V], m_iGridNumber);
-	//}
 	Stroke::StrokeManager::getSingleton()->update(timePass, m_vfWaveVelocity, m_vfDens, m_iGridNumber);
 }
 
@@ -657,15 +656,15 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 	//m_pPSNode->setPosition( mesh->getNode()->getPosition());
 	//m_pPSNode->setOrientation(mesh->getNode()->getOrientation());
 
-	//std::vector<Ogre::Vector2> contour;
 	Stroke::V_POINT contour;
 	if(reset)
 		memset(m_vbIntersectGrid, 0, m_iGridSize * sizeof(m_vbIntersectGrid));
 
-	if(m_pMapping3DTo2D != NULL && mesh->getVertices() != NULL)
+	if(mesh->getVertices() != NULL)
 	{
 		Ogre::Vector3 pos = mesh->getNode()->getPosition();
-		contour = m_pMapping3DTo2D->process(mesh->getVertexCount(), mesh->getVertices(), m_vbIntersectGrid, m_iGridNumber);
+		contour = convex_hull(mesh->getVertexCount(), mesh->getVertices(), m_vbIntersectGrid, m_iGridNumber, THRESHOLD);
+		draw_line(contour, m_vbIntersectGrid, m_iGridNumber, 1.0, true);
 		Stroke::Point center;
 		process(contour, center);
 		center.x = pos.x;
@@ -708,16 +707,6 @@ void StableFluidsGrid::updateMeshData(SolidMesh *mesh, bool reset)
 		Stroke::StrokeManager::getSingleton()->createStroke(PARTICLE_LIVE_TIME, contour, (Stroke::StrokeDraw *)drawNegative, (Stroke::StrokeDraw *)drawPositive, center);
 	}
 
-	//if(m_pParticleSimulation != NULL)
-	//{
-	//	Ogre::Vector2 center;
-	//	m_pParticleSimulation->process(contour, center);
-	//	push(m_iGridNumber+2, center.x, center.y, 0, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-	//	push(m_iGridNumber+2, center.x, center.y, 0, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-	//	push(m_iGridNumber+2, center.x, center.y, 1, 0, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-	//	push(m_iGridNumber+2, center.x, center.y, 1, 1, FISH_DEPTH, false, m_vfHeightMap[m_iCurrentMap]);
-	//	m_pParticleSimulation->initParticle(m_pPS, contour);
-	//}
 	//calcMeshFace(mesh->getVertexCount(), mesh->getVertices(), reset);
 	//if(m_bAddForce)
 	//{
