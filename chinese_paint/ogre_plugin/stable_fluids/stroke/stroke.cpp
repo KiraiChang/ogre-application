@@ -4,7 +4,7 @@
 
 #define PARTICLE_MOVE_SPEED 100
 #define THRESHOLD 0.3
-#define ADD_DENSITY 2.0
+#define ADD_DENSITY 0.001
 
 extern void draw_line(Stroke::V_POINT &vControlPoint, float *grid, unsigned int gridSize, float value, bool absolute);
 extern void particle_move(Stroke::LIST_POINT &vControlPoint, float **field, unsigned int N, float moveSpeed);

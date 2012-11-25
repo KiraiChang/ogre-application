@@ -109,7 +109,7 @@ public:
 	//void									calcMeshFace(size_t verticesCount, Ogre::Vector3 *vertices, bool reset = false);//compute fish boundary to m_vbIntersectGrid
 	//void									calcMeshEnforce();//compute fish animation force to m_vfEnforceU and m_vfEnforceV
 	void									calcMeshEnforce(size_t verticesCount, Ogre::Vector3 *vertices, Ogre::Vector3 *prev, bool reset = false);//compute fish animation force to m_vfEnforceU and m_vfEnforceV
-	void									setMeshBoundary(bool setDenstity = true);//set m_vbIntersectGrid to m_vfU and m_vfV
+	//void									setMeshBoundary(bool setDenstity = true);//set m_vbIntersectGrid to m_vfU and m_vfV
 	void									setMeshEnforce(float timePass);//set m_vfEnforceU and m_vfEnforceV to m_vfU and m_vfV
 	void									setExternalForce();
 	void									setMiniScreenMaterial(const std::string name);
