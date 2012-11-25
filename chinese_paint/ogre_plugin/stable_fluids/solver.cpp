@@ -89,76 +89,76 @@ void diffuse ( int N, int b, float * x, float * x0, float diff, float dt, float 
 
 void advect ( int N, int b, float * d, float * d0, float * u, float * v, float dt, float * blocked )
 {
-	//int i, j, i0, j0, i1, j1;
-	//float x, y, s0, t0, s1, t1, dt0;
-
-	//dt0 = dt*N;
-	//FOR_EACH_CELL
-	//	x = i-dt0*u[IX(i,j)]; y = j-dt0*v[IX(i,j)];
-	//	if (x<0.5f) x=0.5f; if (x>N+0.5f) x=N+0.5f; i0=(int)x; i1=i0+1;
-	//	if (y<0.5f) y=0.5f; if (y>N+0.5f) y=N+0.5f; j0=(int)y; j1=j0+1;
-	//	s1 = x-i0; s0 = 1-s1; t1 = y-j0; t0 = 1-t1;
-	//	d[IX(i,j)] = s0*(t0*d0[IX(i0,j0)]+t1*d0[IX(i0,j1)])+
-	//				 s1*(t0*d0[IX(i1,j0)]+t1*d0[IX(i1,j1)]);
-	//END_FOR
-	//set_bnd ( N, b, d );
-
 	int i, j, i0, j0, i1, j1;
-	float x, y, s0, t0, s1, t1, dt0, vx, vy, tleft,t,tnext,distx,disty;
+	float x, y, s0, t0, s1, t1, dt0;
 
 	dt0 = dt*N;
-
-
 	FOR_EACH_CELL
-
-		if(blocked[IX(i,j)]) continue;
-
-	tleft=dt0;
-	x=i;y=j;		
-	const float smallf = 0.0000001f;
-	while(tleft>smallf) {
-
-		//enforce boundry contraints
-		if (x<0.5f) x=0.5f; if (x>N+0.5f) x=N+0.5f; 
-		if (y<0.5f) y=0.5f; if (y>N+0.5f) y=N+0.5f; 
-
-
-		i0=(int)x; i1=i0+1;
-		j0=(int)y; j1=j0+1;
+		x = i-dt0*u[IX(i,j)]; y = j-dt0*v[IX(i,j)];
+		if (x<0.5f) x=0.5f; if (x>N+0.5f) x=N+0.5f; i0=(int)x; i1=i0+1;
+		if (y<0.5f) y=0.5f; if (y>N+0.5f) y=N+0.5f; j0=(int)y; j1=j0+1;
 		s1 = x-i0; s0 = 1-s1; t1 = y-j0; t0 = 1-t1;
-
-		vx = -(s0*(t0*u[IX(i0,j0)]+t1*u[IX(i0,j1)])+
-			s1*(t0*u[IX(i1,j0)]+t1*u[IX(i1,j1)]));
-
-		vy = -(s0*(t0*v[IX(i0,j0)]+t1*v[IX(i0,j1)])+
-			s1*(t0*v[IX(i1,j0)]+t1*v[IX(i1,j1)]));
-
-
-		float speed2=vx*vx+vy*vy; 
-		if(speed2>smallf) tnext=.5/sqrt(speed2);
-		else tnext=tleft;
-
-		t=tnext > tleft ? tleft : tnext;
-		tleft-=t;
-
-
-		x+=t*vx;
-		y+=t*vy;
-	}
-
-
-	if (x<0.5f) x=0.5f; if (x>N+0.5f) x=N+0.5f; 
-	if (y<0.5f) y=0.5f; if (y>N+0.5f) y=N+0.5f; 
-
-
-	i0=(int)x; i1=i0+1;
-	j0=(int)y; j1=j0+1;
-	s1 = x-i0; s0 = 1-s1; t1 = y-j0; t0 = 1-t1;
-
-	d[IX(i,j)] = s0*(t0*d0[IX(i0,j0)]+t1*d0[IX(i0,j1)])+
-		s1*(t0*d0[IX(i1,j0)]+t1*d0[IX(i1,j1)]);
+		d[IX(i,j)] = s0*(t0*d0[IX(i0,j0)]+t1*d0[IX(i0,j1)])+
+					 s1*(t0*d0[IX(i1,j0)]+t1*d0[IX(i1,j1)]);
 	END_FOR
-		set_bnd ( N, b, d, blocked );
+	set_bnd ( N, b, d, blocked);
+
+	//int i, j, i0, j0, i1, j1;
+	//float x, y, s0, t0, s1, t1, dt0, vx, vy, tleft,t,tnext,distx,disty;
+
+	//dt0 = dt*N;
+
+
+	//FOR_EACH_CELL
+
+	//	if(blocked[IX(i,j)]) continue;
+
+	//tleft=dt0;
+	//x=i;y=j;		
+	//const float smallf = 0.0000001f;
+	//while(tleft>smallf) {
+
+	//	//enforce boundry contraints
+	//	if (x<0.5f) x=0.5f; if (x>N+0.5f) x=N+0.5f; 
+	//	if (y<0.5f) y=0.5f; if (y>N+0.5f) y=N+0.5f; 
+
+
+	//	i0=(int)x; i1=i0+1;
+	//	j0=(int)y; j1=j0+1;
+	//	s1 = x-i0; s0 = 1-s1; t1 = y-j0; t0 = 1-t1;
+
+	//	vx = -(s0*(t0*u[IX(i0,j0)]+t1*u[IX(i0,j1)])+
+	//		s1*(t0*u[IX(i1,j0)]+t1*u[IX(i1,j1)]));
+
+	//	vy = -(s0*(t0*v[IX(i0,j0)]+t1*v[IX(i0,j1)])+
+	//		s1*(t0*v[IX(i1,j0)]+t1*v[IX(i1,j1)]));
+
+
+	//	float speed2=vx*vx+vy*vy; 
+	//	if(speed2>smallf) tnext=.5/sqrt(speed2);
+	//	else tnext=tleft;
+
+	//	t=tnext > tleft ? tleft : tnext;
+	//	tleft-=t;
+
+
+	//	x+=t*vx;
+	//	y+=t*vy;
+	//}
+
+
+	//if (x<0.5f) x=0.5f; if (x>N+0.5f) x=N+0.5f; 
+	//if (y<0.5f) y=0.5f; if (y>N+0.5f) y=N+0.5f; 
+
+
+	//i0=(int)x; i1=i0+1;
+	//j0=(int)y; j1=j0+1;
+	//s1 = x-i0; s0 = 1-s1; t1 = y-j0; t0 = 1-t1;
+
+	//d[IX(i,j)] = s0*(t0*d0[IX(i0,j0)]+t1*d0[IX(i0,j1)])+
+	//	s1*(t0*d0[IX(i1,j0)]+t1*d0[IX(i1,j1)]);
+	//END_FOR
+	//	set_bnd ( N, b, d, blocked );
 }
 
 void project ( int N, float * u, float * v, float * p, float * div, float * blocked  )

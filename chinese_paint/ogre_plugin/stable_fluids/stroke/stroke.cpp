@@ -90,8 +90,6 @@ namespace Stroke
 
 	void Stroke::update(float timePass, float **field, float *density, unsigned int size)
 	{
-		if(m_pDrawNegative == 0 || m_pDrawPositive == 0)
-			return;
 		m_fExistTime -= timePass;
 		V_POINT vNegative, vPositive;
 		if(field != 0)
@@ -101,7 +99,7 @@ namespace Stroke
 			draw_line(vNegative, density, size, timePass * ADD_DENSITY, true);
 			draw_line(vPositive, density, size, timePass * ADD_DENSITY, true);
 		}
-		if(m_pDrawNegative->isValid())
+		if(m_pDrawNegative != 0 && m_pDrawNegative->isValid())
 		{
 			m_pDrawNegative->drawBegin();
 			m_pDrawNegative->draw(vNegative, density);
@@ -112,7 +110,7 @@ namespace Stroke
 			m_pDrawNegative->drawEnd();
 		}
 
-		if(m_pDrawPositive->isValid())
+		if(m_pDrawPositive != 0 && m_pDrawPositive->isValid())
 		{
 			m_pDrawPositive->drawBegin();
 			m_pDrawPositive->draw(vPositive, density);
