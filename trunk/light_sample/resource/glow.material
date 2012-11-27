@@ -1,0 +1,145 @@
+fragment_program GlowA_fp cg
+{
+	source glow.cg
+	entry_point GlowA_fp
+ 
+		default_params
+		{
+			param_named_auto invTexSize inverse_texture_size 0
+			//param_named_auto time time_0_2pi 1
+		}
+ 
+	profiles ps_2_0 arbfp1
+}
+ 
+material GlowCompositorMat/GlowA
+{
+	technique
+	{
+		pass
+		{
+			cull_hardware none
+			cull_software none
+			depth_func always_pass
+ 
+			fragment_program_ref GlowA_fp
+			{
+			}
+ 
+			texture_unit map
+			{
+					tex_coord_set 0
+					tex_address_mode clamp
+					filtering trilinear
+			}
+		}
+	}
+}
+ 
+fragment_program GlowB_fp cg
+{
+	source glow.cg
+	entry_point GlowB_fp
+ 
+		default_params
+		{
+			param_named_auto invTexSize inverse_texture_size 0
+			param_named_auto time time_0_2pi 4
+		}
+ 
+	profiles ps_2_0 arbfp1
+}
+ 
+material GlowCompositorMat/GlowB
+{
+	technique
+	{
+		pass
+		{
+			cull_hardware none
+			cull_software none
+			depth_func always_pass
+ 
+			fragment_program_ref GlowB_fp
+			{
+			}
+ 
+			texture_unit scene
+			{
+					tex_coord_set 0
+					tex_address_mode clamp
+					filtering trilinear
+			}
+ 
+			texture_unit map
+			{
+					tex_coord_set 0
+					tex_address_mode clamp
+					filtering trilinear
+			}
+		}
+	}
+}
+
+vertex_program stdVpX cg
+{
+	source glow.cg
+	entry_point StdQuad_vpX
+ 
+		default_params
+		{
+			param_named_auto worldViewProj worldviewproj_matrix
+		}
+ 
+	profiles vs_1_1 arbvp1
+}
+
+fragment_program GlowA_fpX cg
+{
+	source glow.cg
+	entry_point GlowTimeDelay_fp
+ 
+		default_params
+		{
+			param_named time float 0
+			param_named size float 0.3
+		}
+ 
+	profiles ps_2_0 arbfp1
+}
+
+material GlowMt
+{
+	technique
+	{
+		pass
+		{
+			emissive 1 1 1 0.3
+			texture_unit
+			{
+				texture penguin.jpg
+			}
+		}
+	}
+	technique
+	{
+		scheme glow
+		pass
+		{
+			vertex_program_ref stdVpX
+			{
+			}
+			fragment_program_ref GlowA_fpX
+			{
+			}
+			texture_unit
+			{
+				texture glowMap.jpg
+			}
+			ambient 1 1 1
+			diffuse 1 1 1
+			specular 0 0 0 1
+			emissive 0 0 0
+		}
+	}
+}
