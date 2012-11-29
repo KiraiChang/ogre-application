@@ -3,10 +3,11 @@ material ChinesePaint/Moxi_Output
 	technique
 	{
 		pass 
-		{				
-			texture_unit VelDenMap
+		{		
+			lighting off
+			texture_unit
 			{
-				tex_address_mode clamp
+				texture FlowInkMap
 			}
 		}
 	}

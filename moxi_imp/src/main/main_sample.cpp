@@ -8,21 +8,23 @@
 #include <ios>
 #define TARGET_WIDTH 512
 #define TARGET_HEIGHT 512
-//void MainSample::createTexture()
-//{
-//	/*
-//	texture VelDenMap 	target_width target_height PF_FLOAT16_RGBA  //[u, v, wf, seep]
-//	texture BlockMap 	target_width target_height PF_FLOAT16_RGBA  //[blk, f0, lwf, ws]
-//	texture Dist1Map 	target_width target_height PF_FLOAT16_RGBA  //f[N, E, W, S]
-//	texture Dist2Map 	target_width target_height PF_FLOAT16_RGBA  //f[NE, SE, NW, SW]
-//	texture FlowInkMap 	target_width target_height PF_FLOAT16_RGBA  //if[P1, P2, P3, glue]
-//	texture SurfInkMap 	target_width target_height PF_FLOAT16_RGBA  //is[P1, P2, P3, glue]
-//	texture FixInkMap 	target_width target_height PF_FLOAT16_RGBA  //ix[P1, P2, P3, fblk]
-//	texture StainMap 	target_width target_height PF_FLOAT16_RGBA  //[wpen, wpin, edge, -]
-//	texture SinkInkMap 	target_width target_height PF_FLOAT16_RGBA  //[P1, P2, P3, glue]
-//	texture DetInkMap 	target_width target_height PF_FLOAT16_RGBA  //[P1, P2, P3, wetcut]
-//	*/
-//	std::string textureName;
+
+void MainSample::createTexture()
+{
+	/*
+	texture VelDenMap 	target_width target_height PF_FLOAT16_RGBA  //[u, v, wf, seep]
+	texture BlockMap 	target_width target_height PF_FLOAT16_RGBA  //[blk, f0, lwf, ws]
+	texture Dist1Map 	target_width target_height PF_FLOAT16_RGBA  //f[N, E, W, S]
+	texture Dist2Map 	target_width target_height PF_FLOAT16_RGBA  //f[NE, SE, NW, SW]
+	texture FlowInkMap 	target_width target_height PF_FLOAT16_RGBA  //if[P1, P2, P3, glue]
+	texture SurfInkMap 	target_width target_height PF_FLOAT16_RGBA  //is[P1, P2, P3, glue]
+	texture FixInkMap 	target_width target_height PF_FLOAT16_RGBA  //ix[P1, P2, P3, fblk]
+	texture StainMap 	target_width target_height PF_FLOAT16_RGBA  //[wpen, wpin, edge, -]
+	texture SinkInkMap 	target_width target_height PF_FLOAT16_RGBA  //[P1, P2, P3, glue]
+	texture DetInkMap 	target_width target_height PF_FLOAT16_RGBA  //[P1, P2, P3, wetcut]
+	*/
+	std::string textureName;
+	Ogre::HardwarePixelBufferSharedPtr buffer;
 //	textureName = "VelDenMap";
 //	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 //		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_FLOAT16_RGBA, Ogre::TU_RENDERTARGET);
@@ -35,9 +37,16 @@
 //	textureName = "Dist2Map";
 //	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 //		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_FLOAT16_RGBA, Ogre::TU_RENDERTARGET);
-//	textureName = "FlowInkMap";
-//	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-//		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_FLOAT16_RGBA, Ogre::TU_RENDERTARGET);
+	textureName = "FlowInkMap";
+	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+
+	buffer = m_mapTexture[textureName]->getBuffer();  // save off the texture buffer
+	// initialise the texture to have full luminance
+	buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+	memset(buffer->getCurrentLock().data, 0xff, buffer->getSizeInBytes());
+	buffer->unlock();
+
 //	textureName = "SurfInkMap";
 //	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 //		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_FLOAT16_RGBA, Ogre::TU_RENDERTARGET);
@@ -53,7 +62,7 @@
 //	textureName = "DetInkMap";
 //	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 //		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_FLOAT16_RGBA, Ogre::TU_RENDERTARGET);
-//}
+}
 
 void MainSample::redirectIOToConsole()
 {
@@ -120,7 +129,7 @@ void MainSample::createScene(void)
 	//headNode->setPosition(0, 5, 0);
 
 	// Set ambient light
-	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.1, 0.1, 0.1));
+	mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 
 	// Create a light
 	//l1 = mSceneMgr->createLight("MainLight");
@@ -172,7 +181,7 @@ void MainSample::createScene(void)
 	//fpPP = mpt->getTechnique(1)->getPass(0)->getFragmentProgramParameters();
 	//dtime = 0;
 
-	//createTexture();
+	createTexture();
 	//Ogre::Plane plane(Ogre::Vector3::UNIT_Z, 0);
 
 	//Ogre::MeshManager::getSingleton().createPlane("Paper", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -221,6 +230,40 @@ bool MainSample::keyPressed( const OIS::KeyEvent &arg )
 	*****************************************************************/
 
 	return BaseApplication::keyPressed(arg);
+}
+
+bool MainSample::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
+{
+	/*****************************************************************
+							User input begin
+	*****************************************************************/
+	if(id == OIS::MB_Left)
+	{
+		if(arg.state.X.abs < TARGET_WIDTH && arg.state.Y.abs < TARGET_HEIGHT)
+		{
+			int x = arg.state.X.abs ;
+			int y = arg.state.Y.abs ;
+			int index = y * TARGET_WIDTH * 4 + x * 4;
+			assert(m_mapTexture.count("FlowInkMap") != 0);
+			Ogre::HardwarePixelBufferSharedPtr buffer = m_mapTexture["FlowInkMap"]->getBuffer();
+
+			buffer->lock(Ogre::HardwareBuffer::HBL_NORMAL);
+
+			//printf("Size of Texture Buffer:%d", buffer->getSizeInBytes());
+			// get access to raw texel data
+			Ogre::uint8* data = (Ogre::uint8*)buffer->getCurrentLock().data;
+			data[index] = 0;
+			data[index+1] = 0;
+			data[index+2] = 0;
+			data[index+3] = 255;
+
+			buffer->unlock();
+		}
+	}
+	/*****************************************************************
+							User input end
+	*****************************************************************/
+	return BaseApplication::mousePressed(arg, id);
 }
 
 //void MainSample::preRenderTargetUpdate( const Ogre::RenderTargetEvent& evt )
