@@ -1,0 +1,297 @@
+material ChinesePaint/Moxi_Output
+{
+	technique
+	{
+		pass 
+		{				
+			texture_unit VelDenMap
+			{
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+vertex_program ChinesePaint/Moxi/BlockVS cg
+{
+	source DistAll.vp
+	entry_point main
+	profiles vs_1_1 arbvp1
+	
+	default_params
+	{
+		param_named_auto ModelViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program ChinesePaint/Moxi/BlockPS cg
+{
+	source Block.fp
+	entry_point main1
+	profiles ps_3_0 fp30
+}
+
+material ChinesePaint/Moxi_Block
+{
+	technique
+	{
+		pass Block
+		{
+			vertex_program_ref ChinesePaint/Moxi/BlockVS
+			{
+			}
+			
+			fragment_program_ref ChinesePaint/Moxi/BlockPS
+			{
+			}
+			
+			texture_unit VelDenMap
+			{
+			}
+			
+			texture_unit BlockMap
+			{
+			}
+			
+			texture_unit FlowInkMap
+			{
+			}
+			
+			texture_unit FixInkMap
+			{
+			}
+		}
+	}
+}
+
+vertex_program ChinesePaint/Moxi/Relax1VS cg
+{
+	source Dist1.vp
+	entry_point main
+	profiles vs_1_1 arbvp1
+	
+	default_params
+	{
+		param_named_auto ModelViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program ChinesePaint/Moxi/Relax1PS cg
+{
+	source Collide1.fp
+	entry_point main
+	profiles ps_3_0 fp30
+}
+
+material ChinesePaint/Moxi_Relax1
+{
+	technique
+	{
+		pass Relax1
+		{
+			vertex_program_ref ChinesePaint/Moxi/Relax1VS
+			{
+			}
+			
+			fragment_program_ref ChinesePaint/Moxi/Relax1PS
+			{
+			}
+			
+			texture_unit VelDenMap
+			{
+			}
+			
+			texture_unit Dist1Map
+			{
+			}
+			
+			texture_unit FlowInkMap
+			{
+			}
+		}
+	}
+}
+
+vertex_program ChinesePaint/Moxi/Relax2VS cg
+{
+	source Dist2.vp
+	entry_point main
+	profiles vs_1_1 arbvp1
+	
+	default_params
+	{
+		param_named_auto ModelViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program ChinesePaint/Moxi/Relax2PS cg
+{
+	source Collide1.fp
+	entry_point main
+	profiles ps_3_0 fp30
+}
+
+material ChinesePaint/Moxi_Relax2
+{
+	technique
+	{
+		pass Relax2
+		{
+			vertex_program_ref ChinesePaint/Moxi/Relax2VS
+			{
+			}
+			
+			fragment_program_ref ChinesePaint/Moxi/Relax2PS
+			{
+			}
+			
+			texture_unit VelDenMap
+			{
+			}
+			
+			texture_unit Dist2Map
+			{
+			}
+			
+			texture_unit FlowInkMap
+			{
+			}
+		}
+	}
+}
+
+vertex_program ChinesePaint/Moxi/Prop1VS cg
+{
+	source Dist1.vp
+	entry_point main
+	profiles vs_1_1 arbvp1
+	
+	default_params
+	{
+		param_named_auto ModelViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program ChinesePaint/Moxi/Prop1PS cg
+{
+	source Prop1.fp
+	entry_point main
+	profiles ps_3_0 fp30
+}
+
+material ChinesePaint/Moxi_Prop1
+{
+	technique
+	{
+		pass Prop1
+		{
+			vertex_program_ref ChinesePaint/Moxi/Prop1VS
+			{
+			}
+			
+			fragment_program_ref ChinesePaint/Moxi/Prop1PS
+			{
+			}
+			
+			texture_unit BlockMap
+			{
+			}
+			
+			texture_unit Dist1Map
+			{
+			}
+		}
+	}
+}
+
+vertex_program ChinesePaint/Moxi/Prop2VS cg
+{
+	source Dist2.vp
+	entry_point main
+	profiles vs_1_1 arbvp1
+	
+	default_params
+	{
+		param_named_auto ModelViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program ChinesePaint/Moxi/Prop2PS cg
+{
+	source Prop2.fp
+	entry_point main
+	profiles ps_3_0 fp30
+}
+
+material ChinesePaint/Moxi_Prop2
+{
+	technique
+	{
+		pass Prop2
+		{
+			vertex_program_ref ChinesePaint/Moxi/Prop2VS
+			{
+			}
+			
+			fragment_program_ref ChinesePaint/Moxi/Prop2PS
+			{
+			}
+			
+			texture_unit BlockMap
+			{
+			}
+			
+			texture_unit Dist2Map
+			{
+			}
+		}
+	}
+}
+
+vertex_program ChinesePaint/Moxi/VelDenVS cg
+{
+	source Dist1.vp
+	entry_point main
+	profiles vs_1_1 arbvp1
+	
+	default_params
+	{
+		param_named_auto ModelViewProj worldviewproj_matrix
+	}
+}
+
+fragment_program ChinesePaint/Moxi/VelDenPS cg
+{
+	source VelDen.fp
+	entry_point main
+	profiles ps_3_0 fp30
+}
+
+material ChinesePaint/Moxi_VelDen
+{
+	technique
+	{
+		pass VelDen
+		{
+			vertex_program_ref ChinesePaint/Moxi/VelDenVS
+			{
+			}
+			
+			fragment_program_ref ChinesePaint/Moxi/VelDenPS
+			{
+			}
+			
+			texture_unit BlockMap
+			{
+			}
+			
+			texture_unit Dist1Map
+			{
+			}
+			
+			texture_unit Dist2Map
+			{
+			}
+		}
+	}
+}

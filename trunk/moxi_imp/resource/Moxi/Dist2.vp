@@ -1,0 +1,53 @@
+//----------------------------------------------------------------------------
+// Copyright 2005 Nelson S.-H. Chu and The Hong Kong University of Science and
+// Technology.
+//
+// Permission to use, copy, modify and distribute this software and its
+// documentation for research or educational purpose is hereby granted without
+// fee, provided that the above copyright notice appear in all copies and that
+// both that copyright notice and this permission notice appear in supporting
+// documentation. This software is provided "as is" without express or implied
+// warranty.
+//----------------------------------------------------------------------------
+//
+// Dist2.vp - Passing Tex. Coord. of 4 next nearest neighbors
+//
+
+#include "TypesUtils.cg"
+
+struct instream
+{
+    float4 Pos  : POSITION;
+    float2 Tex  : TEXCOORD0;
+};
+
+v2f2 main( instream IN,
+   uniform float4x4 ModelViewProj,
+   uniform float TexScale   = 8,
+   uniform float GrainScale = 8,
+   uniform float2 dx      = 0,
+   uniform float HiMul    = 1,
+   uniform float TexResol   = 512 )
+{
+    v2f2 OUT;
+
+    OUT.Pos = mul(ModelViewProj, IN.Pos);
+
+    OUT.TexPaper = IN.Tex * TexScale;  // paper appearance texture
+    OUT.TexPaper.x = 1 - OUT.TexPaper.x; // Flip
+
+    OUT.TexGrain = IN.Tex * GrainScale;  // DisorderMap
+    OUT.TexGrain.x = 1 - OUT.TexGrain.x; // Flip
+
+    // central texel, * TexResol for Rectangle texture format
+    OUT.Tex0 = IN.Tex * TexResol;
+    OUT.Tex0 += dx; // to fix a shift bug
+
+    // shift texcoord. for the 4 nearest neighbors
+    OUT.TexNE.xy = OUT.Tex0 + float2( 1,-1);             //   +--> +x
+    OUT.TexSE.xy = OUT.Tex0 + float2( 1, 1);             //   |
+    OUT.TexNW.xy = OUT.Tex0 + float2(-1,-1);             //   v +y
+    OUT.TexSW.xy = OUT.Tex0 + float2(-1, 1);
+
+    return OUT;
+}
