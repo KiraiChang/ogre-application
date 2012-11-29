@@ -18,7 +18,7 @@ compositor "ChinesePaint/Moxi"
 	//f[NE, SE, NW, SW]
 	texture Dist2Map target_width target_height PF_FLOAT16_RGBA
 	//if[P1, P2, P3, glue]
-	texture FlowInkMap target_width target_height PF_FLOAT16_RGBA
+	//texture FlowInkMap target_width target_height PF_FLOAT16_RGBA
 	//is[P1, P2, P3, glue]
 	texture SurfInkMap target_width target_height PF_FLOAT16_RGBA
 	//ix[P1, P2, P3, fblk]
@@ -45,7 +45,7 @@ compositor "ChinesePaint/Moxi"
           material ChinesePaint/Moxi_Block
 		  input 0 VelDenMap
 		  input 0 BlockMap
-		  input 0 FlowInkMap
+		  //input 0 FlowInkMap
 		  input 0 FixInkMap
         }
       }
@@ -58,7 +58,7 @@ compositor "ChinesePaint/Moxi"
           material ChinesePaint/Moxi_Relax1
 		  input 0 VelDenMap
 		  input 0 Dist1Map
-		  input 0 FlowInkMap
+		  //input 0 FlowInkMap
         }
       }
 	  
@@ -70,7 +70,7 @@ compositor "ChinesePaint/Moxi"
           material ChinesePaint/Moxi_Relax2
 		  input 0 VelDenMap
 		  input 0 Dist2Map
-		  input 0 FlowInkMap
+		  //input 0 FlowInkMap
         }
       }
 	  
@@ -111,11 +111,11 @@ compositor "ChinesePaint/Moxi"
      target_output
      {
        // Blur horizontally
-
+	   input none
        pass render_quad
        {
          material ChinesePaint/Moxi_Output
-         input 0 VelDenMap
+         //input 0 FlowInkMap
        }
      }
   }

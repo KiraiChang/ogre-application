@@ -23,13 +23,13 @@ private:
 	//Ogre::SceneNode* mGlowObjNode;
 	//Ogre::GpuProgramParametersSharedPtr fpPP;
 	//float dtime;
-	//M_TEXTURE								m_mapTexture;
+	M_TEXTURE								m_mapTexture;
 	//Ogre::SceneNode*						m_pPaperNode;
 	//Ogre::Entity*							m_pPaper;
 	/*****************************************************************
 							User input end
 	*****************************************************************/
-	//void createTexture();
+	void createTexture();
 	void redirectIOToConsole();
 public:
 	
@@ -41,6 +41,7 @@ public:
 protected:
 	virtual void createScene(void);
 	bool keyPressed( const OIS::KeyEvent &arg );
+	bool mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
 	bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 };
 
