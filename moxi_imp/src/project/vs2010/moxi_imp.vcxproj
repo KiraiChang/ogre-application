@@ -90,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\main\base_application.h" />
-    <ClInclude Include="..\..\main\LightSample.h" />
     <ClInclude Include="..\..\main\main_sample.h" />
     <ClInclude Include="..\..\main\resource.h" />
   </ItemGroup>
