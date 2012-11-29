@@ -1,0 +1,122 @@
+compositor "ChinesePaint/Moxi"
+{
+  technique
+  {
+	//Temporary textures
+	//wf 	Water density in flow layer
+	//lwf 	Water density in flow layer in the last iteration
+	//ws 	Water amount on surface layer
+	//seep 	Amount of water seeping from surface layer to flow layer
+	
+    texture scene target_width target_height PF_FLOAT16_RGBA
+	//[u, v, wf, seep]
+	texture VelDenMap target_width target_height PF_FLOAT16_RGBA
+	//[blk, f0, lwf, ws]
+	texture BlockMap target_width target_height PF_FLOAT16_RGBA
+	//f[N, E, W, S]
+	texture Dist1Map target_width target_height PF_FLOAT16_RGBA
+	//f[NE, SE, NW, SW]
+	texture Dist2Map target_width target_height PF_FLOAT16_RGBA
+	//if[P1, P2, P3, glue]
+	texture FlowInkMap target_width target_height PF_FLOAT16_RGBA
+	//is[P1, P2, P3, glue]
+	texture SurfInkMap target_width target_height PF_FLOAT16_RGBA
+	//ix[P1, P2, P3, fblk]
+	texture FixInkMap target_width target_height PF_FLOAT16_RGBA
+	//[wpen, wpin, edge, -]
+	texture StainMap target_width target_height PF_FLOAT16_RGBA
+	//[P1, P2, P3, glue]
+	texture SinkInkMap target_width target_height PF_FLOAT16_RGBA
+	//[P1, P2, P3, wetcut]
+	texture DetInkMap target_width target_height PF_FLOAT16_RGBA
+
+      
+      target scene
+      {
+        // Render output from previous compositor (or original scene)
+        input previous
+      }
+      
+      target BlockMap
+      {
+        input none
+        pass render_quad
+        {
+          material ChinesePaint/Moxi_Block
+		  input 0 VelDenMap
+		  input 0 BlockMap
+		  input 0 FlowInkMap
+		  input 0 FixInkMap
+        }
+      }
+	  
+	  target Dist1Map
+      {
+        input none
+        pass render_quad
+        {
+          material ChinesePaint/Moxi_Relax1
+		  input 0 VelDenMap
+		  input 0 Dist1Map
+		  input 0 FlowInkMap
+        }
+      }
+	  
+	  target Dist2Map
+      {
+        input none
+        pass render_quad
+        {
+          material ChinesePaint/Moxi_Relax2
+		  input 0 VelDenMap
+		  input 0 Dist2Map
+		  input 0 FlowInkMap
+        }
+      }
+	  
+	  target Dist1Map
+      {
+        input none
+        pass render_quad
+        {
+          material ChinesePaint/Moxi_Prop1
+		  input 0 BlockMap
+		  input 0 Dist1Map
+        }
+      }
+	  
+	  target Dist2Map
+      {
+        input none
+        pass render_quad
+        {
+          material ChinesePaint/Moxi_Prop2
+		  input 0 BlockMap
+		  input 0 Dist2Map
+        }
+      }
+	  
+	  target VelDenMap
+      {
+        input none
+        pass render_quad
+        {
+          material ChinesePaint/Moxi_VelDen
+		  input 0 BlockMap
+		  input 0 Dist1Map
+		  input 0 Dist2Map
+        }
+      }
+       
+     target_output
+     {
+       // Blur horizontally
+
+       pass render_quad
+       {
+         material ChinesePaint/Moxi_Output
+         input 0 VelDenMap
+       }
+     }
+  }
+}
