@@ -5,9 +5,8 @@ material ChinesePaint/Moxi_Output
 		pass 
 		{		
 			lighting off
-			texture_unit
+			texture_unit 
 			{
-				texture FlowInkMap
 			}
 		}
 	}
@@ -16,7 +15,7 @@ material ChinesePaint/Moxi_Output
 vertex_program ChinesePaint/Moxi/BlockVS cg
 {
 	source DistAll.vp
-	entry_point main
+	entry_point main1
 	profiles vs_1_1 arbvp1
 	
 	default_params
@@ -28,8 +27,8 @@ vertex_program ChinesePaint/Moxi/BlockVS cg
 fragment_program ChinesePaint/Moxi/BlockPS cg
 {
 	source Block.fp
-	entry_point main1
-	profiles ps_3_0 fp30
+	entry_point main2
+	profiles ps_1_0 arbfp1
 }
 
 material ChinesePaint/Moxi_Block
@@ -38,6 +37,7 @@ material ChinesePaint/Moxi_Block
 	{
 		pass Block
 		{
+			lighting off
 			vertex_program_ref ChinesePaint/Moxi/BlockVS
 			{
 			}
@@ -46,12 +46,12 @@ material ChinesePaint/Moxi_Block
 			{
 			}
 			
-			texture_unit VelDenMap
-			{
+			texture_unit BlockMap
+			{ 
 			}
 			
-			texture_unit BlockMap
-			{
+			texture_unit VelDenMap
+			{ 
 			}
 			
 			texture_unit FlowInkMap
@@ -81,7 +81,7 @@ fragment_program ChinesePaint/Moxi/Relax1PS cg
 {
 	source Collide1.fp
 	entry_point main
-	profiles ps_3_0 fp30
+	profiles ps_1_0 arbfp1
 }
 
 material ChinesePaint/Moxi_Relax1
@@ -129,7 +129,7 @@ fragment_program ChinesePaint/Moxi/Relax2PS cg
 {
 	source Collide1.fp
 	entry_point main
-	profiles ps_3_0 fp30
+	profiles ps_1_0 arbfp1
 }
 
 material ChinesePaint/Moxi_Relax2
@@ -177,7 +177,7 @@ fragment_program ChinesePaint/Moxi/Prop1PS cg
 {
 	source Prop1.fp
 	entry_point main
-	profiles ps_3_0 fp30
+	profiles ps_1_0 arbfp1
 }
 
 material ChinesePaint/Moxi_Prop1
@@ -221,7 +221,7 @@ fragment_program ChinesePaint/Moxi/Prop2PS cg
 {
 	source Prop2.fp
 	entry_point main
-	profiles ps_3_0 fp30
+	profiles ps_1_0 arbfp1
 }
 
 material ChinesePaint/Moxi_Prop2
@@ -265,7 +265,7 @@ fragment_program ChinesePaint/Moxi/VelDenPS cg
 {
 	source VelDen.fp
 	entry_point main
-	profiles ps_3_0 fp30
+	profiles ps_1_0 arbfp1
 }
 
 material ChinesePaint/Moxi_VelDen

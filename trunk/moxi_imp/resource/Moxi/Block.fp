@@ -25,7 +25,7 @@
 float4 main( v2fAll IN,
              samplerRECT MiscMap,    // [block, f0, lwf, ws]
              samplerRECT VelDenMap,   // [u, v, wf, seep]
-             samplerRECT InkMap,      // [P1, P2, P3, glue]
+             samplerRECT FlowInkMap,      // [P1, P2, P3, glue]
              samplerRECT FixInkMap,   // [P1, P2, P3, block]
              sampler2D   DisorderMap, // d[grain, -cap-, block, pin]
      uniform float  AlumTexScale = 1,
@@ -48,10 +48,12 @@ float4 main( v2fAll IN,
     float  wf     = VelDen.z; // just copy
     float  seep   = VelDen.w;
 
-    float glue   = texRECT(InkMap, IN.Tex0).w;
+    float glue   = texRECT(FlowInkMap, IN.Tex0).w;
     float FixBlk = texRECT(FixInkMap, IN.Tex0).w;
 
     float4 Disorder = tex2D(DisorderMap, IN.TexGrain);
+	
+	return float4(glue, glue, glue, 1.0);
 
     // Derive ad: Less advection for lower wf
     float ad = smoothstep(0, advect_p, wf);
@@ -99,7 +101,7 @@ float4 main( v2fAll IN,
 float4 main1( v2fAll IN,
              samplerRECT MiscMap,    // [block, f0, lwf, ws]
              samplerRECT VelDenMap,   // [u, v, wf, seep]
-             samplerRECT InkMap,      // [P1, P2, P3, glue]
+             samplerRECT FlowInkMap,      // [P1, P2, P3, glue]
              samplerRECT FixInkMap,   // [P1, P2, P3, block]
              sampler2D   DisorderMap, // d[grain, -cap-, block, pin]
      uniform float  AlumTexScale = 1,
@@ -113,7 +115,8 @@ float4 main1( v2fAll IN,
      uniform float  Corn_mul = 1    // corner multipler
 	 ) : COLOR
 {
-	return float4(IN.Tex0, 0.0, 0.0);
+	return float4(IN.Tex0, 0.0, 1.0);
+	//return float4(texRECT(FlowInkMap, IN.Tex0));
     float4 Misc0 = texRECT(MiscMap, IN.Tex0);
     float  f0    = Misc0.y;
     float  ws    = Misc0.w;
@@ -123,7 +126,7 @@ float4 main1( v2fAll IN,
     float  wf     = VelDen.z; // just copy
     float  seep   = VelDen.w;
 
-    float glue   = texRECT(InkMap, IN.Tex0).w;
+    float glue   = texRECT(FlowInkMap, IN.Tex0).w;
     float FixBlk = texRECT(FixInkMap, IN.Tex0).w;
 
     float4 Disorder = tex2D(DisorderMap, IN.TexGrain);
@@ -169,4 +172,18 @@ float4 main1( v2fAll IN,
 
     return float4(block, f0, wf, max(ws - seep / cap_s, 0)); // ws [0..1]
 //    return float4(f0, block, wf, max(ws - seep, 0)); // ws can be > 1 (+0.1 fps)
+}
+
+float4 main2( v2fAll IN,
+             samplerRECT BlockMap,    // [block, f0, lwf, ws]
+             samplerRECT VelDenMap,   // [u, v, wf, seep]
+             samplerRECT FlowInkMap,      // [P1, P2, P3, glue]
+             samplerRECT FixInkMap   // [P1, P2, P3, block]
+			 ) : COLOR
+{
+	float4 OUT;
+	//OUT = float4(IN.Tex0.y, 0.0, 0.0, 0.0);
+	OUT = texRECT(BlockMap, IN.Tex0);
+	//OUT.yzw = 1.0;
+	return OUT;
 }
