@@ -30,6 +30,7 @@ private:
 							User input end
 	*****************************************************************/
 	void createTexture();
+	void storeTexture();
 	void redirectIOToConsole();
 public:
 	
