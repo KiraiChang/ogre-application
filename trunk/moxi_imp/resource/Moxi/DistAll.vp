@@ -79,7 +79,7 @@ v2fAll main1(instream IN,
     OUT.TexGrain.x = 1 - OUT.TexGrain.x; // Flip
 	
     // central texel, * TexResol for Rectangle texture format
-    OUT.Tex0 = IN.Tex;// * TexResol;
+    OUT.Tex0 = IN.Tex * 1;//TexResol;
 
     OUT.Tex0Hi = OUT.Tex0 * HiMul + dx; // dx to fix a shift bug
 

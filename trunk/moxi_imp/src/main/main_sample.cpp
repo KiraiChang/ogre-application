@@ -26,36 +26,36 @@ void MainSample::createTexture()
 	*/
 	std::string textureName;
 	Ogre::HardwarePixelBufferSharedPtr buffer;
-	textureName = "VelDenMap";
-	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+	//textureName = "VelDenMap";
+	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
 	//textureName = "BlockMap";
 	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	textureName = "Dist1Map";
-	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	textureName = "Dist2Map";
-	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+	//textureName = "Dist1Map";
+	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+	//textureName = "Dist2Map";
+	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
 	textureName = "FlowInkMap";
 	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	textureName = "SurfInkMap";
-	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	textureName = "FixInkMap";
-	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	textureName = "StainMap";
-	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	textureName = "SinkInkMap";
-	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	textureName = "DetInkMap";
-	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_FLOAT16_RGBA, Ogre::TU_DYNAMIC_WRITE_ONLY);
+	//textureName = "SurfInkMap";
+	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+	//textureName = "FixInkMap";
+	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+	//textureName = "StainMap";
+	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+	//textureName = "SinkInkMap";
+	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
+	//textureName = "DetInkMap";
+	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
 
 	M_TEXTURE::iterator ite;
 	Ogre::TexturePtr ptr;
@@ -64,7 +64,18 @@ void MainSample::createTexture()
 		buffer = ite->second->getBuffer();  // save off the texture buffer
 		// initialise the texture to have full luminance
 		buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-		memset(buffer->getCurrentLock().data, 0xff, buffer->getSizeInBytes());
+		//memset(buffer->getCurrentLock().data, 1.0, buffer->getSizeInBytes());
+		for(int j = 0; j < TARGET_HEIGHT;j++)
+		{
+			for(int i = 0; i < TARGET_WIDTH; i++)
+			{
+				int index = i * 4 + j * TARGET_WIDTH * 4;
+				((float *)buffer->getCurrentLock().data)[index] = 1.0;
+				((float *)buffer->getCurrentLock().data)[index+1] = 1.0;
+				((float *)buffer->getCurrentLock().data)[index+2] = 1.0;
+				((float *)buffer->getCurrentLock().data)[index+3] = 1.0;
+			}
+		}
 		buffer->unlock();
 	}
 }
@@ -85,9 +96,9 @@ void MainSample::storeTexture()
 	textureName = "Dist2Map";
 	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
 		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
-	textureName = "FlowInkMap";
-	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
-		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
+	//textureName = "FlowInkMap";
+	//m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
+	//	mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
 	textureName = "SurfInkMap";
 	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
 		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
@@ -104,16 +115,16 @@ void MainSample::storeTexture()
 	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
 		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
 
-	M_TEXTURE::iterator ite;
-	Ogre::TexturePtr ptr;
-	for(ite = m_mapTexture.begin(); ite != m_mapTexture.end();++ite)
-	{
-		buffer = ite->second->getBuffer();  // save off the texture buffer
-		// initialise the texture to have full luminance
-		buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-		memset(buffer->getCurrentLock().data, 0xff, buffer->getSizeInBytes());
-		buffer->unlock();
-	}
+	//M_TEXTURE::iterator ite;
+	//Ogre::TexturePtr ptr;
+	//for(ite = m_mapTexture.begin(); ite != m_mapTexture.end();++ite)
+	//{
+	//	buffer = ite->second->getBuffer();  // save off the texture buffer
+	//	// initialise the texture to have full luminance
+	//	buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+	//	memset(buffer->getCurrentLock().data, 0xff, buffer->getSizeInBytes());
+	//	buffer->unlock();
+	//}
 }
 
 void MainSample::redirectIOToConsole()
@@ -252,7 +263,8 @@ void MainSample::createScene(void)
 	//buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 	//memset(buffer->getCurrentLock().data, 0xff, buffer->getSizeInBytes());
 	//buffer->unlock();
-	storeTexture();
+	createTexture();
+	//storeTexture();
 	/*****************************************************************
 							User input end
 	*****************************************************************/
@@ -298,25 +310,25 @@ bool MainSample::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id
 	if(id == OIS::MB_Left)
 	{
 		//if(arg.state.X.abs < TARGET_WIDTH && arg.state.Y.abs < TARGET_HEIGHT)
-		{
-			assert(m_mapTexture.count("FlowInkMap") != 0);
-			int x = float(arg.state.X.abs) / arg.state.width * m_mapTexture["FlowInkMap"]->getSrcWidth();
-			int y = float(arg.state.Y.abs) / arg.state.height * m_mapTexture["FlowInkMap"]->getSrcHeight();
-			int index = y * m_mapTexture["FlowInkMap"]->getSrcWidth() * 4 + x * 4;
-			Ogre::HardwarePixelBufferSharedPtr buffer = m_mapTexture["FlowInkMap"]->getBuffer();
+		//{
+		//	assert(m_mapTexture.count("FlowInkMap") != 0);
+		//	int x = float(arg.state.X.abs) / arg.state.width * m_mapTexture["FlowInkMap"]->getSrcWidth();
+		//	int y = float(arg.state.Y.abs) / arg.state.height * m_mapTexture["FlowInkMap"]->getSrcHeight();
+		//	int index = y * m_mapTexture["FlowInkMap"]->getSrcWidth() * 4 + x * 4;
+		//	Ogre::HardwarePixelBufferSharedPtr buffer = m_mapTexture["FlowInkMap"]->getBuffer();
 
-			buffer->lock(Ogre::HardwareBuffer::HBL_NORMAL);
+		//	buffer->lock(Ogre::HardwareBuffer::HBL_NORMAL);
 
-			//printf("Size of Texture Buffer:%d", buffer->getSizeInBytes());
-			// get access to raw texel data
-			Ogre::uint8* data = (Ogre::uint8*)buffer->getCurrentLock().data;
-			data[index] = 0;
-			data[index+1] = 0;
-			data[index+2] = 0;
-			data[index+3] = 255;
+		//	//printf("Size of Texture Buffer:%d", buffer->getSizeInBytes());
+		//	// get access to raw texel data
+		//	Ogre::uint8* data = (Ogre::uint8*)buffer->getCurrentLock().data;
+		//	data[index] = 0;
+		//	data[index+1] = 0;
+		//	data[index+2] = 0;
+		//	data[index+3] = 255;
 
-			buffer->unlock();
-		}
+		//	buffer->unlock();
+		//}
 	}
 	/*****************************************************************
 							User input end
