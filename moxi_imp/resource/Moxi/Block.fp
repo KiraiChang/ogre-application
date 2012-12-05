@@ -182,8 +182,10 @@ float4 main2( v2fAll IN,
 			 ) : COLOR
 {
 	float4 OUT;
-	//OUT = float4(IN.Tex0.y, 0.0, 0.0, 0.0);
-	OUT = texRECT(BlockMap, IN.Tex0);
+	float2 pos = 0.5;
+	//OUT = float4(IN.Tex0, 0.0, 0.0);
+	//OUT = texRECT(FlowInkMap, IN.Tex0);
+	OUT = texRECT(FlowInkMap, pos);
 	//OUT.yzw = 1.0;
 	return OUT;
 }
