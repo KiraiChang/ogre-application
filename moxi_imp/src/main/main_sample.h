@@ -5,6 +5,7 @@
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 #include "resource.h"
 #endif
+#include "../ogre_moxi/ogre_moxi.h"
 
 typedef std::map<std::string, Ogre::TexturePtr> M_TEXTURE;
 class MainSample : public BaseApplication, public Ogre::RenderTargetListener
@@ -23,14 +24,12 @@ private:
 	//Ogre::SceneNode* mGlowObjNode;
 	//Ogre::GpuProgramParametersSharedPtr fpPP;
 	//float dtime;
-	M_TEXTURE								m_mapTexture;
 	//Ogre::SceneNode*						m_pPaperNode;
 	//Ogre::Entity*							m_pPaper;
+	OgreMoxi*								m_pMoxi;
 	/*****************************************************************
 							User input end
 	*****************************************************************/
-	void createTexture();
-	void storeTexture();
 	void redirectIOToConsole();
 public:
 	

@@ -7,7 +7,7 @@ material ChinesePaint/Moxi_Output
 			lighting off
 			texture_unit 
 			{
-				texture FlowInkMap
+				//texture FlowInkMap
 			}
 		}
 	}
@@ -16,8 +16,8 @@ material ChinesePaint/Moxi_Output
 vertex_program ChinesePaint/Moxi/BlockVS cg
 {
 	source DistAll.vp
-	entry_point main1
-	profiles vs_4_0 vp40
+	entry_point main
+	profiles vs_1_1 arbvp1
 	
 	default_params
 	{
@@ -29,7 +29,7 @@ fragment_program ChinesePaint/Moxi/BlockPS cg
 {
 	source Block.fp
 	entry_point main2
-	profiles ps_4_0 fp40
+	profiles ps_2_0 arbfp1
 }
 
 material ChinesePaint/Moxi_Block
@@ -41,6 +41,11 @@ material ChinesePaint/Moxi_Block
 			lighting off
 			vertex_program_ref ChinesePaint/Moxi/BlockVS
 			{
+				param_named TexScale float 8.0
+				param_named GrainScale float 8.0
+				param_named dx float2 0.0 0.0
+				param_named HiMul float 1.0
+				param_named TexResol float 1.0 
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/BlockPS
@@ -55,13 +60,13 @@ material ChinesePaint/Moxi_Block
 			{ 
 			}
 			
-			texture_unit FlowInkMap
-			{
-				texture FlowInkMap
-			}
-			
 			texture_unit FixInkMap
 			{
+			}
+			
+			texture_unit
+			{
+				texture FlowInkMap
 			}
 		}
 	}
@@ -71,7 +76,7 @@ vertex_program ChinesePaint/Moxi/Relax1VS cg
 {
 	source Dist1.vp
 	entry_point main
-	profiles vs_3_0 vp30
+	profiles vs_1_1 arbvp1
 	
 	default_params
 	{
@@ -83,7 +88,7 @@ fragment_program ChinesePaint/Moxi/Relax1PS cg
 {
 	source Collide1.fp
 	entry_point main
-	profiles ps_3_0 fp30
+	profiles ps_2_0 arbfp1
 }
 
 material ChinesePaint/Moxi_Relax1
@@ -94,6 +99,11 @@ material ChinesePaint/Moxi_Relax1
 		{
 			vertex_program_ref ChinesePaint/Moxi/Relax1VS
 			{
+				param_named TexScale float 8.0
+				param_named GrainScale float 8.0
+				param_named dx float2 0.0 0.0
+				param_named HiMul float 1.0
+				param_named TexResol float 1.0 
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/Relax1PS
@@ -119,7 +129,7 @@ vertex_program ChinesePaint/Moxi/Relax2VS cg
 {
 	source Dist2.vp
 	entry_point main
-	profiles vs_3_0 vp30
+	profiles vs_1_1 arbvp1
 	
 	default_params
 	{
@@ -131,7 +141,7 @@ fragment_program ChinesePaint/Moxi/Relax2PS cg
 {
 	source Collide1.fp
 	entry_point main
-	profiles ps_3_0 fp30
+	profiles ps_2_0 arbfp1
 }
 
 material ChinesePaint/Moxi_Relax2
@@ -142,6 +152,11 @@ material ChinesePaint/Moxi_Relax2
 		{
 			vertex_program_ref ChinesePaint/Moxi/Relax2VS
 			{
+				param_named TexScale float 8.0
+				param_named GrainScale float 8.0
+				param_named dx float2 0.0 0.0
+				param_named HiMul float 1.0
+				param_named TexResol float 1.0 
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/Relax2PS
@@ -167,7 +182,7 @@ vertex_program ChinesePaint/Moxi/Prop1VS cg
 {
 	source Dist1.vp
 	entry_point main
-	profiles vs_3_0 vp30
+	profiles vs_1_1 arbvp1
 	
 	default_params
 	{
@@ -179,7 +194,7 @@ fragment_program ChinesePaint/Moxi/Prop1PS cg
 {
 	source Prop1.fp
 	entry_point main
-	profiles ps_3_0 fp30
+	profiles ps_2_0 arbfp1
 }
 
 material ChinesePaint/Moxi_Prop1
@@ -190,6 +205,11 @@ material ChinesePaint/Moxi_Prop1
 		{
 			vertex_program_ref ChinesePaint/Moxi/Prop1VS
 			{
+				param_named TexScale float 8.0
+				param_named GrainScale float 8.0
+				param_named dx float2 0.0 0.0
+				param_named HiMul float 1.0
+				param_named TexResol float 1.0 
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/Prop1PS
@@ -211,7 +231,7 @@ vertex_program ChinesePaint/Moxi/Prop2VS cg
 {
 	source Dist2.vp
 	entry_point main
-	profiles vs_3_0 vp30
+	profiles vs_1_1 arbvp1
 	
 	default_params
 	{
@@ -223,7 +243,7 @@ fragment_program ChinesePaint/Moxi/Prop2PS cg
 {
 	source Prop2.fp
 	entry_point main
-	profiles ps_3_0 fp30
+	profiles ps_2_0 arbfp1
 }
 
 material ChinesePaint/Moxi_Prop2
@@ -234,6 +254,11 @@ material ChinesePaint/Moxi_Prop2
 		{
 			vertex_program_ref ChinesePaint/Moxi/Prop2VS
 			{
+				param_named TexScale float 8.0
+				param_named GrainScale float 8.0
+				param_named dx float2 0.0 0.0
+				param_named HiMul float 1.0
+				param_named TexResol float 1.0 
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/Prop2PS
@@ -255,7 +280,7 @@ vertex_program ChinesePaint/Moxi/VelDenVS cg
 {
 	source Dist1.vp
 	entry_point main
-	profiles vs_3_0 vp30
+	profiles vs_1_1 arbvp1
 	
 	default_params
 	{
@@ -267,7 +292,7 @@ fragment_program ChinesePaint/Moxi/VelDenPS cg
 {
 	source VelDen.fp
 	entry_point main
-	profiles ps_3_0 fp30
+	profiles ps_2_0 arbfp1
 }
 
 material ChinesePaint/Moxi_VelDen
@@ -278,6 +303,11 @@ material ChinesePaint/Moxi_VelDen
 		{
 			vertex_program_ref ChinesePaint/Moxi/VelDenVS
 			{
+				param_named TexScale float 8.0
+				param_named GrainScale float 8.0
+				param_named dx float2 0.0 0.0
+				param_named HiMul float 1.0
+				param_named TexResol float 1.0 
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/VelDenPS

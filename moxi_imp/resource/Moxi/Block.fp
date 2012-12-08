@@ -175,17 +175,14 @@ float4 main1( v2fAll IN,
 }
 
 float4 main2( v2fAll IN,
-             samplerRECT BlockMap,    // [block, f0, lwf, ws]
-             samplerRECT VelDenMap,   // [u, v, wf, seep]
-             samplerRECT FlowInkMap,      // [P1, P2, P3, glue]
-             samplerRECT FixInkMap   // [P1, P2, P3, block]
+             samplerRECT BlockMap : register(s0),    // [block, f0, lwf, ws]
+             samplerRECT VelDenMap : register(s1),   // [u, v, wf, seep]
+             samplerRECT FixInkMap : register(s2),   // [P1, P2, P3, block]
+			 samplerRECT FlowInkMap : register(s3)   // [P1, P2, P3, glue]
 			 ) : COLOR
 {
 	float4 OUT;
-	float2 pos = 0.5;
 	//OUT = float4(IN.Tex0, 0.0, 0.0);
-	//OUT = texRECT(FlowInkMap, IN.Tex0);
-	OUT = texRECT(FlowInkMap, pos);
-	//OUT.yzw = 1.0;
+	OUT = texRECT(FlowInkMap, IN.Tex0);
 	return OUT;
 }
