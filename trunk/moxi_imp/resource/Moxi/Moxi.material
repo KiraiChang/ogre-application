@@ -155,7 +155,7 @@ material ChinesePaint/Moxi_Relax2
 				param_named TexScale float 8.0
 				param_named GrainScale float 8.0
 				param_named dx float2 0.0 0.0
-				param_named HiMul float 1.0
+				//param_named HiMul float 1.0
 				param_named TexResol float 1.0 
 			}
 			
@@ -257,7 +257,7 @@ material ChinesePaint/Moxi_Prop2
 				param_named TexScale float 8.0
 				param_named GrainScale float 8.0
 				param_named dx float2 0.0 0.0
-				param_named HiMul float 1.0
+				//param_named HiMul float 1.0
 				param_named TexResol float 1.0 
 			}
 			
