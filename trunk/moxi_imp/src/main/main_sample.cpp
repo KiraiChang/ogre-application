@@ -7,125 +7,6 @@
 #include <iostream>
 #include <ios>
 #include <ogre.h>
-#define TARGET_WIDTH 512
-#define TARGET_HEIGHT 512
-
-void MainSample::createTexture()
-{
-	/*
-	texture VelDenMap 	target_width target_height PF_FLOAT16_RGBA  //[u, v, wf, seep]
-	texture BlockMap 	target_width target_height PF_FLOAT16_RGBA  //[blk, f0, lwf, ws]
-	texture Dist1Map 	target_width target_height PF_FLOAT16_RGBA  //f[N, E, W, S]
-	texture Dist2Map 	target_width target_height PF_FLOAT16_RGBA  //f[NE, SE, NW, SW]
-	texture FlowInkMap 	target_width target_height PF_FLOAT16_RGBA  //if[P1, P2, P3, glue]
-	texture SurfInkMap 	target_width target_height PF_FLOAT16_RGBA  //is[P1, P2, P3, glue]
-	texture FixInkMap 	target_width target_height PF_FLOAT16_RGBA  //ix[P1, P2, P3, fblk]
-	texture StainMap 	target_width target_height PF_FLOAT16_RGBA  //[wpen, wpin, edge, -]
-	texture SinkInkMap 	target_width target_height PF_FLOAT16_RGBA  //[P1, P2, P3, glue]
-	texture DetInkMap 	target_width target_height PF_FLOAT16_RGBA  //[P1, P2, P3, wetcut]
-	*/
-	std::string textureName;
-	Ogre::HardwarePixelBufferSharedPtr buffer;
-	//textureName = "VelDenMap";
-	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	//textureName = "BlockMap";
-	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	//textureName = "Dist1Map";
-	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	//textureName = "Dist2Map";
-	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	textureName = "FlowInkMap";
-	m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_FLOAT16_RGBA, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	//textureName = "SurfInkMap";
-	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	//textureName = "FixInkMap";
-	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	//textureName = "StainMap";
-	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	//textureName = "SinkInkMap";
-	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-	//textureName = "DetInkMap";
-	//m_mapTexture[textureName] = Ogre::TextureManager::getSingleton().createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-	//	Ogre::TEX_TYPE_2D, TARGET_WIDTH, TARGET_HEIGHT, 0, Ogre::PF_R8G8B8A8, Ogre::TU_DYNAMIC_WRITE_ONLY);
-
-	M_TEXTURE::iterator ite;
-	Ogre::TexturePtr ptr;
-	for(ite = m_mapTexture.begin(); ite != m_mapTexture.end();++ite)
-	{
-		buffer = ite->second->getBuffer();  // save off the texture buffer
-		// initialise the texture to have full luminance
-		buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-		//memset(buffer->getCurrentLock().data, 1.0, buffer->getSizeInBytes());
-		for(int j = 0; j < TARGET_HEIGHT;j++)
-		{
-			for(int i = 0; i < TARGET_WIDTH; i++)
-			{
-				int index = i * 4 + j * TARGET_WIDTH * 4;
-				((float *)buffer->getCurrentLock().data)[index] = 1.0;
-				((float *)buffer->getCurrentLock().data)[index+1] = 1.0;
-				((float *)buffer->getCurrentLock().data)[index+2] = 1.0;
-				((float *)buffer->getCurrentLock().data)[index+3] = 1.0;
-			}
-		}
-		buffer->unlock();
-	}
-}
-
-void MainSample::storeTexture()
-{
-	std::string textureName;
-	Ogre::HardwarePixelBufferSharedPtr buffer;
-	textureName = "VelDenMap";
-	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
-		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
-	textureName = "BlockMap";
-	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
-		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
-	textureName = "Dist1Map";
-	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
-		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
-	textureName = "Dist2Map";
-	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
-		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
-	//textureName = "FlowInkMap";
-	//m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
-	//	mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
-	textureName = "SurfInkMap";
-	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
-		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
-	textureName = "FixInkMap";
-	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
-		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
-	textureName = "StainMap";
-	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
-		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
-	textureName = "SinkInkMap";
-	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
-		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
-	textureName = "DetInkMap";
-	m_mapTexture[textureName] = Ogre::CompositorManager::getSingleton().getCompositorChain(
-		mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance(textureName, 0);
-
-	//M_TEXTURE::iterator ite;
-	//Ogre::TexturePtr ptr;
-	//for(ite = m_mapTexture.begin(); ite != m_mapTexture.end();++ite)
-	//{
-	//	buffer = ite->second->getBuffer();  // save off the texture buffer
-	//	// initialise the texture to have full luminance
-	//	buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-	//	memset(buffer->getCurrentLock().data, 0xff, buffer->getSizeInBytes());
-	//	buffer->unlock();
-	//}
-}
 
 void MainSample::redirectIOToConsole()
 {
@@ -165,13 +46,18 @@ void MainSample::redirectIOToConsole()
 }
 
 //-------------------------------------------------------------------------------------
-MainSample::MainSample(void)
+MainSample::MainSample(void):m_pMoxi(NULL)
 {
 	redirectIOToConsole();
 }
 //-------------------------------------------------------------------------------------
 MainSample::~MainSample(void)
 {
+	if(m_pMoxi != NULL)
+	{
+		delete m_pMoxi;
+		m_pMoxi = NULL;
+	}
 }
 
 //-------------------------------------------------------------------------------------
@@ -244,7 +130,6 @@ void MainSample::createScene(void)
 	//fpPP = mpt->getTechnique(1)->getPass(0)->getFragmentProgramParameters();
 	//dtime = 0;
 
-	//createTexture();
 	//Ogre::Plane plane(Ogre::Vector3::UNIT_Z, 0);
 
 	//Ogre::MeshManager::getSingleton().createPlane("Paper", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -255,16 +140,7 @@ void MainSample::createScene(void)
 	//m_pPaperNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	//m_pPaperNode->attachObject(m_pPaper);
 	//m_pPaperNode->setPosition(0.0, 0.0, 0.0);
-
-	Ogre::CompositorManager::getSingleton().addCompositor(mCamera->getViewport(), "ChinesePaint/Moxi");
-	Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "ChinesePaint/Moxi", true);
-	//m_mapTexture["FlowInkMap"] = Ogre::CompositorManager::getSingleton().getCompositorChain(mCamera->getViewport())->getCompositor("ChinesePaint/Moxi")->getTextureInstance("FlowInkMap", 0);
-	//Ogre::HardwarePixelBufferSharedPtr buffer = m_mapTexture["FlowInkMap"]->getBuffer();
-	//buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-	//memset(buffer->getCurrentLock().data, 0xff, buffer->getSizeInBytes());
-	//buffer->unlock();
-	createTexture();
-	//storeTexture();
+	m_pMoxi = new OgreMoxi(mCamera->getViewport());
 	/*****************************************************************
 							User input end
 	*****************************************************************/
@@ -309,26 +185,12 @@ bool MainSample::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id
 	*****************************************************************/
 	if(id == OIS::MB_Left)
 	{
-		//if(arg.state.X.abs < TARGET_WIDTH && arg.state.Y.abs < TARGET_HEIGHT)
-		//{
-		//	assert(m_mapTexture.count("FlowInkMap") != 0);
-		//	int x = float(arg.state.X.abs) / arg.state.width * m_mapTexture["FlowInkMap"]->getSrcWidth();
-		//	int y = float(arg.state.Y.abs) / arg.state.height * m_mapTexture["FlowInkMap"]->getSrcHeight();
-		//	int index = y * m_mapTexture["FlowInkMap"]->getSrcWidth() * 4 + x * 4;
-		//	Ogre::HardwarePixelBufferSharedPtr buffer = m_mapTexture["FlowInkMap"]->getBuffer();
-
-		//	buffer->lock(Ogre::HardwareBuffer::HBL_NORMAL);
-
-		//	//printf("Size of Texture Buffer:%d", buffer->getSizeInBytes());
-		//	// get access to raw texel data
-		//	Ogre::uint8* data = (Ogre::uint8*)buffer->getCurrentLock().data;
-		//	data[index] = 0;
-		//	data[index+1] = 0;
-		//	data[index+2] = 0;
-		//	data[index+3] = 255;
-
-		//	buffer->unlock();
-		//}
+		if(m_pMoxi != NULL)
+		{
+			float u = (float )arg.state.X.abs/arg.state.width;
+			float v = (float )arg.state.Y.abs/arg.state.height;
+			m_pMoxi->updateTexture("FlowInkMap", u, v, 0, 0, 0, 0xff);
+		}
 	}
 	/*****************************************************************
 							User input end

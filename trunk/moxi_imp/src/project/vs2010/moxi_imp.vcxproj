@@ -87,11 +87,13 @@
     <ClCompile Include="..\..\main\base_application.cpp" />
     <ClCompile Include="..\..\main\main.cpp" />
     <ClCompile Include="..\..\main\main_sample.cpp" />
+    <ClCompile Include="..\..\ogre_moxi\ogre_moxi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\main\base_application.h" />
     <ClInclude Include="..\..\main\main_sample.h" />
     <ClInclude Include="..\..\main\resource.h" />
+    <ClInclude Include="..\..\ogre_moxi\ogre_moxi.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

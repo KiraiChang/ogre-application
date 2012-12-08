@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ogre_moxi">
+      <UniqueIdentifier>{e4db46d6-3a48-4a34-b8a6-47968dcade4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\main\base_application.cpp">
@@ -24,6 +27,9 @@
     <ClCompile Include="..\..\main\main_sample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ogre_moxi\ogre_moxi.cpp">
+      <Filter>ogre_moxi</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\main\main_sample.h">
@@ -34,6 +40,9 @@
     </ClInclude>
     <ClInclude Include="..\..\main\resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ogre_moxi\ogre_moxi.h">
+      <Filter>ogre_moxi</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
