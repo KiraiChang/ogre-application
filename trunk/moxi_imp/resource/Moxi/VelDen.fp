@@ -23,19 +23,19 @@
 #include "TypesUtils.cg"
 
 float4 main( v2f1 IN,
-             samplerRECT MiscMap,    // [block, f0, lwf, ws]
-             samplerRECT Dist1Map,    // f[N, E, W, S]
-             samplerRECT Dist2Map,    // f[NE, SE, NW, SW]
+             sampler2D MiscMap : register(s0),    // [block, f0, lwf, ws]
+             sampler2D Dist1Map : register(s1),    // f[N, E, W, S]
+             sampler2D Dist2Map : register(s2),    // f[NE, SE, NW, SW]
      uniform float wf_mul = 1,     // for artificial water supply/drain
      uniform float cap_s  = 5,     // Max. water on surface
      uniform float Evapor = 0   ) : COLOR // [u, v, wf, seep]
 {
-    float4 Misc0 = texRECT(MiscMap, IN.Tex0);
+    float4 Misc0 = tex2D(MiscMap, IN.Tex0);
     float  f0    = Misc0.y;
     float  ws    = Misc0.w;
 
-    float4 Dist1 = texRECT(Dist1Map, IN.Tex0);
-    float4 Dist2 = texRECT(Dist2Map, IN.Tex0);
+    float4 Dist1 = tex2D(Dist1Map, IN.Tex0);
+    float4 Dist2 = tex2D(Dist2Map, IN.Tex0);
 
     // Derive v
     float2 v; // v.x = (E, NE, SE) - (W, NW, SW); v.y = (S, SE, SW) - (N, NE, NW)
