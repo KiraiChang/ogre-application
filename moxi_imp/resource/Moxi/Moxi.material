@@ -103,7 +103,7 @@ fragment_program ChinesePaint/Moxi/Relax1PS cg
 {
 	source Collide1.fp
 	entry_point main
-	profiles ps_2_0 arbfp1
+	profiles ps_2_x arbfp1
 }
 
 material ChinesePaint/Moxi_Relax1
@@ -119,10 +119,21 @@ material ChinesePaint/Moxi_Relax1
 				param_named dx float2 0.0 0.0
 				param_named HiMul float 1.0
 				param_named TexResol float 1.0 
+				param_named NNDist float 0.001953
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/Relax1PS
 			{
+				//1.0/9.0
+				param_named A float 0.1111111
+				//1.0/3.0
+				param_named B float 0.3333333
+				//0.5
+				param_named C float 0.5
+				//1.0/6.0
+				param_named D float  0.166667
+				param_named advect_p float 0.0
+				param_named Omega float 0.5
 			}
 			
 			texture_unit VelDenMap
@@ -133,8 +144,9 @@ material ChinesePaint/Moxi_Relax1
 			{
 			}
 			
-			texture_unit FlowInkMap
+			texture_unit
 			{
+				texture FlowInkMap
 			}
 		}
 	}
@@ -154,9 +166,9 @@ vertex_program ChinesePaint/Moxi/Relax2VS cg
 
 fragment_program ChinesePaint/Moxi/Relax2PS cg
 {
-	source Collide1.fp
+	source Collide2.fp
 	entry_point main
-	profiles ps_2_0 arbfp1
+	profiles ps_2_x arbfp1
 }
 
 material ChinesePaint/Moxi_Relax2
@@ -171,11 +183,22 @@ material ChinesePaint/Moxi_Relax2
 				param_named GrainScale float 8.0
 				param_named dx float2 0.0 0.0
 				//param_named HiMul float 1.0
-				param_named TexResol float 1.0 
+				param_named TexResol float 1.0
+				param_named NNDist float 0.001953
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/Relax2PS
 			{
+				//1.0/36.0
+				param_named A float 0.027778
+				//1.0/12.0
+				param_named B float 0.083333
+				//1.0/8.0
+				param_named C float 0.125
+				//1.0/24.0
+				param_named D float  0.04166667
+				param_named advect_p float 0.0
+				param_named Omega float 0.5
 			}
 			
 			texture_unit VelDenMap
@@ -186,8 +209,9 @@ material ChinesePaint/Moxi_Relax2
 			{
 			}
 			
-			texture_unit FlowInkMap
+			texture_unit
 			{
+				texture FlowInkMap
 			}
 		}
 	}
@@ -209,7 +233,7 @@ fragment_program ChinesePaint/Moxi/Prop1PS cg
 {
 	source Prop1.fp
 	entry_point main
-	profiles ps_2_0 arbfp1
+	profiles ps_2_x arbfp1
 }
 
 material ChinesePaint/Moxi_Prop1
@@ -225,10 +249,12 @@ material ChinesePaint/Moxi_Prop1
 				param_named dx float2 0.0 0.0
 				param_named HiMul float 1.0
 				param_named TexResol float 1.0 
+				param_named NNDist float 0.001953
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/Prop1PS
 			{
+				param_named Evapor_b float 0.0
 			}
 			
 			texture_unit BlockMap
@@ -258,7 +284,7 @@ fragment_program ChinesePaint/Moxi/Prop2PS cg
 {
 	source Prop2.fp
 	entry_point main
-	profiles ps_2_0 arbfp1
+	profiles ps_2_x arbfp1
 }
 
 material ChinesePaint/Moxi_Prop2
@@ -274,10 +300,12 @@ material ChinesePaint/Moxi_Prop2
 				param_named dx float2 0.0 0.0
 				//param_named HiMul float 1.0
 				param_named TexResol float 1.0 
+				param_named NNDist float 0.001953
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/Prop2PS
 			{
+				param_named Evapor_b float 0.0
 			}
 			
 			texture_unit BlockMap
@@ -307,7 +335,7 @@ fragment_program ChinesePaint/Moxi/VelDenPS cg
 {
 	source VelDen.fp
 	entry_point main
-	profiles ps_2_0 arbfp1
+	profiles ps_2_x arbfp1
 }
 
 material ChinesePaint/Moxi_VelDen
@@ -323,10 +351,14 @@ material ChinesePaint/Moxi_VelDen
 				param_named dx float2 0.0 0.0
 				param_named HiMul float 1.0
 				param_named TexResol float 1.0 
+				param_named NNDist float 0.001953
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/VelDenPS
 			{
+				param_named wf_mul float 1.0
+				param_named cap_s  float 5.0
+				param_named Evapor float 0.0  
 			}
 			
 			texture_unit BlockMap

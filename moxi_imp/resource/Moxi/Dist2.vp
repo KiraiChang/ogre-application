@@ -27,7 +27,8 @@ v2f2 main( instream IN,
    uniform float GrainScale = 8,
    uniform float2 dx      = 0,
    uniform float HiMul    = 1,
-   uniform float TexResol   = 512 )
+   uniform float TexResol   = 512, 
+   uniform float NNDist = 1.0 )
 {
     v2f2 OUT;
 
@@ -44,10 +45,10 @@ v2f2 main( instream IN,
     OUT.Tex0 += dx; // to fix a shift bug
 
     // shift texcoord. for the 4 nearest neighbors
-    OUT.TexNE.xy = OUT.Tex0 + float2( 1,-1);             //   +--> +x
-    OUT.TexSE.xy = OUT.Tex0 + float2( 1, 1);             //   |
-    OUT.TexNW.xy = OUT.Tex0 + float2(-1,-1);             //   v +y
-    OUT.TexSW.xy = OUT.Tex0 + float2(-1, 1);
+    OUT.TexNE.xy = OUT.Tex0 + float2( NNDist,-NNDist);             //   +--> +x
+    OUT.TexSE.xy = OUT.Tex0 + float2( NNDist, NNDist);             //   |
+    OUT.TexNW.xy = OUT.Tex0 + float2(-NNDist,-NNDist);             //   v +y
+    OUT.TexSW.xy = OUT.Tex0 + float2(-NNDist, NNDist);
 
     return OUT;
 }

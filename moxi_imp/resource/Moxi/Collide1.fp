@@ -20,9 +20,9 @@
 #include "TypesUtils.cg"
 
 float4 main( v2f1 IN,
-             samplerRECT VelDenMap,   // [u, v, wf, seep]
-             samplerRECT Dist1Map,    // f[N, E, W, S]
-             samplerRECT InkMap,      // [P1, P2, P3, glue]
+             sampler2D VelDenMap : register(s0),   // [u, v, wf, seep]
+             sampler2D Dist1Map : register(s1),    // f[N, E, W, S]
+             sampler2D InkMap : register(s2),      // [P1, P2, P3, glue]
      uniform float A = 1.0/9.0,
      uniform float B = 1.0/3.0,
      uniform float C = 0.5,
@@ -32,7 +32,7 @@ float4 main( v2f1 IN,
 {
     float4 OUT = 0;
 
-    float4 VelDen = texRECT(VelDenMap, IN.Tex0);
+    float4 VelDen = tex2D(VelDenMap, IN.Tex0);
     float2 v      = VelDen.xy;
     float  p      = VelDen.z;
 
@@ -42,7 +42,7 @@ float4 main( v2f1 IN,
     float ad = smoothstep(0, advect_p, p);
 
     float4 f_eq = A * p + ad * (B * eiDotv + C * eiDotv * eiDotv - D * dot(v, v));
-    float4 f    = texRECT(Dist1Map, IN.Tex0);
+    float4 f    = tex2D(Dist1Map, IN.Tex0);
 
     OUT = lerp(f, f_eq, Omega);
 

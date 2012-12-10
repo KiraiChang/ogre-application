@@ -55,8 +55,8 @@ compositor "ChinesePaint/Moxi"
         pass render_quad
         {
           material ChinesePaint/Moxi_Relax1
-		  //input 0 VelDenMap
-		  //input 0 Dist1Map
+		  input 0 VelDenMap 0
+		  input 1 Dist1Map 0
 		  //input 0 FlowInkMap
         }
       }
@@ -67,8 +67,8 @@ compositor "ChinesePaint/Moxi"
         pass render_quad
         {
           material ChinesePaint/Moxi_Relax2
-		  //input 0 VelDenMap
-		  //input 0 Dist2Map
+		  input 0 VelDenMap 0
+		  input 1 Dist2Map 0
 		  //input 0 FlowInkMap
         }
       }
@@ -79,8 +79,8 @@ compositor "ChinesePaint/Moxi"
         pass render_quad
         {
           material ChinesePaint/Moxi_Prop1
-		  //input 0 BlockMap
-		  //input 0 Dist1Map
+		  input 0 BlockMap 0
+		  input 1 Dist1Map 0
         }
       }
 	  
@@ -90,8 +90,8 @@ compositor "ChinesePaint/Moxi"
         pass render_quad
         {
           material ChinesePaint/Moxi_Prop2
-		  //input 0 BlockMap
-		  //input 0 Dist2Map
+		  input 0 BlockMap 0
+		  input 1 Dist2Map 0
         }
       }
 	  
@@ -101,9 +101,9 @@ compositor "ChinesePaint/Moxi"
         pass render_quad
         {
           material ChinesePaint/Moxi_VelDen
-		  //input 0 BlockMap
-		  //input 0 Dist1Map
-		  //input 0 Dist2Map
+		  input 0 BlockMap 0
+		  input 1 Dist1Map 0
+		  input 2 Dist2Map 0
         }
       }
        

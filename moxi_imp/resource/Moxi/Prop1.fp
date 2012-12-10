@@ -21,16 +21,16 @@
 #include "TypesUtils.cg"
 
 float4 main( v2f1 IN,
-             samplerRECT MiscMap,    // [block, f0, wf, ws]
-             samplerRECT Dist1Map,    // f[N, E, W, S]
+             sampler2D MiscMap : register(s0),    // [block, f0, wf, ws]
+             sampler2D Dist1Map : register(s1),    // f[N, E, W, S]
      uniform float Evapor_b = 0   // Evapor at pinned edge
             ) : COLOR // f[N, E, W, S]
 {
-    float bO = texRECT(MiscMap, IN.Tex0).x;
-    float bN = texRECT(MiscMap, IN.TexN).x;
-    float bE = texRECT(MiscMap, IN.TexE).x;
-    float bW = texRECT(MiscMap, IN.TexW).x;
-    float bS = texRECT(MiscMap, IN.TexS).x;
+    float bO = tex2D(MiscMap, IN.Tex0).x;
+    float bN = tex2D(MiscMap, IN.TexN).x;
+    float bE = tex2D(MiscMap, IN.TexE).x;
+    float bW = tex2D(MiscMap, IN.TexW).x;
+    float bS = tex2D(MiscMap, IN.TexS).x;
 
     float4 b = float4(bS, bW, bE, bN); // b[S, W, E, N]
 
@@ -41,11 +41,11 @@ float4 main( v2f1 IN,
 
     float4 f_Out, f_In;
 
-    f_Out  = texRECT(Dist1Map, IN.Tex0);
-    f_In.x = texRECT(Dist1Map, IN.TexS).x;
-    f_In.y = texRECT(Dist1Map, IN.TexW).y;
-    f_In.z = texRECT(Dist1Map, IN.TexE).z;
-    f_In.w = texRECT(Dist1Map, IN.TexN).w;
+    f_Out  = tex2D(Dist1Map, IN.Tex0);
+    f_In.x = tex2D(Dist1Map, IN.TexS).x;
+    f_In.y = tex2D(Dist1Map, IN.TexW).y;
+    f_In.z = tex2D(Dist1Map, IN.TexE).z;
+    f_In.w = tex2D(Dist1Map, IN.TexN).w;
 
     // Stream with partial bounce-back
     float4 OUT = lerp(f_In, f_Out.wzyx, b);
