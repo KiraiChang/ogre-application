@@ -27,7 +27,8 @@ v2fAll main( instream IN,
      uniform float GrainScale = 8,
      uniform float2 dx      = 0,
      uniform float HiMul    = 1,
-     uniform float TexResol = 512 )
+     uniform float TexResol = 512,
+	 uniform float NNDist = 1.0 )
 {
     v2fAll OUT;
 
@@ -47,16 +48,16 @@ v2fAll main( instream IN,
     OUT.Tex0 += dx; // to fix a shift bug
 
     // shift texcoord. for the 4 nearest neighbors
-    OUT.TexN_NE.xy = OUT.Tex0 + float2( 0,-1);              //   +--> +x
-    OUT.TexE_SE.xy = OUT.Tex0 + float2( 1, 0);              //   |
-    OUT.TexW_NW.xy = OUT.Tex0 + float2(-1, 0);              //   v +y
-    OUT.TexS_SW.xy = OUT.Tex0 + float2( 0, 1);
+    OUT.TexN_NE.xy = OUT.Tex0 + float2( 0,-NNDist);              //   +--> +x
+    OUT.TexE_SE.xy = OUT.Tex0 + float2( NNDist, 0);              //   |
+    OUT.TexW_NW.xy = OUT.Tex0 + float2(-NNDist, 0);              //   v +y
+    OUT.TexS_SW.xy = OUT.Tex0 + float2( 0, NNDist);
 
     // shift texcoord. for the 4 next nearest neighbors
-    OUT.TexN_NE.zw = OUT.Tex0 + float2( 1,-1);
-    OUT.TexE_SE.zw = OUT.Tex0 + float2( 1, 1);
-    OUT.TexW_NW.zw = OUT.Tex0 + float2(-1,-1);
-    OUT.TexS_SW.zw = OUT.Tex0 + float2(-1, 1);
+    OUT.TexN_NE.zw = OUT.Tex0 + float2( NNDist,-NNDist);
+    OUT.TexE_SE.zw = OUT.Tex0 + float2( NNDist, NNDist);
+    OUT.TexW_NW.zw = OUT.Tex0 + float2(-NNDist,-NNDist);
+    OUT.TexS_SW.zw = OUT.Tex0 + float2(-NNDist, NNDist);
 
     return OUT;
 }

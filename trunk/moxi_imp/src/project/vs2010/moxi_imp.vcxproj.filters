@@ -45,4 +45,45 @@
       <Filter>ogre_moxi</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\resource\Moxi\Block.fp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\Collide1.fp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\Collide2.fp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\Dist0.vp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\Dist1.vp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\Dist2.vp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\DistAll.vp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\Moxi.compositor">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\Moxi.material">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\Prop1.fp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\Prop2.fp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\TypesUtils.cg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\resource\Moxi\VelDen.fp">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

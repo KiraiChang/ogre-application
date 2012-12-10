@@ -45,7 +45,7 @@ compositor "ChinesePaint/Moxi"
           material ChinesePaint/Moxi_Block
 		  input 0 BlockMap 0
 		  input 1 VelDenMap 0
-		  input 2 FixInkMap 0
+		  input 3 FixInkMap 0
         }
       }
 	  
