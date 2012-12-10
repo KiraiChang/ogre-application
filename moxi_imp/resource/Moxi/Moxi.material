@@ -28,8 +28,8 @@ vertex_program ChinesePaint/Moxi/BlockVS cg
 fragment_program ChinesePaint/Moxi/BlockPS cg
 {
 	source Block.fp
-	entry_point main2
-	profiles ps_2_0 arbfp1
+	entry_point main
+	profiles ps_2_x arbfp1
 }
 
 material ChinesePaint/Moxi_Block
@@ -46,27 +46,42 @@ material ChinesePaint/Moxi_Block
 				param_named dx float2 0.0 0.0
 				param_named HiMul float 1.0
 				param_named TexResol float 1.0 
+				param_named NNDist float 0.001953
 			}
 			
 			fragment_program_ref ChinesePaint/Moxi/BlockPS
 			{
+				//param_named AlumTexScale float 1.0
+				param_named A0 float 0.444
+				param_named advect_p float 0.0
+				param_named Blk_w float3 0.1 0.1 -0.1
+				param_named Pin_w float3 0.1 0.1 0.1
+				param_named toe_p float 0.3
+				param_named Omega float 0.5
+				param_named cap_s float 5
+				param_named Corn_mul float 1.0
 			}
 			
-			texture_unit BlockMap
+			texture_unit MiscMap
 			{ 
 			}
 			
 			texture_unit VelDenMap
 			{ 
 			}
-			
+
+			texture_unit
+			{
+				texture FlowInkMap
+			}
+
 			texture_unit FixInkMap
 			{
 			}
 			
 			texture_unit
 			{
-				texture FlowInkMap
+				texture grain_texture.jpg
 			}
 		}
 	}

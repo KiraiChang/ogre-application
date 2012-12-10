@@ -95,6 +95,21 @@
     <ClInclude Include="..\..\main\resource.h" />
     <ClInclude Include="..\..\ogre_moxi\ogre_moxi.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\resource\Moxi\Block.fp" />
+    <None Include="..\..\..\resource\Moxi\Collide1.fp" />
+    <None Include="..\..\..\resource\Moxi\Collide2.fp" />
+    <None Include="..\..\..\resource\Moxi\Dist0.vp" />
+    <None Include="..\..\..\resource\Moxi\Dist1.vp" />
+    <None Include="..\..\..\resource\Moxi\Dist2.vp" />
+    <None Include="..\..\..\resource\Moxi\DistAll.vp" />
+    <None Include="..\..\..\resource\Moxi\Moxi.compositor" />
+    <None Include="..\..\..\resource\Moxi\Moxi.material" />
+    <None Include="..\..\..\resource\Moxi\Prop1.fp" />
+    <None Include="..\..\..\resource\Moxi\Prop2.fp" />
+    <None Include="..\..\..\resource\Moxi\TypesUtils.cg" />
+    <None Include="..\..\..\resource\Moxi\VelDen.fp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
