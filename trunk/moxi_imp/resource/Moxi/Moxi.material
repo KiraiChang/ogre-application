@@ -81,7 +81,7 @@ material ChinesePaint/Moxi_Block
 			
 			texture_unit
 			{
-				texture grain_texture.jpg
+				texture grain_texture.png
 			}
 		}
 	}
