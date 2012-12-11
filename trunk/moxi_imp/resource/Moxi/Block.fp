@@ -50,6 +50,7 @@ float4 main( v2fAll IN,
     float glue   = tex2D(FlowInkMap, IN.Tex0).w;
     float FixBlk = tex2D(FixInkMap, IN.Tex0).w;
     float4 Disorder = tex2D(DisorderMap, IN.TexGrain);
+
     // Derive ad: Less advection for lower wf
     float ad = smoothstep(0, advect_p, wf);
     // Derive f0
@@ -82,7 +83,7 @@ float4 main( v2fAll IN,
     pinning = (pinning) && (tex2D(VelDenMap, IN.TexW_NW.zw).z < pin);
     pinning = (pinning) && (tex2D(VelDenMap, IN.TexS_SW.zw).z < pin);
     /// Derive final block
-    if (pinning) block = 1.0/0;
+    //if (pinning) block = 1.0/0;
     // infinite
 
     return float4(block, f0, wf, max(ws - seep / cap_s, 0));
