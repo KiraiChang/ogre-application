@@ -41,8 +41,8 @@ material ChinesePaint/Moxi_Block
 			lighting off
 			vertex_program_ref ChinesePaint/Moxi/BlockVS
 			{
-				param_named TexScale float 8.0
-				param_named GrainScale float 8.0
+				param_named TexScale float 3.0
+				param_named GrainScale float 3.0
 				param_named dx float2 0.0 0.0
 				param_named HiMul float 1.0
 				param_named TexResol float 1.0 
@@ -81,7 +81,7 @@ material ChinesePaint/Moxi_Block
 			
 			texture_unit
 			{
-				texture grain_texture.png
+				texture pin_texture.png
 			}
 		}
 	}

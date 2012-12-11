@@ -67,10 +67,10 @@ void OgreMoxi::createTexture(void)
 			for(int i = 0; i < buffer->getWidth(); i++)
 			{
 				int index = i * 4 + j * buffer->getWidth() * 4;
-				((Ogre::uint8 *)buffer->getCurrentLock().data)[index] = 0xff;
-				((Ogre::uint8 *)buffer->getCurrentLock().data)[index+1] = 0xff;
-				((Ogre::uint8 *)buffer->getCurrentLock().data)[index+2] = 0xff;
-				((Ogre::uint8 *)buffer->getCurrentLock().data)[index+3] = 0xff;
+				((Ogre::uint8 *)buffer->getCurrentLock().data)[index] = 0;
+				((Ogre::uint8 *)buffer->getCurrentLock().data)[index+1] = 0;
+				((Ogre::uint8 *)buffer->getCurrentLock().data)[index+2] = 0;
+				((Ogre::uint8 *)buffer->getCurrentLock().data)[index+3] = 0;
 			}
 		}
 		buffer->unlock();
